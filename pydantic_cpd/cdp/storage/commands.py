@@ -1,7 +1,7 @@
 """Generated command models from CDP specification"""
 # Domain: Storage Commands
 
-from typing import Any
+from typing import Any, Literal
 from pydantic_cpd.cdp.base import CDPModel
 
 from .types import *
@@ -10,193 +10,193 @@ from pydantic_cpd.cdp import browser
 from pydantic_cpd.cdp import page
 
 
-class GetstoragekeyforframeParams(CDPModel):
+class GetStorageKeyForFrameParams(CDPModel):
     """Returns a storage key given a frame id.
     Deprecated. Please use Storage.getStorageKey instead."""
 
     frame_id: page.FrameId
 
 
-class GetstoragekeyforframeResult(CDPModel):
+class GetStorageKeyForFrameResult(CDPModel):
     storage_key: SerializedStorageKey
 
 
-class GetstoragekeyParams(CDPModel):
+class GetStorageKeyParams(CDPModel):
     """Returns storage key for the given frame. If no frame ID is provided,
     the storage key of the target executing this command is returned."""
 
     frame_id: page.FrameId | None = None
 
 
-class GetstoragekeyResult(CDPModel):
+class GetStorageKeyResult(CDPModel):
     storage_key: SerializedStorageKey
 
 
-class CleardatafororiginParams(CDPModel):
+class ClearDataForOriginParams(CDPModel):
     """Clears storage for origin."""
 
     origin: str
     storage_types: str
 
 
-class CleardataforstoragekeyParams(CDPModel):
+class ClearDataForStorageKeyParams(CDPModel):
     """Clears storage for storage key."""
 
     storage_key: str
     storage_types: str
 
 
-class GetcookiesParams(CDPModel):
+class GetCookiesParams(CDPModel):
     """Returns all browser cookies."""
 
     browser_context_id: browser.BrowserContextID | None = None
 
 
-class GetcookiesResult(CDPModel):
+class GetCookiesResult(CDPModel):
     cookies: list[Network.Cookie]
 
 
-class SetcookiesParams(CDPModel):
+class SetCookiesParams(CDPModel):
     """Sets given cookies."""
 
     cookies: list[Network.CookieParam]
     browser_context_id: browser.BrowserContextID | None = None
 
 
-class ClearcookiesParams(CDPModel):
+class ClearCookiesParams(CDPModel):
     """Clears cookies."""
 
     browser_context_id: browser.BrowserContextID | None = None
 
 
-class GetusageandquotaParams(CDPModel):
+class GetUsageAndQuotaParams(CDPModel):
     """Returns usage and quota in bytes."""
 
     origin: str
 
 
-class GetusageandquotaResult(CDPModel):
+class GetUsageAndQuotaResult(CDPModel):
     usage: float
     quota: float
     override_active: bool
     usage_breakdown: list[UsageForType]
 
 
-class OverridequotafororiginParams(CDPModel):
+class OverrideQuotaForOriginParams(CDPModel):
     """Override quota for the specified origin"""
 
     origin: str
     quota_size: float | None = None
 
 
-class TrackcachestoragefororiginParams(CDPModel):
+class TrackCacheStorageForOriginParams(CDPModel):
     """Registers origin to be notified when an update occurs to its cache storage list."""
 
     origin: str
 
 
-class TrackcachestorageforstoragekeyParams(CDPModel):
+class TrackCacheStorageForStorageKeyParams(CDPModel):
     """Registers storage key to be notified when an update occurs to its cache storage list."""
 
     storage_key: str
 
 
-class TrackindexeddbfororiginParams(CDPModel):
+class TrackIndexedDBForOriginParams(CDPModel):
     """Registers origin to be notified when an update occurs to its IndexedDB."""
 
     origin: str
 
 
-class TrackindexeddbforstoragekeyParams(CDPModel):
+class TrackIndexedDBForStorageKeyParams(CDPModel):
     """Registers storage key to be notified when an update occurs to its IndexedDB."""
 
     storage_key: str
 
 
-class UntrackcachestoragefororiginParams(CDPModel):
+class UntrackCacheStorageForOriginParams(CDPModel):
     """Unregisters origin from receiving notifications for cache storage."""
 
     origin: str
 
 
-class UntrackcachestorageforstoragekeyParams(CDPModel):
+class UntrackCacheStorageForStorageKeyParams(CDPModel):
     """Unregisters storage key from receiving notifications for cache storage."""
 
     storage_key: str
 
 
-class UntrackindexeddbfororiginParams(CDPModel):
+class UntrackIndexedDBForOriginParams(CDPModel):
     """Unregisters origin from receiving notifications for IndexedDB."""
 
     origin: str
 
 
-class UntrackindexeddbforstoragekeyParams(CDPModel):
+class UntrackIndexedDBForStorageKeyParams(CDPModel):
     """Unregisters storage key from receiving notifications for IndexedDB."""
 
     storage_key: str
 
 
-class GettrusttokensResult(CDPModel):
+class GetTrustTokensResult(CDPModel):
     tokens: list[TrustTokens]
 
 
-class CleartrusttokensParams(CDPModel):
+class ClearTrustTokensParams(CDPModel):
     """Removes all Trust Tokens issued by the provided issuerOrigin.
     Leaves other stored data, including the issuer's Redemption Records, intact."""
 
     issuer_origin: str
 
 
-class CleartrusttokensResult(CDPModel):
+class ClearTrustTokensResult(CDPModel):
     did_delete_tokens: bool
 
 
-class GetinterestgroupdetailsParams(CDPModel):
+class GetInterestGroupDetailsParams(CDPModel):
     """Gets details for a named interest group."""
 
     owner_origin: str
     name: str
 
 
-class GetinterestgroupdetailsResult(CDPModel):
+class GetInterestGroupDetailsResult(CDPModel):
     details: dict[str, Any]
 
 
-class SetinterestgrouptrackingParams(CDPModel):
+class SetInterestGroupTrackingParams(CDPModel):
     """Enables/Disables issuing of interestGroupAccessed events."""
 
     enable: bool
 
 
-class SetinterestgroupauctiontrackingParams(CDPModel):
+class SetInterestGroupAuctionTrackingParams(CDPModel):
     """Enables/Disables issuing of interestGroupAuctionEventOccurred and
     interestGroupAuctionNetworkRequestCreated."""
 
     enable: bool
 
 
-class GetsharedstoragemetadataParams(CDPModel):
+class GetSharedStorageMetadataParams(CDPModel):
     """Gets metadata for an origin's shared storage."""
 
     owner_origin: str
 
 
-class GetsharedstoragemetadataResult(CDPModel):
+class GetSharedStorageMetadataResult(CDPModel):
     metadata: SharedStorageMetadata
 
 
-class GetsharedstorageentriesParams(CDPModel):
+class GetSharedStorageEntriesParams(CDPModel):
     """Gets the entries in an given origin's shared storage."""
 
     owner_origin: str
 
 
-class GetsharedstorageentriesResult(CDPModel):
+class GetSharedStorageEntriesResult(CDPModel):
     entries: list[SharedStorageEntry]
 
 
-class SetsharedstorageentryParams(CDPModel):
+class SetSharedStorageEntryParams(CDPModel):
     """Sets entry with `key` and `value` for a given origin's shared storage."""
 
     owner_origin: str
@@ -205,69 +205,69 @@ class SetsharedstorageentryParams(CDPModel):
     ignore_if_present: bool | None = None
 
 
-class DeletesharedstorageentryParams(CDPModel):
+class DeleteSharedStorageEntryParams(CDPModel):
     """Deletes entry for `key` (if it exists) for a given origin's shared storage."""
 
     owner_origin: str
     key: str
 
 
-class ClearsharedstorageentriesParams(CDPModel):
+class ClearSharedStorageEntriesParams(CDPModel):
     """Clears all entries for a given origin's shared storage."""
 
     owner_origin: str
 
 
-class ResetsharedstoragebudgetParams(CDPModel):
+class ResetSharedStorageBudgetParams(CDPModel):
     """Resets the budget for `ownerOrigin` by clearing all budget withdrawals."""
 
     owner_origin: str
 
 
-class SetsharedstoragetrackingParams(CDPModel):
+class SetSharedStorageTrackingParams(CDPModel):
     """Enables/disables issuing of sharedStorageAccessed events."""
 
     enable: bool
 
 
-class SetstoragebuckettrackingParams(CDPModel):
+class SetStorageBucketTrackingParams(CDPModel):
     """Set tracking for a storage key's buckets."""
 
     storage_key: str
     enable: bool
 
 
-class DeletestoragebucketParams(CDPModel):
+class DeleteStorageBucketParams(CDPModel):
     """Deletes the Storage Bucket with the given storage key and bucket name."""
 
     bucket: StorageBucket
 
 
-class RunbouncetrackingmitigationsResult(CDPModel):
+class RunBounceTrackingMitigationsResult(CDPModel):
     deleted_sites: list[str]
 
 
-class SetattributionreportinglocaltestingmodeParams(CDPModel):
+class SetAttributionReportingLocalTestingModeParams(CDPModel):
     """https://wicg.github.io/attribution-reporting-api/"""
 
     enabled: bool
 
 
-class SetattributionreportingtrackingParams(CDPModel):
+class SetAttributionReportingTrackingParams(CDPModel):
     """Enables/disables issuing of Attribution Reporting events."""
 
     enable: bool
 
 
-class SendpendingattributionreportsResult(CDPModel):
+class SendPendingAttributionReportsResult(CDPModel):
     num_sent: int
 
 
-class GetrelatedwebsitesetsResult(CDPModel):
+class GetRelatedWebsiteSetsResult(CDPModel):
     sets: list[RelatedWebsiteSet]
 
 
-class GetaffectedurlsforthirdpartycookiemetadataParams(CDPModel):
+class GetAffectedUrlsForThirdPartyCookieMetadataParams(CDPModel):
     """Returns the list of URLs from a page and its embedded resources that match
     existing grace period URL pattern rules.
     https://developers.google.com/privacy-sandbox/cookies/temporary-exceptions/grace-period"""
@@ -276,11 +276,11 @@ class GetaffectedurlsforthirdpartycookiemetadataParams(CDPModel):
     third_party_urls: list[str]
 
 
-class GetaffectedurlsforthirdpartycookiemetadataResult(CDPModel):
+class GetAffectedUrlsForThirdPartyCookieMetadataResult(CDPModel):
     matched_urls: list[str]
 
 
-class SetprotectedaudiencekanonymityParams(CDPModel):
+class SetProtectedAudienceKAnonymityParams(CDPModel):
     owner: str
     name: str
     hashes: list[str]

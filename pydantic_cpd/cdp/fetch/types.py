@@ -2,7 +2,7 @@
 # Domain: Fetch
 # A domain for letting clients substitute browser's network layer with client code.
 
-from typing import Literal
+from typing import Any, Literal
 from pydantic_cpd.cdp.base import CDPModel
 
 # Unique request identifier. Note that this does not identify individual HTTP requests

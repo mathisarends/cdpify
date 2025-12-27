@@ -1,68 +1,71 @@
 """Generated client library from CDP specification"""
 # Domain: Debugger Client
 
+from __future__ import annotations
+
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from pydantic_cpd.client import CDPClient
-    from .commands import (
-        ContinuetolocationParams,
-        DisassemblewasmmoduleParams,
-        DisassemblewasmmoduleResult,
-        EnableParams,
-        EnableResult,
-        EvaluateoncallframeParams,
-        EvaluateoncallframeResult,
-        GetpossiblebreakpointsParams,
-        GetpossiblebreakpointsResult,
-        GetscriptsourceParams,
-        GetscriptsourceResult,
-        GetstacktraceParams,
-        GetstacktraceResult,
-        GetwasmbytecodeParams,
-        GetwasmbytecodeResult,
-        NextwasmdisassemblychunkParams,
-        NextwasmdisassemblychunkResult,
-        PauseonasynccallParams,
-        RemovebreakpointParams,
-        RestartframeParams,
-        RestartframeResult,
-        ResumeParams,
-        SearchincontentParams,
-        SearchincontentResult,
-        SetasynccallstackdepthParams,
-        SetblackboxedrangesParams,
-        SetblackboxexecutioncontextsParams,
-        SetblackboxpatternsParams,
-        SetbreakpointParams,
-        SetbreakpointResult,
-        SetbreakpointbyurlParams,
-        SetbreakpointbyurlResult,
-        SetbreakpointonfunctioncallParams,
-        SetbreakpointonfunctioncallResult,
-        SetbreakpointsactiveParams,
-        SetinstrumentationbreakpointParams,
-        SetinstrumentationbreakpointResult,
-        SetpauseonexceptionsParams,
-        SetreturnvalueParams,
-        SetscriptsourceParams,
-        SetscriptsourceResult,
-        SetskipallpausesParams,
-        SetvariablevalueParams,
-        StepintoParams,
-        StepoverParams,
-    )
+
+from .commands import (
+    ContinueToLocationParams,
+    DisassembleWasmModuleParams,
+    DisassembleWasmModuleResult,
+    EnableParams,
+    EnableResult,
+    EvaluateOnCallFrameParams,
+    EvaluateOnCallFrameResult,
+    GetPossibleBreakpointsParams,
+    GetPossibleBreakpointsResult,
+    GetScriptSourceParams,
+    GetScriptSourceResult,
+    GetStackTraceParams,
+    GetStackTraceResult,
+    GetWasmBytecodeParams,
+    GetWasmBytecodeResult,
+    NextWasmDisassemblyChunkParams,
+    NextWasmDisassemblyChunkResult,
+    PauseOnAsyncCallParams,
+    RemoveBreakpointParams,
+    RestartFrameParams,
+    RestartFrameResult,
+    ResumeParams,
+    SearchInContentParams,
+    SearchInContentResult,
+    SetAsyncCallStackDepthParams,
+    SetBlackboxExecutionContextsParams,
+    SetBlackboxPatternsParams,
+    SetBlackboxedRangesParams,
+    SetBreakpointByUrlParams,
+    SetBreakpointByUrlResult,
+    SetBreakpointOnFunctionCallParams,
+    SetBreakpointOnFunctionCallResult,
+    SetBreakpointParams,
+    SetBreakpointResult,
+    SetBreakpointsActiveParams,
+    SetInstrumentationBreakpointParams,
+    SetInstrumentationBreakpointResult,
+    SetPauseOnExceptionsParams,
+    SetReturnValueParams,
+    SetScriptSourceParams,
+    SetScriptSourceResult,
+    SetSkipAllPausesParams,
+    SetVariableValueParams,
+    StepIntoParams,
+    StepOverParams,
+)
 
 
 class DebuggerClient:
     """Debugger domain exposes JavaScript debugging capabilities. It allows setting and removing
     breakpoints, stepping through execution, exploring stack traces, etc."""
 
-    def __init__(self, client: "CDPClient") -> None:
+    def __init__(self, client: CDPClient) -> None:
         self._client = client
 
     async def continue_to_location(
-        self, params: "ContinuetolocationParams", session_id: str | None = None
+        self, params: ContinueToLocationParams, session_id: str | None = None
     ) -> dict[str, Any]:
         """Continues execution until specific location is reached."""
         result = await self._client.send_raw(
@@ -72,20 +75,18 @@ class DebuggerClient:
         )
         return result
 
-    async def disable(
-        self, params: None = None, session_id: str | None = None
-    ) -> dict[str, Any]:
+    async def disable(self, session_id: str | None = None) -> dict[str, Any]:
         """Disables debugger for given page."""
         result = await self._client.send_raw(
             method="Debugger.disable",
-            params=params.to_cdp_params() if params else None,
+            params=None,
             session_id=session_id,
         )
         return result
 
     async def enable(
-        self, params: "EnableParams | None" = None, session_id: str | None = None
-    ) -> "EnableResult":
+        self, params: EnableParams | None = None, session_id: str | None = None
+    ) -> EnableResult:
         """Enables debugger for the given page. Clients should not assume that the debugging has been
         enabled until the result for this command is received."""
         result = await self._client.send_raw(
@@ -96,19 +97,19 @@ class DebuggerClient:
         return EnableResult.model_validate(result)
 
     async def evaluate_on_call_frame(
-        self, params: "EvaluateoncallframeParams", session_id: str | None = None
-    ) -> "EvaluateoncallframeResult":
+        self, params: EvaluateOnCallFrameParams, session_id: str | None = None
+    ) -> EvaluateOnCallFrameResult:
         """Evaluates expression on a given call frame."""
         result = await self._client.send_raw(
             method="Debugger.evaluateOnCallFrame",
             params=params.to_cdp_params() if params else None,
             session_id=session_id,
         )
-        return EvaluateoncallframeResult.model_validate(result)
+        return EvaluateOnCallFrameResult.model_validate(result)
 
     async def get_possible_breakpoints(
-        self, params: "GetpossiblebreakpointsParams", session_id: str | None = None
-    ) -> "GetpossiblebreakpointsResult":
+        self, params: GetPossibleBreakpointsParams, session_id: str | None = None
+    ) -> GetPossibleBreakpointsResult:
         """Returns possible locations for breakpoint. scriptId in start and end range locations should be
         the same."""
         result = await self._client.send_raw(
@@ -116,32 +117,32 @@ class DebuggerClient:
             params=params.to_cdp_params() if params else None,
             session_id=session_id,
         )
-        return GetpossiblebreakpointsResult.model_validate(result)
+        return GetPossibleBreakpointsResult.model_validate(result)
 
     async def get_script_source(
-        self, params: "GetscriptsourceParams", session_id: str | None = None
-    ) -> "GetscriptsourceResult":
+        self, params: GetScriptSourceParams, session_id: str | None = None
+    ) -> GetScriptSourceResult:
         """Returns source for the script with given id."""
         result = await self._client.send_raw(
             method="Debugger.getScriptSource",
             params=params.to_cdp_params() if params else None,
             session_id=session_id,
         )
-        return GetscriptsourceResult.model_validate(result)
+        return GetScriptSourceResult.model_validate(result)
 
     async def disassemble_wasm_module(
-        self, params: "DisassemblewasmmoduleParams", session_id: str | None = None
-    ) -> "DisassemblewasmmoduleResult":
+        self, params: DisassembleWasmModuleParams, session_id: str | None = None
+    ) -> DisassembleWasmModuleResult:
         result = await self._client.send_raw(
             method="Debugger.disassembleWasmModule",
             params=params.to_cdp_params() if params else None,
             session_id=session_id,
         )
-        return DisassemblewasmmoduleResult.model_validate(result)
+        return DisassembleWasmModuleResult.model_validate(result)
 
     async def next_wasm_disassembly_chunk(
-        self, params: "NextwasmdisassemblychunkParams", session_id: str | None = None
-    ) -> "NextwasmdisassemblychunkResult":
+        self, params: NextWasmDisassemblyChunkParams, session_id: str | None = None
+    ) -> NextWasmDisassemblyChunkResult:
         """Disassemble the next chunk of lines for the module corresponding to the
         stream. If disassembly is complete, this API will invalidate the streamId
         and return an empty chunk. Any subsequent calls for the now invalid stream
@@ -151,43 +152,41 @@ class DebuggerClient:
             params=params.to_cdp_params() if params else None,
             session_id=session_id,
         )
-        return NextwasmdisassemblychunkResult.model_validate(result)
+        return NextWasmDisassemblyChunkResult.model_validate(result)
 
     async def get_wasm_bytecode(
-        self, params: "GetwasmbytecodeParams", session_id: str | None = None
-    ) -> "GetwasmbytecodeResult":
+        self, params: GetWasmBytecodeParams, session_id: str | None = None
+    ) -> GetWasmBytecodeResult:
         """This command is deprecated. Use getScriptSource instead."""
         result = await self._client.send_raw(
             method="Debugger.getWasmBytecode",
             params=params.to_cdp_params() if params else None,
             session_id=session_id,
         )
-        return GetwasmbytecodeResult.model_validate(result)
+        return GetWasmBytecodeResult.model_validate(result)
 
     async def get_stack_trace(
-        self, params: "GetstacktraceParams", session_id: str | None = None
-    ) -> "GetstacktraceResult":
+        self, params: GetStackTraceParams, session_id: str | None = None
+    ) -> GetStackTraceResult:
         """Returns stack trace with given `stackTraceId`."""
         result = await self._client.send_raw(
             method="Debugger.getStackTrace",
             params=params.to_cdp_params() if params else None,
             session_id=session_id,
         )
-        return GetstacktraceResult.model_validate(result)
+        return GetStackTraceResult.model_validate(result)
 
-    async def pause(
-        self, params: None = None, session_id: str | None = None
-    ) -> dict[str, Any]:
+    async def pause(self, session_id: str | None = None) -> dict[str, Any]:
         """Stops on the next JavaScript statement."""
         result = await self._client.send_raw(
             method="Debugger.pause",
-            params=params.to_cdp_params() if params else None,
+            params=None,
             session_id=session_id,
         )
         return result
 
     async def pause_on_async_call(
-        self, params: "PauseonasynccallParams", session_id: str | None = None
+        self, params: PauseOnAsyncCallParams, session_id: str | None = None
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Debugger.pauseOnAsyncCall",
@@ -197,7 +196,7 @@ class DebuggerClient:
         return result
 
     async def remove_breakpoint(
-        self, params: "RemovebreakpointParams", session_id: str | None = None
+        self, params: RemoveBreakpointParams, session_id: str | None = None
     ) -> dict[str, Any]:
         """Removes JavaScript breakpoint."""
         result = await self._client.send_raw(
@@ -208,8 +207,8 @@ class DebuggerClient:
         return result
 
     async def restart_frame(
-        self, params: "RestartframeParams", session_id: str | None = None
-    ) -> "RestartframeResult":
+        self, params: RestartFrameParams, session_id: str | None = None
+    ) -> RestartFrameResult:
         """Restarts particular call frame from the beginning. The old, deprecated
         behavior of `restartFrame` is to stay paused and allow further CDP commands
         after a restart was scheduled. This can cause problems with restarting, so
@@ -228,10 +227,10 @@ class DebuggerClient:
             params=params.to_cdp_params() if params else None,
             session_id=session_id,
         )
-        return RestartframeResult.model_validate(result)
+        return RestartFrameResult.model_validate(result)
 
     async def resume(
-        self, params: "ResumeParams | None" = None, session_id: str | None = None
+        self, params: ResumeParams | None = None, session_id: str | None = None
     ) -> dict[str, Any]:
         """Resumes JavaScript execution."""
         result = await self._client.send_raw(
@@ -242,18 +241,18 @@ class DebuggerClient:
         return result
 
     async def search_in_content(
-        self, params: "SearchincontentParams", session_id: str | None = None
-    ) -> "SearchincontentResult":
+        self, params: SearchInContentParams, session_id: str | None = None
+    ) -> SearchInContentResult:
         """Searches for given string in script content."""
         result = await self._client.send_raw(
             method="Debugger.searchInContent",
             params=params.to_cdp_params() if params else None,
             session_id=session_id,
         )
-        return SearchincontentResult.model_validate(result)
+        return SearchInContentResult.model_validate(result)
 
     async def set_async_call_stack_depth(
-        self, params: "SetasynccallstackdepthParams", session_id: str | None = None
+        self, params: SetAsyncCallStackDepthParams, session_id: str | None = None
     ) -> dict[str, Any]:
         """Enables or disables async call stacks tracking."""
         result = await self._client.send_raw(
@@ -264,9 +263,7 @@ class DebuggerClient:
         return result
 
     async def set_blackbox_execution_contexts(
-        self,
-        params: "SetblackboxexecutioncontextsParams",
-        session_id: str | None = None,
+        self, params: SetBlackboxExecutionContextsParams, session_id: str | None = None
     ) -> dict[str, Any]:
         """Replace previous blackbox execution contexts with passed ones. Forces backend to skip
         stepping/pausing in scripts in these execution contexts. VM will try to leave blackboxed script by
@@ -279,7 +276,7 @@ class DebuggerClient:
         return result
 
     async def set_blackbox_patterns(
-        self, params: "SetblackboxpatternsParams", session_id: str | None = None
+        self, params: SetBlackboxPatternsParams, session_id: str | None = None
     ) -> dict[str, Any]:
         """Replace previous blackbox patterns with passed ones. Forces backend to skip stepping/pausing in
         scripts with url matching one of the patterns. VM will try to leave blackboxed script by
@@ -292,7 +289,7 @@ class DebuggerClient:
         return result
 
     async def set_blackboxed_ranges(
-        self, params: "SetblackboxedrangesParams", session_id: str | None = None
+        self, params: SetBlackboxedRangesParams, session_id: str | None = None
     ) -> dict[str, Any]:
         """Makes backend skip steps in the script in blackboxed ranges. VM will try leave blacklisted
         scripts by performing 'step in' several times, finally resorting to 'step out' if unsuccessful.
@@ -306,32 +303,30 @@ class DebuggerClient:
         return result
 
     async def set_breakpoint(
-        self, params: "SetbreakpointParams", session_id: str | None = None
-    ) -> "SetbreakpointResult":
+        self, params: SetBreakpointParams, session_id: str | None = None
+    ) -> SetBreakpointResult:
         """Sets JavaScript breakpoint at a given location."""
         result = await self._client.send_raw(
             method="Debugger.setBreakpoint",
             params=params.to_cdp_params() if params else None,
             session_id=session_id,
         )
-        return SetbreakpointResult.model_validate(result)
+        return SetBreakpointResult.model_validate(result)
 
     async def set_instrumentation_breakpoint(
-        self,
-        params: "SetinstrumentationbreakpointParams",
-        session_id: str | None = None,
-    ) -> "SetinstrumentationbreakpointResult":
+        self, params: SetInstrumentationBreakpointParams, session_id: str | None = None
+    ) -> SetInstrumentationBreakpointResult:
         """Sets instrumentation breakpoint."""
         result = await self._client.send_raw(
             method="Debugger.setInstrumentationBreakpoint",
             params=params.to_cdp_params() if params else None,
             session_id=session_id,
         )
-        return SetinstrumentationbreakpointResult.model_validate(result)
+        return SetInstrumentationBreakpointResult.model_validate(result)
 
     async def set_breakpoint_by_url(
-        self, params: "SetbreakpointbyurlParams", session_id: str | None = None
-    ) -> "SetbreakpointbyurlResult":
+        self, params: SetBreakpointByUrlParams, session_id: str | None = None
+    ) -> SetBreakpointByUrlResult:
         """Sets JavaScript breakpoint at given location specified either by URL or URL regex. Once this
         command is issued, all existing parsed scripts will have breakpoints resolved and returned in
         `locations` property. Further matching script parsing will result in subsequent
@@ -341,11 +336,11 @@ class DebuggerClient:
             params=params.to_cdp_params() if params else None,
             session_id=session_id,
         )
-        return SetbreakpointbyurlResult.model_validate(result)
+        return SetBreakpointByUrlResult.model_validate(result)
 
     async def set_breakpoint_on_function_call(
-        self, params: "SetbreakpointonfunctioncallParams", session_id: str | None = None
-    ) -> "SetbreakpointonfunctioncallResult":
+        self, params: SetBreakpointOnFunctionCallParams, session_id: str | None = None
+    ) -> SetBreakpointOnFunctionCallResult:
         """Sets JavaScript breakpoint before each call to the given function.
         If another function was created from the same source as a given one,
         calling it will also trigger the breakpoint."""
@@ -354,10 +349,10 @@ class DebuggerClient:
             params=params.to_cdp_params() if params else None,
             session_id=session_id,
         )
-        return SetbreakpointonfunctioncallResult.model_validate(result)
+        return SetBreakpointOnFunctionCallResult.model_validate(result)
 
     async def set_breakpoints_active(
-        self, params: "SetbreakpointsactiveParams", session_id: str | None = None
+        self, params: SetBreakpointsActiveParams, session_id: str | None = None
     ) -> dict[str, Any]:
         """Activates / deactivates all breakpoints on the page."""
         result = await self._client.send_raw(
@@ -368,7 +363,7 @@ class DebuggerClient:
         return result
 
     async def set_pause_on_exceptions(
-        self, params: "SetpauseonexceptionsParams", session_id: str | None = None
+        self, params: SetPauseOnExceptionsParams, session_id: str | None = None
     ) -> dict[str, Any]:
         """Defines pause on exceptions state. Can be set to stop on all exceptions, uncaught exceptions,
         or caught exceptions, no exceptions. Initial pause on exceptions state is `none`."""
@@ -380,7 +375,7 @@ class DebuggerClient:
         return result
 
     async def set_return_value(
-        self, params: "SetreturnvalueParams", session_id: str | None = None
+        self, params: SetReturnValueParams, session_id: str | None = None
     ) -> dict[str, Any]:
         """Changes return value in top frame. Available only at return break position."""
         result = await self._client.send_raw(
@@ -391,8 +386,8 @@ class DebuggerClient:
         return result
 
     async def set_script_source(
-        self, params: "SetscriptsourceParams", session_id: str | None = None
-    ) -> "SetscriptsourceResult":
+        self, params: SetScriptSourceParams, session_id: str | None = None
+    ) -> SetScriptSourceResult:
         """Edits JavaScript source live.
 
         In general, functions that are currently on the stack can not be edited with
@@ -405,10 +400,10 @@ class DebuggerClient:
             params=params.to_cdp_params() if params else None,
             session_id=session_id,
         )
-        return SetscriptsourceResult.model_validate(result)
+        return SetScriptSourceResult.model_validate(result)
 
     async def set_skip_all_pauses(
-        self, params: "SetskipallpausesParams", session_id: str | None = None
+        self, params: SetSkipAllPausesParams, session_id: str | None = None
     ) -> dict[str, Any]:
         """Makes page not interrupt on any pauses (breakpoint, exception, dom exception etc)."""
         result = await self._client.send_raw(
@@ -419,7 +414,7 @@ class DebuggerClient:
         return result
 
     async def set_variable_value(
-        self, params: "SetvariablevalueParams", session_id: str | None = None
+        self, params: SetVariableValueParams, session_id: str | None = None
     ) -> dict[str, Any]:
         """Changes value of variable in a callframe. Object-based scopes are not supported and must be
         mutated manually."""
@@ -431,7 +426,7 @@ class DebuggerClient:
         return result
 
     async def step_into(
-        self, params: "StepintoParams | None" = None, session_id: str | None = None
+        self, params: StepIntoParams | None = None, session_id: str | None = None
     ) -> dict[str, Any]:
         """Steps into the function call."""
         result = await self._client.send_raw(
@@ -441,19 +436,17 @@ class DebuggerClient:
         )
         return result
 
-    async def step_out(
-        self, params: None = None, session_id: str | None = None
-    ) -> dict[str, Any]:
+    async def step_out(self, session_id: str | None = None) -> dict[str, Any]:
         """Steps out of the function call."""
         result = await self._client.send_raw(
             method="Debugger.stepOut",
-            params=params.to_cdp_params() if params else None,
+            params=None,
             session_id=session_id,
         )
         return result
 
     async def step_over(
-        self, params: "StepoverParams | None" = None, session_id: str | None = None
+        self, params: StepOverParams | None = None, session_id: str | None = None
     ) -> dict[str, Any]:
         """Steps over the statement."""
         result = await self._client.send_raw(

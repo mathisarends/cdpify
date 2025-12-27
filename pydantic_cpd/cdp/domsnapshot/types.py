@@ -3,7 +3,7 @@
 # This domain facilitates obtaining document snapshots with DOM, layout, and style
 # information.
 
-from typing import Any
+from typing import Any, Literal
 from pydantic_cpd.cdp.base import CDPModel
 
 

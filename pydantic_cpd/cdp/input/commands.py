@@ -1,13 +1,13 @@
 """Generated command models from CDP specification"""
 # Domain: Input Commands
 
-from typing import Literal
+from typing import Any, Literal
 from pydantic_cpd.cdp.base import CDPModel
 
 from .types import *
 
 
-class DispatchdrageventParams(CDPModel):
+class DispatchDragEventParams(CDPModel):
     """Dispatches a drag event into the page."""
 
     type: Literal["dragEnter", "dragOver", "drop", "dragCancel"]
@@ -17,7 +17,7 @@ class DispatchdrageventParams(CDPModel):
     modifiers: int | None = None
 
 
-class DispatchkeyeventParams(CDPModel):
+class DispatchKeyEventParams(CDPModel):
     """Dispatches a key event to the page."""
 
     type: Literal["keyDown", "keyUp", "rawKeyDown", "char"]
@@ -37,14 +37,14 @@ class DispatchkeyeventParams(CDPModel):
     commands: list[str] | None = None
 
 
-class InserttextParams(CDPModel):
+class InsertTextParams(CDPModel):
     """This method emulates inserting text that doesn't come from a key press,
     for example an emoji keyboard or an IME."""
 
     text: str
 
 
-class ImesetcompositionParams(CDPModel):
+class ImeSetCompositionParams(CDPModel):
     """This method sets the current candidate text for IME.
     Use imeCommitComposition to commit the final text.
     Use imeSetComposition with empty string as text to cancel composition."""
@@ -56,7 +56,7 @@ class ImesetcompositionParams(CDPModel):
     replacement_end: int | None = None
 
 
-class DispatchmouseeventParams(CDPModel):
+class DispatchMouseEventParams(CDPModel):
     """Dispatches a mouse event to the page."""
 
     type: Literal["mousePressed", "mouseReleased", "mouseMoved", "mouseWheel"]
@@ -77,7 +77,7 @@ class DispatchmouseeventParams(CDPModel):
     pointer_type: Literal["mouse", "pen"] | None = None
 
 
-class DispatchtoucheventParams(CDPModel):
+class DispatchTouchEventParams(CDPModel):
     """Dispatches a touch event to the page."""
 
     type: Literal["touchStart", "touchEnd", "touchMove", "touchCancel"]
@@ -86,7 +86,7 @@ class DispatchtoucheventParams(CDPModel):
     timestamp: TimeSinceEpoch | None = None
 
 
-class EmulatetouchfrommouseeventParams(CDPModel):
+class EmulateTouchFromMouseEventParams(CDPModel):
     """Emulates touch event from the mouse event parameters."""
 
     type: Literal["mousePressed", "mouseReleased", "mouseMoved", "mouseWheel"]
@@ -100,20 +100,20 @@ class EmulatetouchfrommouseeventParams(CDPModel):
     click_count: int | None = None
 
 
-class SetignoreinputeventsParams(CDPModel):
+class SetIgnoreInputEventsParams(CDPModel):
     """Ignores input events (useful while auditing page)."""
 
     ignore: bool
 
 
-class SetinterceptdragsParams(CDPModel):
+class SetInterceptDragsParams(CDPModel):
     """Prevents default drag and drop behavior and instead emits `Input.dragIntercepted` events.
     Drag and drop behavior can be directly controlled via `Input.dispatchDragEvent`."""
 
     enabled: bool
 
 
-class SynthesizepinchgestureParams(CDPModel):
+class SynthesizePinchGestureParams(CDPModel):
     """Synthesizes a pinch gesture over a time period by issuing appropriate touch events."""
 
     x: float
@@ -123,7 +123,7 @@ class SynthesizepinchgestureParams(CDPModel):
     gesture_source_type: GestureSourceType | None = None
 
 
-class SynthesizescrollgestureParams(CDPModel):
+class SynthesizeScrollGestureParams(CDPModel):
     """Synthesizes a scroll gesture over a time period by issuing appropriate touch events."""
 
     x: float
@@ -140,7 +140,7 @@ class SynthesizescrollgestureParams(CDPModel):
     interaction_marker_name: str | None = None
 
 
-class SynthesizetapgestureParams(CDPModel):
+class SynthesizeTapGestureParams(CDPModel):
     """Synthesizes a tap gesture over a time period by issuing appropriate touch events."""
 
     x: float

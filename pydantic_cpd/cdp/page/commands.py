@@ -1,7 +1,7 @@
 """Generated command models from CDP specification"""
 # Domain: Page Commands
 
-from typing import Literal
+from typing import Any, Literal
 from pydantic_cpd.cdp.base import CDPModel
 
 from .types import *
@@ -13,17 +13,17 @@ from pydantic_cpd.cdp import network
 from pydantic_cpd.cdp import runtime
 
 
-class AddscripttoevaluateonloadParams(CDPModel):
+class AddScriptToEvaluateOnLoadParams(CDPModel):
     """Deprecated, please use addScriptToEvaluateOnNewDocument instead."""
 
     script_source: str
 
 
-class AddscripttoevaluateonloadResult(CDPModel):
+class AddScriptToEvaluateOnLoadResult(CDPModel):
     identifier: ScriptIdentifier
 
 
-class AddscripttoevaluateonnewdocumentParams(CDPModel):
+class AddScriptToEvaluateOnNewDocumentParams(CDPModel):
     """Evaluates given script in every frame upon creation (before loading frame's scripts)."""
 
     source: str
@@ -32,11 +32,11 @@ class AddscripttoevaluateonnewdocumentParams(CDPModel):
     run_immediately: bool | None = None
 
 
-class AddscripttoevaluateonnewdocumentResult(CDPModel):
+class AddScriptToEvaluateOnNewDocumentResult(CDPModel):
     identifier: ScriptIdentifier
 
 
-class CapturescreenshotParams(CDPModel):
+class CaptureScreenshotParams(CDPModel):
     """Capture page screenshot."""
 
     format: Literal["jpeg", "png", "webp"] | None = None
@@ -47,22 +47,22 @@ class CapturescreenshotParams(CDPModel):
     optimize_for_speed: bool | None = None
 
 
-class CapturescreenshotResult(CDPModel):
+class CaptureScreenshotResult(CDPModel):
     data: str
 
 
-class CapturesnapshotParams(CDPModel):
+class CaptureSnapshotParams(CDPModel):
     """Returns a snapshot of the page as a string. For MHTML format, the serialization includes
     iframes, shadow DOM, external resources, and element-inline styles."""
 
     format: Literal["mhtml"] | None = None
 
 
-class CapturesnapshotResult(CDPModel):
+class CaptureSnapshotResult(CDPModel):
     data: str
 
 
-class CreateisolatedworldParams(CDPModel):
+class CreateIsolatedWorldParams(CDPModel):
     """Creates an isolated world for the given frame."""
 
     frame_id: FrameId
@@ -70,11 +70,11 @@ class CreateisolatedworldParams(CDPModel):
     grant_univeral_access: bool | None = None
 
 
-class CreateisolatedworldResult(CDPModel):
+class CreateIsolatedWorldResult(CDPModel):
     execution_context_id: runtime.ExecutionContextId
 
 
-class DeletecookieParams(CDPModel):
+class DeleteCookieParams(CDPModel):
     """Deletes browser cookie with given name, domain and path."""
 
     cookie_name: str
@@ -87,7 +87,7 @@ class EnableParams(CDPModel):
     enable_file_chooser_opened_event: bool | None = None
 
 
-class GetappmanifestParams(CDPModel):
+class GetAppManifestParams(CDPModel):
     """Gets the processed manifest for this current document.
     This API always waits for the manifest to be loaded.
     If manifestId is provided, and it does not match the manifest of the
@@ -97,7 +97,7 @@ class GetappmanifestParams(CDPModel):
     manifest_id: str | None = None
 
 
-class GetappmanifestResult(CDPModel):
+class GetAppManifestResult(CDPModel):
     url: str
     errors: list[AppManifestError]
     data: str | None = None
@@ -105,32 +105,32 @@ class GetappmanifestResult(CDPModel):
     manifest: WebAppManifest
 
 
-class GetinstallabilityerrorsResult(CDPModel):
+class GetInstallabilityErrorsResult(CDPModel):
     installability_errors: list[InstallabilityError]
 
 
-class GetmanifesticonsResult(CDPModel):
+class GetManifestIconsResult(CDPModel):
     primary_icon: str | None = None
 
 
-class GetappidResult(CDPModel):
+class GetAppIdResult(CDPModel):
     app_id: str | None = None
     recommended_id: str | None = None
 
 
-class GetadscriptancestryParams(CDPModel):
+class GetAdScriptAncestryParams(CDPModel):
     frame_id: FrameId
 
 
-class GetadscriptancestryResult(CDPModel):
+class GetAdScriptAncestryResult(CDPModel):
     ad_script_ancestry: AdScriptAncestry | None = None
 
 
-class GetframetreeResult(CDPModel):
+class GetFrameTreeResult(CDPModel):
     frame_tree: FrameTree
 
 
-class GetlayoutmetricsResult(CDPModel):
+class GetLayoutMetricsResult(CDPModel):
     layout_viewport: LayoutViewport
     visual_viewport: VisualViewport
     content_size: dom.Rect
@@ -139,28 +139,28 @@ class GetlayoutmetricsResult(CDPModel):
     css_content_size: dom.Rect
 
 
-class GetnavigationhistoryResult(CDPModel):
+class GetNavigationHistoryResult(CDPModel):
     current_index: int
     entries: list[NavigationEntry]
 
 
-class GetresourcecontentParams(CDPModel):
+class GetResourceContentParams(CDPModel):
     """Returns content of the given resource."""
 
     frame_id: FrameId
     url: str
 
 
-class GetresourcecontentResult(CDPModel):
+class GetResourceContentResult(CDPModel):
     content: str
     base64_encoded: bool
 
 
-class GetresourcetreeResult(CDPModel):
+class GetResourceTreeResult(CDPModel):
     frame_tree: FrameResourceTree
 
 
-class HandlejavascriptdialogParams(CDPModel):
+class HandleJavaScriptDialogParams(CDPModel):
     """Accepts or dismisses a JavaScript initiated dialog (alert, confirm, prompt, or onbeforeunload)."""
 
     accept: bool
@@ -184,13 +184,13 @@ class NavigateResult(CDPModel):
     is_download: bool | None = None
 
 
-class NavigatetohistoryentryParams(CDPModel):
+class NavigateToHistoryEntryParams(CDPModel):
     """Navigates current page to the given history entry."""
 
     entry_id: int
 
 
-class PrinttopdfParams(CDPModel):
+class PrintToPDFParams(CDPModel):
     """Print page as PDF."""
 
     landscape: bool | None = None
@@ -212,7 +212,7 @@ class PrinttopdfParams(CDPModel):
     generate_document_outline: bool | None = None
 
 
-class PrinttopdfResult(CDPModel):
+class PrintToPDFResult(CDPModel):
     data: str
     stream: io.StreamHandle | None = None
 
@@ -225,25 +225,25 @@ class ReloadParams(CDPModel):
     loader_id: network.LoaderId | None = None
 
 
-class RemovescripttoevaluateonloadParams(CDPModel):
+class RemoveScriptToEvaluateOnLoadParams(CDPModel):
     """Deprecated, please use removeScriptToEvaluateOnNewDocument instead."""
 
     identifier: ScriptIdentifier
 
 
-class RemovescripttoevaluateonnewdocumentParams(CDPModel):
+class RemoveScriptToEvaluateOnNewDocumentParams(CDPModel):
     """Removes given script from the list."""
 
     identifier: ScriptIdentifier
 
 
-class ScreencastframeackParams(CDPModel):
+class ScreencastFrameAckParams(CDPModel):
     """Acknowledges that a screencast frame has been received by the frontend."""
 
     session_id: int
 
 
-class SearchinresourceParams(CDPModel):
+class SearchInResourceParams(CDPModel):
     """Searches for given string in resource content."""
 
     frame_id: FrameId
@@ -253,43 +253,43 @@ class SearchinresourceParams(CDPModel):
     is_regex: bool | None = None
 
 
-class SearchinresourceResult(CDPModel):
+class SearchInResourceResult(CDPModel):
     result: list[Debugger.SearchMatch]
 
 
-class SetadblockingenabledParams(CDPModel):
+class SetAdBlockingEnabledParams(CDPModel):
     """Enable Chrome's experimental ad filter on all sites."""
 
     enabled: bool
 
 
-class SetbypasscspParams(CDPModel):
+class SetBypassCSPParams(CDPModel):
     """Enable page Content Security Policy by-passing."""
 
     enabled: bool
 
 
-class GetpermissionspolicystateParams(CDPModel):
+class GetPermissionsPolicyStateParams(CDPModel):
     """Get Permissions Policy state on given frame."""
 
     frame_id: FrameId
 
 
-class GetpermissionspolicystateResult(CDPModel):
+class GetPermissionsPolicyStateResult(CDPModel):
     states: list[PermissionsPolicyFeatureState]
 
 
-class GetorigintrialsParams(CDPModel):
+class GetOriginTrialsParams(CDPModel):
     """Get Origin Trials on given frame."""
 
     frame_id: FrameId
 
 
-class GetorigintrialsResult(CDPModel):
+class GetOriginTrialsResult(CDPModel):
     origin_trials: list[OriginTrial]
 
 
-class SetdevicemetricsoverrideParams(CDPModel):
+class SetDeviceMetricsOverrideParams(CDPModel):
     """Overrides the values of device screen dimensions (window.screen.width, window.screen.height,
     window.innerWidth, window.innerHeight, and "device-width"/"device-height"-related CSS media
     query results)."""
@@ -308,7 +308,7 @@ class SetdevicemetricsoverrideParams(CDPModel):
     viewport: Viewport | None = None
 
 
-class SetdeviceorientationoverrideParams(CDPModel):
+class SetDeviceOrientationOverrideParams(CDPModel):
     """Overrides the Device Orientation."""
 
     alpha: float
@@ -316,34 +316,34 @@ class SetdeviceorientationoverrideParams(CDPModel):
     gamma: float
 
 
-class SetfontfamiliesParams(CDPModel):
+class SetFontFamiliesParams(CDPModel):
     """Set generic font families."""
 
     font_families: FontFamilies
     for_scripts: list[ScriptFontFamilies] | None = None
 
 
-class SetfontsizesParams(CDPModel):
+class SetFontSizesParams(CDPModel):
     """Set default font sizes."""
 
     font_sizes: FontSizes
 
 
-class SetdocumentcontentParams(CDPModel):
+class SetDocumentContentParams(CDPModel):
     """Sets given markup as the document's HTML."""
 
     frame_id: FrameId
     html: str
 
 
-class SetdownloadbehaviorParams(CDPModel):
+class SetDownloadBehaviorParams(CDPModel):
     """Set the behavior when downloading a file."""
 
     behavior: Literal["deny", "allow", "default"]
     download_path: str | None = None
 
 
-class SetgeolocationoverrideParams(CDPModel):
+class SetGeolocationOverrideParams(CDPModel):
     """Overrides the Geolocation Position or Error. Omitting any of the parameters emulates position
     unavailable."""
 
@@ -352,20 +352,20 @@ class SetgeolocationoverrideParams(CDPModel):
     accuracy: float | None = None
 
 
-class SetlifecycleeventsenabledParams(CDPModel):
+class SetLifecycleEventsEnabledParams(CDPModel):
     """Controls whether page will emit lifecycle events."""
 
     enabled: bool
 
 
-class SettouchemulationenabledParams(CDPModel):
+class SetTouchEmulationEnabledParams(CDPModel):
     """Toggles mouse event-based touch event emulation."""
 
     enabled: bool
     configuration: Literal["mobile", "desktop"] | None = None
 
 
-class StartscreencastParams(CDPModel):
+class StartScreencastParams(CDPModel):
     """Starts sending each frame using the `screencastFrame` event."""
 
     format: Literal["jpeg", "png"] | None = None
@@ -375,7 +375,7 @@ class StartscreencastParams(CDPModel):
     every_nth_frame: int | None = None
 
 
-class SetweblifecyclestateParams(CDPModel):
+class SetWebLifecycleStateParams(CDPModel):
     """Tries to update the web lifecycle state of the page.
     It will transition the page to the given state according to:
     https://github.com/WICG/web-lifecycle/"""
@@ -383,7 +383,7 @@ class SetweblifecyclestateParams(CDPModel):
     state: Literal["frozen", "active"]
 
 
-class ProducecompilationcacheParams(CDPModel):
+class ProduceCompilationCacheParams(CDPModel):
     """Requests backend to produce compilation cache for the specified scripts.
     `scripts` are appended to the list of scripts for which the cache
     would be produced. The list may be reset during page navigation.
@@ -394,7 +394,7 @@ class ProducecompilationcacheParams(CDPModel):
     scripts: list[CompilationCacheParams]
 
 
-class AddcompilationcacheParams(CDPModel):
+class AddCompilationCacheParams(CDPModel):
     """Seeds compilation cache for given url. Compilation cache does not survive
     cross-process navigation."""
 
@@ -402,7 +402,7 @@ class AddcompilationcacheParams(CDPModel):
     data: str
 
 
-class SetspctransactionmodeParams(CDPModel):
+class SetSPCTransactionModeParams(CDPModel):
     """Sets the Secure Payment Confirmation transaction mode.
     https://w3c.github.io/secure-payment-confirmation/#sctn-automation-set-spc-transaction-mode"""
 
@@ -411,21 +411,21 @@ class SetspctransactionmodeParams(CDPModel):
     ]
 
 
-class SetrphregistrationmodeParams(CDPModel):
+class SetRPHRegistrationModeParams(CDPModel):
     """Extensions for Custom Handlers API:
     https://html.spec.whatwg.org/multipage/system-state.html#rph-automation"""
 
     mode: Literal["none", "autoAccept", "autoReject"]
 
 
-class GeneratetestreportParams(CDPModel):
+class GenerateTestReportParams(CDPModel):
     """Generates a report for testing."""
 
     message: str
     group: str | None = None
 
 
-class SetinterceptfilechooserdialogParams(CDPModel):
+class SetInterceptFileChooserDialogParams(CDPModel):
     """Intercept file chooser requests and transfer control to protocol clients.
     When file chooser interception is enabled, native file chooser dialog is not shown.
     Instead, a protocol event `Page.fileChooserOpened` is emitted."""
@@ -434,7 +434,7 @@ class SetinterceptfilechooserdialogParams(CDPModel):
     cancel: bool | None = None
 
 
-class SetprerenderingallowedParams(CDPModel):
+class SetPrerenderingAllowedParams(CDPModel):
     """Enable/disable prerendering manually.
 
     This command is a short-term solution for https://crbug.com/1440085.
@@ -446,12 +446,12 @@ class SetprerenderingallowedParams(CDPModel):
     is_allowed: bool
 
 
-class GetannotatedpagecontentParams(CDPModel):
+class GetAnnotatedPageContentParams(CDPModel):
     """Get the annotated page content for the main frame.
     This is an experimental command that is subject to change."""
 
     include_actionable_information: bool | None = None
 
 
-class GetannotatedpagecontentResult(CDPModel):
+class GetAnnotatedPageContentResult(CDPModel):
     content: str

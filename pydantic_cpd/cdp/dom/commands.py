@@ -1,7 +1,7 @@
 """Generated command models from CDP specification"""
 # Domain: DOM Commands
 
-from typing import Literal
+from typing import Any, Literal
 from pydantic_cpd.cdp.base import CDPModel
 
 from .types import *
@@ -9,19 +9,22 @@ from .types import *
 from pydantic_cpd.cdp import dom
 from pydantic_cpd.cdp import page
 from pydantic_cpd.cdp import runtime
+from pydantic_cpd.cdp import runtime
+from pydantic_cpd.cdp import runtime
+from pydantic_cpd.cdp import runtime
 
 
-class CollectclassnamesfromsubtreeParams(CDPModel):
+class CollectClassNamesFromSubtreeParams(CDPModel):
     """Collects class names for the node with given id and all of it's child nodes."""
 
     node_id: NodeId
 
 
-class CollectclassnamesfromsubtreeResult(CDPModel):
+class CollectClassNamesFromSubtreeResult(CDPModel):
     class_names: list[str]
 
 
-class CopytoParams(CDPModel):
+class CopyToParams(CDPModel):
     """Creates a deep copy of the specified node and places it into the target container before the
     given anchor."""
 
@@ -30,11 +33,11 @@ class CopytoParams(CDPModel):
     insert_before_node_id: NodeId | None = None
 
 
-class CopytoResult(CDPModel):
+class CopyToResult(CDPModel):
     node_id: NodeId
 
 
-class DescribenodeParams(CDPModel):
+class DescribeNodeParams(CDPModel):
     """Describes node given its id, does not require domain to be enabled. Does not start tracking any
     objects, can be used for automation."""
 
@@ -45,11 +48,11 @@ class DescribenodeParams(CDPModel):
     pierce: bool | None = None
 
 
-class DescribenodeResult(CDPModel):
+class DescribeNodeResult(CDPModel):
     node: Node
 
 
-class ScrollintoviewifneededParams(CDPModel):
+class ScrollIntoViewIfNeededParams(CDPModel):
     """Scrolls the specified rect of the given node into view if not already visible.
     Note: exactly one between nodeId, backendNodeId and objectId should be passed
     to identify the node."""
@@ -60,7 +63,7 @@ class ScrollintoviewifneededParams(CDPModel):
     rect: Rect | None = None
 
 
-class DiscardsearchresultsParams(CDPModel):
+class DiscardSearchResultsParams(CDPModel):
     """Discards search results from the session with the given id. `getSearchResults` should no longer
     be called for that search."""
 
@@ -81,17 +84,17 @@ class FocusParams(CDPModel):
     object_id: runtime.RemoteObjectId | None = None
 
 
-class GetattributesParams(CDPModel):
+class GetAttributesParams(CDPModel):
     """Returns attributes for the specified node."""
 
     node_id: NodeId
 
 
-class GetattributesResult(CDPModel):
+class GetAttributesResult(CDPModel):
     attributes: list[str]
 
 
-class GetboxmodelParams(CDPModel):
+class GetBoxModelParams(CDPModel):
     """Returns boxes for the given node."""
 
     node_id: NodeId | None = None
@@ -99,11 +102,11 @@ class GetboxmodelParams(CDPModel):
     object_id: runtime.RemoteObjectId | None = None
 
 
-class GetboxmodelResult(CDPModel):
+class GetBoxModelResult(CDPModel):
     model: BoxModel
 
 
-class GetcontentquadsParams(CDPModel):
+class GetContentQuadsParams(CDPModel):
     """Returns quads that describe node position on the page. This method
     might return multiple quads for inline nodes."""
 
@@ -112,11 +115,11 @@ class GetcontentquadsParams(CDPModel):
     object_id: runtime.RemoteObjectId | None = None
 
 
-class GetcontentquadsResult(CDPModel):
+class GetContentQuadsResult(CDPModel):
     quads: list[Quad]
 
 
-class GetdocumentParams(CDPModel):
+class GetDocumentParams(CDPModel):
     """Returns the root DOM node (and optionally the subtree) to the caller.
     Implicitly enables the DOM domain events for the current target."""
 
@@ -124,11 +127,11 @@ class GetdocumentParams(CDPModel):
     pierce: bool | None = None
 
 
-class GetdocumentResult(CDPModel):
+class GetDocumentResult(CDPModel):
     root: Node
 
 
-class GetflatteneddocumentParams(CDPModel):
+class GetFlattenedDocumentParams(CDPModel):
     """Returns the root DOM node (and optionally the subtree) to the caller.
     Deprecated, as it is not designed to work well with the rest of the DOM agent.
     Use DOMSnapshot.captureSnapshot instead."""
@@ -137,11 +140,11 @@ class GetflatteneddocumentParams(CDPModel):
     pierce: bool | None = None
 
 
-class GetflatteneddocumentResult(CDPModel):
+class GetFlattenedDocumentResult(CDPModel):
     nodes: list[Node]
 
 
-class GetnodesforsubtreebystyleParams(CDPModel):
+class GetNodesForSubtreeByStyleParams(CDPModel):
     """Finds nodes with a given computed style in a subtree."""
 
     node_id: NodeId
@@ -149,11 +152,11 @@ class GetnodesforsubtreebystyleParams(CDPModel):
     pierce: bool | None = None
 
 
-class GetnodesforsubtreebystyleResult(CDPModel):
+class GetNodesForSubtreeByStyleResult(CDPModel):
     node_ids: list[NodeId]
 
 
-class GetnodeforlocationParams(CDPModel):
+class GetNodeForLocationParams(CDPModel):
     """Returns node id at given location. Depending on whether DOM domain is enabled, nodeId is
     either returned or not."""
 
@@ -163,13 +166,13 @@ class GetnodeforlocationParams(CDPModel):
     ignore_pointer_events_none: bool | None = None
 
 
-class GetnodeforlocationResult(CDPModel):
+class GetNodeForLocationResult(CDPModel):
     backend_node_id: BackendNodeId
     frame_id: page.FrameId
     node_id: NodeId | None = None
 
 
-class GetouterhtmlParams(CDPModel):
+class GetOuterHTMLParams(CDPModel):
     """Returns node's HTML markup."""
 
     node_id: NodeId | None = None
@@ -178,21 +181,21 @@ class GetouterhtmlParams(CDPModel):
     include_shadow_d_o_m: bool | None = None
 
 
-class GetouterhtmlResult(CDPModel):
+class GetOuterHTMLResult(CDPModel):
     outer_h_t_m_l: str
 
 
-class GetrelayoutboundaryParams(CDPModel):
+class GetRelayoutBoundaryParams(CDPModel):
     """Returns the id of the nearest ancestor that is a relayout boundary."""
 
     node_id: NodeId
 
 
-class GetrelayoutboundaryResult(CDPModel):
+class GetRelayoutBoundaryResult(CDPModel):
     node_id: NodeId
 
 
-class GetsearchresultsParams(CDPModel):
+class GetSearchResultsParams(CDPModel):
     """Returns search results from given `fromIndex` to given `toIndex` from the search with the given
     identifier."""
 
@@ -201,11 +204,11 @@ class GetsearchresultsParams(CDPModel):
     to_index: int
 
 
-class GetsearchresultsResult(CDPModel):
+class GetSearchResultsResult(CDPModel):
     node_ids: list[NodeId]
 
 
-class MovetoParams(CDPModel):
+class MoveToParams(CDPModel):
     """Moves node into the new container, places it before the given anchor."""
 
     node_id: NodeId
@@ -213,11 +216,11 @@ class MovetoParams(CDPModel):
     insert_before_node_id: NodeId | None = None
 
 
-class MovetoResult(CDPModel):
+class MoveToResult(CDPModel):
     node_id: NodeId
 
 
-class PerformsearchParams(CDPModel):
+class PerformSearchParams(CDPModel):
     """Searches for a given string in the DOM tree. Use `getSearchResults` to access search results or
     `cancelSearch` to end this search session."""
 
@@ -225,82 +228,82 @@ class PerformsearchParams(CDPModel):
     include_user_agent_shadow_d_o_m: bool | None = None
 
 
-class PerformsearchResult(CDPModel):
+class PerformSearchResult(CDPModel):
     search_id: str
     result_count: int
 
 
-class PushnodebypathtofrontendParams(CDPModel):
+class PushNodeByPathToFrontendParams(CDPModel):
     """Requests that the node is sent to the caller given its path. // FIXME, use XPath"""
 
     path: str
 
 
-class PushnodebypathtofrontendResult(CDPModel):
+class PushNodeByPathToFrontendResult(CDPModel):
     node_id: NodeId
 
 
-class PushnodesbybackendidstofrontendParams(CDPModel):
+class PushNodesByBackendIdsToFrontendParams(CDPModel):
     """Requests that a batch of nodes is sent to the caller given their backend node ids."""
 
     backend_node_ids: list[BackendNodeId]
 
 
-class PushnodesbybackendidstofrontendResult(CDPModel):
+class PushNodesByBackendIdsToFrontendResult(CDPModel):
     node_ids: list[NodeId]
 
 
-class QueryselectorParams(CDPModel):
+class QuerySelectorParams(CDPModel):
     """Executes `querySelector` on a given node."""
 
     node_id: NodeId
     selector: str
 
 
-class QueryselectorResult(CDPModel):
+class QuerySelectorResult(CDPModel):
     node_id: NodeId
 
 
-class QueryselectorallParams(CDPModel):
+class QuerySelectorAllParams(CDPModel):
     """Executes `querySelectorAll` on a given node."""
 
     node_id: NodeId
     selector: str
 
 
-class QueryselectorallResult(CDPModel):
+class QuerySelectorAllResult(CDPModel):
     node_ids: list[NodeId]
 
 
-class GettoplayerelementsResult(CDPModel):
+class GetTopLayerElementsResult(CDPModel):
     node_ids: list[NodeId]
 
 
-class GetelementbyrelationParams(CDPModel):
+class GetElementByRelationParams(CDPModel):
     """Returns the NodeId of the matched element according to certain relations."""
 
     node_id: NodeId
     relation: Literal["PopoverTarget", "InterestTarget", "CommandFor"]
 
 
-class GetelementbyrelationResult(CDPModel):
+class GetElementByRelationResult(CDPModel):
     node_id: NodeId
 
 
-class RemoveattributeParams(CDPModel):
+class RemoveAttributeParams(CDPModel):
     """Removes attribute with given name from an element with given id."""
 
     node_id: NodeId
     name: str
 
 
-class RemovenodeParams(CDPModel):
+class RemoveNodeParams(CDPModel):
     """Removes node with given id."""
 
     node_id: NodeId
 
 
-class RequestchildnodesParams(CDPModel):
+class RequestChildNodesParams(CDPModel):
     """Requests that children of the node with given id are returned to the caller in form of
     `setChildNodes` events where not only immediate children are retrieved, but all children down to
     the specified depth."""
@@ -310,7 +313,7 @@ class RequestchildnodesParams(CDPModel):
     pierce: bool | None = None
 
 
-class RequestnodeParams(CDPModel):
+class RequestNodeParams(CDPModel):
     """Requests that the node is sent to the caller given the JavaScript node object reference. All
     nodes that form the path from the node to the root are also sent to the client as a series of
     `setChildNodes` notifications."""
@@ -318,11 +321,11 @@ class RequestnodeParams(CDPModel):
     object_id: runtime.RemoteObjectId
 
 
-class RequestnodeResult(CDPModel):
+class RequestNodeResult(CDPModel):
     node_id: NodeId
 
 
-class ResolvenodeParams(CDPModel):
+class ResolveNodeParams(CDPModel):
     """Resolves the JavaScript node object for a given NodeId or BackendNodeId."""
 
     node_id: NodeId | None = None
@@ -331,11 +334,11 @@ class ResolvenodeParams(CDPModel):
     execution_context_id: runtime.ExecutionContextId | None = None
 
 
-class ResolvenodeResult(CDPModel):
+class ResolveNodeResult(CDPModel):
     object: runtime.RemoteObject
 
 
-class SetattributevalueParams(CDPModel):
+class SetAttributeValueParams(CDPModel):
     """Sets attribute for an element with given id."""
 
     node_id: NodeId
@@ -343,7 +346,7 @@ class SetattributevalueParams(CDPModel):
     value: str
 
 
-class SetattributesastextParams(CDPModel):
+class SetAttributesAsTextParams(CDPModel):
     """Sets attributes on element with given id. This method is useful when user edits some existing
     attribute value and types in several attribute name/value pairs."""
 
@@ -352,7 +355,7 @@ class SetattributesastextParams(CDPModel):
     name: str | None = None
 
 
-class SetfileinputfilesParams(CDPModel):
+class SetFileInputFilesParams(CDPModel):
     """Sets files for the given file input element."""
 
     files: list[str]
@@ -361,81 +364,81 @@ class SetfileinputfilesParams(CDPModel):
     object_id: runtime.RemoteObjectId | None = None
 
 
-class SetnodestacktracesenabledParams(CDPModel):
+class SetNodeStackTracesEnabledParams(CDPModel):
     """Sets if stack traces should be captured for Nodes. See `Node.getNodeStackTraces`. Default is disabled."""
 
     enable: bool
 
 
-class GetnodestacktracesParams(CDPModel):
+class GetNodeStackTracesParams(CDPModel):
     """Gets stack traces associated with a Node. As of now, only provides stack trace for Node creation."""
 
     node_id: NodeId
 
 
-class GetnodestacktracesResult(CDPModel):
+class GetNodeStackTracesResult(CDPModel):
     creation: runtime.StackTrace | None = None
 
 
-class GetfileinfoParams(CDPModel):
+class GetFileInfoParams(CDPModel):
     """Returns file information for the given
     File wrapper."""
 
     object_id: runtime.RemoteObjectId
 
 
-class GetfileinfoResult(CDPModel):
+class GetFileInfoResult(CDPModel):
     path: str
 
 
-class GetdetacheddomnodesResult(CDPModel):
+class GetDetachedDomNodesResult(CDPModel):
     detached_nodes: list[DetachedElementInfo]
 
 
-class SetinspectednodeParams(CDPModel):
+class SetInspectedNodeParams(CDPModel):
     """Enables console to refer to the node with given id via $x (see Command Line API for more details
     $x functions)."""
 
     node_id: NodeId
 
 
-class SetnodenameParams(CDPModel):
+class SetNodeNameParams(CDPModel):
     """Sets node name for a node with given id."""
 
     node_id: NodeId
     name: str
 
 
-class SetnodenameResult(CDPModel):
+class SetNodeNameResult(CDPModel):
     node_id: NodeId
 
 
-class SetnodevalueParams(CDPModel):
+class SetNodeValueParams(CDPModel):
     """Sets node value for a node with given id."""
 
     node_id: NodeId
     value: str
 
 
-class SetouterhtmlParams(CDPModel):
+class SetOuterHTMLParams(CDPModel):
     """Sets node HTML markup, returns new node id."""
 
     node_id: NodeId
     outer_h_t_m_l: str
 
 
-class GetframeownerParams(CDPModel):
+class GetFrameOwnerParams(CDPModel):
     """Returns iframe node that owns iframe with the given domain."""
 
     frame_id: page.FrameId
 
 
-class GetframeownerResult(CDPModel):
+class GetFrameOwnerResult(CDPModel):
     backend_node_id: BackendNodeId
     node_id: NodeId | None = None
 
 
-class GetcontainerfornodeParams(CDPModel):
+class GetContainerForNodeParams(CDPModel):
     """Returns the query container of the given node based on container query
     conditions: containerName, physical and logical axes, and whether it queries
     scroll-state or anchored elements. If no axes are provided and
@@ -450,22 +453,22 @@ class GetcontainerfornodeParams(CDPModel):
     queries_anchored: bool | None = None
 
 
-class GetcontainerfornodeResult(CDPModel):
+class GetContainerForNodeResult(CDPModel):
     node_id: NodeId | None = None
 
 
-class GetqueryingdescendantsforcontainerParams(CDPModel):
+class GetQueryingDescendantsForContainerParams(CDPModel):
     """Returns the descendants of a container query container that have
     container queries against this container."""
 
     node_id: NodeId
 
 
-class GetqueryingdescendantsforcontainerResult(CDPModel):
+class GetQueryingDescendantsForContainerResult(CDPModel):
     node_ids: list[NodeId]
 
 
-class GetanchorelementParams(CDPModel):
+class GetAnchorElementParams(CDPModel):
     """Returns the target anchor element of the given anchor query according to
     https://www.w3.org/TR/css-anchor-position-1/#target."""
 
@@ -473,11 +476,11 @@ class GetanchorelementParams(CDPModel):
     anchor_specifier: str | None = None
 
 
-class GetanchorelementResult(CDPModel):
+class GetAnchorElementResult(CDPModel):
     node_id: NodeId
 
 
-class ForceshowpopoverParams(CDPModel):
+class ForceShowPopoverParams(CDPModel):
     """When enabling, this API force-opens the popover identified by nodeId
     and keeps it open until disabled."""
 
@@ -485,5 +488,5 @@ class ForceshowpopoverParams(CDPModel):
     enable: bool
 
 
-class ForceshowpopoverResult(CDPModel):
+class ForceShowPopoverResult(CDPModel):
     node_ids: list[NodeId]

@@ -64,9 +64,17 @@ def map_cdp_type(param: Parameter) -> str:
 
 
 def to_snake_case(name: str) -> str:
+    """Convert camelCase or PascalCase to snake_case"""
     chars = []
     for i, char in enumerate(name):
         if char.isupper() and i > 0:
             chars.append("_")
         chars.append(char.lower())
     return "".join(chars)
+
+
+def to_pascal_case(name: str) -> str:
+    if not name:
+        return name
+
+    return name[0].upper() + name[1:]

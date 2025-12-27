@@ -1,16 +1,18 @@
 """Generated command models from CDP specification"""
 # Domain: CSS Commands
 
-from typing import Any
+from typing import Any, Literal
 from pydantic_cpd.cdp.base import CDPModel
 
 from .types import *
 
 from pydantic_cpd.cdp import dom
+from pydantic_cpd.cdp import dom
+from pydantic_cpd.cdp import dom
 from pydantic_cpd.cdp import page
 
 
-class AddruleParams(CDPModel):
+class AddRuleParams(CDPModel):
     """Inserts a new rule with the given `ruleText` in a stylesheet with given `styleSheetId`, at the
     position specified by `location`."""
 
@@ -20,32 +22,32 @@ class AddruleParams(CDPModel):
     node_for_property_syntax_validation: dom.NodeId | None = None
 
 
-class AddruleResult(CDPModel):
+class AddRuleResult(CDPModel):
     rule: CSSRule
 
 
-class CollectclassnamesParams(CDPModel):
+class CollectClassNamesParams(CDPModel):
     """Returns all class names from specified stylesheet."""
 
     style_sheet_id: dom.StyleSheetId
 
 
-class CollectclassnamesResult(CDPModel):
+class CollectClassNamesResult(CDPModel):
     class_names: list[str]
 
 
-class CreatestylesheetParams(CDPModel):
+class CreateStyleSheetParams(CDPModel):
     """Creates a new special "via-inspector" stylesheet in the frame with given `frameId`."""
 
     frame_id: page.FrameId
     force: bool | None = None
 
 
-class CreatestylesheetResult(CDPModel):
+class CreateStyleSheetResult(CDPModel):
     style_sheet_id: dom.StyleSheetId
 
 
-class ForcepseudostateParams(CDPModel):
+class ForcePseudoStateParams(CDPModel):
     """Ensures that the given node will have specified pseudo-classes whenever its style is computed by
     the browser."""
 
@@ -53,35 +55,35 @@ class ForcepseudostateParams(CDPModel):
     forced_pseudo_classes: list[str]
 
 
-class ForcestartingstyleParams(CDPModel):
+class ForceStartingStyleParams(CDPModel):
     """Ensures that the given node is in its starting-style state."""
 
     node_id: dom.NodeId
     forced: bool
 
 
-class GetbackgroundcolorsParams(CDPModel):
+class GetBackgroundColorsParams(CDPModel):
     node_id: dom.NodeId
 
 
-class GetbackgroundcolorsResult(CDPModel):
+class GetBackgroundColorsResult(CDPModel):
     background_colors: list[str] | None = None
     computed_font_size: str | None = None
     computed_font_weight: str | None = None
 
 
-class GetcomputedstylefornodeParams(CDPModel):
+class GetComputedStyleForNodeParams(CDPModel):
     """Returns the computed style for a DOM node identified by `nodeId`."""
 
     node_id: dom.NodeId
 
 
-class GetcomputedstylefornodeResult(CDPModel):
+class GetComputedStyleForNodeResult(CDPModel):
     computed_style: list[CSSComputedStyleProperty]
     extra_fields: ComputedStyleExtraFields
 
 
-class ResolvevaluesParams(CDPModel):
+class ResolveValuesParams(CDPModel):
     """Resolve the specified values in the context of the provided element.
     For example, a value of '1em' is evaluated according to the computed
     'font-size' of the element and a value 'calc(1px + 2px)' will be
@@ -99,51 +101,51 @@ class ResolvevaluesParams(CDPModel):
     pseudo_identifier: str | None = None
 
 
-class ResolvevaluesResult(CDPModel):
+class ResolveValuesResult(CDPModel):
     results: list[str]
 
 
-class GetlonghandpropertiesParams(CDPModel):
+class GetLonghandPropertiesParams(CDPModel):
     shorthand_name: str
     value: str
 
 
-class GetlonghandpropertiesResult(CDPModel):
+class GetLonghandPropertiesResult(CDPModel):
     longhand_properties: list[CSSProperty]
 
 
-class GetinlinestylesfornodeParams(CDPModel):
+class GetInlineStylesForNodeParams(CDPModel):
     """Returns the styles defined inline (explicitly in the "style" attribute and implicitly, using DOM
     attributes) for a DOM node identified by `nodeId`."""
 
     node_id: dom.NodeId
 
 
-class GetinlinestylesfornodeResult(CDPModel):
+class GetInlineStylesForNodeResult(CDPModel):
     inline_style: CSSStyle | None = None
     attributes_style: CSSStyle | None = None
 
 
-class GetanimatedstylesfornodeParams(CDPModel):
+class GetAnimatedStylesForNodeParams(CDPModel):
     """Returns the styles coming from animations & transitions
     including the animation & transition styles coming from inheritance chain."""
 
     node_id: dom.NodeId
 
 
-class GetanimatedstylesfornodeResult(CDPModel):
+class GetAnimatedStylesForNodeResult(CDPModel):
     animation_styles: list[CSSAnimationStyle] | None = None
     transitions_style: CSSStyle | None = None
     inherited: list[InheritedAnimatedStyleEntry] | None = None
 
 
-class GetmatchedstylesfornodeParams(CDPModel):
+class GetMatchedStylesForNodeParams(CDPModel):
     """Returns requested styles for a DOM node identified by `nodeId`."""
 
     node_id: dom.NodeId
 
 
-class GetmatchedstylesfornodeResult(CDPModel):
+class GetMatchedStylesForNodeResult(CDPModel):
     inline_style: CSSStyle | None = None
     attributes_style: CSSStyle | None = None
     matched_c_s_s_rules: list[RuleMatch] | None = None
@@ -160,36 +162,36 @@ class GetmatchedstylesfornodeResult(CDPModel):
     css_function_rules: list[CSSFunctionRule] | None = None
 
 
-class GetenvironmentvariablesResult(CDPModel):
+class GetEnvironmentVariablesResult(CDPModel):
     environment_variables: dict[str, Any]
 
 
-class GetmediaqueriesResult(CDPModel):
+class GetMediaQueriesResult(CDPModel):
     medias: list[CSSMedia]
 
 
-class GetplatformfontsfornodeParams(CDPModel):
+class GetPlatformFontsForNodeParams(CDPModel):
     """Requests information about platform fonts which we used to render child TextNodes in the given
     node."""
 
     node_id: dom.NodeId
 
 
-class GetplatformfontsfornodeResult(CDPModel):
+class GetPlatformFontsForNodeResult(CDPModel):
     fonts: list[PlatformFontUsage]
 
 
-class GetstylesheettextParams(CDPModel):
+class GetStyleSheetTextParams(CDPModel):
     """Returns the current textual content for a stylesheet."""
 
     style_sheet_id: dom.StyleSheetId
 
 
-class GetstylesheettextResult(CDPModel):
+class GetStyleSheetTextResult(CDPModel):
     text: str
 
 
-class GetlayersfornodeParams(CDPModel):
+class GetLayersForNodeParams(CDPModel):
     """Returns all layers parsed by the rendering engine for the tree scope of a node.
     Given a DOM element identified by nodeId, getLayersForNode returns the root
     layer for the nearest ancestor document or shadow root. The layer root contains
@@ -198,11 +200,11 @@ class GetlayersfornodeParams(CDPModel):
     node_id: dom.NodeId
 
 
-class GetlayersfornodeResult(CDPModel):
+class GetLayersForNodeResult(CDPModel):
     root_layer: CSSLayerData
 
 
-class GetlocationforselectorParams(CDPModel):
+class GetLocationForSelectorParams(CDPModel):
     """Given a CSS selector text and a style sheet ID, getLocationForSelector
     returns an array of locations of the CSS selector in the style sheet."""
 
@@ -210,11 +212,11 @@ class GetlocationforselectorParams(CDPModel):
     selector_text: str
 
 
-class GetlocationforselectorResult(CDPModel):
+class GetLocationForSelectorResult(CDPModel):
     ranges: list[SourceRange]
 
 
-class TrackcomputedstyleupdatesfornodeParams(CDPModel):
+class TrackComputedStyleUpdatesForNodeParams(CDPModel):
     """Starts tracking the given node for the computed style updates
     and whenever the computed style is updated for node, it queues
     a `computedStyleUpdated` event with throttling.
@@ -225,7 +227,7 @@ class TrackcomputedstyleupdatesfornodeParams(CDPModel):
     node_id: dom.NodeId | None = None
 
 
-class TrackcomputedstyleupdatesParams(CDPModel):
+class TrackComputedStyleUpdatesParams(CDPModel):
     """Starts tracking the given computed styles for updates. The specified array of properties
     replaces the one previously specified. Pass empty array to disable tracking.
     Use takeComputedStyleUpdates to retrieve the list of nodes that had properties modified.
@@ -236,11 +238,11 @@ class TrackcomputedstyleupdatesParams(CDPModel):
     properties_to_track: list[CSSComputedStyleProperty]
 
 
-class TakecomputedstyleupdatesResult(CDPModel):
+class TakeComputedStyleUpdatesResult(CDPModel):
     node_ids: list[DOM.NodeId]
 
 
-class SeteffectivepropertyvaluefornodeParams(CDPModel):
+class SetEffectivePropertyValueForNodeParams(CDPModel):
     """Find a rule with the given active property for the given node and set the new value for this
     property"""
 
@@ -249,7 +251,7 @@ class SeteffectivepropertyvaluefornodeParams(CDPModel):
     value: str
 
 
-class SetpropertyrulepropertynameParams(CDPModel):
+class SetPropertyRulePropertyNameParams(CDPModel):
     """Modifies the property rule property name."""
 
     style_sheet_id: dom.StyleSheetId
@@ -257,11 +259,11 @@ class SetpropertyrulepropertynameParams(CDPModel):
     property_name: str
 
 
-class SetpropertyrulepropertynameResult(CDPModel):
+class SetPropertyRulePropertyNameResult(CDPModel):
     property_name: Value
 
 
-class SetkeyframekeyParams(CDPModel):
+class SetKeyframeKeyParams(CDPModel):
     """Modifies the keyframe rule key text."""
 
     style_sheet_id: dom.StyleSheetId
@@ -269,11 +271,11 @@ class SetkeyframekeyParams(CDPModel):
     key_text: str
 
 
-class SetkeyframekeyResult(CDPModel):
+class SetKeyframeKeyResult(CDPModel):
     key_text: Value
 
 
-class SetmediatextParams(CDPModel):
+class SetMediaTextParams(CDPModel):
     """Modifies the rule selector."""
 
     style_sheet_id: dom.StyleSheetId
@@ -281,11 +283,11 @@ class SetmediatextParams(CDPModel):
     text: str
 
 
-class SetmediatextResult(CDPModel):
+class SetMediaTextResult(CDPModel):
     media: CSSMedia
 
 
-class SetcontainerquerytextParams(CDPModel):
+class SetContainerQueryTextParams(CDPModel):
     """Modifies the expression of a container query."""
 
     style_sheet_id: dom.StyleSheetId
@@ -293,11 +295,11 @@ class SetcontainerquerytextParams(CDPModel):
     text: str
 
 
-class SetcontainerquerytextResult(CDPModel):
+class SetContainerQueryTextResult(CDPModel):
     container_query: CSSContainerQuery
 
 
-class SetsupportstextParams(CDPModel):
+class SetSupportsTextParams(CDPModel):
     """Modifies the expression of a supports at-rule."""
 
     style_sheet_id: dom.StyleSheetId
@@ -305,11 +307,11 @@ class SetsupportstextParams(CDPModel):
     text: str
 
 
-class SetsupportstextResult(CDPModel):
+class SetSupportsTextResult(CDPModel):
     supports: CSSSupports
 
 
-class SetscopetextParams(CDPModel):
+class SetScopeTextParams(CDPModel):
     """Modifies the expression of a scope at-rule."""
 
     style_sheet_id: dom.StyleSheetId
@@ -317,11 +319,11 @@ class SetscopetextParams(CDPModel):
     text: str
 
 
-class SetscopetextResult(CDPModel):
+class SetScopeTextResult(CDPModel):
     scope: CSSScope
 
 
-class SetruleselectorParams(CDPModel):
+class SetRuleSelectorParams(CDPModel):
     """Modifies the rule selector."""
 
     style_sheet_id: dom.StyleSheetId
@@ -329,42 +331,42 @@ class SetruleselectorParams(CDPModel):
     selector: str
 
 
-class SetruleselectorResult(CDPModel):
+class SetRuleSelectorResult(CDPModel):
     selector_list: SelectorList
 
 
-class SetstylesheettextParams(CDPModel):
+class SetStyleSheetTextParams(CDPModel):
     """Sets the new stylesheet text."""
 
     style_sheet_id: dom.StyleSheetId
     text: str
 
 
-class SetstylesheettextResult(CDPModel):
+class SetStyleSheetTextResult(CDPModel):
     source_map_u_r_l: str | None = None
 
 
-class SetstyletextsParams(CDPModel):
+class SetStyleTextsParams(CDPModel):
     """Applies specified style edits one after another in the given order."""
 
     edits: list[StyleDeclarationEdit]
     node_for_property_syntax_validation: dom.NodeId | None = None
 
 
-class SetstyletextsResult(CDPModel):
+class SetStyleTextsResult(CDPModel):
     styles: list[CSSStyle]
 
 
-class StopruleusagetrackingResult(CDPModel):
+class StopRuleUsageTrackingResult(CDPModel):
     rule_usage: list[RuleUsage]
 
 
-class TakecoveragedeltaResult(CDPModel):
+class TakeCoverageDeltaResult(CDPModel):
     coverage: list[RuleUsage]
     timestamp: float
 
 
-class SetlocalfontsenabledParams(CDPModel):
+class SetLocalFontsEnabledParams(CDPModel):
     """Enables/disables rendering of local CSS fonts (enabled by default)."""
 
     enabled: bool

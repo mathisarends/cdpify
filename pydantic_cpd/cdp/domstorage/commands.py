@@ -1,6 +1,7 @@
 """Generated command models from CDP specification"""
 # Domain: DOMStorage Commands
 
+from typing import Any, Literal
 from pydantic_cpd.cdp.base import CDPModel
 
 from .types import *
@@ -10,20 +11,20 @@ class ClearParams(CDPModel):
     storage_id: StorageId
 
 
-class GetdomstorageitemsParams(CDPModel):
+class GetDOMStorageItemsParams(CDPModel):
     storage_id: StorageId
 
 
-class GetdomstorageitemsResult(CDPModel):
+class GetDOMStorageItemsResult(CDPModel):
     entries: list[Item]
 
 
-class RemovedomstorageitemParams(CDPModel):
+class RemoveDOMStorageItemParams(CDPModel):
     storage_id: StorageId
     key: str
 
 
-class SetdomstorageitemParams(CDPModel):
+class SetDOMStorageItemParams(CDPModel):
     storage_id: StorageId
     key: str
     value: str

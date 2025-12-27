@@ -2,7 +2,7 @@
 # Domain: Emulation
 # This domain emulates different environments for the page.
 
-from typing import Literal
+from typing import Any, Literal
 from pydantic_cpd.cdp.base import CDPModel
 
 

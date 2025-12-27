@@ -1,7 +1,7 @@
 """Generated command models from CDP specification"""
 # Domain: Browser Commands
 
-from typing import Literal
+from typing import Any, Literal
 from pydantic_cpd.cdp.base import CDPModel
 
 from .types import *
@@ -9,7 +9,7 @@ from .types import *
 from pydantic_cpd.cdp import target
 
 
-class SetpermissionParams(CDPModel):
+class SetPermissionParams(CDPModel):
     """Set permission settings for given embedding and embedded origins."""
 
     permission: PermissionDescriptor
@@ -19,7 +19,7 @@ class SetpermissionParams(CDPModel):
     browser_context_id: BrowserContextID | None = None
 
 
-class GrantpermissionsParams(CDPModel):
+class GrantPermissionsParams(CDPModel):
     """Grant specific permissions to the given origin and reject all others. Deprecated. Use
     setPermission instead."""
 
@@ -28,13 +28,13 @@ class GrantpermissionsParams(CDPModel):
     browser_context_id: BrowserContextID | None = None
 
 
-class ResetpermissionsParams(CDPModel):
+class ResetPermissionsParams(CDPModel):
     """Reset all permission management for all origins."""
 
     browser_context_id: BrowserContextID | None = None
 
 
-class SetdownloadbehaviorParams(CDPModel):
+class SetDownloadBehaviorParams(CDPModel):
     """Set the behavior when downloading a file."""
 
     behavior: Literal["deny", "allow", "allowAndName", "default"]
@@ -43,14 +43,14 @@ class SetdownloadbehaviorParams(CDPModel):
     events_enabled: bool | None = None
 
 
-class CanceldownloadParams(CDPModel):
+class CancelDownloadParams(CDPModel):
     """Cancel a download if in progress"""
 
     guid: str
     browser_context_id: BrowserContextID | None = None
 
 
-class GetversionResult(CDPModel):
+class GetVersionResult(CDPModel):
     protocol_version: str
     product: str
     revision: str
@@ -58,61 +58,61 @@ class GetversionResult(CDPModel):
     js_version: str
 
 
-class GetbrowsercommandlineResult(CDPModel):
+class GetBrowserCommandLineResult(CDPModel):
     arguments: list[str]
 
 
-class GethistogramsParams(CDPModel):
+class GetHistogramsParams(CDPModel):
     """Get Chrome histograms."""
 
     query: str | None = None
     delta: bool | None = None
 
 
-class GethistogramsResult(CDPModel):
+class GetHistogramsResult(CDPModel):
     histograms: list[Histogram]
 
 
-class GethistogramParams(CDPModel):
+class GetHistogramParams(CDPModel):
     """Get a Chrome histogram by name."""
 
     name: str
     delta: bool | None = None
 
 
-class GethistogramResult(CDPModel):
+class GetHistogramResult(CDPModel):
     histogram: Histogram
 
 
-class GetwindowboundsParams(CDPModel):
+class GetWindowBoundsParams(CDPModel):
     """Get position and size of the browser window."""
 
     window_id: WindowID
 
 
-class GetwindowboundsResult(CDPModel):
+class GetWindowBoundsResult(CDPModel):
     bounds: Bounds
 
 
-class GetwindowfortargetParams(CDPModel):
+class GetWindowForTargetParams(CDPModel):
     """Get the browser window that contains the devtools target."""
 
     target_id: target.TargetID | None = None
 
 
-class GetwindowfortargetResult(CDPModel):
+class GetWindowForTargetResult(CDPModel):
     window_id: WindowID
     bounds: Bounds
 
 
-class SetwindowboundsParams(CDPModel):
+class SetWindowBoundsParams(CDPModel):
     """Set position and/or size of the browser window."""
 
     window_id: WindowID
     bounds: Bounds
 
 
-class SetcontentssizeParams(CDPModel):
+class SetContentsSizeParams(CDPModel):
     """Set size of the browser contents resizing browser window as necessary."""
 
     window_id: WindowID
@@ -120,27 +120,27 @@ class SetcontentssizeParams(CDPModel):
     height: int | None = None
 
 
-class SetdocktileParams(CDPModel):
+class SetDockTileParams(CDPModel):
     """Set dock tile details, platform-specific."""
 
     badge_label: str | None = None
     image: str | None = None
 
 
-class ExecutebrowsercommandParams(CDPModel):
+class ExecuteBrowserCommandParams(CDPModel):
     """Invoke custom browser commands used by telemetry."""
 
     command_id: BrowserCommandId
 
 
-class AddprivacysandboxenrollmentoverrideParams(CDPModel):
+class AddPrivacySandboxEnrollmentOverrideParams(CDPModel):
     """Allows a site to use privacy sandbox features that require enrollment
     without the site actually being enrolled. Only supported on page targets."""
 
     url: str
 
 
-class AddprivacysandboxcoordinatorkeyconfigParams(CDPModel):
+class AddPrivacySandboxCoordinatorKeyConfigParams(CDPModel):
     """Configures encryption keys used with a given privacy sandbox API to talk
     to a trusted coordinator.  Since this is intended for test automation only,
     coordinatorOrigin must be a .test domain. No existing coordinator

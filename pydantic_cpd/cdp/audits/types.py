@@ -2,7 +2,7 @@
 # Domain: Audits
 # Audits domain allows investigation of page violations and possible improvements.
 
-from typing import Literal
+from typing import Any, Literal
 from pydantic_cpd.cdp.base import CDPModel
 
 

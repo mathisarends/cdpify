@@ -1,6 +1,7 @@
 """Generated command models from CDP specification"""
 # Domain: Cast Commands
 
+from typing import Any, Literal
 from pydantic_cpd.cdp.base import CDPModel
 
 from .types import *
@@ -16,26 +17,26 @@ class EnableParams(CDPModel):
     presentation_url: str | None = None
 
 
-class SetsinktouseParams(CDPModel):
+class SetSinkToUseParams(CDPModel):
     """Sets a sink to be used when the web page requests the browser to choose a
     sink via Presentation API, Remote Playback API, or Cast SDK."""
 
     sink_name: str
 
 
-class StartdesktopmirroringParams(CDPModel):
+class StartDesktopMirroringParams(CDPModel):
     """Starts mirroring the desktop to the sink."""
 
     sink_name: str
 
 
-class StarttabmirroringParams(CDPModel):
+class StartTabMirroringParams(CDPModel):
     """Starts mirroring the tab to the sink."""
 
     sink_name: str
 
 
-class StopcastingParams(CDPModel):
+class StopCastingParams(CDPModel):
     """Stops the active Cast session on the sink."""
 
     sink_name: str

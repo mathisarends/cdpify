@@ -8,7 +8,7 @@
 # of stylesheets via the `styleSheetAdded`/`styleSheetRemoved` events and subsequently
 # load the required stylesheet contents using the `getStyleSheet[Text]()` methods.
 
-from typing import Literal
+from typing import Any, Literal
 from pydantic_cpd.cdp.base import CDPModel
 
 # Stylesheet type: "injected" for stylesheets injected via extension, "user-agent" for

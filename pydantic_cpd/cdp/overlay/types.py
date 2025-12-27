@@ -3,7 +3,7 @@
 # This domain provides various functionality related to drawing atop the inspected
 # page.
 
-from typing import Literal
+from typing import Any, Literal
 from pydantic_cpd.cdp.base import CDPModel
 
 

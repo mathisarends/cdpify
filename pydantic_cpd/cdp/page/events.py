@@ -1,7 +1,7 @@
 """Generated event models from CDP specification"""
 # Domain: Page Events
 
-from typing import Literal
+from typing import Any, Literal
 from pydantic_cpd.cdp.base import CDPModel
 
 from .types import *

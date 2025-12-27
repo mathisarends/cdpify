@@ -1,6 +1,7 @@
 """Generated command models from CDP specification"""
 # Domain: IO Commands
 
+from typing import Any, Literal
 from pydantic_cpd.cdp.base import CDPModel
 
 from .types import *
@@ -28,11 +29,11 @@ class ReadResult(CDPModel):
     eof: bool
 
 
-class ResolveblobParams(CDPModel):
+class ResolveBlobParams(CDPModel):
     """Return UUID of Blob object specified by a remote object id."""
 
     object_id: runtime.RemoteObjectId
 
 
-class ResolveblobResult(CDPModel):
+class ResolveBlobResult(CDPModel):
     uuid: str

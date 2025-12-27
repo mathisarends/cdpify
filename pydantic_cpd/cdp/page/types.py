@@ -2,7 +2,7 @@
 # Domain: Page
 # Actions and events related to the inspected page belong to the page domain.
 
-from typing import Literal
+from typing import Any, Literal
 from pydantic_cpd.cdp.base import CDPModel
 
 # Unique frame identifier.

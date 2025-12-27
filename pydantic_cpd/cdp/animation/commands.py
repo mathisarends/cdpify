@@ -1,6 +1,7 @@
 """Generated command models from CDP specification"""
 # Domain: Animation Commands
 
+from typing import Any, Literal
 from pydantic_cpd.cdp.base import CDPModel
 
 from .types import *
@@ -8,57 +9,57 @@ from .types import *
 from pydantic_cpd.cdp import runtime
 
 
-class GetcurrenttimeParams(CDPModel):
+class GetCurrentTimeParams(CDPModel):
     """Returns the current time of the an animation."""
 
     id: str
 
 
-class GetcurrenttimeResult(CDPModel):
+class GetCurrentTimeResult(CDPModel):
     current_time: float
 
 
-class GetplaybackrateResult(CDPModel):
+class GetPlaybackRateResult(CDPModel):
     playback_rate: float
 
 
-class ReleaseanimationsParams(CDPModel):
+class ReleaseAnimationsParams(CDPModel):
     """Releases a set of animations to no longer be manipulated."""
 
     animations: list[str]
 
 
-class ResolveanimationParams(CDPModel):
+class ResolveAnimationParams(CDPModel):
     """Gets the remote object of the Animation."""
 
     animation_id: str
 
 
-class ResolveanimationResult(CDPModel):
+class ResolveAnimationResult(CDPModel):
     remote_object: runtime.RemoteObject
 
 
-class SeekanimationsParams(CDPModel):
+class SeekAnimationsParams(CDPModel):
     """Seek a set of animations to a particular time within each animation."""
 
     animations: list[str]
     current_time: float
 
 
-class SetpausedParams(CDPModel):
+class SetPausedParams(CDPModel):
     """Sets the paused state of a set of animations."""
 
     animations: list[str]
     paused: bool
 
 
-class SetplaybackrateParams(CDPModel):
+class SetPlaybackRateParams(CDPModel):
     """Sets the playback rate of the document timeline."""
 
     playback_rate: float
 
 
-class SettimingParams(CDPModel):
+class SetTimingParams(CDPModel):
     """Sets the timing of an animation node."""
 
     animation_id: str

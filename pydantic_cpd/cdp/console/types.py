@@ -2,7 +2,7 @@
 # Domain: Console
 # This domain is deprecated - use Runtime or Log instead.
 
-from typing import Literal
+from typing import Any, Literal
 from pydantic_cpd.cdp.base import CDPModel
 
 

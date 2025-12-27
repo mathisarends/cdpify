@@ -1,43 +1,46 @@
 """Generated client library from CDP specification"""
 # Domain: Browser Client
 
+from __future__ import annotations
+
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from pydantic_cpd.client import CDPClient
-    from .commands import (
-        AddprivacysandboxcoordinatorkeyconfigParams,
-        AddprivacysandboxenrollmentoverrideParams,
-        CanceldownloadParams,
-        ExecutebrowsercommandParams,
-        GetbrowsercommandlineResult,
-        GethistogramParams,
-        GethistogramResult,
-        GethistogramsParams,
-        GethistogramsResult,
-        GetversionResult,
-        GetwindowboundsParams,
-        GetwindowboundsResult,
-        GetwindowfortargetParams,
-        GetwindowfortargetResult,
-        GrantpermissionsParams,
-        ResetpermissionsParams,
-        SetcontentssizeParams,
-        SetdocktileParams,
-        SetdownloadbehaviorParams,
-        SetpermissionParams,
-        SetwindowboundsParams,
-    )
+
+from .commands import (
+    AddPrivacySandboxCoordinatorKeyConfigParams,
+    AddPrivacySandboxEnrollmentOverrideParams,
+    CancelDownloadParams,
+    ExecuteBrowserCommandParams,
+    GetBrowserCommandLineResult,
+    GetHistogramParams,
+    GetHistogramResult,
+    GetHistogramsParams,
+    GetHistogramsResult,
+    GetVersionResult,
+    GetWindowBoundsParams,
+    GetWindowBoundsResult,
+    GetWindowForTargetParams,
+    GetWindowForTargetResult,
+    GrantPermissionsParams,
+    ResetPermissionsParams,
+    SetContentsSizeParams,
+    SetDockTileParams,
+    SetDownloadBehaviorParams,
+    SetPermissionParams,
+    SetWindowBoundsParams,
+)
 
 
 class BrowserClient:
     """The Browser domain defines methods and events for browser managing."""
 
-    def __init__(self, client: "CDPClient") -> None:
+    def __init__(self, client: CDPClient) -> None:
         self._client = client
 
     async def set_permission(
-        self, params: "SetpermissionParams", session_id: str | None = None
+        self, params: SetPermissionParams, session_id: str | None = None
     ) -> dict[str, Any]:
         """Set permission settings for given embedding and embedded origins."""
         result = await self._client.send_raw(
@@ -48,7 +51,7 @@ class BrowserClient:
         return result
 
     async def grant_permissions(
-        self, params: "GrantpermissionsParams", session_id: str | None = None
+        self, params: GrantPermissionsParams, session_id: str | None = None
     ) -> dict[str, Any]:
         """Grant specific permissions to the given origin and reject all others. Deprecated. Use
         setPermission instead."""
@@ -61,7 +64,7 @@ class BrowserClient:
 
     async def reset_permissions(
         self,
-        params: "ResetpermissionsParams | None" = None,
+        params: ResetPermissionsParams | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
         """Reset all permission management for all origins."""
@@ -73,7 +76,7 @@ class BrowserClient:
         return result
 
     async def set_download_behavior(
-        self, params: "SetdownloadbehaviorParams", session_id: str | None = None
+        self, params: SetDownloadBehaviorParams, session_id: str | None = None
     ) -> dict[str, Any]:
         """Set the behavior when downloading a file."""
         result = await self._client.send_raw(
@@ -84,7 +87,7 @@ class BrowserClient:
         return result
 
     async def cancel_download(
-        self, params: "CanceldownloadParams", session_id: str | None = None
+        self, params: CancelDownloadParams, session_id: str | None = None
     ) -> dict[str, Any]:
         """Cancel a download if in progress"""
         result = await self._client.send_raw(
@@ -94,110 +97,102 @@ class BrowserClient:
         )
         return result
 
-    async def close(
-        self, params: None = None, session_id: str | None = None
-    ) -> dict[str, Any]:
+    async def close(self, session_id: str | None = None) -> dict[str, Any]:
         """Close browser gracefully."""
         result = await self._client.send_raw(
             method="Browser.close",
-            params=params.to_cdp_params() if params else None,
+            params=None,
             session_id=session_id,
         )
         return result
 
-    async def crash(
-        self, params: None = None, session_id: str | None = None
-    ) -> dict[str, Any]:
+    async def crash(self, session_id: str | None = None) -> dict[str, Any]:
         """Crashes browser on the main thread."""
         result = await self._client.send_raw(
             method="Browser.crash",
-            params=params.to_cdp_params() if params else None,
+            params=None,
             session_id=session_id,
         )
         return result
 
-    async def crash_gpu_process(
-        self, params: None = None, session_id: str | None = None
-    ) -> dict[str, Any]:
+    async def crash_gpu_process(self, session_id: str | None = None) -> dict[str, Any]:
         """Crashes GPU process."""
         result = await self._client.send_raw(
             method="Browser.crashGpuProcess",
-            params=params.to_cdp_params() if params else None,
+            params=None,
             session_id=session_id,
         )
         return result
 
-    async def get_version(
-        self, params: None = None, session_id: str | None = None
-    ) -> "GetversionResult":
+    async def get_version(self, session_id: str | None = None) -> GetVersionResult:
         """Returns version information."""
         result = await self._client.send_raw(
             method="Browser.getVersion",
-            params=params.to_cdp_params() if params else None,
+            params=None,
             session_id=session_id,
         )
-        return GetversionResult.model_validate(result)
+        return GetVersionResult.model_validate(result)
 
     async def get_browser_command_line(
-        self, params: None = None, session_id: str | None = None
-    ) -> "GetbrowsercommandlineResult":
+        self, session_id: str | None = None
+    ) -> GetBrowserCommandLineResult:
         """Returns the command line switches for the browser process if, and only if
         --enable-automation is on the commandline."""
         result = await self._client.send_raw(
             method="Browser.getBrowserCommandLine",
-            params=params.to_cdp_params() if params else None,
+            params=None,
             session_id=session_id,
         )
-        return GetbrowsercommandlineResult.model_validate(result)
+        return GetBrowserCommandLineResult.model_validate(result)
 
     async def get_histograms(
-        self, params: "GethistogramsParams | None" = None, session_id: str | None = None
-    ) -> "GethistogramsResult":
+        self, params: GetHistogramsParams | None = None, session_id: str | None = None
+    ) -> GetHistogramsResult:
         """Get Chrome histograms."""
         result = await self._client.send_raw(
             method="Browser.getHistograms",
             params=params.to_cdp_params() if params else None,
             session_id=session_id,
         )
-        return GethistogramsResult.model_validate(result)
+        return GetHistogramsResult.model_validate(result)
 
     async def get_histogram(
-        self, params: "GethistogramParams", session_id: str | None = None
-    ) -> "GethistogramResult":
+        self, params: GetHistogramParams, session_id: str | None = None
+    ) -> GetHistogramResult:
         """Get a Chrome histogram by name."""
         result = await self._client.send_raw(
             method="Browser.getHistogram",
             params=params.to_cdp_params() if params else None,
             session_id=session_id,
         )
-        return GethistogramResult.model_validate(result)
+        return GetHistogramResult.model_validate(result)
 
     async def get_window_bounds(
-        self, params: "GetwindowboundsParams", session_id: str | None = None
-    ) -> "GetwindowboundsResult":
+        self, params: GetWindowBoundsParams, session_id: str | None = None
+    ) -> GetWindowBoundsResult:
         """Get position and size of the browser window."""
         result = await self._client.send_raw(
             method="Browser.getWindowBounds",
             params=params.to_cdp_params() if params else None,
             session_id=session_id,
         )
-        return GetwindowboundsResult.model_validate(result)
+        return GetWindowBoundsResult.model_validate(result)
 
     async def get_window_for_target(
         self,
-        params: "GetwindowfortargetParams | None" = None,
+        params: GetWindowForTargetParams | None = None,
         session_id: str | None = None,
-    ) -> "GetwindowfortargetResult":
+    ) -> GetWindowForTargetResult:
         """Get the browser window that contains the devtools target."""
         result = await self._client.send_raw(
             method="Browser.getWindowForTarget",
             params=params.to_cdp_params() if params else None,
             session_id=session_id,
         )
-        return GetwindowfortargetResult.model_validate(result)
+        return GetWindowForTargetResult.model_validate(result)
 
     async def set_window_bounds(
-        self, params: "SetwindowboundsParams", session_id: str | None = None
+        self, params: SetWindowBoundsParams, session_id: str | None = None
     ) -> dict[str, Any]:
         """Set position and/or size of the browser window."""
         result = await self._client.send_raw(
@@ -208,7 +203,7 @@ class BrowserClient:
         return result
 
     async def set_contents_size(
-        self, params: "SetcontentssizeParams", session_id: str | None = None
+        self, params: SetContentsSizeParams, session_id: str | None = None
     ) -> dict[str, Any]:
         """Set size of the browser contents resizing browser window as necessary."""
         result = await self._client.send_raw(
@@ -219,7 +214,7 @@ class BrowserClient:
         return result
 
     async def set_dock_tile(
-        self, params: "SetdocktileParams | None" = None, session_id: str | None = None
+        self, params: SetDockTileParams | None = None, session_id: str | None = None
     ) -> dict[str, Any]:
         """Set dock tile details, platform-specific."""
         result = await self._client.send_raw(
@@ -230,7 +225,7 @@ class BrowserClient:
         return result
 
     async def execute_browser_command(
-        self, params: "ExecutebrowsercommandParams", session_id: str | None = None
+        self, params: ExecuteBrowserCommandParams, session_id: str | None = None
     ) -> dict[str, Any]:
         """Invoke custom browser commands used by telemetry."""
         result = await self._client.send_raw(
@@ -242,7 +237,7 @@ class BrowserClient:
 
     async def add_privacy_sandbox_enrollment_override(
         self,
-        params: "AddprivacysandboxenrollmentoverrideParams",
+        params: AddPrivacySandboxEnrollmentOverrideParams,
         session_id: str | None = None,
     ) -> dict[str, Any]:
         """Allows a site to use privacy sandbox features that require enrollment
@@ -256,7 +251,7 @@ class BrowserClient:
 
     async def add_privacy_sandbox_coordinator_key_config(
         self,
-        params: "AddprivacysandboxcoordinatorkeyconfigParams",
+        params: AddPrivacySandboxCoordinatorKeyConfigParams,
         session_id: str | None = None,
     ) -> dict[str, Any]:
         """Configures encryption keys used with a given privacy sandbox API to talk

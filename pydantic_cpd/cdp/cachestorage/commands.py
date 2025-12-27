@@ -1,6 +1,7 @@
 """Generated command models from CDP specification"""
 # Domain: CacheStorage Commands
 
+from typing import Any, Literal
 from pydantic_cpd.cdp.base import CDPModel
 
 from .types import *
@@ -8,20 +9,20 @@ from .types import *
 from pydantic_cpd.cdp import storage
 
 
-class DeletecacheParams(CDPModel):
+class DeleteCacheParams(CDPModel):
     """Deletes a cache."""
 
     cache_id: CacheId
 
 
-class DeleteentryParams(CDPModel):
+class DeleteEntryParams(CDPModel):
     """Deletes a cache entry."""
 
     cache_id: CacheId
     request: str
 
 
-class RequestcachenamesParams(CDPModel):
+class RequestCacheNamesParams(CDPModel):
     """Requests cache names."""
 
     security_origin: str | None = None
@@ -29,11 +30,11 @@ class RequestcachenamesParams(CDPModel):
     storage_bucket: storage.StorageBucket | None = None
 
 
-class RequestcachenamesResult(CDPModel):
+class RequestCacheNamesResult(CDPModel):
     caches: list[Cache]
 
 
-class RequestcachedresponseParams(CDPModel):
+class RequestCachedResponseParams(CDPModel):
     """Fetches cache entry."""
 
     cache_id: CacheId
@@ -41,11 +42,11 @@ class RequestcachedresponseParams(CDPModel):
     request_headers: list[Header]
 
 
-class RequestcachedresponseResult(CDPModel):
+class RequestCachedResponseResult(CDPModel):
     response: CachedResponse
 
 
-class RequestentriesParams(CDPModel):
+class RequestEntriesParams(CDPModel):
     """Requests data from cache."""
 
     cache_id: CacheId
@@ -54,6 +55,6 @@ class RequestentriesParams(CDPModel):
     path_filter: str | None = None
 
 
-class RequestentriesResult(CDPModel):
+class RequestEntriesResult(CDPModel):
     cache_data_entries: list[DataEntry]
     return_count: float

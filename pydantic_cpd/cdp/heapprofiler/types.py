@@ -1,6 +1,7 @@
 """Generated from CDP specification"""
 # Domain: HeapProfiler
 
+from typing import Any, Literal
 from pydantic_cpd.cdp.base import CDPModel
 
 # Heap snapshot object id.

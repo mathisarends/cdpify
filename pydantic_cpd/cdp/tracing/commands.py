@@ -1,34 +1,34 @@
 """Generated command models from CDP specification"""
 # Domain: Tracing Commands
 
-from typing import Literal
+from typing import Any, Literal
 from pydantic_cpd.cdp.base import CDPModel
 
 from .types import *
 
 
-class GetcategoriesResult(CDPModel):
+class GetCategoriesResult(CDPModel):
     categories: list[str]
 
 
-class GettrackeventdescriptorResult(CDPModel):
+class GetTrackEventDescriptorResult(CDPModel):
     descriptor: str
 
 
-class RecordclocksyncmarkerParams(CDPModel):
+class RecordClockSyncMarkerParams(CDPModel):
     """Record a clock sync marker in the trace."""
 
     sync_id: str
 
 
-class RequestmemorydumpParams(CDPModel):
+class RequestMemoryDumpParams(CDPModel):
     """Request a global memory dump."""
 
     deterministic: bool | None = None
     level_of_detail: MemoryDumpLevelOfDetail | None = None
 
 
-class RequestmemorydumpResult(CDPModel):
+class RequestMemoryDumpResult(CDPModel):
     dump_guid: str
     success: bool
 

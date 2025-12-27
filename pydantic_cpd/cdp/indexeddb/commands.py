@@ -1,6 +1,7 @@
 """Generated command models from CDP specification"""
 # Domain: IndexedDB Commands
 
+from typing import Any, Literal
 from pydantic_cpd.cdp.base import CDPModel
 
 from .types import *
@@ -8,7 +9,7 @@ from .types import *
 from pydantic_cpd.cdp import storage
 
 
-class ClearobjectstoreParams(CDPModel):
+class ClearObjectStoreParams(CDPModel):
     """Clears all entries from an object store."""
 
     security_origin: str | None = None
@@ -18,7 +19,7 @@ class ClearobjectstoreParams(CDPModel):
     object_store_name: str
 
 
-class DeletedatabaseParams(CDPModel):
+class DeleteDatabaseParams(CDPModel):
     """Deletes a database."""
 
     security_origin: str | None = None
@@ -27,7 +28,7 @@ class DeletedatabaseParams(CDPModel):
     database_name: str
 
 
-class DeleteobjectstoreentriesParams(CDPModel):
+class DeleteObjectStoreEntriesParams(CDPModel):
     """Delete a range of entries from an object store"""
 
     security_origin: str | None = None
@@ -38,7 +39,7 @@ class DeleteobjectstoreentriesParams(CDPModel):
     key_range: KeyRange
 
 
-class RequestdataParams(CDPModel):
+class RequestDataParams(CDPModel):
     """Requests data from object store or index."""
 
     security_origin: str | None = None
@@ -52,12 +53,12 @@ class RequestdataParams(CDPModel):
     key_range: KeyRange | None = None
 
 
-class RequestdataResult(CDPModel):
+class RequestDataResult(CDPModel):
     object_store_data_entries: list[DataEntry]
     has_more: bool
 
 
-class GetmetadataParams(CDPModel):
+class GetMetadataParams(CDPModel):
     """Gets metadata of an object store."""
 
     security_origin: str | None = None
@@ -67,12 +68,12 @@ class GetmetadataParams(CDPModel):
     object_store_name: str
 
 
-class GetmetadataResult(CDPModel):
+class GetMetadataResult(CDPModel):
     entries_count: float
     key_generator_value: float
 
 
-class RequestdatabaseParams(CDPModel):
+class RequestDatabaseParams(CDPModel):
     """Requests database with given name in given frame."""
 
     security_origin: str | None = None
@@ -81,11 +82,11 @@ class RequestdatabaseParams(CDPModel):
     database_name: str
 
 
-class RequestdatabaseResult(CDPModel):
+class RequestDatabaseResult(CDPModel):
     database_with_object_stores: DatabaseWithObjectStores
 
 
-class RequestdatabasenamesParams(CDPModel):
+class RequestDatabaseNamesParams(CDPModel):
     """Requests database names for given security origin."""
 
     security_origin: str | None = None
@@ -93,5 +94,5 @@ class RequestdatabasenamesParams(CDPModel):
     storage_bucket: storage.StorageBucket | None = None
 
 
-class RequestdatabasenamesResult(CDPModel):
+class RequestDatabaseNamesResult(CDPModel):
     database_names: list[str]

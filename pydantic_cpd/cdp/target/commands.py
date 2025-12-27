@@ -1,6 +1,7 @@
 """Generated command models from CDP specification"""
 # Domain: Target Commands
 
+from typing import Any, Literal
 from pydantic_cpd.cdp.base import CDPModel
 
 from .types import *
@@ -8,38 +9,38 @@ from .types import *
 from pydantic_cpd.cdp import browser
 
 
-class ActivatetargetParams(CDPModel):
+class ActivateTargetParams(CDPModel):
     """Activates (focuses) the target."""
 
     target_id: TargetID
 
 
-class AttachtotargetParams(CDPModel):
+class AttachToTargetParams(CDPModel):
     """Attaches to the target with given id."""
 
     target_id: TargetID
     flatten: bool | None = None
 
 
-class AttachtotargetResult(CDPModel):
+class AttachToTargetResult(CDPModel):
     session_id: SessionID
 
 
-class AttachtobrowsertargetResult(CDPModel):
+class AttachToBrowserTargetResult(CDPModel):
     session_id: SessionID
 
 
-class ClosetargetParams(CDPModel):
+class CloseTargetParams(CDPModel):
     """Closes the target. If the target is a page that gets closed too."""
 
     target_id: TargetID
 
 
-class ClosetargetResult(CDPModel):
+class CloseTargetResult(CDPModel):
     success: bool
 
 
-class ExposedevtoolsprotocolParams(CDPModel):
+class ExposeDevToolsProtocolParams(CDPModel):
     """Inject object to the target's main frame that provides a communication
     channel with browser target.
 
@@ -54,7 +55,7 @@ class ExposedevtoolsprotocolParams(CDPModel):
     inherit_permissions: bool | None = None
 
 
-class CreatebrowsercontextParams(CDPModel):
+class CreateBrowserContextParams(CDPModel):
     """Creates a new empty BrowserContext. Similar to an incognito profile but you can have more than
     one."""
 
@@ -64,16 +65,16 @@ class CreatebrowsercontextParams(CDPModel):
     origins_with_universal_network_access: list[str] | None = None
 
 
-class CreatebrowsercontextResult(CDPModel):
+class CreateBrowserContextResult(CDPModel):
     browser_context_id: browser.BrowserContextID
 
 
-class GetbrowsercontextsResult(CDPModel):
+class GetBrowserContextsResult(CDPModel):
     browser_context_ids: list[Browser.BrowserContextID]
     default_browser_context_id: browser.BrowserContextID | None = None
 
 
-class CreatetargetParams(CDPModel):
+class CreateTargetParams(CDPModel):
     """Creates a new page."""
 
     url: str
@@ -90,45 +91,45 @@ class CreatetargetParams(CDPModel):
     hidden: bool | None = None
 
 
-class CreatetargetResult(CDPModel):
+class CreateTargetResult(CDPModel):
     target_id: TargetID
 
 
-class DetachfromtargetParams(CDPModel):
+class DetachFromTargetParams(CDPModel):
     """Detaches session with given id."""
 
     session_id: SessionID | None = None
     target_id: TargetID | None = None
 
 
-class DisposebrowsercontextParams(CDPModel):
+class DisposeBrowserContextParams(CDPModel):
     """Deletes a BrowserContext. All the belonging pages will be closed without calling their
     beforeunload hooks."""
 
     browser_context_id: browser.BrowserContextID
 
 
-class GettargetinfoParams(CDPModel):
+class GetTargetInfoParams(CDPModel):
     """Returns information about a target."""
 
     target_id: TargetID | None = None
 
 
-class GettargetinfoResult(CDPModel):
+class GetTargetInfoResult(CDPModel):
     target_info: TargetInfo
 
 
-class GettargetsParams(CDPModel):
+class GetTargetsParams(CDPModel):
     """Retrieves a list of available targets."""
 
     filter: TargetFilter | None = None
 
 
-class GettargetsResult(CDPModel):
+class GetTargetsResult(CDPModel):
     target_infos: list[TargetInfo]
 
 
-class SendmessagetotargetParams(CDPModel):
+class SendMessageToTargetParams(CDPModel):
     """Sends protocol message over session with given id.
     Consider using flat mode instead; see commands attachToTarget, setAutoAttach,
     and crbug.com/991325."""
@@ -138,7 +139,7 @@ class SendmessagetotargetParams(CDPModel):
     target_id: TargetID | None = None
 
 
-class SetautoattachParams(CDPModel):
+class SetAutoAttachParams(CDPModel):
     """Controls whether to automatically attach to new targets which are considered
     to be directly related to this one (for example, iframes or workers).
     When turned on, attaches to all existing related targets as well. When turned off,
@@ -154,7 +155,7 @@ class SetautoattachParams(CDPModel):
     filter: TargetFilter | None = None
 
 
-class AutoattachrelatedParams(CDPModel):
+class AutoAttachRelatedParams(CDPModel):
     """Adds the specified target to the list of targets that will be monitored for any related target
     creation (such as child frames, child workers and new versions of service worker) and reported
     through `attachedToTarget`. The specified target is also auto-attached.
@@ -166,7 +167,7 @@ class AutoattachrelatedParams(CDPModel):
     filter: TargetFilter | None = None
 
 
-class SetdiscovertargetsParams(CDPModel):
+class SetDiscoverTargetsParams(CDPModel):
     """Controls whether to discover available targets and notify via
     `targetCreated/targetInfoChanged/targetDestroyed` events."""
 
@@ -174,30 +175,30 @@ class SetdiscovertargetsParams(CDPModel):
     filter: TargetFilter | None = None
 
 
-class SetremotelocationsParams(CDPModel):
+class SetRemoteLocationsParams(CDPModel):
     """Enables target discovery for the specified locations, when `setDiscoverTargets` was set to
     `true`."""
 
     locations: list[RemoteLocation]
 
 
-class GetdevtoolstargetParams(CDPModel):
+class GetDevToolsTargetParams(CDPModel):
     """Gets the targetId of the DevTools page target opened for the given target
     (if any)."""
 
     target_id: TargetID
 
 
-class GetdevtoolstargetResult(CDPModel):
+class GetDevToolsTargetResult(CDPModel):
     target_id: TargetID | None = None
 
 
-class OpendevtoolsParams(CDPModel):
+class OpenDevToolsParams(CDPModel):
     """Opens a DevTools window for the target."""
 
     target_id: TargetID
     panel_id: str | None = None
 
 
-class OpendevtoolsResult(CDPModel):
+class OpenDevToolsResult(CDPModel):
     target_id: TargetID

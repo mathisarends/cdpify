@@ -1,26 +1,29 @@
 """Generated client library from CDP specification"""
 # Domain: Schema Client
 
-from typing import TYPE_CHECKING
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from pydantic_cpd.client import CDPClient
-    from .commands import GetdomainsResult
+
+from .commands import (
+    GetDomainsResult,
+)
 
 
 class SchemaClient:
     """This domain is deprecated."""
 
-    def __init__(self, client: "CDPClient") -> None:
+    def __init__(self, client: CDPClient) -> None:
         self._client = client
 
-    async def get_domains(
-        self, params: None = None, session_id: str | None = None
-    ) -> "GetdomainsResult":
+    async def get_domains(self, session_id: str | None = None) -> GetDomainsResult:
         """Returns supported domains."""
         result = await self._client.send_raw(
             method="Schema.getDomains",
-            params=params.to_cdp_params() if params else None,
+            params=None,
             session_id=session_id,
         )
-        return GetdomainsResult.model_validate(result)
+        return GetDomainsResult.model_validate(result)

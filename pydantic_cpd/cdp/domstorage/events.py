@@ -1,6 +1,7 @@
 """Generated event models from CDP specification"""
 # Domain: DOMStorage Events
 
+from typing import Any, Literal
 from pydantic_cpd.cdp.base import CDPModel
 
 from .types import *

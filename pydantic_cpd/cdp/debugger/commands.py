@@ -1,15 +1,23 @@
 """Generated command models from CDP specification"""
 # Domain: Debugger Commands
 
-from typing import Literal
+from typing import Any, Literal
 from pydantic_cpd.cdp.base import CDPModel
 
 from .types import *
 
 from pydantic_cpd.cdp import runtime
+from pydantic_cpd.cdp import runtime
+from pydantic_cpd.cdp import runtime
+from pydantic_cpd.cdp import runtime
+from pydantic_cpd.cdp import runtime
+from pydantic_cpd.cdp import runtime
+from pydantic_cpd.cdp import runtime
+from pydantic_cpd.cdp import runtime
+from pydantic_cpd.cdp import runtime
 
 
-class ContinuetolocationParams(CDPModel):
+class ContinueToLocationParams(CDPModel):
     """Continues execution until specific location is reached."""
 
     location: Location
@@ -27,7 +35,7 @@ class EnableResult(CDPModel):
     debugger_id: runtime.UniqueDebuggerId
 
 
-class EvaluateoncallframeParams(CDPModel):
+class EvaluateOnCallFrameParams(CDPModel):
     """Evaluates expression on a given call frame."""
 
     call_frame_id: CallFrameId
@@ -41,12 +49,12 @@ class EvaluateoncallframeParams(CDPModel):
     timeout: runtime.TimeDelta | None = None
 
 
-class EvaluateoncallframeResult(CDPModel):
+class EvaluateOnCallFrameResult(CDPModel):
     result: runtime.RemoteObject
     exception_details: runtime.ExceptionDetails | None = None
 
 
-class GetpossiblebreakpointsParams(CDPModel):
+class GetPossibleBreakpointsParams(CDPModel):
     """Returns possible locations for breakpoint. scriptId in start and end range locations should be
     the same."""
 
@@ -55,33 +63,33 @@ class GetpossiblebreakpointsParams(CDPModel):
     restrict_to_function: bool | None = None
 
 
-class GetpossiblebreakpointsResult(CDPModel):
+class GetPossibleBreakpointsResult(CDPModel):
     locations: list[BreakLocation]
 
 
-class GetscriptsourceParams(CDPModel):
+class GetScriptSourceParams(CDPModel):
     """Returns source for the script with given id."""
 
     script_id: runtime.ScriptId
 
 
-class GetscriptsourceResult(CDPModel):
+class GetScriptSourceResult(CDPModel):
     script_source: str
     bytecode: str | None = None
 
 
-class DisassemblewasmmoduleParams(CDPModel):
+class DisassembleWasmModuleParams(CDPModel):
     script_id: runtime.ScriptId
 
 
-class DisassemblewasmmoduleResult(CDPModel):
+class DisassembleWasmModuleResult(CDPModel):
     stream_id: str | None = None
     total_number_of_lines: int
     function_body_offsets: list[int]
     chunk: WasmDisassemblyChunk
 
 
-class NextwasmdisassemblychunkParams(CDPModel):
+class NextWasmDisassemblyChunkParams(CDPModel):
     """Disassemble the next chunk of lines for the module corresponding to the
     stream. If disassembly is complete, this API will invalidate the streamId
     and return an empty chunk. Any subsequent calls for the now invalid stream
@@ -90,41 +98,41 @@ class NextwasmdisassemblychunkParams(CDPModel):
     stream_id: str
 
 
-class NextwasmdisassemblychunkResult(CDPModel):
+class NextWasmDisassemblyChunkResult(CDPModel):
     chunk: WasmDisassemblyChunk
 
 
-class GetwasmbytecodeParams(CDPModel):
+class GetWasmBytecodeParams(CDPModel):
     """This command is deprecated. Use getScriptSource instead."""
 
     script_id: runtime.ScriptId
 
 
-class GetwasmbytecodeResult(CDPModel):
+class GetWasmBytecodeResult(CDPModel):
     bytecode: str
 
 
-class GetstacktraceParams(CDPModel):
+class GetStackTraceParams(CDPModel):
     """Returns stack trace with given `stackTraceId`."""
 
     stack_trace_id: runtime.StackTraceId
 
 
-class GetstacktraceResult(CDPModel):
+class GetStackTraceResult(CDPModel):
     stack_trace: runtime.StackTrace
 
 
-class PauseonasynccallParams(CDPModel):
+class PauseOnAsyncCallParams(CDPModel):
     parent_stack_trace_id: runtime.StackTraceId
 
 
-class RemovebreakpointParams(CDPModel):
+class RemoveBreakpointParams(CDPModel):
     """Removes JavaScript breakpoint."""
 
     breakpoint_id: BreakpointId
 
 
-class RestartframeParams(CDPModel):
+class RestartFrameParams(CDPModel):
     """Restarts particular call frame from the beginning. The old, deprecated
     behavior of `restartFrame` is to stay paused and allow further CDP commands
     after a restart was scheduled. This can cause problems with restarting, so
@@ -143,7 +151,7 @@ class RestartframeParams(CDPModel):
     mode: Literal["StepInto"] | None = None
 
 
-class RestartframeResult(CDPModel):
+class RestartFrameResult(CDPModel):
     call_frames: list[CallFrame]
     async_stack_trace: runtime.StackTrace | None = None
     async_stack_trace_id: runtime.StackTraceId | None = None
@@ -155,7 +163,7 @@ class ResumeParams(CDPModel):
     terminate_on_resume: bool | None = None
 
 
-class SearchincontentParams(CDPModel):
+class SearchInContentParams(CDPModel):
     """Searches for given string in script content."""
 
     script_id: runtime.ScriptId
@@ -164,17 +172,17 @@ class SearchincontentParams(CDPModel):
     is_regex: bool | None = None
 
 
-class SearchincontentResult(CDPModel):
+class SearchInContentResult(CDPModel):
     result: list[SearchMatch]
 
 
-class SetasynccallstackdepthParams(CDPModel):
+class SetAsyncCallStackDepthParams(CDPModel):
     """Enables or disables async call stacks tracking."""
 
     max_depth: int
 
 
-class SetblackboxexecutioncontextsParams(CDPModel):
+class SetBlackboxExecutionContextsParams(CDPModel):
     """Replace previous blackbox execution contexts with passed ones. Forces backend to skip
     stepping/pausing in scripts in these execution contexts. VM will try to leave blackboxed script by
     performing 'step in' several times, finally resorting to 'step out' if unsuccessful."""
@@ -182,7 +190,7 @@ class SetblackboxexecutioncontextsParams(CDPModel):
     unique_ids: list[str]
 
 
-class SetblackboxpatternsParams(CDPModel):
+class SetBlackboxPatternsParams(CDPModel):
     """Replace previous blackbox patterns with passed ones. Forces backend to skip stepping/pausing in
     scripts with url matching one of the patterns. VM will try to leave blackboxed script by
     performing 'step in' several times, finally resorting to 'step out' if unsuccessful."""
@@ -191,7 +199,7 @@ class SetblackboxpatternsParams(CDPModel):
     skip_anonymous: bool | None = None
 
 
-class SetblackboxedrangesParams(CDPModel):
+class SetBlackboxedRangesParams(CDPModel):
     """Makes backend skip steps in the script in blackboxed ranges. VM will try leave blacklisted
     scripts by performing 'step in' several times, finally resorting to 'step out' if unsuccessful.
     Positions array contains positions where blackbox state is changed. First interval isn't
@@ -201,19 +209,19 @@ class SetblackboxedrangesParams(CDPModel):
     positions: list[ScriptPosition]
 
 
-class SetbreakpointParams(CDPModel):
+class SetBreakpointParams(CDPModel):
     """Sets JavaScript breakpoint at a given location."""
 
     location: Location
     condition: str | None = None
 
 
-class SetbreakpointResult(CDPModel):
+class SetBreakpointResult(CDPModel):
     breakpoint_id: BreakpointId
     actual_location: Location
 
 
-class SetinstrumentationbreakpointParams(CDPModel):
+class SetInstrumentationBreakpointParams(CDPModel):
     """Sets instrumentation breakpoint."""
 
     instrumentation: Literal[
@@ -221,11 +229,11 @@ class SetinstrumentationbreakpointParams(CDPModel):
     ]
 
 
-class SetinstrumentationbreakpointResult(CDPModel):
+class SetInstrumentationBreakpointResult(CDPModel):
     breakpoint_id: BreakpointId
 
 
-class SetbreakpointbyurlParams(CDPModel):
+class SetBreakpointByUrlParams(CDPModel):
     """Sets JavaScript breakpoint at given location specified either by URL or URL regex. Once this
     command is issued, all existing parsed scripts will have breakpoints resolved and returned in
     `locations` property. Further matching script parsing will result in subsequent
@@ -239,12 +247,12 @@ class SetbreakpointbyurlParams(CDPModel):
     condition: str | None = None
 
 
-class SetbreakpointbyurlResult(CDPModel):
+class SetBreakpointByUrlResult(CDPModel):
     breakpoint_id: BreakpointId
     locations: list[Location]
 
 
-class SetbreakpointonfunctioncallParams(CDPModel):
+class SetBreakpointOnFunctionCallParams(CDPModel):
     """Sets JavaScript breakpoint before each call to the given function.
     If another function was created from the same source as a given one,
     calling it will also trigger the breakpoint."""
@@ -253,30 +261,30 @@ class SetbreakpointonfunctioncallParams(CDPModel):
     condition: str | None = None
 
 
-class SetbreakpointonfunctioncallResult(CDPModel):
+class SetBreakpointOnFunctionCallResult(CDPModel):
     breakpoint_id: BreakpointId
 
 
-class SetbreakpointsactiveParams(CDPModel):
+class SetBreakpointsActiveParams(CDPModel):
     """Activates / deactivates all breakpoints on the page."""
 
     active: bool
 
 
-class SetpauseonexceptionsParams(CDPModel):
+class SetPauseOnExceptionsParams(CDPModel):
     """Defines pause on exceptions state. Can be set to stop on all exceptions, uncaught exceptions,
     or caught exceptions, no exceptions. Initial pause on exceptions state is `none`."""
 
     state: Literal["none", "caught", "uncaught", "all"]
 
 
-class SetreturnvalueParams(CDPModel):
+class SetReturnValueParams(CDPModel):
     """Changes return value in top frame. Available only at return break position."""
 
     new_value: runtime.CallArgument
 
 
-class SetscriptsourceParams(CDPModel):
+class SetScriptSourceParams(CDPModel):
     """Edits JavaScript source live.
 
     In general, functions that are currently on the stack can not be edited with
@@ -291,7 +299,7 @@ class SetscriptsourceParams(CDPModel):
     allow_top_frame_editing: bool | None = None
 
 
-class SetscriptsourceResult(CDPModel):
+class SetScriptSourceResult(CDPModel):
     call_frames: list[CallFrame] | None = None
     stack_changed: bool | None = None
     async_stack_trace: runtime.StackTrace | None = None
@@ -306,13 +314,13 @@ class SetscriptsourceResult(CDPModel):
     exception_details: runtime.ExceptionDetails | None = None
 
 
-class SetskipallpausesParams(CDPModel):
+class SetSkipAllPausesParams(CDPModel):
     """Makes page not interrupt on any pauses (breakpoint, exception, dom exception etc)."""
 
     skip: bool
 
 
-class SetvariablevalueParams(CDPModel):
+class SetVariableValueParams(CDPModel):
     """Changes value of variable in a callframe. Object-based scopes are not supported and must be
     mutated manually."""
 
@@ -322,14 +330,14 @@ class SetvariablevalueParams(CDPModel):
     call_frame_id: CallFrameId
 
 
-class StepintoParams(CDPModel):
+class StepIntoParams(CDPModel):
     """Steps into the function call."""
 
     break_on_async_call: bool | None = None
     skip_list: list[LocationRange] | None = None
 
 
-class StepoverParams(CDPModel):
+class StepOverParams(CDPModel):
     """Steps over the statement."""
 
     skip_list: list[LocationRange] | None = None

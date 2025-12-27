@@ -1,47 +1,48 @@
 """Generated command models from CDP specification"""
 # Domain: Memory Commands
 
+from typing import Any, Literal
 from pydantic_cpd.cdp.base import CDPModel
 
 from .types import *
 
 
-class GetdomcountersResult(CDPModel):
+class GetDOMCountersResult(CDPModel):
     documents: int
     nodes: int
     js_event_listeners: int
 
 
-class GetdomcountersforleakdetectionResult(CDPModel):
+class GetDOMCountersForLeakDetectionResult(CDPModel):
     counters: list[DOMCounter]
 
 
-class SetpressurenotificationssuppressedParams(CDPModel):
+class SetPressureNotificationsSuppressedParams(CDPModel):
     """Enable/disable suppressing memory pressure notifications in all processes."""
 
     suppressed: bool
 
 
-class SimulatepressurenotificationParams(CDPModel):
+class SimulatePressureNotificationParams(CDPModel):
     """Simulate a memory pressure notification in all processes."""
 
     level: PressureLevel
 
 
-class StartsamplingParams(CDPModel):
+class StartSamplingParams(CDPModel):
     """Start collecting native memory profile."""
 
     sampling_interval: int | None = None
     suppress_randomness: bool | None = None
 
 
-class GetalltimesamplingprofileResult(CDPModel):
+class GetAllTimeSamplingProfileResult(CDPModel):
     profile: SamplingProfile
 
 
-class GetbrowsersamplingprofileResult(CDPModel):
+class GetBrowserSamplingProfileResult(CDPModel):
     profile: SamplingProfile
 
 
-class GetsamplingprofileResult(CDPModel):
+class GetSamplingProfileResult(CDPModel):
     profile: SamplingProfile

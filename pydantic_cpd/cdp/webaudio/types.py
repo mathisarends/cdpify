@@ -3,7 +3,7 @@
 # This domain allows inspection of Web Audio API.
 # https://webaudio.github.io/web-audio-api/
 
-from typing import Literal
+from typing import Any, Literal
 from pydantic_cpd.cdp.base import CDPModel
 
 # An unique ID for a graph object (AudioContext, AudioNode, AudioParam) in Web Audio

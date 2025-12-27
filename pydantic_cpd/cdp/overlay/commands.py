@@ -1,17 +1,20 @@
 """Generated command models from CDP specification"""
 # Domain: Overlay Commands
 
-from typing import Any
+from typing import Any, Literal
 from pydantic_cpd.cdp.base import CDPModel
 
 from .types import *
 
 from pydantic_cpd.cdp import dom
+from pydantic_cpd.cdp import dom
+from pydantic_cpd.cdp import dom
+from pydantic_cpd.cdp import dom
 from pydantic_cpd.cdp import page
 from pydantic_cpd.cdp import runtime
 
 
-class GethighlightobjectfortestParams(CDPModel):
+class GetHighlightObjectForTestParams(CDPModel):
     """For testing."""
 
     node_id: dom.NodeId
@@ -21,31 +24,31 @@ class GethighlightobjectfortestParams(CDPModel):
     show_accessibility_info: bool | None = None
 
 
-class GethighlightobjectfortestResult(CDPModel):
+class GetHighlightObjectForTestResult(CDPModel):
     highlight: dict[str, Any]
 
 
-class GetgridhighlightobjectsfortestParams(CDPModel):
+class GetGridHighlightObjectsForTestParams(CDPModel):
     """For Persistent Grid testing."""
 
     node_ids: list[DOM.NodeId]
 
 
-class GetgridhighlightobjectsfortestResult(CDPModel):
+class GetGridHighlightObjectsForTestResult(CDPModel):
     highlights: dict[str, Any]
 
 
-class GetsourceorderhighlightobjectfortestParams(CDPModel):
+class GetSourceOrderHighlightObjectForTestParams(CDPModel):
     """For Source Order Viewer testing."""
 
     node_id: dom.NodeId
 
 
-class GetsourceorderhighlightobjectfortestResult(CDPModel):
+class GetSourceOrderHighlightObjectForTestResult(CDPModel):
     highlight: dict[str, Any]
 
 
-class HighlightframeParams(CDPModel):
+class HighlightFrameParams(CDPModel):
     """Highlights owner element of the frame with given id.
     Deprecated: Doesn't work reliably and cannot be fixed due to process
     separation (the owner node might be in a different process). Determine
@@ -56,7 +59,7 @@ class HighlightframeParams(CDPModel):
     content_outline_color: dom.RGBA | None = None
 
 
-class HighlightnodeParams(CDPModel):
+class HighlightNodeParams(CDPModel):
     """Highlights DOM node with given id or with the given JavaScript object wrapper. Either nodeId or
     objectId must be specified."""
 
@@ -67,7 +70,7 @@ class HighlightnodeParams(CDPModel):
     selector: str | None = None
 
 
-class HighlightquadParams(CDPModel):
+class HighlightQuadParams(CDPModel):
     """Highlights given quad. Coordinates are absolute with respect to the main frame viewport."""
 
     quad: dom.Quad
@@ -75,7 +78,7 @@ class HighlightquadParams(CDPModel):
     outline_color: dom.RGBA | None = None
 
 
-class HighlightrectParams(CDPModel):
+class HighlightRectParams(CDPModel):
     """Highlights given rectangle. Coordinates are absolute with respect to the main frame viewport.
     Issue: the method does not handle device pixel ratio (DPR) correctly.
     The coordinates currently have to be adjusted by the client
@@ -89,7 +92,7 @@ class HighlightrectParams(CDPModel):
     outline_color: dom.RGBA | None = None
 
 
-class HighlightsourceorderParams(CDPModel):
+class HighlightSourceOrderParams(CDPModel):
     """Highlights the source order of the children of the DOM node with given id or with the given
     JavaScript object wrapper. Either nodeId or objectId must be specified."""
 
@@ -99,7 +102,7 @@ class HighlightsourceorderParams(CDPModel):
     object_id: runtime.RemoteObjectId | None = None
 
 
-class SetinspectmodeParams(CDPModel):
+class SetInspectModeParams(CDPModel):
     """Enters the 'inspect' mode. In this mode, elements that user is hovering over are highlighted.
     Backend then generates 'inspectNodeRequested' event upon element selection."""
 
@@ -107,95 +110,95 @@ class SetinspectmodeParams(CDPModel):
     highlight_config: HighlightConfig | None = None
 
 
-class SetshowadhighlightsParams(CDPModel):
+class SetShowAdHighlightsParams(CDPModel):
     """Highlights owner element of all frames detected to be ads."""
 
     show: bool
 
 
-class SetpausedindebuggermessageParams(CDPModel):
+class SetPausedInDebuggerMessageParams(CDPModel):
     message: str | None = None
 
 
-class SetshowdebugbordersParams(CDPModel):
+class SetShowDebugBordersParams(CDPModel):
     """Requests that backend shows debug borders on layers"""
 
     show: bool
 
 
-class SetshowfpscounterParams(CDPModel):
+class SetShowFPSCounterParams(CDPModel):
     """Requests that backend shows the FPS counter"""
 
     show: bool
 
 
-class SetshowgridoverlaysParams(CDPModel):
+class SetShowGridOverlaysParams(CDPModel):
     """Highlight multiple elements with the CSS Grid overlay."""
 
     grid_node_highlight_configs: list[GridNodeHighlightConfig]
 
 
-class SetshowflexoverlaysParams(CDPModel):
+class SetShowFlexOverlaysParams(CDPModel):
     flex_node_highlight_configs: list[FlexNodeHighlightConfig]
 
 
-class SetshowscrollsnapoverlaysParams(CDPModel):
+class SetShowScrollSnapOverlaysParams(CDPModel):
     scroll_snap_highlight_configs: list[ScrollSnapHighlightConfig]
 
 
-class SetshowcontainerqueryoverlaysParams(CDPModel):
+class SetShowContainerQueryOverlaysParams(CDPModel):
     container_query_highlight_configs: list[ContainerQueryHighlightConfig]
 
 
-class SetshowpaintrectsParams(CDPModel):
+class SetShowPaintRectsParams(CDPModel):
     """Requests that backend shows paint rectangles"""
 
     result: bool
 
 
-class SetshowlayoutshiftregionsParams(CDPModel):
+class SetShowLayoutShiftRegionsParams(CDPModel):
     """Requests that backend shows layout shift regions"""
 
     result: bool
 
 
-class SetshowscrollbottleneckrectsParams(CDPModel):
+class SetShowScrollBottleneckRectsParams(CDPModel):
     """Requests that backend shows scroll bottleneck rects"""
 
     show: bool
 
 
-class SetshowhittestbordersParams(CDPModel):
+class SetShowHitTestBordersParams(CDPModel):
     """Deprecated, no longer has any effect."""
 
     show: bool
 
 
-class SetshowwebvitalsParams(CDPModel):
+class SetShowWebVitalsParams(CDPModel):
     """Deprecated, no longer has any effect."""
 
     show: bool
 
 
-class SetshowviewportsizeonresizeParams(CDPModel):
+class SetShowViewportSizeOnResizeParams(CDPModel):
     """Paints viewport size upon main frame resize."""
 
     show: bool
 
 
-class SetshowhingeParams(CDPModel):
+class SetShowHingeParams(CDPModel):
     """Add a dual screen device hinge"""
 
     hinge_config: HingeConfig | None = None
 
 
-class SetshowisolatedelementsParams(CDPModel):
+class SetShowIsolatedElementsParams(CDPModel):
     """Show elements in isolation mode with overlays."""
 
     isolated_element_highlight_configs: list[IsolatedElementHighlightConfig]
 
 
-class SetshowwindowcontrolsoverlayParams(CDPModel):
+class SetShowWindowControlsOverlayParams(CDPModel):
     """Show Window Controls Overlay for PWA"""
 
     window_controls_overlay_config: WindowControlsOverlayConfig | None = None

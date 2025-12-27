@@ -1,6 +1,7 @@
 """Generated command models from CDP specification"""
 # Domain: Fetch Commands
 
+from typing import Any, Literal
 from pydantic_cpd.cdp.base import CDPModel
 
 from .types import *
@@ -17,14 +18,14 @@ class EnableParams(CDPModel):
     handle_auth_requests: bool | None = None
 
 
-class FailrequestParams(CDPModel):
+class FailRequestParams(CDPModel):
     """Causes the request to fail with specified reason."""
 
     request_id: RequestId
     error_reason: network.ErrorReason
 
 
-class FulfillrequestParams(CDPModel):
+class FulfillRequestParams(CDPModel):
     """Provides response to the request."""
 
     request_id: RequestId
@@ -35,7 +36,7 @@ class FulfillrequestParams(CDPModel):
     response_phrase: str | None = None
 
 
-class ContinuerequestParams(CDPModel):
+class ContinueRequestParams(CDPModel):
     """Continues the request, optionally modifying some of its parameters."""
 
     request_id: RequestId
@@ -46,14 +47,14 @@ class ContinuerequestParams(CDPModel):
     intercept_response: bool | None = None
 
 
-class ContinuewithauthParams(CDPModel):
+class ContinueWithAuthParams(CDPModel):
     """Continues a request supplying authChallengeResponse following authRequired event."""
 
     request_id: RequestId
     auth_challenge_response: AuthChallengeResponse
 
 
-class ContinueresponseParams(CDPModel):
+class ContinueResponseParams(CDPModel):
     """Continues loading of the paused response, optionally modifying the
     response headers. If either responseCode or headers are modified, all of them
     must be present."""
@@ -65,7 +66,7 @@ class ContinueresponseParams(CDPModel):
     binary_response_headers: str | None = None
 
 
-class GetresponsebodyParams(CDPModel):
+class GetResponseBodyParams(CDPModel):
     """Causes the body of the response to be received from the server and
     returned as a single string. May only be issued for a request that
     is paused in the Response stage and is mutually exclusive with
@@ -80,12 +81,12 @@ class GetresponsebodyParams(CDPModel):
     request_id: RequestId
 
 
-class GetresponsebodyResult(CDPModel):
+class GetResponseBodyResult(CDPModel):
     body: str
     base64_encoded: bool
 
 
-class TakeresponsebodyasstreamParams(CDPModel):
+class TakeResponseBodyAsStreamParams(CDPModel):
     """Returns a handle to the stream representing the response body.
     The request must be paused in the HeadersReceived stage.
     Note that after this command the request can't be continued
@@ -100,5 +101,5 @@ class TakeresponsebodyasstreamParams(CDPModel):
     request_id: RequestId
 
 
-class TakeresponsebodyasstreamResult(CDPModel):
+class TakeResponseBodyAsStreamResult(CDPModel):
     stream: io.StreamHandle

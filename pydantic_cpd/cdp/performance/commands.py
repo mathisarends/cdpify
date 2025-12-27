@@ -1,7 +1,7 @@
 """Generated command models from CDP specification"""
 # Domain: Performance Commands
 
-from typing import Literal
+from typing import Any, Literal
 from pydantic_cpd.cdp.base import CDPModel
 
 from .types import *
@@ -13,7 +13,7 @@ class EnableParams(CDPModel):
     time_domain: Literal["timeTicks", "threadTicks"] | None = None
 
 
-class SettimedomainParams(CDPModel):
+class SetTimeDomainParams(CDPModel):
     """Sets time domain to use for collecting and reporting duration metrics.
     Note that this must be called before enabling metrics collection. Calling
     this method while metrics collection is enabled returns an error."""
@@ -21,5 +21,5 @@ class SettimedomainParams(CDPModel):
     time_domain: Literal["timeTicks", "threadTicks"]
 
 
-class GetmetricsResult(CDPModel):
+class GetMetricsResult(CDPModel):
     metrics: list[Metric]

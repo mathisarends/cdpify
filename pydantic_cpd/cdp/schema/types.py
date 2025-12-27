@@ -2,6 +2,7 @@
 # Domain: Schema
 # This domain is deprecated.
 
+from typing import Any, Literal
 from pydantic_cpd.cdp.base import CDPModel
 
 

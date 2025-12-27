@@ -3,7 +3,7 @@
 # Debugger domain exposes JavaScript debugging capabilities. It allows setting and
 # removing breakpoints, stepping through execution, exploring stack traces, etc.
 
-from typing import Literal
+from typing import Any, Literal
 from pydantic_cpd.cdp.base import CDPModel
 
 # Breakpoint identifier.

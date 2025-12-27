@@ -1,5 +1,9 @@
 from pydantic_cpd.generator.models import Domain, Command, Parameter
-from pydantic_cpd.generator.type_mapper import map_cdp_type, to_snake_case
+from pydantic_cpd.generator.type_mapper import (
+    map_cdp_type,
+    to_snake_case,
+    to_pascal_case,
+)
 
 
 class CommandsGenerator:
@@ -60,7 +64,7 @@ class CommandsGenerator:
         return "\n\n".join(models)
 
     def _create_params_model(self, command: Command) -> str:
-        class_name = f"{command.name.capitalize()}Params"
+        class_name = f"{to_pascal_case(command.name)}Params"
 
         lines = [f"class {class_name}(CDPModel):"]
 
@@ -73,7 +77,7 @@ class CommandsGenerator:
         return "\n".join(lines)
 
     def _create_returns_model(self, command: Command) -> str:
-        class_name = f"{command.name.capitalize()}Result"
+        class_name = f"{to_pascal_case(command.name)}Result"
 
         lines = [f"class {class_name}(CDPModel):"]
 

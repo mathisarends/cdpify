@@ -2,7 +2,7 @@
 # Domain: Log
 # Provides access to log entries.
 
-from typing import Literal
+from typing import Any, Literal
 from pydantic_cpd.cdp.base import CDPModel
 
 

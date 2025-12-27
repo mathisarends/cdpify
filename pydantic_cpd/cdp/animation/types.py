@@ -1,7 +1,7 @@
 """Generated from CDP specification"""
 # Domain: Animation
 
-from typing import Literal
+from typing import Any, Literal
 from pydantic_cpd.cdp.base import CDPModel
 
 

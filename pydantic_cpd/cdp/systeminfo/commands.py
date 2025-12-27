@@ -1,27 +1,28 @@
 """Generated command models from CDP specification"""
 # Domain: SystemInfo Commands
 
+from typing import Any, Literal
 from pydantic_cpd.cdp.base import CDPModel
 
 from .types import *
 
 
-class GetinfoResult(CDPModel):
+class GetInfoResult(CDPModel):
     gpu: GPUInfo
     model_name: str
     model_version: str
     command_line: str
 
 
-class GetfeaturestateParams(CDPModel):
+class GetFeatureStateParams(CDPModel):
     """Returns information about the feature state."""
 
     feature_state: str
 
 
-class GetfeaturestateResult(CDPModel):
+class GetFeatureStateResult(CDPModel):
     feature_enabled: bool
 
 
-class GetprocessinfoResult(CDPModel):
+class GetProcessInfoResult(CDPModel):
     process_info: list[ProcessInfo]

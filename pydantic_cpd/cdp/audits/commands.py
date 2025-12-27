@@ -1,7 +1,7 @@
 """Generated command models from CDP specification"""
 # Domain: Audits Commands
 
-from typing import Literal
+from typing import Any, Literal
 from pydantic_cpd.cdp.base import CDPModel
 
 from .types import *
@@ -9,7 +9,7 @@ from .types import *
 from pydantic_cpd.cdp import network
 
 
-class GetencodedresponseParams(CDPModel):
+class GetEncodedResponseParams(CDPModel):
     """Returns the response body and size if it were re-encoded with the specified settings. Only
     applies to images."""
 
@@ -19,18 +19,18 @@ class GetencodedresponseParams(CDPModel):
     size_only: bool | None = None
 
 
-class GetencodedresponseResult(CDPModel):
+class GetEncodedResponseResult(CDPModel):
     body: str | None = None
     original_size: int
     encoded_size: int
 
 
-class CheckcontrastParams(CDPModel):
+class CheckContrastParams(CDPModel):
     """Runs the contrast check for the target page. Found issues are reported
     using Audits.issueAdded event."""
 
     report_a_a_a: bool | None = None
 
 
-class CheckformsissuesResult(CDPModel):
+class CheckFormsIssuesResult(CDPModel):
     form_issues: list[GenericIssueDetails]

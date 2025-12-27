@@ -1,6 +1,7 @@
 """Generated from CDP specification"""
 # Domain: Performance
 
+from typing import Any, Literal
 from pydantic_cpd.cdp.base import CDPModel
 
 

@@ -1,6 +1,7 @@
 """Generated command models from CDP specification"""
 # Domain: Tethering Commands
 
+from typing import Any, Literal
 from pydantic_cpd.cdp.base import CDPModel
 
 from .types import *

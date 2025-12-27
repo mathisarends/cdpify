@@ -1,39 +1,42 @@
 """Generated client library from CDP specification"""
 # Domain: Runtime Client
 
+from __future__ import annotations
+
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from pydantic_cpd.client import CDPClient
-    from .commands import (
-        AddbindingParams,
-        AwaitpromiseParams,
-        AwaitpromiseResult,
-        CallfunctiononParams,
-        CallfunctiononResult,
-        CompilescriptParams,
-        CompilescriptResult,
-        EvaluateParams,
-        EvaluateResult,
-        GetexceptiondetailsParams,
-        GetexceptiondetailsResult,
-        GetheapusageResult,
-        GetisolateidResult,
-        GetpropertiesParams,
-        GetpropertiesResult,
-        GloballexicalscopenamesParams,
-        GloballexicalscopenamesResult,
-        QueryobjectsParams,
-        QueryobjectsResult,
-        ReleaseobjectParams,
-        ReleaseobjectgroupParams,
-        RemovebindingParams,
-        RunscriptParams,
-        RunscriptResult,
-        SetasynccallstackdepthParams,
-        SetcustomobjectformatterenabledParams,
-        SetmaxcallstacksizetocaptureParams,
-    )
+
+from .commands import (
+    AddBindingParams,
+    AwaitPromiseParams,
+    AwaitPromiseResult,
+    CallFunctionOnParams,
+    CallFunctionOnResult,
+    CompileScriptParams,
+    CompileScriptResult,
+    EvaluateParams,
+    EvaluateResult,
+    GetExceptionDetailsParams,
+    GetExceptionDetailsResult,
+    GetHeapUsageResult,
+    GetIsolateIdResult,
+    GetPropertiesParams,
+    GetPropertiesResult,
+    GlobalLexicalScopeNamesParams,
+    GlobalLexicalScopeNamesResult,
+    QueryObjectsParams,
+    QueryObjectsResult,
+    ReleaseObjectGroupParams,
+    ReleaseObjectParams,
+    RemoveBindingParams,
+    RunScriptParams,
+    RunScriptResult,
+    SetAsyncCallStackDepthParams,
+    SetCustomObjectFormatterEnabledParams,
+    SetMaxCallStackSizeToCaptureParams,
+)
 
 
 class RuntimeClient:
@@ -43,23 +46,23 @@ class RuntimeClient:
     maintained in memory unless they are either explicitly released or are released along with the
     other objects in their object group."""
 
-    def __init__(self, client: "CDPClient") -> None:
+    def __init__(self, client: CDPClient) -> None:
         self._client = client
 
     async def await_promise(
-        self, params: "AwaitpromiseParams", session_id: str | None = None
-    ) -> "AwaitpromiseResult":
+        self, params: AwaitPromiseParams, session_id: str | None = None
+    ) -> AwaitPromiseResult:
         """Add handler to promise with given promise object id."""
         result = await self._client.send_raw(
             method="Runtime.awaitPromise",
             params=params.to_cdp_params() if params else None,
             session_id=session_id,
         )
-        return AwaitpromiseResult.model_validate(result)
+        return AwaitPromiseResult.model_validate(result)
 
     async def call_function_on(
-        self, params: "CallfunctiononParams", session_id: str | None = None
-    ) -> "CallfunctiononResult":
+        self, params: CallFunctionOnParams, session_id: str | None = None
+    ) -> CallFunctionOnResult:
         """Calls function with given declaration on the given object. Object group of the result is
         inherited from the target object."""
         result = await self._client.send_raw(
@@ -67,57 +70,53 @@ class RuntimeClient:
             params=params.to_cdp_params() if params else None,
             session_id=session_id,
         )
-        return CallfunctiononResult.model_validate(result)
+        return CallFunctionOnResult.model_validate(result)
 
     async def compile_script(
-        self, params: "CompilescriptParams", session_id: str | None = None
-    ) -> "CompilescriptResult":
+        self, params: CompileScriptParams, session_id: str | None = None
+    ) -> CompileScriptResult:
         """Compiles expression."""
         result = await self._client.send_raw(
             method="Runtime.compileScript",
             params=params.to_cdp_params() if params else None,
             session_id=session_id,
         )
-        return CompilescriptResult.model_validate(result)
+        return CompileScriptResult.model_validate(result)
 
-    async def disable(
-        self, params: None = None, session_id: str | None = None
-    ) -> dict[str, Any]:
+    async def disable(self, session_id: str | None = None) -> dict[str, Any]:
         """Disables reporting of execution contexts creation."""
         result = await self._client.send_raw(
             method="Runtime.disable",
-            params=params.to_cdp_params() if params else None,
+            params=None,
             session_id=session_id,
         )
         return result
 
     async def discard_console_entries(
-        self, params: None = None, session_id: str | None = None
+        self, session_id: str | None = None
     ) -> dict[str, Any]:
         """Discards collected exceptions and console API calls."""
         result = await self._client.send_raw(
             method="Runtime.discardConsoleEntries",
-            params=params.to_cdp_params() if params else None,
+            params=None,
             session_id=session_id,
         )
         return result
 
-    async def enable(
-        self, params: None = None, session_id: str | None = None
-    ) -> dict[str, Any]:
+    async def enable(self, session_id: str | None = None) -> dict[str, Any]:
         """Enables reporting of execution contexts creation by means of `executionContextCreated` event.
         When the reporting gets enabled the event will be sent immediately for each existing execution
         context."""
         result = await self._client.send_raw(
             method="Runtime.enable",
-            params=params.to_cdp_params() if params else None,
+            params=None,
             session_id=session_id,
         )
         return result
 
     async def evaluate(
-        self, params: "EvaluateParams", session_id: str | None = None
-    ) -> "EvaluateResult":
+        self, params: EvaluateParams, session_id: str | None = None
+    ) -> EvaluateResult:
         """Evaluates expression on global object."""
         result = await self._client.send_raw(
             method="Runtime.evaluate",
@@ -126,32 +125,28 @@ class RuntimeClient:
         )
         return EvaluateResult.model_validate(result)
 
-    async def get_isolate_id(
-        self, params: None = None, session_id: str | None = None
-    ) -> "GetisolateidResult":
+    async def get_isolate_id(self, session_id: str | None = None) -> GetIsolateIdResult:
         """Returns the isolate id."""
         result = await self._client.send_raw(
             method="Runtime.getIsolateId",
-            params=params.to_cdp_params() if params else None,
+            params=None,
             session_id=session_id,
         )
-        return GetisolateidResult.model_validate(result)
+        return GetIsolateIdResult.model_validate(result)
 
-    async def get_heap_usage(
-        self, params: None = None, session_id: str | None = None
-    ) -> "GetheapusageResult":
+    async def get_heap_usage(self, session_id: str | None = None) -> GetHeapUsageResult:
         """Returns the JavaScript heap usage.
         It is the total usage of the corresponding isolate not scoped to a particular Runtime."""
         result = await self._client.send_raw(
             method="Runtime.getHeapUsage",
-            params=params.to_cdp_params() if params else None,
+            params=None,
             session_id=session_id,
         )
-        return GetheapusageResult.model_validate(result)
+        return GetHeapUsageResult.model_validate(result)
 
     async def get_properties(
-        self, params: "GetpropertiesParams", session_id: str | None = None
-    ) -> "GetpropertiesResult":
+        self, params: GetPropertiesParams, session_id: str | None = None
+    ) -> GetPropertiesResult:
         """Returns properties of a given object. Object group of the result is inherited from the target
         object."""
         result = await self._client.send_raw(
@@ -159,33 +154,33 @@ class RuntimeClient:
             params=params.to_cdp_params() if params else None,
             session_id=session_id,
         )
-        return GetpropertiesResult.model_validate(result)
+        return GetPropertiesResult.model_validate(result)
 
     async def global_lexical_scope_names(
         self,
-        params: "GloballexicalscopenamesParams | None" = None,
+        params: GlobalLexicalScopeNamesParams | None = None,
         session_id: str | None = None,
-    ) -> "GloballexicalscopenamesResult":
+    ) -> GlobalLexicalScopeNamesResult:
         """Returns all let, const and class variables from global scope."""
         result = await self._client.send_raw(
             method="Runtime.globalLexicalScopeNames",
             params=params.to_cdp_params() if params else None,
             session_id=session_id,
         )
-        return GloballexicalscopenamesResult.model_validate(result)
+        return GlobalLexicalScopeNamesResult.model_validate(result)
 
     async def query_objects(
-        self, params: "QueryobjectsParams", session_id: str | None = None
-    ) -> "QueryobjectsResult":
+        self, params: QueryObjectsParams, session_id: str | None = None
+    ) -> QueryObjectsResult:
         result = await self._client.send_raw(
             method="Runtime.queryObjects",
             params=params.to_cdp_params() if params else None,
             session_id=session_id,
         )
-        return QueryobjectsResult.model_validate(result)
+        return QueryObjectsResult.model_validate(result)
 
     async def release_object(
-        self, params: "ReleaseobjectParams", session_id: str | None = None
+        self, params: ReleaseObjectParams, session_id: str | None = None
     ) -> dict[str, Any]:
         """Releases remote object with given id."""
         result = await self._client.send_raw(
@@ -196,7 +191,7 @@ class RuntimeClient:
         return result
 
     async def release_object_group(
-        self, params: "ReleaseobjectgroupParams", session_id: str | None = None
+        self, params: ReleaseObjectGroupParams, session_id: str | None = None
     ) -> dict[str, Any]:
         """Releases all remote objects that belong to a given group."""
         result = await self._client.send_raw(
@@ -207,29 +202,29 @@ class RuntimeClient:
         return result
 
     async def run_if_waiting_for_debugger(
-        self, params: None = None, session_id: str | None = None
+        self, session_id: str | None = None
     ) -> dict[str, Any]:
         """Tells inspected instance to run if it was waiting for debugger to attach."""
         result = await self._client.send_raw(
             method="Runtime.runIfWaitingForDebugger",
-            params=params.to_cdp_params() if params else None,
+            params=None,
             session_id=session_id,
         )
         return result
 
     async def run_script(
-        self, params: "RunscriptParams", session_id: str | None = None
-    ) -> "RunscriptResult":
+        self, params: RunScriptParams, session_id: str | None = None
+    ) -> RunScriptResult:
         """Runs script with given id in a given context."""
         result = await self._client.send_raw(
             method="Runtime.runScript",
             params=params.to_cdp_params() if params else None,
             session_id=session_id,
         )
-        return RunscriptResult.model_validate(result)
+        return RunScriptResult.model_validate(result)
 
     async def set_async_call_stack_depth(
-        self, params: "SetasynccallstackdepthParams", session_id: str | None = None
+        self, params: SetAsyncCallStackDepthParams, session_id: str | None = None
     ) -> dict[str, Any]:
         """Enables or disables async call stacks tracking."""
         result = await self._client.send_raw(
@@ -241,7 +236,7 @@ class RuntimeClient:
 
     async def set_custom_object_formatter_enabled(
         self,
-        params: "SetcustomobjectformatterenabledParams",
+        params: SetCustomObjectFormatterEnabledParams,
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
@@ -252,9 +247,7 @@ class RuntimeClient:
         return result
 
     async def set_max_call_stack_size_to_capture(
-        self,
-        params: "SetmaxcallstacksizetocaptureParams",
-        session_id: str | None = None,
+        self, params: SetMaxCallStackSizeToCaptureParams, session_id: str | None = None
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Runtime.setMaxCallStackSizeToCapture",
@@ -264,19 +257,19 @@ class RuntimeClient:
         return result
 
     async def terminate_execution(
-        self, params: None = None, session_id: str | None = None
+        self, session_id: str | None = None
     ) -> dict[str, Any]:
         """Terminate current or next JavaScript execution.
         Will cancel the termination when the outer-most script execution ends."""
         result = await self._client.send_raw(
             method="Runtime.terminateExecution",
-            params=params.to_cdp_params() if params else None,
+            params=None,
             session_id=session_id,
         )
         return result
 
     async def add_binding(
-        self, params: "AddbindingParams", session_id: str | None = None
+        self, params: AddBindingParams, session_id: str | None = None
     ) -> dict[str, Any]:
         """If executionContextId is empty, adds binding with the given name on the
         global objects of all inspected contexts, including those created later,
@@ -292,7 +285,7 @@ class RuntimeClient:
         return result
 
     async def remove_binding(
-        self, params: "RemovebindingParams", session_id: str | None = None
+        self, params: RemoveBindingParams, session_id: str | None = None
     ) -> dict[str, Any]:
         """This method does not remove binding function from global object but
         unsubscribes current runtime agent from Runtime.bindingCalled notifications."""
@@ -304,8 +297,8 @@ class RuntimeClient:
         return result
 
     async def get_exception_details(
-        self, params: "GetexceptiondetailsParams", session_id: str | None = None
-    ) -> "GetexceptiondetailsResult":
+        self, params: GetExceptionDetailsParams, session_id: str | None = None
+    ) -> GetExceptionDetailsResult:
         """This method tries to lookup and populate exception details for a
         JavaScript Error object.
         Note that the stackTrace portion of the resulting exceptionDetails will
@@ -316,4 +309,4 @@ class RuntimeClient:
             params=params.to_cdp_params() if params else None,
             session_id=session_id,
         )
-        return GetexceptiondetailsResult.model_validate(result)
+        return GetExceptionDetailsResult.model_validate(result)

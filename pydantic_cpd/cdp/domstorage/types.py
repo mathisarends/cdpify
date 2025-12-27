@@ -2,7 +2,7 @@
 # Domain: DOMStorage
 # Query and modify DOM storage.
 
-from typing import Any
+from typing import Any, Literal
 from pydantic_cpd.cdp.base import CDPModel
 
 SerializedStorageKey = str

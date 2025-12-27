@@ -2,7 +2,7 @@
 # Domain: Browser
 # The Browser domain defines methods and events for browser managing.
 
-from typing import Literal
+from typing import Any, Literal
 from pydantic_cpd.cdp.base import CDPModel
 
 BrowserContextID = str

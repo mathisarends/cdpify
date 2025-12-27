@@ -4,7 +4,7 @@
 # JavaScript execution will stop on these operations as if there was a regular
 # breakpoint set.
 
-from typing import Literal
+from typing import Any, Literal
 from pydantic_cpd.cdp.base import CDPModel
 
 # DOM breakpoint type.
