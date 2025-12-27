@@ -16,42 +16,34 @@ Unique snapshot identifier.
 """
 SnapshotId = str
 
-
 class ScrollRect(CDPModel):
     """
     Rectangle where scrolling happens on the main thread.
     """
-
     rect: dom.Rect
     type: Literal["RepaintsOnScroll", "TouchEventHandler", "WheelEventHandler"]
-
 
 class StickyPositionConstraint(CDPModel):
     """
     Sticky position constraints.
     """
-
     sticky_box_rect: dom.Rect
     containing_block_rect: dom.Rect
     nearest_layer_shifting_sticky_box: LayerId | None = None
     nearest_layer_shifting_containing_block: LayerId | None = None
 
-
 class PictureTile(CDPModel):
     """
     Serialized fragment of layer picture along with its offset within the layer.
     """
-
     x: float
     y: float
     picture: str
-
 
 class Layer(CDPModel):
     """
     Information about a compositing layer.
     """
-
     layer_id: LayerId
     parent_layer_id: LayerId | None = None
     backend_node_id: dom.BackendNodeId | None = None
@@ -68,7 +60,6 @@ class Layer(CDPModel):
     invisible: bool | None = None
     scroll_rects: list[ScrollRect] | None = None
     sticky_position_constraint: StickyPositionConstraint | None = None
-
 
 """
 Array of timings, one per paint step.

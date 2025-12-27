@@ -4,34 +4,26 @@ from pydantic_cpd.cdp.base import CDPModel
 
 from .types import *
 
-
 class AnimationCanceledEvent(CDPModel):
     """
     Event for when an animation has been cancelled.
     """
-
     id: str
-
 
 class AnimationCreatedEvent(CDPModel):
     """
     Event for each animation that has been created.
     """
-
     id: str
-
 
 class AnimationStartedEvent(CDPModel):
     """
     Event for animation that has been started.
     """
-
     animation: Animation
-
 
 class AnimationUpdatedEvent(CDPModel):
     """
     Event for animation that has been updated.
     """
-
     animation: Animation

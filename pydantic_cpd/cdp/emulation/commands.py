@@ -9,43 +9,33 @@ from pydantic_cpd.cdp import dom
 from pydantic_cpd.cdp import network
 from pydantic_cpd.cdp import page
 
-
 class CanEmulateResult(CDPModel):
     result: bool
-
 
 class SetFocusEmulationEnabledParams(CDPModel):
     """
     Enables or disables simulating a focused and active page.
     """
-
     enabled: bool
-
 
 class SetAutoDarkModeOverrideParams(CDPModel):
     """
     Automatically render all web contents using a dark theme.
     """
-
     enabled: bool | None = None
-
 
 class SetCPUThrottlingRateParams(CDPModel):
     """
     Enables CPU throttling to emulate slow CPUs.
     """
-
     rate: float
-
 
 class SetDefaultBackgroundColorOverrideParams(CDPModel):
     """
     Sets or clears an override of the default background color of the frame. This
     override is used if the content does not specify one.
     """
-
     color: dom.RGBA | None = None
-
 
 class SetSafeAreaInsetsOverrideParams(CDPModel):
     """
@@ -53,9 +43,7 @@ class SetSafeAreaInsetsOverrideParams(CDPModel):
     Unset values will cause the respective variables to be undefined, even if previously
     overridden.
     """
-
     insets: SafeAreaInsets
-
 
 class SetDeviceMetricsOverrideParams(CDPModel):
     """
@@ -63,7 +51,6 @@ class SetDeviceMetricsOverrideParams(CDPModel):
     window.screen.height, window.innerWidth, window.innerHeight, and
     "device-width"/"device-height"-related CSS media query results).
     """
-
     width: int
     height: int
     device_scale_factor: float
@@ -79,77 +66,54 @@ class SetDeviceMetricsOverrideParams(CDPModel):
     display_feature: DisplayFeature | None = None
     device_posture: DevicePosture | None = None
 
-
 class SetDevicePostureOverrideParams(CDPModel):
     """
     Start reporting the given posture value to the Device Posture API. This override
     can also be set in setDeviceMetricsOverride().
     """
-
     posture: DevicePosture
-
 
 class SetDisplayFeaturesOverrideParams(CDPModel):
     """
     Start using the given display features to pupulate the Viewport Segments API. This
     override can also be set in setDeviceMetricsOverride().
     """
-
     features: list[DisplayFeature]
-
 
 class SetScrollbarsHiddenParams(CDPModel):
     hidden: bool
 
-
 class SetDocumentCookieDisabledParams(CDPModel):
     disabled: bool
-
 
 class SetEmitTouchEventsForMouseParams(CDPModel):
     enabled: bool
     configuration: Literal["mobile", "desktop"] | None = None
 
-
 class SetEmulatedMediaParams(CDPModel):
     """
     Emulates the given media type or media feature for CSS media queries.
     """
-
     media: str | None = None
     features: list[MediaFeature] | None = None
-
 
 class SetEmulatedVisionDeficiencyParams(CDPModel):
     """
     Emulates the given vision deficiency.
     """
-
-    type: Literal[
-        "none",
-        "blurredVision",
-        "reducedContrast",
-        "achromatopsia",
-        "deuteranopia",
-        "protanopia",
-        "tritanopia",
-    ]
-
+    type: Literal["none", "blurredVision", "reducedContrast", "achromatopsia", "deuteranopia", "protanopia", "tritanopia"]
 
 class SetEmulatedOSTextScaleParams(CDPModel):
     """
     Emulates the given OS text scale.
     """
-
     scale: float | None = None
-
 
 class SetGeolocationOverrideParams(CDPModel):
     """
     Overrides the Geolocation Position or Error. Omitting latitude, longitude or
     accuracy emulates position unavailable.
     """
-
     latitude: float | None = None
     longitude: float | None = None
     accuracy: float | None = None
@@ -158,14 +122,11 @@ class SetGeolocationOverrideParams(CDPModel):
     heading: float | None = None
     speed: float | None = None
 
-
 class GetOverriddenSensorInformationParams(CDPModel):
     type: SensorType
 
-
 class GetOverriddenSensorInformationResult(CDPModel):
     requested_sampling_frequency: float
-
 
 class SetSensorOverrideEnabledParams(CDPModel):
     """
@@ -175,21 +136,17 @@ class SetSensorOverrideEnabledParams(CDPModel):
     fire an error event and new calls to Sensor.start() will attempt to use a real
     sensor instead.
     """
-
     enabled: bool
     type: SensorType
     metadata: SensorMetadata | None = None
-
 
 class SetSensorOverrideReadingsParams(CDPModel):
     """
     Updates the sensor readings reported by a sensor type previously overridden by
     setSensorOverrideEnabled.
     """
-
     type: SensorType
     reading: SensorReading
-
 
 class SetPressureSourceOverrideEnabledParams(CDPModel):
     """
@@ -198,11 +155,9 @@ class SetPressureSourceOverrideEnabledParams(CDPModel):
     setPressureStateOverride instead of being retrieved from platform-provided telemetry
     data.
     """
-
     enabled: bool
     source: PressureSource
     metadata: PressureMetadata | None = None
-
 
 class SetPressureStateOverrideParams(CDPModel):
     """
@@ -211,10 +166,8 @@ class SetPressureStateOverrideParams(CDPModel):
     PressureObserver users. |source| must have been previously overridden by
     setPressureSourceOverrideEnabled.
     """
-
     source: PressureSource
     state: PressureState
-
 
 class SetPressureDataOverrideParams(CDPModel):
     """
@@ -222,53 +175,41 @@ class SetPressureDataOverrideParams(CDPModel):
     delivered to PressureObserver users. |source| must have been previously overridden
     by setPressureSourceOverrideEnabled.
     """
-
     source: PressureSource
     state: PressureState
     own_contribution_estimate: float | None = None
-
 
 class SetIdleOverrideParams(CDPModel):
     """
     Overrides the Idle state.
     """
-
     is_user_active: bool
     is_screen_unlocked: bool
-
 
 class SetNavigatorOverridesParams(CDPModel):
     """
     Overrides value returned by the javascript navigator object.
     """
-
     platform: str
-
 
 class SetPageScaleFactorParams(CDPModel):
     """
     Sets a specified page scale factor.
     """
-
     page_scale_factor: float
-
 
 class SetScriptExecutionDisabledParams(CDPModel):
     """
     Switches script execution in the page.
     """
-
     value: bool
-
 
 class SetTouchEmulationEnabledParams(CDPModel):
     """
     Enables touch on platforms which do not support them.
     """
-
     enabled: bool
     max_touch_points: int | None = None
-
 
 class SetVirtualTimePolicyParams(CDPModel):
     """
@@ -276,32 +217,25 @@ class SetVirtualTimePolicyParams(CDPModel):
     source) and sets the current virtual time policy. Note this supersedes any previous
     time budget.
     """
-
     policy: VirtualTimePolicy
     budget: float | None = None
     max_virtual_time_task_starvation_count: int | None = None
     initial_virtual_time: network.TimeSinceEpoch | None = None
 
-
 class SetVirtualTimePolicyResult(CDPModel):
     virtual_time_ticks_base: float
-
 
 class SetLocaleOverrideParams(CDPModel):
     """
     Overrides default host system locale with the specified one.
     """
-
     locale: str | None = None
-
 
 class SetTimezoneOverrideParams(CDPModel):
     """
     Overrides default host system timezone with the specified one.
     """
-
     timezone_id: str
-
 
 class SetVisibleSizeParams(CDPModel):
     """
@@ -309,46 +243,36 @@ class SetVisibleSizeParams(CDPModel):
     container (e.g. browser window). Can be used to produce screenshots of the specified
     size. Not supported on Android.
     """
-
     width: int
     height: int
 
-
 class SetDisabledImageTypesParams(CDPModel):
     image_types: list[DisabledImageType]
-
 
 class SetDataSaverOverrideParams(CDPModel):
     """
     Override the value of navigator.connection.saveData
     """
-
     data_saver_enabled: bool | None = None
-
 
 class SetHardwareConcurrencyOverrideParams(CDPModel):
     hardware_concurrency: int
-
 
 class SetUserAgentOverrideParams(CDPModel):
     """
     Allows overriding user agent with the given string. `userAgentMetadata` must be set
     for Client Hint headers to be sent.
     """
-
     user_agent: str
     accept_language: str | None = None
     platform: str | None = None
     user_agent_metadata: UserAgentMetadata | None = None
 
-
 class SetAutomationOverrideParams(CDPModel):
     """
     Allows overriding the automation flag.
     """
-
     enabled: bool
-
 
 class SetSmallViewportHeightDifferenceOverrideParams(CDPModel):
     """
@@ -356,19 +280,15 @@ class SetSmallViewportHeightDifferenceOverrideParams(CDPModel):
     determine the value of the `svh` and `lvh` unit, respectively. Only supported for
     top-level frames.
     """
-
     difference: int
-
 
 class GetScreenInfosResult(CDPModel):
     screen_infos: list[ScreenInfo]
-
 
 class AddScreenParams(CDPModel):
     """
     Add a new screen to the device. Only supported in headless mode.
     """
-
     left: int
     top: int
     width: int
@@ -380,14 +300,11 @@ class AddScreenParams(CDPModel):
     label: str | None = None
     is_internal: bool | None = None
 
-
 class AddScreenResult(CDPModel):
     screen_info: ScreenInfo
-
 
 class RemoveScreenParams(CDPModel):
     """
     Remove screen from the device. Only supported in headless mode.
     """
-
     screen_id: ScreenId

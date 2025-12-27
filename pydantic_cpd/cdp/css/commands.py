@@ -8,89 +8,70 @@ from .types import *
 from pydantic_cpd.cdp import dom
 from pydantic_cpd.cdp import page
 
-
 class AddRuleParams(CDPModel):
     """
     Inserts a new rule with the given `ruleText` in a stylesheet with given
     `styleSheetId`, at the position specified by `location`.
     """
-
     style_sheet_id: dom.StyleSheetId
     rule_text: str
     location: SourceRange
     node_for_property_syntax_validation: dom.NodeId | None = None
 
-
 class AddRuleResult(CDPModel):
     rule: CSSRule
-
 
 class CollectClassNamesParams(CDPModel):
     """
     Returns all class names from specified stylesheet.
     """
-
     style_sheet_id: dom.StyleSheetId
-
 
 class CollectClassNamesResult(CDPModel):
     class_names: list[str]
-
 
 class CreateStyleSheetParams(CDPModel):
     """
     Creates a new special "via-inspector" stylesheet in the frame with given `frameId`.
     """
-
     frame_id: page.FrameId
     force: bool | None = None
 
-
 class CreateStyleSheetResult(CDPModel):
     style_sheet_id: dom.StyleSheetId
-
 
 class ForcePseudoStateParams(CDPModel):
     """
     Ensures that the given node will have specified pseudo-classes whenever its style
     is computed by the browser.
     """
-
     node_id: dom.NodeId
     forced_pseudo_classes: list[str]
-
 
 class ForceStartingStyleParams(CDPModel):
     """
     Ensures that the given node is in its starting-style state.
     """
-
     node_id: dom.NodeId
     forced: bool
 
-
 class GetBackgroundColorsParams(CDPModel):
     node_id: dom.NodeId
-
 
 class GetBackgroundColorsResult(CDPModel):
     background_colors: list[str] | None = None
     computed_font_size: str | None = None
     computed_font_weight: str | None = None
 
-
 class GetComputedStyleForNodeParams(CDPModel):
     """
     Returns the computed style for a DOM node identified by `nodeId`.
     """
-
     node_id: dom.NodeId
-
 
 class GetComputedStyleForNodeResult(CDPModel):
     computed_style: list[CSSComputedStyleProperty]
     extra_fields: ComputedStyleExtraFields
-
 
 class ResolveValuesParams(CDPModel):
     """
@@ -102,63 +83,50 @@ class ResolveValuesParams(CDPModel):
     parsed using combined syntax as if null `propertyName` was provided. If the value
     cannot be resolved even then, return the provided value without any changes.
     """
-
     values: list[str]
     node_id: dom.NodeId
     property_name: str | None = None
     pseudo_type: dom.PseudoType | None = None
     pseudo_identifier: str | None = None
 
-
 class ResolveValuesResult(CDPModel):
     results: list[str]
-
 
 class GetLonghandPropertiesParams(CDPModel):
     shorthand_name: str
     value: str
 
-
 class GetLonghandPropertiesResult(CDPModel):
     longhand_properties: list[CSSProperty]
-
 
 class GetInlineStylesForNodeParams(CDPModel):
     """
     Returns the styles defined inline (explicitly in the "style" attribute and
     implicitly, using DOM attributes) for a DOM node identified by `nodeId`.
     """
-
     node_id: dom.NodeId
-
 
 class GetInlineStylesForNodeResult(CDPModel):
     inline_style: CSSStyle | None = None
     attributes_style: CSSStyle | None = None
-
 
 class GetAnimatedStylesForNodeParams(CDPModel):
     """
     Returns the styles coming from animations & transitions including the animation &
     transition styles coming from inheritance chain.
     """
-
     node_id: dom.NodeId
-
 
 class GetAnimatedStylesForNodeResult(CDPModel):
     animation_styles: list[CSSAnimationStyle] | None = None
     transitions_style: CSSStyle | None = None
     inherited: list[InheritedAnimatedStyleEntry] | None = None
 
-
 class GetMatchedStylesForNodeParams(CDPModel):
     """
     Returns requested styles for a DOM node identified by `nodeId`.
     """
-
     node_id: dom.NodeId
-
 
 class GetMatchedStylesForNodeResult(CDPModel):
     inline_style: CSSStyle | None = None
@@ -176,39 +144,30 @@ class GetMatchedStylesForNodeResult(CDPModel):
     parent_layout_node_id: dom.NodeId | None = None
     css_function_rules: list[CSSFunctionRule] | None = None
 
-
 class GetEnvironmentVariablesResult(CDPModel):
     environment_variables: dict[str, Any]
 
-
 class GetMediaQueriesResult(CDPModel):
     medias: list[CSSMedia]
-
 
 class GetPlatformFontsForNodeParams(CDPModel):
     """
     Requests information about platform fonts which we used to render child TextNodes
     in the given node.
     """
-
     node_id: dom.NodeId
-
 
 class GetPlatformFontsForNodeResult(CDPModel):
     fonts: list[PlatformFontUsage]
-
 
 class GetStyleSheetTextParams(CDPModel):
     """
     Returns the current textual content for a stylesheet.
     """
-
     style_sheet_id: dom.StyleSheetId
-
 
 class GetStyleSheetTextResult(CDPModel):
     text: str
-
 
 class GetLayersForNodeParams(CDPModel):
     """
@@ -217,27 +176,21 @@ class GetLayersForNodeParams(CDPModel):
     for the nearest ancestor document or shadow root. The layer root contains the full
     layer tree for the tree scope and their ordering.
     """
-
     node_id: dom.NodeId
-
 
 class GetLayersForNodeResult(CDPModel):
     root_layer: CSSLayerData
-
 
 class GetLocationForSelectorParams(CDPModel):
     """
     Given a CSS selector text and a style sheet ID, getLocationForSelector returns an
     array of locations of the CSS selector in the style sheet.
     """
-
     style_sheet_id: dom.StyleSheetId
     selector_text: str
 
-
 class GetLocationForSelectorResult(CDPModel):
     ranges: list[SourceRange]
-
 
 class TrackComputedStyleUpdatesForNodeParams(CDPModel):
     """
@@ -247,9 +200,7 @@ class TrackComputedStyleUpdatesForNodeParams(CDPModel):
     new node id removes tracking from the previous node. Pass `undefined` to disable
     tracking.
     """
-
     node_id: dom.NodeId | None = None
-
 
 class TrackComputedStyleUpdatesParams(CDPModel):
     """
@@ -261,161 +212,126 @@ class TrackComputedStyleUpdatesParams(CDPModel):
     properties occur after the node has been pushed to the front-end, no updates will be
     issued for the node.
     """
-
     properties_to_track: list[CSSComputedStyleProperty]
-
 
 class TakeComputedStyleUpdatesResult(CDPModel):
     node_ids: list[dom.NodeId]
-
 
 class SetEffectivePropertyValueForNodeParams(CDPModel):
     """
     Find a rule with the given active property for the given node and set the new value
     for this property
     """
-
     node_id: dom.NodeId
     property_name: str
     value: str
-
 
 class SetPropertyRulePropertyNameParams(CDPModel):
     """
     Modifies the property rule property name.
     """
-
     style_sheet_id: dom.StyleSheetId
     range: SourceRange
     property_name: str
 
-
 class SetPropertyRulePropertyNameResult(CDPModel):
     property_name: Value
-
 
 class SetKeyframeKeyParams(CDPModel):
     """
     Modifies the keyframe rule key text.
     """
-
     style_sheet_id: dom.StyleSheetId
     range: SourceRange
     key_text: str
 
-
 class SetKeyframeKeyResult(CDPModel):
     key_text: Value
-
 
 class SetMediaTextParams(CDPModel):
     """
     Modifies the rule selector.
     """
-
     style_sheet_id: dom.StyleSheetId
     range: SourceRange
     text: str
 
-
 class SetMediaTextResult(CDPModel):
     media: CSSMedia
-
 
 class SetContainerQueryTextParams(CDPModel):
     """
     Modifies the expression of a container query.
     """
-
     style_sheet_id: dom.StyleSheetId
     range: SourceRange
     text: str
 
-
 class SetContainerQueryTextResult(CDPModel):
     container_query: CSSContainerQuery
-
 
 class SetSupportsTextParams(CDPModel):
     """
     Modifies the expression of a supports at-rule.
     """
-
     style_sheet_id: dom.StyleSheetId
     range: SourceRange
     text: str
 
-
 class SetSupportsTextResult(CDPModel):
     supports: CSSSupports
-
 
 class SetScopeTextParams(CDPModel):
     """
     Modifies the expression of a scope at-rule.
     """
-
     style_sheet_id: dom.StyleSheetId
     range: SourceRange
     text: str
 
-
 class SetScopeTextResult(CDPModel):
     scope: CSSScope
-
 
 class SetRuleSelectorParams(CDPModel):
     """
     Modifies the rule selector.
     """
-
     style_sheet_id: dom.StyleSheetId
     range: SourceRange
     selector: str
 
-
 class SetRuleSelectorResult(CDPModel):
     selector_list: SelectorList
-
 
 class SetStyleSheetTextParams(CDPModel):
     """
     Sets the new stylesheet text.
     """
-
     style_sheet_id: dom.StyleSheetId
     text: str
 
-
 class SetStyleSheetTextResult(CDPModel):
     source_map_u_r_l: str | None = None
-
 
 class SetStyleTextsParams(CDPModel):
     """
     Applies specified style edits one after another in the given order.
     """
-
     edits: list[StyleDeclarationEdit]
     node_for_property_syntax_validation: dom.NodeId | None = None
-
 
 class SetStyleTextsResult(CDPModel):
     styles: list[CSSStyle]
 
-
 class StopRuleUsageTrackingResult(CDPModel):
     rule_usage: list[RuleUsage]
-
 
 class TakeCoverageDeltaResult(CDPModel):
     coverage: list[RuleUsage]
     timestamp: float
 
-
 class SetLocalFontsEnabledParams(CDPModel):
     """
     Enables/disables rendering of local CSS fonts (enabled by default).
     """
-
     enabled: bool

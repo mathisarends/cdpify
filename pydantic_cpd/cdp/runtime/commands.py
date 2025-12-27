@@ -4,28 +4,23 @@ from pydantic_cpd.cdp.base import CDPModel
 
 from .types import *
 
-
 class AwaitPromiseParams(CDPModel):
     """
     Add handler to promise with given promise object id.
     """
-
     promise_object_id: RemoteObjectId
     return_by_value: bool | None = None
     generate_preview: bool | None = None
 
-
 class AwaitPromiseResult(CDPModel):
     result: RemoteObject
     exception_details: ExceptionDetails | None = None
-
 
 class CallFunctionOnParams(CDPModel):
     """
     Calls function with given declaration on the given object. Object group of the
     result is inherited from the target object.
     """
-
     function_declaration: str
     object_id: RemoteObjectId | None = None
     arguments: list[CallArgument] | None = None
@@ -40,33 +35,27 @@ class CallFunctionOnParams(CDPModel):
     unique_context_id: str | None = None
     serialization_options: SerializationOptions | None = None
 
-
 class CallFunctionOnResult(CDPModel):
     result: RemoteObject
     exception_details: ExceptionDetails | None = None
-
 
 class CompileScriptParams(CDPModel):
     """
     Compiles expression.
     """
-
     expression: str
     source_u_r_l: str
     persist_script: bool
     execution_context_id: ExecutionContextId | None = None
 
-
 class CompileScriptResult(CDPModel):
     script_id: ScriptId | None = None
     exception_details: ExceptionDetails | None = None
-
 
 class EvaluateParams(CDPModel):
     """
     Evaluates expression on global object.
     """
-
     expression: str
     object_group: str | None = None
     include_command_line_a_p_i: bool | None = None
@@ -84,15 +73,12 @@ class EvaluateParams(CDPModel):
     unique_context_id: str | None = None
     serialization_options: SerializationOptions | None = None
 
-
 class EvaluateResult(CDPModel):
     result: RemoteObject
     exception_details: ExceptionDetails | None = None
 
-
 class GetIsolateIdResult(CDPModel):
     id: str
-
 
 class GetHeapUsageResult(CDPModel):
     used_size: float
@@ -100,19 +86,16 @@ class GetHeapUsageResult(CDPModel):
     embedder_heap_used_size: float
     backing_storage_size: float
 
-
 class GetPropertiesParams(CDPModel):
     """
     Returns properties of a given object. Object group of the result is inherited from
     the target object.
     """
-
     object_id: RemoteObjectId
     own_properties: bool | None = None
     accessor_properties_only: bool | None = None
     generate_preview: bool | None = None
     non_indexed_properties_only: bool | None = None
-
 
 class GetPropertiesResult(CDPModel):
     result: list[PropertyDescriptor]
@@ -120,49 +103,38 @@ class GetPropertiesResult(CDPModel):
     private_properties: list[PrivatePropertyDescriptor] | None = None
     exception_details: ExceptionDetails | None = None
 
-
 class GlobalLexicalScopeNamesParams(CDPModel):
     """
     Returns all let, const and class variables from global scope.
     """
-
     execution_context_id: ExecutionContextId | None = None
-
 
 class GlobalLexicalScopeNamesResult(CDPModel):
     names: list[str]
-
 
 class QueryObjectsParams(CDPModel):
     prototype_object_id: RemoteObjectId
     object_group: str | None = None
 
-
 class QueryObjectsResult(CDPModel):
     objects: RemoteObject
-
 
 class ReleaseObjectParams(CDPModel):
     """
     Releases remote object with given id.
     """
-
     object_id: RemoteObjectId
-
 
 class ReleaseObjectGroupParams(CDPModel):
     """
     Releases all remote objects that belong to a given group.
     """
-
     object_group: str
-
 
 class RunScriptParams(CDPModel):
     """
     Runs script with given id in a given context.
     """
-
     script_id: ScriptId
     execution_context_id: ExecutionContextId | None = None
     object_group: str | None = None
@@ -172,27 +144,21 @@ class RunScriptParams(CDPModel):
     generate_preview: bool | None = None
     await_promise: bool | None = None
 
-
 class RunScriptResult(CDPModel):
     result: RemoteObject
     exception_details: ExceptionDetails | None = None
-
 
 class SetAsyncCallStackDepthParams(CDPModel):
     """
     Enables or disables async call stacks tracking.
     """
-
     max_depth: int
-
 
 class SetCustomObjectFormatterEnabledParams(CDPModel):
     enabled: bool
 
-
 class SetMaxCallStackSizeToCaptureParams(CDPModel):
     size: int
-
 
 class AddBindingParams(CDPModel):
     """
@@ -202,20 +168,16 @@ class AddBindingParams(CDPModel):
     string, in case of any other input, function throws an exception. Each binding
     function call produces Runtime.bindingCalled notification.
     """
-
     name: str
     execution_context_id: ExecutionContextId | None = None
     execution_context_name: str | None = None
-
 
 class RemoveBindingParams(CDPModel):
     """
     This method does not remove binding function from global object but unsubscribes
     current runtime agent from Runtime.bindingCalled notifications.
     """
-
     name: str
-
 
 class GetExceptionDetailsParams(CDPModel):
     """
@@ -224,9 +186,7 @@ class GetExceptionDetailsParams(CDPModel):
     be populated if the Runtime domain was enabled at the time when the Error was
     thrown.
     """
-
     error_object_id: RemoteObjectId
-
 
 class GetExceptionDetailsResult(CDPModel):
     exception_details: ExceptionDetails | None = None

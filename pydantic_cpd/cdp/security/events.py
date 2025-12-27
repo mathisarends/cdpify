@@ -4,7 +4,6 @@ from pydantic_cpd.cdp.base import CDPModel
 
 from .types import *
 
-
 class CertificateErrorEvent(CDPModel):
     """
     There is a certificate error. If overriding certificate errors is enabled, then it
@@ -12,25 +11,20 @@ class CertificateErrorEvent(CDPModel):
     not fire if the certificate error has been allowed internally. Only one client per
     target should override certificate errors at the same time.
     """
-
     event_id: int
     error_type: str
     request_u_r_l: str
-
 
 class VisibleSecurityStateChangedEvent(CDPModel):
     """
     The security state of the page changed.
     """
-
     visible_security_state: VisibleSecurityState
-
 
 class SecurityStateChangedEvent(CDPModel):
     """
     The security state of the page changed. No longer being sent.
     """
-
     security_state: SecurityState
     scheme_is_cryptographic: bool
     explanations: list[SecurityStateExplanation]

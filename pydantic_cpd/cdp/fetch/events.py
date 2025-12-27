@@ -8,7 +8,6 @@ from .types import *
 if TYPE_CHECKING:
     from pydantic_cpd.cdp import network, page
 
-
 class RequestPausedEvent(CDPModel):
     """
     Issued when the domain is enabled and the request URL matches the specified filter.
@@ -22,7 +21,6 @@ class RequestPausedEvent(CDPModel):
     presence of the `location` header. Requests resulting from a redirect will have
     `redirectedRequestId` field set.
     """
-
     request_id: RequestId
     request: network.Request
     frame_id: page.FrameId
@@ -34,13 +32,11 @@ class RequestPausedEvent(CDPModel):
     network_id: network.RequestId | None = None
     redirected_request_id: RequestId | None = None
 
-
 class AuthRequiredEvent(CDPModel):
     """
     Issued when the domain is enabled with handleAuthRequests set to true. The request
     is paused until client responds with continueWithAuth.
     """
-
     request_id: RequestId
     request: network.Request
     frame_id: page.FrameId

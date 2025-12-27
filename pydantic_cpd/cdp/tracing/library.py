@@ -16,16 +16,13 @@ from .commands import (
     StartParams,
 )
 
-
 class TracingClient:
-    """
-    CDP Tracing domain client.
-    """
-
     def __init__(self, client: CDPClient) -> None:
         self._client = client
 
-    async def end(self, session_id: str | None = None) -> dict[str, Any]:
+    async def end(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Tracing.end",
             params=None,
@@ -64,9 +61,7 @@ class TracingClient:
         return result
 
     async def request_memory_dump(
-        self,
-        params: RequestMemoryDumpParams | None = None,
-        session_id: str | None = None,
+        self, params: RequestMemoryDumpParams | None = None, session_id: str | None = None
     ) -> RequestMemoryDumpResult:
         result = await self._client.send_raw(
             method="Tracing.requestMemoryDump",

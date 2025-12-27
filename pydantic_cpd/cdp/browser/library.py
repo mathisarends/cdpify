@@ -31,12 +31,7 @@ from .commands import (
     SetWindowBoundsParams,
 )
 
-
 class BrowserClient:
-    """
-    The Browser domain defines methods and events for browser managing.
-    """
-
     def __init__(self, client: CDPClient) -> None:
         self._client = client
 
@@ -61,9 +56,7 @@ class BrowserClient:
         return result
 
     async def reset_permissions(
-        self,
-        params: ResetPermissionsParams | None = None,
-        session_id: str | None = None,
+        self, params: ResetPermissionsParams | None = None, session_id: str | None = None
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Browser.resetPermissions",
@@ -92,7 +85,9 @@ class BrowserClient:
         )
         return result
 
-    async def close(self, session_id: str | None = None) -> dict[str, Any]:
+    async def close(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Browser.close",
             params=None,
@@ -100,7 +95,9 @@ class BrowserClient:
         )
         return result
 
-    async def crash(self, session_id: str | None = None) -> dict[str, Any]:
+    async def crash(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Browser.crash",
             params=None,
@@ -108,7 +105,9 @@ class BrowserClient:
         )
         return result
 
-    async def crash_gpu_process(self, session_id: str | None = None) -> dict[str, Any]:
+    async def crash_gpu_process(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Browser.crashGpuProcess",
             params=None,
@@ -116,7 +115,9 @@ class BrowserClient:
         )
         return result
 
-    async def get_version(self, session_id: str | None = None) -> GetVersionResult:
+    async def get_version(
+        self, session_id: str | None = None
+    ) -> GetVersionResult:
         result = await self._client.send_raw(
             method="Browser.getVersion",
             params=None,
@@ -165,9 +166,7 @@ class BrowserClient:
         return GetWindowBoundsResult.model_validate(result)
 
     async def get_window_for_target(
-        self,
-        params: GetWindowForTargetParams | None = None,
-        session_id: str | None = None,
+        self, params: GetWindowForTargetParams | None = None, session_id: str | None = None
     ) -> GetWindowForTargetResult:
         result = await self._client.send_raw(
             method="Browser.getWindowForTarget",
@@ -217,9 +216,7 @@ class BrowserClient:
         return result
 
     async def add_privacy_sandbox_enrollment_override(
-        self,
-        params: AddPrivacySandboxEnrollmentOverrideParams,
-        session_id: str | None = None,
+        self, params: AddPrivacySandboxEnrollmentOverrideParams, session_id: str | None = None
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Browser.addPrivacySandboxEnrollmentOverride",
@@ -229,9 +226,7 @@ class BrowserClient:
         return result
 
     async def add_privacy_sandbox_coordinator_key_config(
-        self,
-        params: AddPrivacySandboxCoordinatorKeyConfigParams,
-        session_id: str | None = None,
+        self, params: AddPrivacySandboxCoordinatorKeyConfigParams, session_id: str | None = None
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Browser.addPrivacySandboxCoordinatorKeyConfig",

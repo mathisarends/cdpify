@@ -3,25 +3,11 @@
 from typing import Literal
 from pydantic_cpd.cdp.base import CDPModel
 
-
 class ConsoleMessage(CDPModel):
     """
     Console message.
     """
-
-    source: Literal[
-        "xml",
-        "javascript",
-        "network",
-        "console-api",
-        "storage",
-        "appcache",
-        "rendering",
-        "security",
-        "other",
-        "deprecation",
-        "worker",
-    ]
+    source: Literal["xml", "javascript", "network", "console-api", "storage", "appcache", "rendering", "security", "other", "deprecation", "worker"]
     level: Literal["log", "warning", "error", "debug", "info"]
     text: str
     url: str | None = None

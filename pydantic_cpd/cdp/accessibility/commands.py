@@ -9,76 +9,60 @@ from pydantic_cpd.cdp import dom
 from pydantic_cpd.cdp import page
 from pydantic_cpd.cdp import runtime
 
-
 class GetPartialAXTreeParams(CDPModel):
     """
     Fetches the accessibility node and partial accessibility tree for this DOM node, if
     it exists.
     """
-
     node_id: dom.NodeId | None = None
     backend_node_id: dom.BackendNodeId | None = None
     object_id: runtime.RemoteObjectId | None = None
     fetch_relatives: bool | None = None
 
-
 class GetPartialAXTreeResult(CDPModel):
     nodes: list[AXNode]
-
 
 class GetFullAXTreeParams(CDPModel):
     """
     Fetches the entire accessibility tree for the root Document
     """
-
     depth: int | None = None
     frame_id: page.FrameId | None = None
 
-
 class GetFullAXTreeResult(CDPModel):
     nodes: list[AXNode]
-
 
 class GetRootAXNodeParams(CDPModel):
     """
     Fetches the root node. Requires `enable()` to have been called previously.
     """
-
     frame_id: page.FrameId | None = None
-
 
 class GetRootAXNodeResult(CDPModel):
     node: AXNode
-
 
 class GetAXNodeAndAncestorsParams(CDPModel):
     """
     Fetches a node and all ancestors up to and including the root. Requires `enable()`
     to have been called previously.
     """
-
     node_id: dom.NodeId | None = None
     backend_node_id: dom.BackendNodeId | None = None
     object_id: runtime.RemoteObjectId | None = None
 
-
 class GetAXNodeAndAncestorsResult(CDPModel):
     nodes: list[AXNode]
-
 
 class GetChildAXNodesParams(CDPModel):
     """
     Fetches a particular accessibility node by AXNodeId. Requires `enable()` to have
     been called previously.
     """
-
     id: AXNodeId
     frame_id: page.FrameId | None = None
 
-
 class GetChildAXNodesResult(CDPModel):
     nodes: list[AXNode]
-
 
 class QueryAXTreeParams(CDPModel):
     """
@@ -89,13 +73,11 @@ class QueryAXTreeParams(CDPModel):
     error. If neither `accessibleName` or `role` is specified, it returns all the
     accessibility nodes in the subtree.
     """
-
     node_id: dom.NodeId | None = None
     backend_node_id: dom.BackendNodeId | None = None
     object_id: runtime.RemoteObjectId | None = None
     accessible_name: str | None = None
     role: str | None = None
-
 
 class QueryAXTreeResult(CDPModel):
     nodes: list[AXNode]

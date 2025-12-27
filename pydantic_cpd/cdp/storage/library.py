@@ -57,12 +57,7 @@ from .commands import (
     UntrackIndexedDBForStorageKeyParams,
 )
 
-
 class StorageClient:
-    """
-    CDP Storage domain client.
-    """
-
     def __init__(self, client: CDPClient) -> None:
         self._client = client
 
@@ -167,9 +162,7 @@ class StorageClient:
         return result
 
     async def track_cache_storage_for_storage_key(
-        self,
-        params: TrackCacheStorageForStorageKeyParams,
-        session_id: str | None = None,
+        self, params: TrackCacheStorageForStorageKeyParams, session_id: str | None = None
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Storage.trackCacheStorageForStorageKey",
@@ -209,9 +202,7 @@ class StorageClient:
         return result
 
     async def untrack_cache_storage_for_storage_key(
-        self,
-        params: UntrackCacheStorageForStorageKeyParams,
-        session_id: str | None = None,
+        self, params: UntrackCacheStorageForStorageKeyParams, session_id: str | None = None
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Storage.untrackCacheStorageForStorageKey",
@@ -281,9 +272,7 @@ class StorageClient:
         return result
 
     async def set_interest_group_auction_tracking(
-        self,
-        params: SetInterestGroupAuctionTrackingParams,
-        session_id: str | None = None,
+        self, params: SetInterestGroupAuctionTrackingParams, session_id: str | None = None
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Storage.setInterestGroupAuctionTracking",
@@ -393,9 +382,7 @@ class StorageClient:
         return RunBounceTrackingMitigationsResult.model_validate(result)
 
     async def set_attribution_reporting_local_testing_mode(
-        self,
-        params: SetAttributionReportingLocalTestingModeParams,
-        session_id: str | None = None,
+        self, params: SetAttributionReportingLocalTestingModeParams, session_id: str | None = None
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Storage.setAttributionReportingLocalTestingMode",
@@ -405,9 +392,7 @@ class StorageClient:
         return result
 
     async def set_attribution_reporting_tracking(
-        self,
-        params: SetAttributionReportingTrackingParams,
-        session_id: str | None = None,
+        self, params: SetAttributionReportingTrackingParams, session_id: str | None = None
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Storage.setAttributionReportingTracking",
@@ -437,9 +422,7 @@ class StorageClient:
         return GetRelatedWebsiteSetsResult.model_validate(result)
 
     async def get_affected_urls_for_third_party_cookie_metadata(
-        self,
-        params: GetAffectedUrlsForThirdPartyCookieMetadataParams,
-        session_id: str | None = None,
+        self, params: GetAffectedUrlsForThirdPartyCookieMetadataParams, session_id: str | None = None
     ) -> GetAffectedUrlsForThirdPartyCookieMetadataResult:
         result = await self._client.send_raw(
             method="Storage.getAffectedUrlsForThirdPartyCookieMetadata",
@@ -449,9 +432,7 @@ class StorageClient:
         return GetAffectedUrlsForThirdPartyCookieMetadataResult.model_validate(result)
 
     async def set_protected_audience_k_anonymity(
-        self,
-        params: SetProtectedAudienceKAnonymityParams,
-        session_id: str | None = None,
+        self, params: SetProtectedAudienceKAnonymityParams, session_id: str | None = None
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Storage.setProtectedAudienceKAnonymity",

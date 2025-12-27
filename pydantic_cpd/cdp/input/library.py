@@ -22,12 +22,7 @@ from .commands import (
     SynthesizeTapGestureParams,
 )
 
-
 class InputClient:
-    """
-    CDP Input domain client.
-    """
-
     def __init__(self, client: CDPClient) -> None:
         self._client = client
 
@@ -91,7 +86,9 @@ class InputClient:
         )
         return result
 
-    async def cancel_dragging(self, session_id: str | None = None) -> dict[str, Any]:
+    async def cancel_dragging(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Input.cancelDragging",
             params=None,

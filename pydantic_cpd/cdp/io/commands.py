@@ -7,38 +7,30 @@ from .types import *
 
 from pydantic_cpd.cdp import runtime
 
-
 class CloseParams(CDPModel):
     """
     Close the stream, discard any temporary backing storage.
     """
-
     handle: StreamHandle
-
 
 class ReadParams(CDPModel):
     """
     Read a chunk of the stream
     """
-
     handle: StreamHandle
     offset: int | None = None
     size: int | None = None
-
 
 class ReadResult(CDPModel):
     base64_encoded: bool | None = None
     data: str
     eof: bool
 
-
 class ResolveBlobParams(CDPModel):
     """
     Return UUID of Blob object specified by a remote object id.
     """
-
     object_id: runtime.RemoteObjectId
-
 
 class ResolveBlobResult(CDPModel):
     uuid: str

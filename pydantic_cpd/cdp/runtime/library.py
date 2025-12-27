@@ -37,17 +37,7 @@ from .commands import (
     SetMaxCallStackSizeToCaptureParams,
 )
 
-
 class RuntimeClient:
-    """
-    Runtime domain exposes JavaScript runtime by means of remote evaluation and mirror
-    objects. Evaluation results are returned as mirror object that expose object type,
-    string representation and unique identifier that can be used for further object
-    reference. Original objects are maintained in memory unless they are either
-    explicitly released or are released along with the other objects in their object
-    group.
-    """
-
     def __init__(self, client: CDPClient) -> None:
         self._client = client
 
@@ -81,7 +71,9 @@ class RuntimeClient:
         )
         return CompileScriptResult.model_validate(result)
 
-    async def disable(self, session_id: str | None = None) -> dict[str, Any]:
+    async def disable(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Runtime.disable",
             params=None,
@@ -99,7 +91,9 @@ class RuntimeClient:
         )
         return result
 
-    async def enable(self, session_id: str | None = None) -> dict[str, Any]:
+    async def enable(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Runtime.enable",
             params=None,
@@ -117,7 +111,9 @@ class RuntimeClient:
         )
         return EvaluateResult.model_validate(result)
 
-    async def get_isolate_id(self, session_id: str | None = None) -> GetIsolateIdResult:
+    async def get_isolate_id(
+        self, session_id: str | None = None
+    ) -> GetIsolateIdResult:
         result = await self._client.send_raw(
             method="Runtime.getIsolateId",
             params=None,
@@ -125,7 +121,9 @@ class RuntimeClient:
         )
         return GetIsolateIdResult.model_validate(result)
 
-    async def get_heap_usage(self, session_id: str | None = None) -> GetHeapUsageResult:
+    async def get_heap_usage(
+        self, session_id: str | None = None
+    ) -> GetHeapUsageResult:
         result = await self._client.send_raw(
             method="Runtime.getHeapUsage",
             params=None,
@@ -144,9 +142,7 @@ class RuntimeClient:
         return GetPropertiesResult.model_validate(result)
 
     async def global_lexical_scope_names(
-        self,
-        params: GlobalLexicalScopeNamesParams | None = None,
-        session_id: str | None = None,
+        self, params: GlobalLexicalScopeNamesParams | None = None, session_id: str | None = None
     ) -> GlobalLexicalScopeNamesResult:
         result = await self._client.send_raw(
             method="Runtime.globalLexicalScopeNames",
@@ -216,9 +212,7 @@ class RuntimeClient:
         return result
 
     async def set_custom_object_formatter_enabled(
-        self,
-        params: SetCustomObjectFormatterEnabledParams,
-        session_id: str | None = None,
+        self, params: SetCustomObjectFormatterEnabledParams, session_id: str | None = None
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Runtime.setCustomObjectFormatterEnabled",

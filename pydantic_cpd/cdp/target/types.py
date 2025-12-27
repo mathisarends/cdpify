@@ -13,7 +13,6 @@ Unique identifier of attached debugging session.
 """
 SessionID = str
 
-
 class TargetInfo(CDPModel):
     target_id: TargetID
     type: str
@@ -27,15 +26,12 @@ class TargetInfo(CDPModel):
     browser_context_id: browser.BrowserContextID | None = None
     subtype: str | None = None
 
-
 class FilterEntry(CDPModel):
     """
     A filter used by target query/discovery/auto-attach operations.
     """
-
     exclude: bool | None = None
     type: str | None = None
-
 
 """
 The entries in TargetFilter are matched sequentially against targets and the first
@@ -46,11 +42,9 @@ but `browser` and `tab`).
 """
 TargetFilter = list[Any]
 
-
 class RemoteLocation(CDPModel):
     host: str
     port: int
-
 
 """
 The state of the target window.

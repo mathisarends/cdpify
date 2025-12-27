@@ -12,12 +12,7 @@ from .commands import (
     UnbindParams,
 )
 
-
 class TetheringClient:
-    """
-    The Tethering domain defines methods and events for browser port binding.
-    """
-
     def __init__(self, client: CDPClient) -> None:
         self._client = client
 

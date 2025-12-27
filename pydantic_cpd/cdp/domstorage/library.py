@@ -15,12 +15,7 @@ from .commands import (
     SetDOMStorageItemParams,
 )
 
-
 class DOMStorageClient:
-    """
-    Query and modify DOM storage.
-    """
-
     def __init__(self, client: CDPClient) -> None:
         self._client = client
 
@@ -34,7 +29,9 @@ class DOMStorageClient:
         )
         return result
 
-    async def disable(self, session_id: str | None = None) -> dict[str, Any]:
+    async def disable(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="DOMStorage.disable",
             params=None,
@@ -42,7 +39,9 @@ class DOMStorageClient:
         )
         return result
 
-    async def enable(self, session_id: str | None = None) -> dict[str, Any]:
+    async def enable(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="DOMStorage.enable",
             params=None,

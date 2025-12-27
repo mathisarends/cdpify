@@ -12,17 +12,13 @@ from .commands import (
     GetRealtimeDataResult,
 )
 
-
 class WebAudioClient:
-    """
-    This domain allows inspection of Web Audio API.
-    https://webaudio.github.io/web-audio-api/
-    """
-
     def __init__(self, client: CDPClient) -> None:
         self._client = client
 
-    async def enable(self, session_id: str | None = None) -> dict[str, Any]:
+    async def enable(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="WebAudio.enable",
             params=None,
@@ -30,7 +26,9 @@ class WebAudioClient:
         )
         return result
 
-    async def disable(self, session_id: str | None = None) -> dict[str, Any]:
+    async def disable(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="WebAudio.disable",
             params=None,

@@ -23,12 +23,7 @@ from .commands import (
     SnapshotCommandLogResult,
 )
 
-
 class LayerTreeClient:
-    """
-    CDP LayerTree domain client.
-    """
-
     def __init__(self, client: CDPClient) -> None:
         self._client = client
 
@@ -42,7 +37,9 @@ class LayerTreeClient:
         )
         return CompositingReasonsResult.model_validate(result)
 
-    async def disable(self, session_id: str | None = None) -> dict[str, Any]:
+    async def disable(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="LayerTree.disable",
             params=None,
@@ -50,7 +47,9 @@ class LayerTreeClient:
         )
         return result
 
-    async def enable(self, session_id: str | None = None) -> dict[str, Any]:
+    async def enable(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="LayerTree.enable",
             params=None,

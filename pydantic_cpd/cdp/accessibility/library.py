@@ -22,16 +22,13 @@ from .commands import (
     QueryAXTreeResult,
 )
 
-
 class AccessibilityClient:
-    """
-    CDP Accessibility domain client.
-    """
-
     def __init__(self, client: CDPClient) -> None:
         self._client = client
 
-    async def disable(self, session_id: str | None = None) -> dict[str, Any]:
+    async def disable(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Accessibility.disable",
             params=None,
@@ -39,7 +36,9 @@ class AccessibilityClient:
         )
         return result
 
-    async def enable(self, session_id: str | None = None) -> dict[str, Any]:
+    async def enable(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Accessibility.enable",
             params=None,
@@ -48,9 +47,7 @@ class AccessibilityClient:
         return result
 
     async def get_partial_a_x_tree(
-        self,
-        params: GetPartialAXTreeParams | None = None,
-        session_id: str | None = None,
+        self, params: GetPartialAXTreeParams | None = None, session_id: str | None = None
     ) -> GetPartialAXTreeResult:
         result = await self._client.send_raw(
             method="Accessibility.getPartialAXTree",
@@ -80,9 +77,7 @@ class AccessibilityClient:
         return GetRootAXNodeResult.model_validate(result)
 
     async def get_a_x_node_and_ancestors(
-        self,
-        params: GetAXNodeAndAncestorsParams | None = None,
-        session_id: str | None = None,
+        self, params: GetAXNodeAndAncestorsParams | None = None, session_id: str | None = None
     ) -> GetAXNodeAndAncestorsResult:
         result = await self._client.send_raw(
             method="Accessibility.getAXNodeAndAncestors",

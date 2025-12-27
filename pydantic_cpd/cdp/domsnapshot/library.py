@@ -14,17 +14,13 @@ from .commands import (
     GetSnapshotResult,
 )
 
-
 class DOMSnapshotClient:
-    """
-    This domain facilitates obtaining document snapshots with DOM, layout, and style
-    information.
-    """
-
     def __init__(self, client: CDPClient) -> None:
         self._client = client
 
-    async def disable(self, session_id: str | None = None) -> dict[str, Any]:
+    async def disable(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="DOMSnapshot.disable",
             params=None,
@@ -32,7 +28,9 @@ class DOMSnapshotClient:
         )
         return result
 
-    async def enable(self, session_id: str | None = None) -> dict[str, Any]:
+    async def enable(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="DOMSnapshot.enable",
             params=None,

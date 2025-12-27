@@ -1,8 +1,6 @@
 from pydantic_cpd.generator.models import Command, Domain
 from pydantic_cpd.generator.type_mapper import to_pascal_case, to_snake_case
 
-from .utils import format_docstring
-
 
 class LibraryGenerator:
     def generate(self, domain: Domain) -> str:
@@ -54,13 +52,6 @@ class LibraryGenerator:
         class_name = f"{domain.domain}Client"
 
         lines = [f"class {class_name}:"]
-
-        if domain.description:
-            lines.append(format_docstring(domain.description, indent=4))
-        else:
-            lines.append(
-                format_docstring(f"CDP {domain.domain} domain client.", indent=4)
-            )
 
         lines.append("    def __init__(self, client: CDPClient) -> None:")
         lines.append("        self._client = client")

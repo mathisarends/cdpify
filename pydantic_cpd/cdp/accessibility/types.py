@@ -14,56 +14,23 @@ AXNodeId = str
 """
 Enum of possible property types.
 """
-AXValueType = Literal[
-    "boolean",
-    "tristate",
-    "booleanOrUndefined",
-    "idref",
-    "idrefList",
-    "integer",
-    "node",
-    "nodeList",
-    "number",
-    "string",
-    "computedString",
-    "token",
-    "tokenList",
-    "domRelation",
-    "role",
-    "internalRole",
-    "valueUndefined",
-]
+AXValueType = Literal["boolean", "tristate", "booleanOrUndefined", "idref", "idrefList", "integer", "node", "nodeList", "number", "string", "computedString", "token", "tokenList", "domRelation", "role", "internalRole", "valueUndefined"]
 
 """
 Enum of possible property sources.
 """
-AXValueSourceType = Literal[
-    "attribute", "implicit", "style", "contents", "placeholder", "relatedElement"
-]
+AXValueSourceType = Literal["attribute", "implicit", "style", "contents", "placeholder", "relatedElement"]
 
 """
 Enum of possible native property sources (as a subtype of a particular
 AXValueSourceType).
 """
-AXValueNativeSourceType = Literal[
-    "description",
-    "figcaption",
-    "label",
-    "labelfor",
-    "labelwrapped",
-    "legend",
-    "rubyannotation",
-    "tablecaption",
-    "title",
-    "other",
-]
-
+AXValueNativeSourceType = Literal["description", "figcaption", "label", "labelfor", "labelwrapped", "legend", "rubyannotation", "tablecaption", "title", "other"]
 
 class AXValueSource(CDPModel):
     """
     A single source for a computed AX property.
     """
-
     type: AXValueSourceType
     value: AXValue | None = None
     attribute: str | None = None
@@ -74,28 +41,23 @@ class AXValueSource(CDPModel):
     invalid: bool | None = None
     invalid_reason: str | None = None
 
-
 class AXRelatedNode(CDPModel):
     backend_d_o_m_node_id: dom.BackendNodeId
     idref: str | None = None
     text: str | None = None
 
-
 class AXProperty(CDPModel):
     name: AXPropertyName
     value: AXValue
-
 
 class AXValue(CDPModel):
     """
     A single computed AX property.
     """
-
     type: AXValueType
     value: Any | None = None
     related_nodes: list[AXRelatedNode] | None = None
     sources: list[AXValueSource] | None = None
-
 
 """
 Values of AXProperty name: - from 'busy' to 'roledescription': states which apply to
@@ -105,73 +67,12 @@ to 'selected': states which apply to widgets - from 'activedescendant' to 'owns'
 relationships between elements other than parent/child/sibling - from
 'activeFullscreenElement' to 'uninteresting': reasons why this noode is hidden
 """
-AXPropertyName = Literal[
-    "actions",
-    "busy",
-    "disabled",
-    "editable",
-    "focusable",
-    "focused",
-    "hidden",
-    "hiddenRoot",
-    "invalid",
-    "keyshortcuts",
-    "settable",
-    "roledescription",
-    "live",
-    "atomic",
-    "relevant",
-    "root",
-    "autocomplete",
-    "hasPopup",
-    "level",
-    "multiselectable",
-    "orientation",
-    "multiline",
-    "readonly",
-    "required",
-    "valuemin",
-    "valuemax",
-    "valuetext",
-    "checked",
-    "expanded",
-    "modal",
-    "pressed",
-    "selected",
-    "activedescendant",
-    "controls",
-    "describedby",
-    "details",
-    "errormessage",
-    "flowto",
-    "labelledby",
-    "owns",
-    "url",
-    "activeFullscreenElement",
-    "activeModalDialog",
-    "activeAriaModalDialog",
-    "ariaHiddenElement",
-    "ariaHiddenSubtree",
-    "emptyAlt",
-    "emptyText",
-    "inertElement",
-    "inertSubtree",
-    "labelContainer",
-    "labelFor",
-    "notRendered",
-    "notVisible",
-    "presentationalRole",
-    "probablyPresentational",
-    "inactiveCarouselTabContent",
-    "uninteresting",
-]
-
+AXPropertyName = Literal["actions", "busy", "disabled", "editable", "focusable", "focused", "hidden", "hiddenRoot", "invalid", "keyshortcuts", "settable", "roledescription", "live", "atomic", "relevant", "root", "autocomplete", "hasPopup", "level", "multiselectable", "orientation", "multiline", "readonly", "required", "valuemin", "valuemax", "valuetext", "checked", "expanded", "modal", "pressed", "selected", "activedescendant", "controls", "describedby", "details", "errormessage", "flowto", "labelledby", "owns", "url", "activeFullscreenElement", "activeModalDialog", "activeAriaModalDialog", "ariaHiddenElement", "ariaHiddenSubtree", "emptyAlt", "emptyText", "inertElement", "inertSubtree", "labelContainer", "labelFor", "notRendered", "notVisible", "presentationalRole", "probablyPresentational", "inactiveCarouselTabContent", "uninteresting"]
 
 class AXNode(CDPModel):
     """
     A node in the accessibility tree.
     """
-
     node_id: AXNodeId
     ignored: bool
     ignored_reasons: list[AXProperty] | None = None

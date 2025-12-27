@@ -4,44 +4,35 @@ from pydantic_cpd.cdp.base import CDPModel
 
 from .types import *
 
-
 class PlayerPropertiesChangedEvent(CDPModel):
     """
     This can be called multiple times, and can be used to set / override / remove
     player properties. A null propValue indicates removal.
     """
-
     player_id: PlayerId
     properties: list[PlayerProperty]
-
 
 class PlayerEventsAddedEvent(CDPModel):
     """
     Send events as a list, allowing them to be batched on the browser for less
     congestion. If batched, events must ALWAYS be in chronological order.
     """
-
     player_id: PlayerId
     events: list[PlayerEvent]
-
 
 class PlayerMessagesLoggedEvent(CDPModel):
     """
     Send a list of any messages that need to be delivered.
     """
-
     player_id: PlayerId
     messages: list[PlayerMessage]
-
 
 class PlayerErrorsRaisedEvent(CDPModel):
     """
     Send a list of any errors that need to be delivered.
     """
-
     player_id: PlayerId
     errors: list[PlayerError]
-
 
 class PlayerCreatedEvent(CDPModel):
     """
@@ -49,5 +40,4 @@ class PlayerCreatedEvent(CDPModel):
     of active players. If an agent is restored, it will receive one event for each
     active player.
     """
-
     player: Player

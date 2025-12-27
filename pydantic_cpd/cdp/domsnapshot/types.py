@@ -6,12 +6,10 @@ from pydantic_cpd.cdp.base import CDPModel
 if TYPE_CHECKING:
     from pydantic_cpd.cdp import dom, domdebugger, page
 
-
 class DOMNode(CDPModel):
     """
     A Node in the DOM tree.
     """
-
     node_type: int
     node_name: str
     node_value: str
@@ -41,23 +39,19 @@ class DOMNode(CDPModel):
     scroll_offset_x: float | None = None
     scroll_offset_y: float | None = None
 
-
 class InlineTextBox(CDPModel):
     """
     Details of post layout rendered text positions. The exact layout should not be
     regarded as stable and may change between versions.
     """
-
     bounding_box: dom.Rect
     start_character_index: int
     num_characters: int
-
 
 class LayoutTreeNode(CDPModel):
     """
     Details of an element in the DOM tree with a LayoutObject.
     """
-
     dom_node_index: int
     bounding_box: dom.Rect
     layout_text: str | None = None
@@ -66,23 +60,18 @@ class LayoutTreeNode(CDPModel):
     paint_order: int | None = None
     is_stacking_context: bool | None = None
 
-
 class ComputedStyle(CDPModel):
     """
     A subset of the full ComputedStyle as defined by the request whitelist.
     """
-
     properties: list[NameValue]
-
 
 class NameValue(CDPModel):
     """
     A name/value pair.
     """
-
     name: str
     value: str
-
 
 """
 Index of the string in the strings table.
@@ -94,33 +83,26 @@ Index of the string in the strings table.
 """
 ArrayOfStrings = list[Any]
 
-
 class RareStringData(CDPModel):
     """
     Data that is only present on rare nodes.
     """
-
     index: list[int]
     value: list[StringIndex]
 
-
 class RareBooleanData(CDPModel):
     index: list[int]
-
 
 class RareIntegerData(CDPModel):
     index: list[int]
     value: list[int]
 
-
 Rectangle = list[Any]
-
 
 class DocumentSnapshot(CDPModel):
     """
     Document snapshot.
     """
-
     document_u_r_l: StringIndex
     title: StringIndex
     base_u_r_l: StringIndex
@@ -137,12 +119,10 @@ class DocumentSnapshot(CDPModel):
     content_width: float | None = None
     content_height: float | None = None
 
-
 class NodeTreeSnapshot(CDPModel):
     """
     Table containing nodes.
     """
-
     parent_index: list[int] | None = None
     node_type: list[int] | None = None
     shadow_root_type: RareStringData | None = None
@@ -161,12 +141,10 @@ class NodeTreeSnapshot(CDPModel):
     current_source_u_r_l: RareStringData | None = None
     origin_u_r_l: RareStringData | None = None
 
-
 class LayoutTreeSnapshot(CDPModel):
     """
     Table of details of an element in the DOM tree with a LayoutObject.
     """
-
     node_index: list[int]
     styles: list[ArrayOfStrings]
     bounds: list[Rectangle]
@@ -179,13 +157,11 @@ class LayoutTreeSnapshot(CDPModel):
     blended_background_colors: list[StringIndex] | None = None
     text_color_opacities: list[float] | None = None
 
-
 class TextBoxSnapshot(CDPModel):
     """
     Table of details of the post layout rendered text positions. The exact layout
     should not be regarded as stable and may change between versions.
     """
-
     layout_index: list[int]
     bounds: list[Rectangle]
     start: list[int]

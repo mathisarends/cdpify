@@ -20,16 +20,13 @@ from .commands import (
     TakeResponseBodyAsStreamResult,
 )
 
-
 class FetchClient:
-    """
-    A domain for letting clients substitute browser's network layer with client code.
-    """
-
     def __init__(self, client: CDPClient) -> None:
         self._client = client
 
-    async def disable(self, session_id: str | None = None) -> dict[str, Any]:
+    async def disable(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Fetch.disable",
             params=None,

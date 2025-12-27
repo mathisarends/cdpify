@@ -4,16 +4,13 @@ from pydantic_cpd.cdp.base import CDPModel
 
 from .types import *
 
-
 class AttachedToTargetEvent(CDPModel):
     """
     Issued when attached to target because of auto-attach or `attachToTarget` command.
     """
-
     session_id: SessionID
     target_info: TargetInfo
     waiting_for_debugger: bool
-
 
 class DetachedFromTargetEvent(CDPModel):
     """
@@ -21,52 +18,41 @@ class DetachedFromTargetEvent(CDPModel):
     command). Can be issued multiple times per target if multiple sessions have been
     attached to it.
     """
-
     session_id: SessionID
     target_id: TargetID | None = None
-
 
 class ReceivedMessageFromTargetEvent(CDPModel):
     """
     Notifies about a new protocol message received from the session (as reported in
     `attachedToTarget` event).
     """
-
     session_id: SessionID
     message: str
     target_id: TargetID | None = None
-
 
 class TargetCreatedEvent(CDPModel):
     """
     Issued when a possible inspection target is created.
     """
-
     target_info: TargetInfo
-
 
 class TargetDestroyedEvent(CDPModel):
     """
     Issued when a target is destroyed.
     """
-
     target_id: TargetID
-
 
 class TargetCrashedEvent(CDPModel):
     """
     Issued when a target has crashed.
     """
-
     target_id: TargetID
     status: str
     error_code: int
-
 
 class TargetInfoChangedEvent(CDPModel):
     """
     Issued when some information about a target has changed. This only happens between
     `targetCreated` and `targetDestroyed`.
     """
-
     target_info: TargetInfo

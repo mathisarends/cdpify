@@ -86,19 +86,7 @@ from .commands import (
     SetOuterHTMLParams,
 )
 
-
 class DOMClient:
-    """
-    This domain exposes DOM read/write operations. Each DOM Node is represented with
-    its mirror object that has an `id`. This `id` can be used to get additional
-    information on the Node, resolve it into the JavaScript object wrapper, etc. It is
-    important that client receives DOM events only for the nodes that are known to the
-    client. Backend keeps track of the nodes that were sent to the client and never
-    sends the same node twice. It is client's responsibility to collect information
-    about the nodes that were sent to the client. Note that `iframe` owner elements will
-    return corresponding document elements as their child nodes.
-    """
-
     def __init__(self, client: CDPClient) -> None:
         self._client = client
 
@@ -133,9 +121,7 @@ class DOMClient:
         return DescribeNodeResult.model_validate(result)
 
     async def scroll_into_view_if_needed(
-        self,
-        params: ScrollIntoViewIfNeededParams | None = None,
-        session_id: str | None = None,
+        self, params: ScrollIntoViewIfNeededParams | None = None, session_id: str | None = None
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="DOM.scrollIntoViewIfNeeded",
@@ -144,7 +130,9 @@ class DOMClient:
         )
         return result
 
-    async def disable(self, session_id: str | None = None) -> dict[str, Any]:
+    async def disable(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="DOM.disable",
             params=None,
@@ -223,9 +211,7 @@ class DOMClient:
         return GetDocumentResult.model_validate(result)
 
     async def get_flattened_document(
-        self,
-        params: GetFlattenedDocumentParams | None = None,
-        session_id: str | None = None,
+        self, params: GetFlattenedDocumentParams | None = None, session_id: str | None = None
     ) -> GetFlattenedDocumentResult:
         result = await self._client.send_raw(
             method="DOM.getFlattenedDocument",
@@ -284,7 +270,9 @@ class DOMClient:
         )
         return GetSearchResultsResult.model_validate(result)
 
-    async def hide_highlight(self, session_id: str | None = None) -> dict[str, Any]:
+    async def hide_highlight(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="DOM.hideHighlight",
             params=None,
@@ -292,7 +280,9 @@ class DOMClient:
         )
         return result
 
-    async def highlight_node(self, session_id: str | None = None) -> dict[str, Any]:
+    async def highlight_node(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="DOM.highlightNode",
             params=None,
@@ -300,7 +290,9 @@ class DOMClient:
         )
         return result
 
-    async def highlight_rect(self, session_id: str | None = None) -> dict[str, Any]:
+    async def highlight_rect(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="DOM.highlightRect",
             params=None,
@@ -349,9 +341,7 @@ class DOMClient:
         return PushNodeByPathToFrontendResult.model_validate(result)
 
     async def push_nodes_by_backend_ids_to_frontend(
-        self,
-        params: PushNodesByBackendIdsToFrontendParams,
-        session_id: str | None = None,
+        self, params: PushNodesByBackendIdsToFrontendParams, session_id: str | None = None
     ) -> PushNodesByBackendIdsToFrontendResult:
         result = await self._client.send_raw(
             method="DOM.pushNodesByBackendIdsToFrontend",
@@ -400,7 +390,9 @@ class DOMClient:
         )
         return GetElementByRelationResult.model_validate(result)
 
-    async def redo(self, session_id: str | None = None) -> dict[str, Any]:
+    async def redo(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="DOM.redo",
             params=None,
@@ -568,7 +560,9 @@ class DOMClient:
         )
         return result
 
-    async def undo(self, session_id: str | None = None) -> dict[str, Any]:
+    async def undo(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="DOM.undo",
             params=None,
@@ -597,9 +591,7 @@ class DOMClient:
         return GetContainerForNodeResult.model_validate(result)
 
     async def get_querying_descendants_for_container(
-        self,
-        params: GetQueryingDescendantsForContainerParams,
-        session_id: str | None = None,
+        self, params: GetQueryingDescendantsForContainerParams, session_id: str | None = None
     ) -> GetQueryingDescendantsForContainerResult:
         result = await self._client.send_raw(
             method="DOM.getQueryingDescendantsForContainer",

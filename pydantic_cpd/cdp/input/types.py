@@ -3,7 +3,6 @@
 from typing import Literal
 from pydantic_cpd.cdp.base import CDPModel
 
-
 class TouchPoint(CDPModel):
     x: float
     y: float
@@ -17,7 +16,6 @@ class TouchPoint(CDPModel):
     twist: int | None = None
     id: float | None = None
 
-
 GestureSourceType = Literal["default", "touch", "mouse"]
 
 MouseButton = Literal["none", "left", "middle", "right", "back", "forward"]
@@ -27,13 +25,11 @@ UTC time in seconds, counted from January 1, 1970.
 """
 TimeSinceEpoch = float
 
-
 class DragDataItem(CDPModel):
     mime_type: str
     data: str
     title: str | None = None
     base_u_r_l: str | None = None
-
 
 class DragData(CDPModel):
     items: list[DragDataItem]

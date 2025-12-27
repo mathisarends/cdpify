@@ -9,27 +9,7 @@ if TYPE_CHECKING:
 """
 Resource type as it was perceived by the rendering engine.
 """
-ResourceType = Literal[
-    "Document",
-    "Stylesheet",
-    "Image",
-    "Media",
-    "Font",
-    "Script",
-    "TextTrack",
-    "XHR",
-    "Fetch",
-    "Prefetch",
-    "EventSource",
-    "WebSocket",
-    "Manifest",
-    "SignedExchange",
-    "Ping",
-    "CSPViolationReport",
-    "Preflight",
-    "FedCM",
-    "Other",
-]
+ResourceType = Literal["Document", "Stylesheet", "Image", "Media", "Font", "Script", "TextTrack", "XHR", "Fetch", "Prefetch", "EventSource", "WebSocket", "Manifest", "SignedExchange", "Ping", "CSPViolationReport", "Preflight", "FedCM", "Other"]
 
 """
 Unique loader identifier.
@@ -50,22 +30,7 @@ InterceptionId = str
 """
 Network level fetch failure reason.
 """
-ErrorReason = Literal[
-    "Failed",
-    "Aborted",
-    "TimedOut",
-    "AccessDenied",
-    "ConnectionClosed",
-    "ConnectionReset",
-    "ConnectionRefused",
-    "ConnectionAborted",
-    "ConnectionFailed",
-    "NameNotResolved",
-    "InternetDisconnected",
-    "AddressUnreachable",
-    "BlockedByClient",
-    "BlockedByResponse",
-]
+ErrorReason = Literal["Failed", "Aborted", "TimedOut", "AccessDenied", "ConnectionClosed", "ConnectionReset", "ConnectionRefused", "ConnectionAborted", "ConnectionFailed", "NameNotResolved", "InternetDisconnected", "AddressUnreachable", "BlockedByClient", "BlockedByResponse"]
 
 """
 UTC time in seconds, counted from January 1, 1970.
@@ -85,17 +50,7 @@ Headers = dict[str, Any]
 """
 The underlying connection technology that the browser is supposedly using.
 """
-ConnectionType = Literal[
-    "none",
-    "cellular2g",
-    "cellular3g",
-    "cellular4g",
-    "bluetooth",
-    "ethernet",
-    "wifi",
-    "wimax",
-    "other",
-]
+ConnectionType = Literal["none", "cellular2g", "cellular3g", "cellular4g", "bluetooth", "ethernet", "wifi", "wimax", "other"]
 
 """
 Represents the cookie's 'SameSite' status:
@@ -116,12 +71,10 @@ temporary ability and it will be removed in the future.
 """
 CookieSourceScheme = Literal["Unset", "NonSecure", "Secure"]
 
-
 class ResourceTiming(CDPModel):
     """
     Timing information for the request.
     """
-
     request_time: float
     proxy_start: float
     proxy_end: float
@@ -144,7 +97,6 @@ class ResourceTiming(CDPModel):
     receive_headers_start: float
     receive_headers_end: float
 
-
 """
 Loading priority of a resource request.
 """
@@ -153,28 +105,18 @@ ResourcePriority = Literal["VeryLow", "Low", "Medium", "High", "VeryHigh"]
 """
 The render blocking behavior of a resource request.
 """
-RenderBlockingBehavior = Literal[
-    "Blocking",
-    "InBodyParserBlocking",
-    "NonBlocking",
-    "NonBlockingDynamic",
-    "PotentiallyBlocking",
-]
-
+RenderBlockingBehavior = Literal["Blocking", "InBodyParserBlocking", "NonBlocking", "NonBlockingDynamic", "PotentiallyBlocking"]
 
 class PostDataEntry(CDPModel):
     """
     Post data entry for HTTP request
     """
-
     bytes: str | None = None
-
 
 class Request(CDPModel):
     """
     HTTP request data.
     """
-
     url: str
     url_fragment: str | None = None
     method: str
@@ -184,27 +126,16 @@ class Request(CDPModel):
     post_data_entries: list[PostDataEntry] | None = None
     mixed_content_type: security.MixedContentType | None = None
     initial_priority: ResourcePriority
-    referrer_policy: Literal[
-        "unsafe-url",
-        "no-referrer-when-downgrade",
-        "no-referrer",
-        "origin",
-        "origin-when-cross-origin",
-        "same-origin",
-        "strict-origin",
-        "strict-origin-when-cross-origin",
-    ]
+    referrer_policy: Literal["unsafe-url", "no-referrer-when-downgrade", "no-referrer", "origin", "origin-when-cross-origin", "same-origin", "strict-origin", "strict-origin-when-cross-origin"]
     is_link_preload: bool | None = None
     trust_token_params: TrustTokenParams | None = None
     is_same_site: bool | None = None
     is_ad_related: bool | None = None
 
-
 class SignedCertificateTimestamp(CDPModel):
     """
     Details of a signed certificate timestamp (SCT).
     """
-
     status: str
     origin: str
     log_description: str
@@ -214,12 +145,10 @@ class SignedCertificateTimestamp(CDPModel):
     signature_algorithm: str
     signature_data: str
 
-
 class SecurityDetails(CDPModel):
     """
     Security details about a request.
     """
-
     protocol: str
     key_exchange: str
     key_exchange_group: str | None = None
@@ -236,7 +165,6 @@ class SecurityDetails(CDPModel):
     server_signature_algorithm: int | None = None
     encrypted_client_hello: bool
 
-
 """
 Whether the request complied with Certificate Transparency policy.
 """
@@ -245,79 +173,21 @@ CertificateTransparencyCompliance = Literal["unknown", "not-compliant", "complia
 """
 The reason why request was blocked.
 """
-BlockedReason = Literal[
-    "other",
-    "csp",
-    "mixed-content",
-    "origin",
-    "inspector",
-    "integrity",
-    "subresource-filter",
-    "content-type",
-    "coep-frame-resource-needs-coep-header",
-    "coop-sandboxed-iframe-cannot-navigate-to-coop-page",
-    "corp-not-same-origin",
-    "corp-not-same-origin-after-defaulted-to-same-origin-by-coep",
-    "corp-not-same-origin-after-defaulted-to-same-origin-by-dip",
-    "corp-not-same-origin-after-defaulted-to-same-origin-by-coep-and-dip",
-    "corp-not-same-site",
-    "sri-message-signature-mismatch",
-]
+BlockedReason = Literal["other", "csp", "mixed-content", "origin", "inspector", "integrity", "subresource-filter", "content-type", "coep-frame-resource-needs-coep-header", "coop-sandboxed-iframe-cannot-navigate-to-coop-page", "corp-not-same-origin", "corp-not-same-origin-after-defaulted-to-same-origin-by-coep", "corp-not-same-origin-after-defaulted-to-same-origin-by-dip", "corp-not-same-origin-after-defaulted-to-same-origin-by-coep-and-dip", "corp-not-same-site", "sri-message-signature-mismatch"]
 
 """
 The reason why request was blocked.
 """
-CorsError = Literal[
-    "DisallowedByMode",
-    "InvalidResponse",
-    "WildcardOriginNotAllowed",
-    "MissingAllowOriginHeader",
-    "MultipleAllowOriginValues",
-    "InvalidAllowOriginValue",
-    "AllowOriginMismatch",
-    "InvalidAllowCredentials",
-    "CorsDisabledScheme",
-    "PreflightInvalidStatus",
-    "PreflightDisallowedRedirect",
-    "PreflightWildcardOriginNotAllowed",
-    "PreflightMissingAllowOriginHeader",
-    "PreflightMultipleAllowOriginValues",
-    "PreflightInvalidAllowOriginValue",
-    "PreflightAllowOriginMismatch",
-    "PreflightInvalidAllowCredentials",
-    "PreflightMissingAllowExternal",
-    "PreflightInvalidAllowExternal",
-    "PreflightMissingAllowPrivateNetwork",
-    "PreflightInvalidAllowPrivateNetwork",
-    "InvalidAllowMethodsPreflightResponse",
-    "InvalidAllowHeadersPreflightResponse",
-    "MethodDisallowedByPreflightResponse",
-    "HeaderDisallowedByPreflightResponse",
-    "RedirectContainsCredentials",
-    "InsecurePrivateNetwork",
-    "InvalidPrivateNetworkAccess",
-    "UnexpectedPrivateNetworkAccess",
-    "NoCorsRedirectModeNotFollow",
-    "PreflightMissingPrivateNetworkAccessId",
-    "PreflightMissingPrivateNetworkAccessName",
-    "PrivateNetworkAccessPermissionUnavailable",
-    "PrivateNetworkAccessPermissionDenied",
-    "LocalNetworkAccessPermissionDenied",
-]
-
+CorsError = Literal["DisallowedByMode", "InvalidResponse", "WildcardOriginNotAllowed", "MissingAllowOriginHeader", "MultipleAllowOriginValues", "InvalidAllowOriginValue", "AllowOriginMismatch", "InvalidAllowCredentials", "CorsDisabledScheme", "PreflightInvalidStatus", "PreflightDisallowedRedirect", "PreflightWildcardOriginNotAllowed", "PreflightMissingAllowOriginHeader", "PreflightMultipleAllowOriginValues", "PreflightInvalidAllowOriginValue", "PreflightAllowOriginMismatch", "PreflightInvalidAllowCredentials", "PreflightMissingAllowExternal", "PreflightInvalidAllowExternal", "PreflightMissingAllowPrivateNetwork", "PreflightInvalidAllowPrivateNetwork", "InvalidAllowMethodsPreflightResponse", "InvalidAllowHeadersPreflightResponse", "MethodDisallowedByPreflightResponse", "HeaderDisallowedByPreflightResponse", "RedirectContainsCredentials", "InsecurePrivateNetwork", "InvalidPrivateNetworkAccess", "UnexpectedPrivateNetworkAccess", "NoCorsRedirectModeNotFollow", "PreflightMissingPrivateNetworkAccessId", "PreflightMissingPrivateNetworkAccessName", "PrivateNetworkAccessPermissionUnavailable", "PrivateNetworkAccessPermissionDenied", "LocalNetworkAccessPermissionDenied"]
 
 class CorsErrorStatus(CDPModel):
     cors_error: CorsError
     failed_parameter: str
 
-
 """
 Source of serviceworker response.
 """
-ServiceWorkerResponseSource = Literal[
-    "cache-storage", "http-cache", "fallback-code", "network"
-]
-
+ServiceWorkerResponseSource = Literal["cache-storage", "http-cache", "fallback-code", "network"]
 
 class TrustTokenParams(CDPModel):
     """
@@ -325,51 +195,31 @@ class TrustTokenParams(CDPModel):
     type, some additional parameters. The values are specified in
     third_party/blink/renderer/core/fetch/trust_token.idl.
     """
-
     operation: TrustTokenOperationType
     refresh_policy: Literal["UseCached", "Refresh"]
     issuers: list[str] | None = None
-
 
 TrustTokenOperationType = Literal["Issuance", "Redemption", "Signing"]
 
 """
 The reason why Chrome uses a specific transport protocol for HTTP semantics.
 """
-AlternateProtocolUsage = Literal[
-    "alternativeJobWonWithoutRace",
-    "alternativeJobWonRace",
-    "mainJobWonRace",
-    "mappingMissing",
-    "broken",
-    "dnsAlpnH3JobWonWithoutRace",
-    "dnsAlpnH3JobWonRace",
-    "unspecifiedReason",
-]
+AlternateProtocolUsage = Literal["alternativeJobWonWithoutRace", "alternativeJobWonRace", "mainJobWonRace", "mappingMissing", "broken", "dnsAlpnH3JobWonWithoutRace", "dnsAlpnH3JobWonRace", "unspecifiedReason"]
 
 """
 Source of service worker router.
 """
-ServiceWorkerRouterSource = Literal[
-    "network",
-    "cache",
-    "fetch-event",
-    "race-network-and-fetch-handler",
-    "race-network-and-cache",
-]
-
+ServiceWorkerRouterSource = Literal["network", "cache", "fetch-event", "race-network-and-fetch-handler", "race-network-and-cache"]
 
 class ServiceWorkerRouterInfo(CDPModel):
     rule_id_matched: int | None = None
     matched_source_type: ServiceWorkerRouterSource | None = None
     actual_source_type: ServiceWorkerRouterSource | None = None
 
-
 class Response(CDPModel):
     """
     HTTP response data.
     """
-
     url: str
     status: int
     status_text: str
@@ -398,20 +248,16 @@ class Response(CDPModel):
     security_state: security.SecurityState
     security_details: SecurityDetails | None = None
 
-
 class WebSocketRequest(CDPModel):
     """
     WebSocket request data.
     """
-
     headers: Headers
-
 
 class WebSocketResponse(CDPModel):
     """
     WebSocket response data.
     """
-
     status: int
     status_text: str
     headers: Headers
@@ -419,43 +265,34 @@ class WebSocketResponse(CDPModel):
     request_headers: Headers | None = None
     request_headers_text: str | None = None
 
-
 class WebSocketFrame(CDPModel):
     """
     WebSocket message data. This represents an entire WebSocket message, not just a
     fragmented frame as the name suggests.
     """
-
     opcode: float
     mask: bool
     payload_data: str
-
 
 class CachedResource(CDPModel):
     """
     Information about the cached resource.
     """
-
     url: str
     type: ResourceType
     response: Response | None = None
     body_size: float
 
-
 class Initiator(CDPModel):
     """
     Information about the request initiator.
     """
-
-    type: Literal[
-        "parser", "script", "preload", "SignedExchange", "preflight", "FedCM", "other"
-    ]
+    type: Literal["parser", "script", "preload", "SignedExchange", "preflight", "FedCM", "other"]
     stack: runtime.StackTrace | None = None
     url: str | None = None
     line_number: float | None = None
     column_number: float | None = None
     request_id: RequestId | None = None
-
 
 class CookiePartitionKey(CDPModel):
     """
@@ -463,16 +300,13 @@ class CookiePartitionKey(CDPModel):
     created by the cookiePartitionKey class contained in
     net/cookies/cookie_partition_key.h.
     """
-
     top_level_site: str
     has_cross_site_ancestor: bool
-
 
 class Cookie(CDPModel):
     """
     Cookie object
     """
-
     name: str
     value: str
     domain: str
@@ -490,88 +324,29 @@ class Cookie(CDPModel):
     partition_key: CookiePartitionKey | None = None
     partition_key_opaque: bool | None = None
 
-
 """
 Types of reasons why a cookie may not be stored from a response.
 """
-SetCookieBlockedReason = Literal[
-    "SecureOnly",
-    "SameSiteStrict",
-    "SameSiteLax",
-    "SameSiteUnspecifiedTreatedAsLax",
-    "SameSiteNoneInsecure",
-    "UserPreferences",
-    "ThirdPartyPhaseout",
-    "ThirdPartyBlockedInFirstPartySet",
-    "SyntaxError",
-    "SchemeNotSupported",
-    "OverwriteSecure",
-    "InvalidDomain",
-    "InvalidPrefix",
-    "UnknownError",
-    "SchemefulSameSiteStrict",
-    "SchemefulSameSiteLax",
-    "SchemefulSameSiteUnspecifiedTreatedAsLax",
-    "SamePartyFromCrossPartyContext",
-    "SamePartyConflictsWithOtherAttributes",
-    "NameValuePairExceedsMaxSize",
-    "DisallowedCharacter",
-    "NoCookieContent",
-]
+SetCookieBlockedReason = Literal["SecureOnly", "SameSiteStrict", "SameSiteLax", "SameSiteUnspecifiedTreatedAsLax", "SameSiteNoneInsecure", "UserPreferences", "ThirdPartyPhaseout", "ThirdPartyBlockedInFirstPartySet", "SyntaxError", "SchemeNotSupported", "OverwriteSecure", "InvalidDomain", "InvalidPrefix", "UnknownError", "SchemefulSameSiteStrict", "SchemefulSameSiteLax", "SchemefulSameSiteUnspecifiedTreatedAsLax", "SamePartyFromCrossPartyContext", "SamePartyConflictsWithOtherAttributes", "NameValuePairExceedsMaxSize", "DisallowedCharacter", "NoCookieContent"]
 
 """
 Types of reasons why a cookie may not be sent with a request.
 """
-CookieBlockedReason = Literal[
-    "SecureOnly",
-    "NotOnPath",
-    "DomainMismatch",
-    "SameSiteStrict",
-    "SameSiteLax",
-    "SameSiteUnspecifiedTreatedAsLax",
-    "SameSiteNoneInsecure",
-    "UserPreferences",
-    "ThirdPartyPhaseout",
-    "ThirdPartyBlockedInFirstPartySet",
-    "UnknownError",
-    "SchemefulSameSiteStrict",
-    "SchemefulSameSiteLax",
-    "SchemefulSameSiteUnspecifiedTreatedAsLax",
-    "SamePartyFromCrossPartyContext",
-    "NameValuePairExceedsMaxSize",
-    "PortMismatch",
-    "SchemeMismatch",
-    "AnonymousContext",
-]
+CookieBlockedReason = Literal["SecureOnly", "NotOnPath", "DomainMismatch", "SameSiteStrict", "SameSiteLax", "SameSiteUnspecifiedTreatedAsLax", "SameSiteNoneInsecure", "UserPreferences", "ThirdPartyPhaseout", "ThirdPartyBlockedInFirstPartySet", "UnknownError", "SchemefulSameSiteStrict", "SchemefulSameSiteLax", "SchemefulSameSiteUnspecifiedTreatedAsLax", "SamePartyFromCrossPartyContext", "NameValuePairExceedsMaxSize", "PortMismatch", "SchemeMismatch", "AnonymousContext"]
 
 """
 Types of reasons why a cookie should have been blocked by 3PCD but is exempted for the
 request.
 """
-CookieExemptionReason = Literal[
-    "None",
-    "UserSetting",
-    "TPCDMetadata",
-    "TPCDDeprecationTrial",
-    "TopLevelTPCDDeprecationTrial",
-    "TPCDHeuristics",
-    "EnterprisePolicy",
-    "StorageAccess",
-    "TopLevelStorageAccess",
-    "Scheme",
-    "SameSiteNoneCookiesInSandbox",
-]
-
+CookieExemptionReason = Literal["None", "UserSetting", "TPCDMetadata", "TPCDDeprecationTrial", "TopLevelTPCDDeprecationTrial", "TPCDHeuristics", "EnterprisePolicy", "StorageAccess", "TopLevelStorageAccess", "Scheme", "SameSiteNoneCookiesInSandbox"]
 
 class BlockedSetCookieWithReason(CDPModel):
     """
     A cookie which was not stored from a response with the corresponding reason.
     """
-
     blocked_reasons: list[SetCookieBlockedReason]
     cookie_line: str
     cookie: Cookie | None = None
-
 
 class ExemptedSetCookieWithReason(CDPModel):
     """
@@ -579,28 +354,23 @@ class ExemptedSetCookieWithReason(CDPModel):
     response with the corresponding reason. A cookie could only have at most one
     exemption reason.
     """
-
     exemption_reason: CookieExemptionReason
     cookie_line: str
     cookie: Cookie
-
 
 class AssociatedCookie(CDPModel):
     """
     A cookie associated with the request which may or may not be sent with it. Includes
     the cookies itself and reasons for blocking or exemption.
     """
-
     cookie: Cookie
     blocked_reasons: list[CookieBlockedReason]
     exemption_reason: CookieExemptionReason | None = None
-
 
 class CookieParam(CDPModel):
     """
     Cookie parameter object
     """
-
     name: str
     value: str
     url: str | None = None
@@ -616,27 +386,22 @@ class CookieParam(CDPModel):
     source_port: int | None = None
     partition_key: CookiePartitionKey | None = None
 
-
 class AuthChallenge(CDPModel):
     """
     Authorization challenge for HTTP status code 401 or 407.
     """
-
     source: Literal["Server", "Proxy"] | None = None
     origin: str
     scheme: str
     realm: str
 
-
 class AuthChallengeResponse(CDPModel):
     """
     Response to an AuthChallenge.
     """
-
     response: Literal["Default", "CancelAuth", "ProvideCredentials"]
     username: str | None = None
     password: str | None = None
-
 
 """
 Stages of the interception to begin intercepting. Request will intercept before the
@@ -644,23 +409,19 @@ request is sent. Response will intercept after the response is received.
 """
 InterceptionStage = Literal["Request", "HeadersReceived"]
 
-
 class RequestPattern(CDPModel):
     """
     Request pattern for interception.
     """
-
     url_pattern: str | None = None
     resource_type: ResourceType | None = None
     interception_stage: InterceptionStage | None = None
-
 
 class SignedExchangeSignature(CDPModel):
     """
     Information about a signed exchange signature.
     https://wicg.github.io/webpackage/draft-yasskin-httpbis-origin-signed-exchanges-impl.html#rfc.section.3.1
     """
-
     label: str
     signature: str
     integrity: str
@@ -671,60 +432,44 @@ class SignedExchangeSignature(CDPModel):
     expires: int
     certificates: list[str] | None = None
 
-
 class SignedExchangeHeader(CDPModel):
     """
     Information about a signed exchange header.
     https://wicg.github.io/webpackage/draft-yasskin-httpbis-origin-signed-exchanges-impl.html#cbor-representation
     """
-
     request_url: str
     response_code: int
     response_headers: Headers
     signatures: list[SignedExchangeSignature]
     header_integrity: str
 
-
 """
 Field type for a signed exchange related error.
 """
-SignedExchangeErrorField = Literal[
-    "signatureSig",
-    "signatureIntegrity",
-    "signatureCertUrl",
-    "signatureCertSha256",
-    "signatureValidityUrl",
-    "signatureTimestamps",
-]
-
+SignedExchangeErrorField = Literal["signatureSig", "signatureIntegrity", "signatureCertUrl", "signatureCertSha256", "signatureValidityUrl", "signatureTimestamps"]
 
 class SignedExchangeError(CDPModel):
     """
     Information about a signed exchange response.
     """
-
     message: str
     signature_index: int | None = None
     error_field: SignedExchangeErrorField | None = None
-
 
 class SignedExchangeInfo(CDPModel):
     """
     Information about a signed exchange response.
     """
-
     outer_response: Response
     has_extra_info: bool
     header: SignedExchangeHeader | None = None
     security_details: SecurityDetails | None = None
     errors: list[SignedExchangeError] | None = None
 
-
 """
 List of content encodings supported by the backend.
 """
 ContentEncoding = Literal["deflate", "gzip", "br", "zstd"]
-
 
 class NetworkConditions(CDPModel):
     url_pattern: str
@@ -736,14 +481,11 @@ class NetworkConditions(CDPModel):
     packet_queue_length: int | None = None
     packet_reordering: bool | None = None
 
-
 class BlockPattern(CDPModel):
     url_pattern: str
     block: bool
 
-
 DirectSocketDnsQueryType = Literal["ipv4", "ipv6"]
-
 
 class DirectTCPSocketOptions(CDPModel):
     no_delay: bool
@@ -751,7 +493,6 @@ class DirectTCPSocketOptions(CDPModel):
     send_buffer_size: float | None = None
     receive_buffer_size: float | None = None
     dns_query_type: DirectSocketDnsQueryType | None = None
-
 
 class DirectUDPSocketOptions(CDPModel):
     remote_addr: str | None = None
@@ -765,44 +506,24 @@ class DirectUDPSocketOptions(CDPModel):
     multicast_time_to_live: int | None = None
     multicast_allow_address_sharing: bool | None = None
 
-
 class DirectUDPMessage(CDPModel):
     data: str
     remote_addr: str | None = None
     remote_port: int | None = None
 
-
-PrivateNetworkRequestPolicy = Literal[
-    "Allow",
-    "BlockFromInsecureToMorePrivate",
-    "WarnFromInsecureToMorePrivate",
-    "PermissionBlock",
-    "PermissionWarn",
-]
+PrivateNetworkRequestPolicy = Literal["Allow", "BlockFromInsecureToMorePrivate", "WarnFromInsecureToMorePrivate", "PermissionBlock", "PermissionWarn"]
 
 IPAddressSpace = Literal["Loopback", "Local", "Public", "Unknown"]
 
-
 class ConnectTiming(CDPModel):
     request_time: float
-
 
 class ClientSecurityState(CDPModel):
     initiator_is_secure_context: bool
     initiator_i_p_address_space: IPAddressSpace
     private_network_request_policy: PrivateNetworkRequestPolicy
 
-
-CrossOriginOpenerPolicyValue = Literal[
-    "SameOrigin",
-    "SameOriginAllowPopups",
-    "RestrictProperties",
-    "UnsafeNone",
-    "SameOriginPlusCoep",
-    "RestrictPropertiesPlusCoep",
-    "NoopenerAllowPopups",
-]
-
+CrossOriginOpenerPolicyValue = Literal["SameOrigin", "SameOriginAllowPopups", "RestrictProperties", "UnsafeNone", "SameOriginPlusCoep", "RestrictPropertiesPlusCoep", "NoopenerAllowPopups"]
 
 class CrossOriginOpenerPolicyStatus(CDPModel):
     value: CrossOriginOpenerPolicyValue
@@ -810,9 +531,7 @@ class CrossOriginOpenerPolicyStatus(CDPModel):
     reporting_endpoint: str | None = None
     report_only_reporting_endpoint: str | None = None
 
-
 CrossOriginEmbedderPolicyValue = Literal["None", "Credentialless", "RequireCorp"]
-
 
 class CrossOriginEmbedderPolicyStatus(CDPModel):
     value: CrossOriginEmbedderPolicyValue
@@ -820,21 +539,17 @@ class CrossOriginEmbedderPolicyStatus(CDPModel):
     reporting_endpoint: str | None = None
     report_only_reporting_endpoint: str | None = None
 
-
 ContentSecurityPolicySource = Literal["HTTP", "Meta"]
-
 
 class ContentSecurityPolicyStatus(CDPModel):
     effective_directives: str
     is_enforced: bool
     source: ContentSecurityPolicySource
 
-
 class SecurityIsolationStatus(CDPModel):
     coop: CrossOriginOpenerPolicyStatus | None = None
     coep: CrossOriginEmbedderPolicyStatus | None = None
     csp: list[ContentSecurityPolicyStatus] | None = None
-
 
 """
 The status of a Reporting API report.
@@ -843,12 +558,10 @@ ReportStatus = Literal["Queued", "Pending", "MarkedForRemoval", "Success"]
 
 ReportId = str
 
-
 class ReportingApiReport(CDPModel):
     """
     An object representing a report generated by the Reporting API.
     """
-
     id: ReportId
     initiator_url: str
     destination: str
@@ -859,17 +572,14 @@ class ReportingApiReport(CDPModel):
     body: dict[str, Any]
     status: ReportStatus
 
-
 class ReportingApiEndpoint(CDPModel):
     url: str
     group_name: str
-
 
 class LoadNetworkResourcePageResult(CDPModel):
     """
     An object providing the result of a network resource load.
     """
-
     success: bool
     net_error: float | None = None
     net_error_name: str | None = None
@@ -877,12 +587,10 @@ class LoadNetworkResourcePageResult(CDPModel):
     stream: io.StreamHandle | None = None
     headers: network.Headers | None = None
 
-
 class LoadNetworkResourceOptions(CDPModel):
     """
     An options object that may be extended later to better support CORS, CORB and
     streaming.
     """
-
     disable_cache: bool
     include_credentials: bool

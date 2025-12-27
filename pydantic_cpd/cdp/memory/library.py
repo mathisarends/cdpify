@@ -18,12 +18,7 @@ from .commands import (
     StartSamplingParams,
 )
 
-
 class MemoryClient:
-    """
-    CDP Memory domain client.
-    """
-
     def __init__(self, client: CDPClient) -> None:
         self._client = client
 
@@ -68,9 +63,7 @@ class MemoryClient:
         return result
 
     async def set_pressure_notifications_suppressed(
-        self,
-        params: SetPressureNotificationsSuppressedParams,
-        session_id: str | None = None,
+        self, params: SetPressureNotificationsSuppressedParams, session_id: str | None = None
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Memory.setPressureNotificationsSuppressed",
@@ -99,7 +92,9 @@ class MemoryClient:
         )
         return result
 
-    async def stop_sampling(self, session_id: str | None = None) -> dict[str, Any]:
+    async def stop_sampling(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Memory.stopSampling",
             params=None,

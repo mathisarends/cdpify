@@ -21,12 +21,7 @@ from .commands import (
     TakeHeapSnapshotParams,
 )
 
-
 class HeapProfilerClient:
-    """
-    CDP HeapProfiler domain client.
-    """
-
     def __init__(self, client: CDPClient) -> None:
         self._client = client
 
@@ -40,7 +35,9 @@ class HeapProfilerClient:
         )
         return result
 
-    async def collect_garbage(self, session_id: str | None = None) -> dict[str, Any]:
+    async def collect_garbage(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="HeapProfiler.collectGarbage",
             params=None,
@@ -48,7 +45,9 @@ class HeapProfilerClient:
         )
         return result
 
-    async def disable(self, session_id: str | None = None) -> dict[str, Any]:
+    async def disable(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="HeapProfiler.disable",
             params=None,
@@ -56,7 +55,9 @@ class HeapProfilerClient:
         )
         return result
 
-    async def enable(self, session_id: str | None = None) -> dict[str, Any]:
+    async def enable(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="HeapProfiler.enable",
             params=None,
@@ -105,9 +106,7 @@ class HeapProfilerClient:
         return result
 
     async def start_tracking_heap_objects(
-        self,
-        params: StartTrackingHeapObjectsParams | None = None,
-        session_id: str | None = None,
+        self, params: StartTrackingHeapObjectsParams | None = None, session_id: str | None = None
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="HeapProfiler.startTrackingHeapObjects",
@@ -116,7 +115,9 @@ class HeapProfilerClient:
         )
         return result
 
-    async def stop_sampling(self, session_id: str | None = None) -> StopSamplingResult:
+    async def stop_sampling(
+        self, session_id: str | None = None
+    ) -> StopSamplingResult:
         result = await self._client.send_raw(
             method="HeapProfiler.stopSampling",
             params=None,
@@ -125,9 +126,7 @@ class HeapProfilerClient:
         return StopSamplingResult.model_validate(result)
 
     async def stop_tracking_heap_objects(
-        self,
-        params: StopTrackingHeapObjectsParams | None = None,
-        session_id: str | None = None,
+        self, params: StopTrackingHeapObjectsParams | None = None, session_id: str | None = None
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="HeapProfiler.stopTrackingHeapObjects",
@@ -137,9 +136,7 @@ class HeapProfilerClient:
         return result
 
     async def take_heap_snapshot(
-        self,
-        params: TakeHeapSnapshotParams | None = None,
-        session_id: str | None = None,
+        self, params: TakeHeapSnapshotParams | None = None, session_id: str | None = None
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="HeapProfiler.takeHeapSnapshot",

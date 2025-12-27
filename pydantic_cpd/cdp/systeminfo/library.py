@@ -14,17 +14,13 @@ from .commands import (
     GetProcessInfoResult,
 )
 
-
 class SystemInfoClient:
-    """
-    The SystemInfo domain defines methods and events for querying low-level system
-    information.
-    """
-
     def __init__(self, client: CDPClient) -> None:
         self._client = client
 
-    async def get_info(self, session_id: str | None = None) -> GetInfoResult:
+    async def get_info(
+        self, session_id: str | None = None
+    ) -> GetInfoResult:
         result = await self._client.send_raw(
             method="SystemInfo.getInfo",
             params=None,

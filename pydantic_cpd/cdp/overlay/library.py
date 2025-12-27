@@ -39,17 +39,13 @@ from .commands import (
     SetShowWindowControlsOverlayParams,
 )
 
-
 class OverlayClient:
-    """
-    This domain provides various functionality related to drawing atop the inspected
-    page.
-    """
-
     def __init__(self, client: CDPClient) -> None:
         self._client = client
 
-    async def disable(self, session_id: str | None = None) -> dict[str, Any]:
+    async def disable(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Overlay.disable",
             params=None,
@@ -57,7 +53,9 @@ class OverlayClient:
         )
         return result
 
-    async def enable(self, session_id: str | None = None) -> dict[str, Any]:
+    async def enable(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Overlay.enable",
             params=None,
@@ -76,9 +74,7 @@ class OverlayClient:
         return GetHighlightObjectForTestResult.model_validate(result)
 
     async def get_grid_highlight_objects_for_test(
-        self,
-        params: GetGridHighlightObjectsForTestParams,
-        session_id: str | None = None,
+        self, params: GetGridHighlightObjectsForTestParams, session_id: str | None = None
     ) -> GetGridHighlightObjectsForTestResult:
         result = await self._client.send_raw(
             method="Overlay.getGridHighlightObjectsForTest",
@@ -88,9 +84,7 @@ class OverlayClient:
         return GetGridHighlightObjectsForTestResult.model_validate(result)
 
     async def get_source_order_highlight_object_for_test(
-        self,
-        params: GetSourceOrderHighlightObjectForTestParams,
-        session_id: str | None = None,
+        self, params: GetSourceOrderHighlightObjectForTestParams, session_id: str | None = None
     ) -> GetSourceOrderHighlightObjectForTestResult:
         result = await self._client.send_raw(
             method="Overlay.getSourceOrderHighlightObjectForTest",
@@ -99,7 +93,9 @@ class OverlayClient:
         )
         return GetSourceOrderHighlightObjectForTestResult.model_validate(result)
 
-    async def hide_highlight(self, session_id: str | None = None) -> dict[str, Any]:
+    async def hide_highlight(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Overlay.hideHighlight",
             params=None,
@@ -178,9 +174,7 @@ class OverlayClient:
         return result
 
     async def set_paused_in_debugger_message(
-        self,
-        params: SetPausedInDebuggerMessageParams | None = None,
-        session_id: str | None = None,
+        self, params: SetPausedInDebuggerMessageParams | None = None, session_id: str | None = None
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Overlay.setPausedInDebuggerMessage",
@@ -330,9 +324,7 @@ class OverlayClient:
         return result
 
     async def set_show_window_controls_overlay(
-        self,
-        params: SetShowWindowControlsOverlayParams | None = None,
-        session_id: str | None = None,
+        self, params: SetShowWindowControlsOverlayParams | None = None, session_id: str | None = None
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Overlay.setShowWindowControlsOverlay",

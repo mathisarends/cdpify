@@ -6,27 +6,11 @@ from pydantic_cpd.cdp.base import CDPModel
 if TYPE_CHECKING:
     from pydantic_cpd.cdp import network, runtime
 
-
 class LogEntry(CDPModel):
     """
     Log entry.
     """
-
-    source: Literal[
-        "xml",
-        "javascript",
-        "network",
-        "storage",
-        "appcache",
-        "rendering",
-        "security",
-        "deprecation",
-        "worker",
-        "violation",
-        "intervention",
-        "recommendation",
-        "other",
-    ]
+    source: Literal["xml", "javascript", "network", "storage", "appcache", "rendering", "security", "deprecation", "worker", "violation", "intervention", "recommendation", "other"]
     level: Literal["verbose", "info", "warning", "error"]
     text: str
     category: Literal["cors"] | None = None
@@ -38,19 +22,9 @@ class LogEntry(CDPModel):
     worker_id: str | None = None
     args: list[runtime.RemoteObject] | None = None
 
-
 class ViolationSetting(CDPModel):
     """
     Violation configuration setting.
     """
-
-    name: Literal[
-        "longTask",
-        "longLayout",
-        "blockedEvent",
-        "blockedParser",
-        "discouragedAPIUse",
-        "handler",
-        "recurringHandler",
-    ]
+    name: Literal["longTask", "longLayout", "blockedEvent", "blockedParser", "discouragedAPIUse", "handler", "recurringHandler"]
     threshold: float

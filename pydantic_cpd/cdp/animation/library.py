@@ -20,16 +20,13 @@ from .commands import (
     SetTimingParams,
 )
 
-
 class AnimationClient:
-    """
-    CDP Animation domain client.
-    """
-
     def __init__(self, client: CDPClient) -> None:
         self._client = client
 
-    async def disable(self, session_id: str | None = None) -> dict[str, Any]:
+    async def disable(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Animation.disable",
             params=None,
@@ -37,7 +34,9 @@ class AnimationClient:
         )
         return result
 
-    async def enable(self, session_id: str | None = None) -> dict[str, Any]:
+    async def enable(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Animation.enable",
             params=None,

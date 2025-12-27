@@ -8,31 +8,25 @@ from .types import *
 from pydantic_cpd.cdp import io
 from pydantic_cpd.cdp import network
 
-
 class EnableParams(CDPModel):
     """
     Enables issuing of requestPaused events. A request will be paused until client
     calls one of failRequest, fulfillRequest or continueRequest/continueWithAuth.
     """
-
     patterns: list[RequestPattern] | None = None
     handle_auth_requests: bool | None = None
-
 
 class FailRequestParams(CDPModel):
     """
     Causes the request to fail with specified reason.
     """
-
     request_id: RequestId
     error_reason: network.ErrorReason
-
 
 class FulfillRequestParams(CDPModel):
     """
     Provides response to the request.
     """
-
     request_id: RequestId
     response_code: int
     response_headers: list[HeaderEntry] | None = None
@@ -40,12 +34,10 @@ class FulfillRequestParams(CDPModel):
     body: str | None = None
     response_phrase: str | None = None
 
-
 class ContinueRequestParams(CDPModel):
     """
     Continues the request, optionally modifying some of its parameters.
     """
-
     request_id: RequestId
     url: str | None = None
     method: str | None = None
@@ -53,15 +45,12 @@ class ContinueRequestParams(CDPModel):
     headers: list[HeaderEntry] | None = None
     intercept_response: bool | None = None
 
-
 class ContinueWithAuthParams(CDPModel):
     """
     Continues a request supplying authChallengeResponse following authRequired event.
     """
-
     request_id: RequestId
     auth_challenge_response: AuthChallengeResponse
-
 
 class ContinueResponseParams(CDPModel):
     """
@@ -69,13 +58,11 @@ class ContinueResponseParams(CDPModel):
     headers. If either responseCode or headers are modified, all of them must be
     present.
     """
-
     request_id: RequestId
     response_code: int | None = None
     response_phrase: str | None = None
     response_headers: list[HeaderEntry] | None = None
     binary_response_headers: str | None = None
-
 
 class GetResponseBodyParams(CDPModel):
     """
@@ -88,14 +75,11 @@ class GetResponseBodyParams(CDPModel):
     differentiated by `responseCode` and presence of `location` response header, see
     comments to `requestPaused` for details.
     """
-
     request_id: RequestId
-
 
 class GetResponseBodyResult(CDPModel):
     body: str
     base64_encoded: bool
-
 
 class TakeResponseBodyAsStreamParams(CDPModel):
     """
@@ -107,9 +91,7 @@ class TakeResponseBodyAsStreamParams(CDPModel):
     methods that affect the request or disabling fetch domain before body is received
     results in an undefined behavior.
     """
-
     request_id: RequestId
-
 
 class TakeResponseBodyAsStreamResult(CDPModel):
     stream: io.StreamHandle

@@ -6,12 +6,10 @@ from pydantic_cpd.cdp.base import CDPModel
 if TYPE_CHECKING:
     from pydantic_cpd.cdp import dom
 
-
 class Animation(CDPModel):
     """
     Animation instance.
     """
-
     id: str
     name: str
     paused_state: bool
@@ -24,24 +22,20 @@ class Animation(CDPModel):
     css_id: str | None = None
     view_or_scroll_timeline: ViewOrScrollTimeline | None = None
 
-
 class ViewOrScrollTimeline(CDPModel):
     """
     Timeline instance
     """
-
     source_node_id: dom.BackendNodeId | None = None
     start_offset: float | None = None
     end_offset: float | None = None
     subject_node_id: dom.BackendNodeId | None = None
     axis: dom.ScrollOrientation
 
-
 class AnimationEffect(CDPModel):
     """
     AnimationEffect instance
     """
-
     delay: float
     end_delay: float
     iteration_start: float
@@ -53,20 +47,16 @@ class AnimationEffect(CDPModel):
     keyframes_rule: KeyframesRule | None = None
     easing: str
 
-
 class KeyframesRule(CDPModel):
     """
     Keyframes Rule
     """
-
     name: str | None = None
     keyframes: list[KeyframeStyle]
-
 
 class KeyframeStyle(CDPModel):
     """
     Keyframe Style
     """
-
     offset: str
     easing: str

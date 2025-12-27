@@ -25,12 +25,7 @@ from .commands import (
     SetUserVerifiedParams,
 )
 
-
 class WebAuthnClient:
-    """
-    This domain allows configuring virtual authenticators to test the WebAuthn API.
-    """
-
     def __init__(self, client: CDPClient) -> None:
         self._client = client
 
@@ -44,7 +39,9 @@ class WebAuthnClient:
         )
         return result
 
-    async def disable(self, session_id: str | None = None) -> dict[str, Any]:
+    async def disable(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="WebAuthn.disable",
             params=None,
@@ -143,9 +140,7 @@ class WebAuthnClient:
         return result
 
     async def set_automatic_presence_simulation(
-        self,
-        params: SetAutomaticPresenceSimulationParams,
-        session_id: str | None = None,
+        self, params: SetAutomaticPresenceSimulationParams, session_id: str | None = None
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="WebAuthn.setAutomaticPresenceSimulation",

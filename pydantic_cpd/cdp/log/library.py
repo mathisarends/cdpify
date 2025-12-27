@@ -11,16 +11,13 @@ from .commands import (
     StartViolationsReportParams,
 )
 
-
 class LogClient:
-    """
-    Provides access to log entries.
-    """
-
     def __init__(self, client: CDPClient) -> None:
         self._client = client
 
-    async def clear(self, session_id: str | None = None) -> dict[str, Any]:
+    async def clear(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Log.clear",
             params=None,
@@ -28,7 +25,9 @@ class LogClient:
         )
         return result
 
-    async def disable(self, session_id: str | None = None) -> dict[str, Any]:
+    async def disable(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Log.disable",
             params=None,
@@ -36,7 +35,9 @@ class LogClient:
         )
         return result
 
-    async def enable(self, session_id: str | None = None) -> dict[str, Any]:
+    async def enable(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Log.enable",
             params=None,

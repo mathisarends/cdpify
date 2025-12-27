@@ -10,24 +10,14 @@ if TYPE_CHECKING:
 The Background Service that will be associated with the commands/events. Every
 Background Service operates independently, but they share the same API.
 """
-ServiceName = Literal[
-    "backgroundFetch",
-    "backgroundSync",
-    "pushMessaging",
-    "notifications",
-    "paymentHandler",
-    "periodicBackgroundSync",
-]
-
+ServiceName = Literal["backgroundFetch", "backgroundSync", "pushMessaging", "notifications", "paymentHandler", "periodicBackgroundSync"]
 
 class EventMetadata(CDPModel):
     """
     A key-value pair for additional event information to pass along.
     """
-
     key: str
     value: str
-
 
 class BackgroundServiceEvent(CDPModel):
     timestamp: network.TimeSinceEpoch

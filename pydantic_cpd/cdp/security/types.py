@@ -20,16 +20,12 @@ MixedContentType = Literal["blockable", "optionally-blockable", "none"]
 """
 The security level of a page or resource.
 """
-SecurityState = Literal[
-    "unknown", "neutral", "insecure", "secure", "info", "insecure-broken"
-]
-
+SecurityState = Literal["unknown", "neutral", "insecure", "secure", "info", "insecure-broken"]
 
 class CertificateSecurityState(CDPModel):
     """
     Details about the security state of the page certificate.
     """
-
     protocol: str
     key_exchange: str
     key_exchange_group: str | None = None
@@ -49,31 +45,25 @@ class CertificateSecurityState(CDPModel):
     obsolete_ssl_cipher: bool
     obsolete_ssl_signature: bool
 
-
 SafetyTipStatus = Literal["badReputation", "lookalike"]
-
 
 class SafetyTipInfo(CDPModel):
     safety_tip_status: SafetyTipStatus
     safe_url: str | None = None
 
-
 class VisibleSecurityState(CDPModel):
     """
     Security state information about the page.
     """
-
     security_state: SecurityState
     certificate_security_state: CertificateSecurityState | None = None
     safety_tip_info: SafetyTipInfo | None = None
     security_state_issue_ids: list[str]
 
-
 class SecurityStateExplanation(CDPModel):
     """
     An explanation of an factor contributing to the security state.
     """
-
     security_state: SecurityState
     title: str
     summary: str
@@ -82,12 +72,10 @@ class SecurityStateExplanation(CDPModel):
     certificate: list[str]
     recommendations: list[str] | None = None
 
-
 class InsecureContentStatus(CDPModel):
     """
     Information about insecure content on the page.
     """
-
     ran_mixed_content: bool
     displayed_mixed_content: bool
     contained_mixed_form: bool
@@ -95,7 +83,6 @@ class InsecureContentStatus(CDPModel):
     displayed_content_with_cert_errors: bool
     ran_insecure_content_style: SecurityState
     displayed_insecure_content_style: SecurityState
-
 
 """
 The action to take when a certificate error occurs. continue will continue processing

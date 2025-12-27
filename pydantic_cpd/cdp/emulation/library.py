@@ -53,16 +53,13 @@ from .commands import (
     SetVisibleSizeParams,
 )
 
-
 class EmulationClient:
-    """
-    This domain emulates different environments for the page.
-    """
-
     def __init__(self, client: CDPClient) -> None:
         self._client = client
 
-    async def can_emulate(self, session_id: str | None = None) -> CanEmulateResult:
+    async def can_emulate(
+        self, session_id: str | None = None
+    ) -> CanEmulateResult:
         result = await self._client.send_raw(
             method="Emulation.canEmulate",
             params=None,
@@ -111,9 +108,7 @@ class EmulationClient:
         return result
 
     async def set_auto_dark_mode_override(
-        self,
-        params: SetAutoDarkModeOverrideParams | None = None,
-        session_id: str | None = None,
+        self, params: SetAutoDarkModeOverrideParams | None = None, session_id: str | None = None
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Emulation.setAutoDarkModeOverride",
@@ -133,9 +128,7 @@ class EmulationClient:
         return result
 
     async def set_default_background_color_override(
-        self,
-        params: SetDefaultBackgroundColorOverrideParams | None = None,
-        session_id: str | None = None,
+        self, params: SetDefaultBackgroundColorOverrideParams | None = None, session_id: str | None = None
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Emulation.setDefaultBackgroundColorOverride",
@@ -235,9 +228,7 @@ class EmulationClient:
         return result
 
     async def set_emulated_media(
-        self,
-        params: SetEmulatedMediaParams | None = None,
-        session_id: str | None = None,
+        self, params: SetEmulatedMediaParams | None = None, session_id: str | None = None
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Emulation.setEmulatedMedia",
@@ -257,9 +248,7 @@ class EmulationClient:
         return result
 
     async def set_emulated_o_s_text_scale(
-        self,
-        params: SetEmulatedOSTextScaleParams | None = None,
-        session_id: str | None = None,
+        self, params: SetEmulatedOSTextScaleParams | None = None, session_id: str | None = None
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Emulation.setEmulatedOSTextScale",
@@ -269,9 +258,7 @@ class EmulationClient:
         return result
 
     async def set_geolocation_override(
-        self,
-        params: SetGeolocationOverrideParams | None = None,
-        session_id: str | None = None,
+        self, params: SetGeolocationOverrideParams | None = None, session_id: str | None = None
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Emulation.setGeolocationOverride",
@@ -281,9 +268,7 @@ class EmulationClient:
         return result
 
     async def get_overridden_sensor_information(
-        self,
-        params: GetOverriddenSensorInformationParams,
-        session_id: str | None = None,
+        self, params: GetOverriddenSensorInformationParams, session_id: str | None = None
     ) -> GetOverriddenSensorInformationResult:
         result = await self._client.send_raw(
             method="Emulation.getOverriddenSensorInformation",
@@ -313,9 +298,7 @@ class EmulationClient:
         return result
 
     async def set_pressure_source_override_enabled(
-        self,
-        params: SetPressureSourceOverrideEnabledParams,
-        session_id: str | None = None,
+        self, params: SetPressureSourceOverrideEnabledParams, session_id: str | None = None
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Emulation.setPressureSourceOverrideEnabled",
@@ -415,9 +398,7 @@ class EmulationClient:
         return SetVirtualTimePolicyResult.model_validate(result)
 
     async def set_locale_override(
-        self,
-        params: SetLocaleOverrideParams | None = None,
-        session_id: str | None = None,
+        self, params: SetLocaleOverrideParams | None = None, session_id: str | None = None
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Emulation.setLocaleOverride",
@@ -457,9 +438,7 @@ class EmulationClient:
         return result
 
     async def set_data_saver_override(
-        self,
-        params: SetDataSaverOverrideParams | None = None,
-        session_id: str | None = None,
+        self, params: SetDataSaverOverrideParams | None = None, session_id: str | None = None
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Emulation.setDataSaverOverride",
@@ -469,9 +448,7 @@ class EmulationClient:
         return result
 
     async def set_hardware_concurrency_override(
-        self,
-        params: SetHardwareConcurrencyOverrideParams,
-        session_id: str | None = None,
+        self, params: SetHardwareConcurrencyOverrideParams, session_id: str | None = None
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Emulation.setHardwareConcurrencyOverride",
@@ -501,9 +478,7 @@ class EmulationClient:
         return result
 
     async def set_small_viewport_height_difference_override(
-        self,
-        params: SetSmallViewportHeightDifferenceOverrideParams,
-        session_id: str | None = None,
+        self, params: SetSmallViewportHeightDifferenceOverrideParams, session_id: str | None = None
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Emulation.setSmallViewportHeightDifferenceOverride",

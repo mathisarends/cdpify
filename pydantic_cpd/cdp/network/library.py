@@ -56,14 +56,7 @@ from .commands import (
     TakeResponseBodyForInterceptionAsStreamResult,
 )
 
-
 class NetworkClient:
-    """
-    Network domain allows tracking network activities of the page. It exposes
-    information about http, file, data and other requests and responses, their headers,
-    bodies, timing, etc.
-    """
-
     def __init__(self, client: CDPClient) -> None:
         self._client = client
 
@@ -157,7 +150,9 @@ class NetworkClient:
         )
         return result
 
-    async def disable(self, session_id: str | None = None) -> dict[str, Any]:
+    async def disable(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Network.disable",
             params=None,
@@ -176,9 +171,7 @@ class NetworkClient:
         return result
 
     async def emulate_network_conditions_by_rule(
-        self,
-        params: EmulateNetworkConditionsByRuleParams,
-        session_id: str | None = None,
+        self, params: EmulateNetworkConditionsByRuleParams, session_id: str | None = None
     ) -> EmulateNetworkConditionsByRuleResult:
         result = await self._client.send_raw(
             method="Network.emulateNetworkConditionsByRule",
@@ -208,9 +201,7 @@ class NetworkClient:
         return result
 
     async def configure_durable_messages(
-        self,
-        params: ConfigureDurableMessagesParams | None = None,
-        session_id: str | None = None,
+        self, params: ConfigureDurableMessagesParams | None = None, session_id: str | None = None
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Network.configureDurableMessages",
@@ -270,9 +261,7 @@ class NetworkClient:
         return GetRequestPostDataResult.model_validate(result)
 
     async def get_response_body_for_interception(
-        self,
-        params: GetResponseBodyForInterceptionParams,
-        session_id: str | None = None,
+        self, params: GetResponseBodyForInterceptionParams, session_id: str | None = None
     ) -> GetResponseBodyForInterceptionResult:
         result = await self._client.send_raw(
             method="Network.getResponseBodyForInterception",
@@ -282,9 +271,7 @@ class NetworkClient:
         return GetResponseBodyForInterceptionResult.model_validate(result)
 
     async def take_response_body_for_interception_as_stream(
-        self,
-        params: TakeResponseBodyForInterceptionAsStreamParams,
-        session_id: str | None = None,
+        self, params: TakeResponseBodyForInterceptionAsStreamParams, session_id: str | None = None
     ) -> TakeResponseBodyForInterceptionAsStreamResult:
         result = await self._client.send_raw(
             method="Network.takeResponseBodyForInterceptionAsStream",
@@ -414,9 +401,7 @@ class NetworkClient:
         return StreamResourceContentResult.model_validate(result)
 
     async def get_security_isolation_status(
-        self,
-        params: GetSecurityIsolationStatusParams | None = None,
-        session_id: str | None = None,
+        self, params: GetSecurityIsolationStatusParams | None = None, session_id: str | None = None
     ) -> GetSecurityIsolationStatusResult:
         result = await self._client.send_raw(
             method="Network.getSecurityIsolationStatus",

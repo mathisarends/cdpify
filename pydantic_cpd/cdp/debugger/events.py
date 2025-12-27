@@ -8,59 +8,37 @@ from .types import *
 if TYPE_CHECKING:
     from pydantic_cpd.cdp import debugger, runtime
 
-
 class BreakpointResolvedEvent(CDPModel):
     """
     Fired when breakpoint is resolved to an actual script and location. Deprecated in
     favor of `resolvedBreakpoints` in the `scriptParsed` event.
     """
-
     breakpoint_id: BreakpointId
     location: Location
-
 
 class PausedEvent(CDPModel):
     """
     Fired when the virtual machine stopped on breakpoint or exception or any other stop
     criteria.
     """
-
     call_frames: list[CallFrame]
-    reason: Literal[
-        "ambiguous",
-        "assert",
-        "CSPViolation",
-        "debugCommand",
-        "DOM",
-        "EventListener",
-        "exception",
-        "instrumentation",
-        "OOM",
-        "other",
-        "promiseRejection",
-        "XHR",
-        "step",
-    ]
+    reason: Literal["ambiguous", "assert", "CSPViolation", "debugCommand", "DOM", "EventListener", "exception", "instrumentation", "OOM", "other", "promiseRejection", "XHR", "step"]
     data: dict[str, Any] | None = None
     hit_breakpoints: list[str] | None = None
     async_stack_trace: runtime.StackTrace | None = None
     async_stack_trace_id: runtime.StackTraceId | None = None
     async_call_stack_trace_id: runtime.StackTraceId | None = None
 
-
 class ResumedEvent(CDPModel):
     """
     Fired when the virtual machine resumed execution.
     """
-
     pass
-
 
 class ScriptFailedToParseEvent(CDPModel):
     """
     Fired when virtual machine fails to parse the script.
     """
-
     script_id: runtime.ScriptId
     url: str
     start_line: int
@@ -80,13 +58,11 @@ class ScriptFailedToParseEvent(CDPModel):
     script_language: debugger.ScriptLanguage | None = None
     embedder_name: str | None = None
 
-
 class ScriptParsedEvent(CDPModel):
     """
     Fired when virtual machine parses script. This event is also fired for all known
     and uncollected scripts upon enabling debugger.
     """
-
     script_id: runtime.ScriptId
     url: str
     start_line: int

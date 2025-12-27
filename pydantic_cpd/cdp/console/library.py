@@ -9,14 +9,12 @@ if TYPE_CHECKING:
 
 
 class ConsoleClient:
-    """
-    This domain is deprecated - use Runtime or Log instead.
-    """
-
     def __init__(self, client: CDPClient) -> None:
         self._client = client
 
-    async def clear_messages(self, session_id: str | None = None) -> dict[str, Any]:
+    async def clear_messages(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Console.clearMessages",
             params=None,
@@ -24,7 +22,9 @@ class ConsoleClient:
         )
         return result
 
-    async def disable(self, session_id: str | None = None) -> dict[str, Any]:
+    async def disable(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Console.disable",
             params=None,
@@ -32,7 +32,9 @@ class ConsoleClient:
         )
         return result
 
-    async def enable(self, session_id: str | None = None) -> dict[str, Any]:
+    async def enable(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Console.enable",
             params=None,

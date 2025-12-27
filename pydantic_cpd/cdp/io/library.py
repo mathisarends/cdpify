@@ -15,12 +15,7 @@ from .commands import (
     ResolveBlobResult,
 )
 
-
 class IOClient:
-    """
-    Input/Output operations for streams produced by DevTools.
-    """
-
     def __init__(self, client: CDPClient) -> None:
         self._client = client
 

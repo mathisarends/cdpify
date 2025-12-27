@@ -4,19 +4,15 @@ from pydantic_cpd.cdp.base import CDPModel
 
 from .types import *
 
-
 class AddHeapSnapshotChunkEvent(CDPModel):
     chunk: str
-
 
 class HeapStatsUpdateEvent(CDPModel):
     """
     If heap objects tracking has been started then backend may send update for one or
     more fragments
     """
-
     stats_update: list[int]
-
 
 class LastSeenObjectIdEvent(CDPModel):
     """
@@ -25,16 +21,13 @@ class LastSeenObjectIdEvent(CDPModel):
     the heap since last event then one or more heapStatsUpdate events will be sent
     before a new lastSeenObjectId event.
     """
-
     last_seen_object_id: int
     timestamp: float
-
 
 class ReportHeapSnapshotProgressEvent(CDPModel):
     done: int
     total: int
     finished: bool | None = None
-
 
 class ResetProfilesEvent(CDPModel):
     pass

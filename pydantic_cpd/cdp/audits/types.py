@@ -6,64 +6,30 @@ from pydantic_cpd.cdp.base import CDPModel
 if TYPE_CHECKING:
     from pydantic_cpd.cdp import dom, network, page, runtime
 
-
 class AffectedCookie(CDPModel):
     """
     Information about a cookie that is affected by an inspector issue.
     """
-
     name: str
     path: str
     domain: str
-
 
 class AffectedRequest(CDPModel):
     """
     Information about a request that is affected by an inspector issue.
     """
-
     request_id: network.RequestId | None = None
     url: str
-
 
 class AffectedFrame(CDPModel):
     """
     Information about the frame affected by an inspector issue.
     """
-
     frame_id: page.FrameId
 
+CookieExclusionReason = Literal["ExcludeSameSiteUnspecifiedTreatedAsLax", "ExcludeSameSiteNoneInsecure", "ExcludeSameSiteLax", "ExcludeSameSiteStrict", "ExcludeInvalidSameParty", "ExcludeSamePartyCrossPartyContext", "ExcludeDomainNonASCII", "ExcludeThirdPartyCookieBlockedInFirstPartySet", "ExcludeThirdPartyPhaseout", "ExcludePortMismatch", "ExcludeSchemeMismatch"]
 
-CookieExclusionReason = Literal[
-    "ExcludeSameSiteUnspecifiedTreatedAsLax",
-    "ExcludeSameSiteNoneInsecure",
-    "ExcludeSameSiteLax",
-    "ExcludeSameSiteStrict",
-    "ExcludeInvalidSameParty",
-    "ExcludeSamePartyCrossPartyContext",
-    "ExcludeDomainNonASCII",
-    "ExcludeThirdPartyCookieBlockedInFirstPartySet",
-    "ExcludeThirdPartyPhaseout",
-    "ExcludePortMismatch",
-    "ExcludeSchemeMismatch",
-]
-
-CookieWarningReason = Literal[
-    "WarnSameSiteUnspecifiedCrossSiteContext",
-    "WarnSameSiteNoneInsecure",
-    "WarnSameSiteUnspecifiedLaxAllowUnsafe",
-    "WarnSameSiteStrictLaxDowngradeStrict",
-    "WarnSameSiteStrictCrossDowngradeStrict",
-    "WarnSameSiteStrictCrossDowngradeLax",
-    "WarnSameSiteLaxCrossDowngradeStrict",
-    "WarnSameSiteLaxCrossDowngradeLax",
-    "WarnAttributeValueExceedsMaxSize",
-    "WarnDomainNonASCII",
-    "WarnThirdPartyPhaseout",
-    "WarnCrossSiteRedirectDowngradeChangesInclusion",
-    "WarnDeprecationTrialMetadata",
-    "WarnThirdPartyCookieHeuristic",
-]
+CookieWarningReason = Literal["WarnSameSiteUnspecifiedCrossSiteContext", "WarnSameSiteNoneInsecure", "WarnSameSiteUnspecifiedLaxAllowUnsafe", "WarnSameSiteStrictLaxDowngradeStrict", "WarnSameSiteStrictCrossDowngradeStrict", "WarnSameSiteStrictCrossDowngradeLax", "WarnSameSiteLaxCrossDowngradeStrict", "WarnSameSiteLaxCrossDowngradeLax", "WarnAttributeValueExceedsMaxSize", "WarnDomainNonASCII", "WarnThirdPartyPhaseout", "WarnCrossSiteRedirectDowngradeChangesInclusion", "WarnDeprecationTrialMetadata", "WarnThirdPartyCookieHeuristic"]
 
 CookieOperation = Literal["SetCookie", "ReadCookie"]
 
@@ -72,15 +38,12 @@ Represents the category of insight that a cookie issue falls under.
 """
 InsightType = Literal["GitHubResource", "GracePeriod", "Heuristics"]
 
-
 class CookieIssueInsight(CDPModel):
     """
     Information about the suggested solution to a cookie issue.
     """
-
     type: InsightType
     table_entry_url: str | None = None
-
 
 class CookieIssueDetails(CDPModel):
     """
@@ -88,7 +51,6 @@ class CookieIssueDetails(CDPModel):
     finding a specific cookie. With this, we can convey specific error information
     without the cookie.
     """
-
     cookie: AffectedCookie | None = None
     raw_cookie_line: str | None = None
     cookie_warning_reasons: list[CookieWarningReason]
@@ -99,43 +61,9 @@ class CookieIssueDetails(CDPModel):
     request: AffectedRequest | None = None
     insight: CookieIssueInsight | None = None
 
+MixedContentResolutionStatus = Literal["MixedContentBlocked", "MixedContentAutomaticallyUpgraded", "MixedContentWarning"]
 
-MixedContentResolutionStatus = Literal[
-    "MixedContentBlocked", "MixedContentAutomaticallyUpgraded", "MixedContentWarning"
-]
-
-MixedContentResourceType = Literal[
-    "AttributionSrc",
-    "Audio",
-    "Beacon",
-    "CSPReport",
-    "Download",
-    "EventSource",
-    "Favicon",
-    "Font",
-    "Form",
-    "Frame",
-    "Image",
-    "Import",
-    "JSON",
-    "Manifest",
-    "Ping",
-    "PluginData",
-    "PluginResource",
-    "Prefetch",
-    "Resource",
-    "Script",
-    "ServiceWorker",
-    "SharedWorker",
-    "SpeculationRules",
-    "Stylesheet",
-    "Track",
-    "Video",
-    "Worker",
-    "XMLHttpRequest",
-    "XSLT",
-]
-
+MixedContentResourceType = Literal["AttributionSrc", "Audio", "Beacon", "CSPReport", "Download", "EventSource", "Favicon", "Font", "Form", "Frame", "Image", "Import", "JSON", "Manifest", "Ping", "PluginData", "PluginResource", "Prefetch", "Resource", "Script", "ServiceWorker", "SharedWorker", "SpeculationRules", "Stylesheet", "Track", "Video", "Worker", "XMLHttpRequest", "XSLT"]
 
 class MixedContentIssueDetails(CDPModel):
     resource_type: MixedContentResourceType | None = None
@@ -145,22 +73,11 @@ class MixedContentIssueDetails(CDPModel):
     request: AffectedRequest | None = None
     frame: AffectedFrame | None = None
 
-
 """
 Enum indicating the reason a response has been blocked. These reasons are refinements
 of the net error BLOCKED_BY_RESPONSE.
 """
-BlockedByResponseReason = Literal[
-    "CoepFrameResourceNeedsCoepHeader",
-    "CoopSandboxedIFrameCannotNavigateToCoopPage",
-    "CorpNotSameOrigin",
-    "CorpNotSameOriginAfterDefaultedToSameOriginByCoep",
-    "CorpNotSameOriginAfterDefaultedToSameOriginByDip",
-    "CorpNotSameOriginAfterDefaultedToSameOriginByCoepAndDip",
-    "CorpNotSameSite",
-    "SRIMessageSignatureMismatch",
-]
-
+BlockedByResponseReason = Literal["CoepFrameResourceNeedsCoepHeader", "CoopSandboxedIFrameCannotNavigateToCoopPage", "CorpNotSameOrigin", "CorpNotSameOriginAfterDefaultedToSameOriginByCoep", "CorpNotSameOriginAfterDefaultedToSameOriginByDip", "CorpNotSameOriginAfterDefaultedToSameOriginByCoepAndDip", "CorpNotSameSite", "SRIMessageSignatureMismatch"]
 
 class BlockedByResponseIssueDetails(CDPModel):
     """
@@ -168,41 +85,27 @@ class BlockedByResponseIssueDetails(CDPModel):
     Currently only used for COEP/COOP, but may be extended to include some CSP errors in
     the future.
     """
-
     request: AffectedRequest
     parent_frame: AffectedFrame | None = None
     blocked_frame: AffectedFrame | None = None
     reason: BlockedByResponseReason
 
-
 HeavyAdResolutionStatus = Literal["HeavyAdBlocked", "HeavyAdWarning"]
 
 HeavyAdReason = Literal["NetworkTotalLimit", "CpuTotalLimit", "CpuPeakLimit"]
-
 
 class HeavyAdIssueDetails(CDPModel):
     resolution: HeavyAdResolutionStatus
     reason: HeavyAdReason
     frame: AffectedFrame
 
-
-ContentSecurityPolicyViolationType = Literal[
-    "kInlineViolation",
-    "kEvalViolation",
-    "kURLViolation",
-    "kSRIViolation",
-    "kTrustedTypesSinkViolation",
-    "kTrustedTypesPolicyViolation",
-    "kWasmEvalViolation",
-]
-
+ContentSecurityPolicyViolationType = Literal["kInlineViolation", "kEvalViolation", "kURLViolation", "kSRIViolation", "kTrustedTypesSinkViolation", "kTrustedTypesPolicyViolation", "kWasmEvalViolation"]
 
 class SourceCodeLocation(CDPModel):
     script_id: runtime.ScriptId | None = None
     url: str
     line_number: int
     column_number: int
-
 
 class ContentSecurityPolicyIssueDetails(CDPModel):
     blocked_u_r_l: str | None = None
@@ -213,20 +116,16 @@ class ContentSecurityPolicyIssueDetails(CDPModel):
     source_code_location: SourceCodeLocation | None = None
     violating_node_id: dom.BackendNodeId | None = None
 
-
 SharedArrayBufferIssueType = Literal["TransferIssue", "CreationIssue"]
-
 
 class SharedArrayBufferIssueDetails(CDPModel):
     """
     Details for a issue arising from an SAB being instantiated in, or transferred to a
     context that is not cross-origin isolated.
     """
-
     source_code_location: SourceCodeLocation
     is_warning: bool
     type: SharedArrayBufferIssueType
-
 
 class LowTextContrastIssueDetails(CDPModel):
     violating_node_id: dom.BackendNodeId
@@ -237,13 +136,11 @@ class LowTextContrastIssueDetails(CDPModel):
     font_size: str
     font_weight: str
 
-
 class CorsIssueDetails(CDPModel):
     """
     Details for a CORS related issue, e.g. a warning or error related to CORS RFC1918
     enforcement.
     """
-
     cors_error_status: network.CorsErrorStatus
     is_warning: bool
     request: AffectedRequest
@@ -252,125 +149,42 @@ class CorsIssueDetails(CDPModel):
     resource_i_p_address_space: network.IPAddressSpace | None = None
     client_security_state: network.ClientSecurityState | None = None
 
+AttributionReportingIssueType = Literal["PermissionPolicyDisabled", "UntrustworthyReportingOrigin", "InsecureContext", "InvalidHeader", "InvalidRegisterTriggerHeader", "SourceAndTriggerHeaders", "SourceIgnored", "TriggerIgnored", "OsSourceIgnored", "OsTriggerIgnored", "InvalidRegisterOsSourceHeader", "InvalidRegisterOsTriggerHeader", "WebAndOsHeaders", "NoWebOrOsSupport", "NavigationRegistrationWithoutTransientUserActivation", "InvalidInfoHeader", "NoRegisterSourceHeader", "NoRegisterTriggerHeader", "NoRegisterOsSourceHeader", "NoRegisterOsTriggerHeader", "NavigationRegistrationUniqueScopeAlreadySet"]
 
-AttributionReportingIssueType = Literal[
-    "PermissionPolicyDisabled",
-    "UntrustworthyReportingOrigin",
-    "InsecureContext",
-    "InvalidHeader",
-    "InvalidRegisterTriggerHeader",
-    "SourceAndTriggerHeaders",
-    "SourceIgnored",
-    "TriggerIgnored",
-    "OsSourceIgnored",
-    "OsTriggerIgnored",
-    "InvalidRegisterOsSourceHeader",
-    "InvalidRegisterOsTriggerHeader",
-    "WebAndOsHeaders",
-    "NoWebOrOsSupport",
-    "NavigationRegistrationWithoutTransientUserActivation",
-    "InvalidInfoHeader",
-    "NoRegisterSourceHeader",
-    "NoRegisterTriggerHeader",
-    "NoRegisterOsSourceHeader",
-    "NoRegisterOsTriggerHeader",
-    "NavigationRegistrationUniqueScopeAlreadySet",
-]
+SharedDictionaryError = Literal["UseErrorCrossOriginNoCorsRequest", "UseErrorDictionaryLoadFailure", "UseErrorMatchingDictionaryNotUsed", "UseErrorUnexpectedContentDictionaryHeader", "WriteErrorCossOriginNoCorsRequest", "WriteErrorDisallowedBySettings", "WriteErrorExpiredResponse", "WriteErrorFeatureDisabled", "WriteErrorInsufficientResources", "WriteErrorInvalidMatchField", "WriteErrorInvalidStructuredHeader", "WriteErrorInvalidTTLField", "WriteErrorNavigationRequest", "WriteErrorNoMatchField", "WriteErrorNonIntegerTTLField", "WriteErrorNonListMatchDestField", "WriteErrorNonSecureContext", "WriteErrorNonStringIdField", "WriteErrorNonStringInMatchDestList", "WriteErrorNonStringMatchField", "WriteErrorNonTokenTypeField", "WriteErrorRequestAborted", "WriteErrorShuttingDown", "WriteErrorTooLongIdField", "WriteErrorUnsupportedType"]
 
-SharedDictionaryError = Literal[
-    "UseErrorCrossOriginNoCorsRequest",
-    "UseErrorDictionaryLoadFailure",
-    "UseErrorMatchingDictionaryNotUsed",
-    "UseErrorUnexpectedContentDictionaryHeader",
-    "WriteErrorCossOriginNoCorsRequest",
-    "WriteErrorDisallowedBySettings",
-    "WriteErrorExpiredResponse",
-    "WriteErrorFeatureDisabled",
-    "WriteErrorInsufficientResources",
-    "WriteErrorInvalidMatchField",
-    "WriteErrorInvalidStructuredHeader",
-    "WriteErrorInvalidTTLField",
-    "WriteErrorNavigationRequest",
-    "WriteErrorNoMatchField",
-    "WriteErrorNonIntegerTTLField",
-    "WriteErrorNonListMatchDestField",
-    "WriteErrorNonSecureContext",
-    "WriteErrorNonStringIdField",
-    "WriteErrorNonStringInMatchDestList",
-    "WriteErrorNonStringMatchField",
-    "WriteErrorNonTokenTypeField",
-    "WriteErrorRequestAborted",
-    "WriteErrorShuttingDown",
-    "WriteErrorTooLongIdField",
-    "WriteErrorUnsupportedType",
-]
+SRIMessageSignatureError = Literal["MissingSignatureHeader", "MissingSignatureInputHeader", "InvalidSignatureHeader", "InvalidSignatureInputHeader", "SignatureHeaderValueIsNotByteSequence", "SignatureHeaderValueIsParameterized", "SignatureHeaderValueIsIncorrectLength", "SignatureInputHeaderMissingLabel", "SignatureInputHeaderValueNotInnerList", "SignatureInputHeaderValueMissingComponents", "SignatureInputHeaderInvalidComponentType", "SignatureInputHeaderInvalidComponentName", "SignatureInputHeaderInvalidHeaderComponentParameter", "SignatureInputHeaderInvalidDerivedComponentParameter", "SignatureInputHeaderKeyIdLength", "SignatureInputHeaderInvalidParameter", "SignatureInputHeaderMissingRequiredParameters", "ValidationFailedSignatureExpired", "ValidationFailedInvalidLength", "ValidationFailedSignatureMismatch", "ValidationFailedIntegrityMismatch"]
 
-SRIMessageSignatureError = Literal[
-    "MissingSignatureHeader",
-    "MissingSignatureInputHeader",
-    "InvalidSignatureHeader",
-    "InvalidSignatureInputHeader",
-    "SignatureHeaderValueIsNotByteSequence",
-    "SignatureHeaderValueIsParameterized",
-    "SignatureHeaderValueIsIncorrectLength",
-    "SignatureInputHeaderMissingLabel",
-    "SignatureInputHeaderValueNotInnerList",
-    "SignatureInputHeaderValueMissingComponents",
-    "SignatureInputHeaderInvalidComponentType",
-    "SignatureInputHeaderInvalidComponentName",
-    "SignatureInputHeaderInvalidHeaderComponentParameter",
-    "SignatureInputHeaderInvalidDerivedComponentParameter",
-    "SignatureInputHeaderKeyIdLength",
-    "SignatureInputHeaderInvalidParameter",
-    "SignatureInputHeaderMissingRequiredParameters",
-    "ValidationFailedSignatureExpired",
-    "ValidationFailedInvalidLength",
-    "ValidationFailedSignatureMismatch",
-    "ValidationFailedIntegrityMismatch",
-]
-
-UnencodedDigestError = Literal[
-    "MalformedDictionary",
-    "UnknownAlgorithm",
-    "IncorrectDigestType",
-    "IncorrectDigestLength",
-]
-
+UnencodedDigestError = Literal["MalformedDictionary", "UnknownAlgorithm", "IncorrectDigestType", "IncorrectDigestLength"]
 
 class AttributionReportingIssueDetails(CDPModel):
     """
     Details for issues around "Attribution Reporting API" usage. Explainer:
     https://github.com/WICG/attribution-reporting-api
     """
-
     violation_type: AttributionReportingIssueType
     request: AffectedRequest | None = None
     violating_node_id: dom.BackendNodeId | None = None
     invalid_parameter: str | None = None
-
 
 class QuirksModeIssueDetails(CDPModel):
     """
     Details for issues about documents in Quirks Mode or Limited Quirks Mode that
     affects page layouting.
     """
-
     is_limited_quirks_mode: bool
     document_node_id: dom.BackendNodeId
     url: str
     frame_id: page.FrameId
     loader_id: network.LoaderId
 
-
 class NavigatorUserAgentIssueDetails(CDPModel):
     url: str
     location: SourceCodeLocation | None = None
 
-
 class SharedDictionaryIssueDetails(CDPModel):
     shared_dictionary_error: SharedDictionaryError
     request: AffectedRequest
-
 
 class SRIMessageSignatureIssueDetails(CDPModel):
     error: SRIMessageSignatureError
@@ -378,53 +192,30 @@ class SRIMessageSignatureIssueDetails(CDPModel):
     integrity_assertions: list[str]
     request: AffectedRequest
 
-
 class UnencodedDigestIssueDetails(CDPModel):
     error: UnencodedDigestError
     request: AffectedRequest
 
-
-GenericIssueErrorType = Literal[
-    "FormLabelForNameError",
-    "FormDuplicateIdForInputError",
-    "FormInputWithNoLabelError",
-    "FormAutocompleteAttributeEmptyError",
-    "FormEmptyIdAndNameAttributesForInputError",
-    "FormAriaLabelledByToNonExistingIdError",
-    "FormInputAssignedAutocompleteValueToIdOrNameAttributeError",
-    "FormLabelHasNeitherForNorNestedInputError",
-    "FormLabelForMatchesNonExistingIdError",
-    "FormInputHasWrongButWellIntendedAutocompleteValueError",
-    "ResponseWasBlockedByORB",
-    "NavigationEntryMarkedSkippable",
-    "AutofillAndManualTextPolicyControlledFeaturesInfo",
-    "AutofillPolicyControlledFeatureInfo",
-    "ManualTextPolicyControlledFeatureInfo",
-]
-
+GenericIssueErrorType = Literal["FormLabelForNameError", "FormDuplicateIdForInputError", "FormInputWithNoLabelError", "FormAutocompleteAttributeEmptyError", "FormEmptyIdAndNameAttributesForInputError", "FormAriaLabelledByToNonExistingIdError", "FormInputAssignedAutocompleteValueToIdOrNameAttributeError", "FormLabelHasNeitherForNorNestedInputError", "FormLabelForMatchesNonExistingIdError", "FormInputHasWrongButWellIntendedAutocompleteValueError", "ResponseWasBlockedByORB", "NavigationEntryMarkedSkippable", "AutofillAndManualTextPolicyControlledFeaturesInfo", "AutofillPolicyControlledFeatureInfo", "ManualTextPolicyControlledFeatureInfo"]
 
 class GenericIssueDetails(CDPModel):
     """
     Depending on the concrete errorType, different properties are set.
     """
-
     error_type: GenericIssueErrorType
     frame_id: page.FrameId | None = None
     violating_node_id: dom.BackendNodeId | None = None
     violating_node_attribute: str | None = None
     request: AffectedRequest | None = None
 
-
 class DeprecationIssueDetails(CDPModel):
     """
     This issue tracks information needed to print a deprecation message.
     https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/frame/third_party/blink/renderer/core/frame/deprecation/README.md
     """
-
     affected_frame: AffectedFrame | None = None
     source_code_location: SourceCodeLocation
     type: str
-
 
 class BounceTrackingIssueDetails(CDPModel):
     """
@@ -434,9 +225,7 @@ class BounceTrackingIssueDetails(CDPModel):
     `https://example.test:80/bounce` was in the redirect chain, the site reported would
     be `example.test`.
     """
-
     tracking_sites: list[str]
-
 
 class CookieDeprecationMetadataIssueDetails(CDPModel):
     """
@@ -446,19 +235,15 @@ class CookieDeprecationMetadataIssueDetails(CDPModel):
     `https://example.test:80/web_page` was accessing cookies, the site reported would be
     `example.test`.
     """
-
     allowed_sites: list[str]
     opt_out_percentage: float
     is_opt_out_top_level: bool
     operation: CookieOperation
 
-
 ClientHintIssueReason = Literal["MetaTagAllowListInvalidOrigin", "MetaTagModifiedHTML"]
-
 
 class FederatedAuthRequestIssueDetails(CDPModel):
     federated_auth_request_issue_reason: FederatedAuthRequestIssueReason
-
 
 """
 Represents the failure reason when a federated authentication reason fails. Should be
@@ -466,203 +251,85 @@ updated alongside RequestIdTokenStatus in
 third_party/blink/public/mojom/devtools/inspector_issue.mojom to include all cases
 except for success.
 """
-FederatedAuthRequestIssueReason = Literal[
-    "ShouldEmbargo",
-    "TooManyRequests",
-    "WellKnownHttpNotFound",
-    "WellKnownNoResponse",
-    "WellKnownInvalidResponse",
-    "WellKnownListEmpty",
-    "WellKnownInvalidContentType",
-    "ConfigNotInWellKnown",
-    "WellKnownTooBig",
-    "ConfigHttpNotFound",
-    "ConfigNoResponse",
-    "ConfigInvalidResponse",
-    "ConfigInvalidContentType",
-    "ClientMetadataHttpNotFound",
-    "ClientMetadataNoResponse",
-    "ClientMetadataInvalidResponse",
-    "ClientMetadataInvalidContentType",
-    "IdpNotPotentiallyTrustworthy",
-    "DisabledInSettings",
-    "DisabledInFlags",
-    "ErrorFetchingSignin",
-    "InvalidSigninResponse",
-    "AccountsHttpNotFound",
-    "AccountsNoResponse",
-    "AccountsInvalidResponse",
-    "AccountsListEmpty",
-    "AccountsInvalidContentType",
-    "IdTokenHttpNotFound",
-    "IdTokenNoResponse",
-    "IdTokenInvalidResponse",
-    "IdTokenIdpErrorResponse",
-    "IdTokenCrossSiteIdpErrorResponse",
-    "IdTokenInvalidRequest",
-    "IdTokenInvalidContentType",
-    "ErrorIdToken",
-    "Canceled",
-    "RpPageNotVisible",
-    "SilentMediationFailure",
-    "ThirdPartyCookiesBlocked",
-    "NotSignedInWithIdp",
-    "MissingTransientUserActivation",
-    "ReplacedByActiveMode",
-    "InvalidFieldsSpecified",
-    "RelyingPartyOriginIsOpaque",
-    "TypeNotMatching",
-    "UiDismissedNoEmbargo",
-    "CorsError",
-    "SuppressedBySegmentationPlatform",
-]
-
+FederatedAuthRequestIssueReason = Literal["ShouldEmbargo", "TooManyRequests", "WellKnownHttpNotFound", "WellKnownNoResponse", "WellKnownInvalidResponse", "WellKnownListEmpty", "WellKnownInvalidContentType", "ConfigNotInWellKnown", "WellKnownTooBig", "ConfigHttpNotFound", "ConfigNoResponse", "ConfigInvalidResponse", "ConfigInvalidContentType", "ClientMetadataHttpNotFound", "ClientMetadataNoResponse", "ClientMetadataInvalidResponse", "ClientMetadataInvalidContentType", "IdpNotPotentiallyTrustworthy", "DisabledInSettings", "DisabledInFlags", "ErrorFetchingSignin", "InvalidSigninResponse", "AccountsHttpNotFound", "AccountsNoResponse", "AccountsInvalidResponse", "AccountsListEmpty", "AccountsInvalidContentType", "IdTokenHttpNotFound", "IdTokenNoResponse", "IdTokenInvalidResponse", "IdTokenIdpErrorResponse", "IdTokenCrossSiteIdpErrorResponse", "IdTokenInvalidRequest", "IdTokenInvalidContentType", "ErrorIdToken", "Canceled", "RpPageNotVisible", "SilentMediationFailure", "ThirdPartyCookiesBlocked", "NotSignedInWithIdp", "MissingTransientUserActivation", "ReplacedByActiveMode", "InvalidFieldsSpecified", "RelyingPartyOriginIsOpaque", "TypeNotMatching", "UiDismissedNoEmbargo", "CorsError", "SuppressedBySegmentationPlatform"]
 
 class FederatedAuthUserInfoRequestIssueDetails(CDPModel):
-    federated_auth_user_info_request_issue_reason: (
-        FederatedAuthUserInfoRequestIssueReason
-    )
-
+    federated_auth_user_info_request_issue_reason: FederatedAuthUserInfoRequestIssueReason
 
 """
 Represents the failure reason when a getUserInfo() call fails. Should be updated
 alongside FederatedAuthUserInfoRequestResult in
 third_party/blink/public/mojom/devtools/inspector_issue.mojom.
 """
-FederatedAuthUserInfoRequestIssueReason = Literal[
-    "NotSameOrigin",
-    "NotIframe",
-    "NotPotentiallyTrustworthy",
-    "NoApiPermission",
-    "NotSignedInWithIdp",
-    "NoAccountSharingPermission",
-    "InvalidConfigOrWellKnown",
-    "InvalidAccountsResponse",
-    "NoReturningUserFromFetchedAccounts",
-]
-
+FederatedAuthUserInfoRequestIssueReason = Literal["NotSameOrigin", "NotIframe", "NotPotentiallyTrustworthy", "NoApiPermission", "NotSignedInWithIdp", "NoAccountSharingPermission", "InvalidConfigOrWellKnown", "InvalidAccountsResponse", "NoReturningUserFromFetchedAccounts"]
 
 class ClientHintIssueDetails(CDPModel):
     """
     This issue tracks client hints related issues. It's used to deprecate old features,
     encourage the use of new ones, and provide general guidance.
     """
-
     source_code_location: SourceCodeLocation
     client_hint_issue_reason: ClientHintIssueReason
-
 
 class FailedRequestInfo(CDPModel):
     url: str
     failure_message: str
     request_id: network.RequestId | None = None
 
-
-PartitioningBlobURLInfo = Literal[
-    "BlockedCrossPartitionFetching", "EnforceNoopenerForNavigation"
-]
-
+PartitioningBlobURLInfo = Literal["BlockedCrossPartitionFetching", "EnforceNoopenerForNavigation"]
 
 class PartitioningBlobURLIssueDetails(CDPModel):
     url: str
     partitioning_blob_u_r_l_info: PartitioningBlobURLInfo
 
-
-ElementAccessibilityIssueReason = Literal[
-    "DisallowedSelectChild",
-    "DisallowedOptGroupChild",
-    "NonPhrasingContentOptionChild",
-    "InteractiveContentOptionChild",
-    "InteractiveContentLegendChild",
-    "InteractiveContentSummaryDescendant",
-]
-
+ElementAccessibilityIssueReason = Literal["DisallowedSelectChild", "DisallowedOptGroupChild", "NonPhrasingContentOptionChild", "InteractiveContentOptionChild", "InteractiveContentLegendChild", "InteractiveContentSummaryDescendant"]
 
 class ElementAccessibilityIssueDetails(CDPModel):
     """
     This issue warns about errors in the select or summary element content model.
     """
-
     node_id: dom.BackendNodeId
     element_accessibility_issue_reason: ElementAccessibilityIssueReason
     has_disallowed_attributes: bool
 
-
 StyleSheetLoadingIssueReason = Literal["LateImportRule", "RequestFailed"]
-
 
 class StylesheetLoadingIssueDetails(CDPModel):
     """
     This issue warns when a referenced stylesheet couldn't be loaded.
     """
-
     source_code_location: SourceCodeLocation
     style_sheet_loading_issue_reason: StyleSheetLoadingIssueReason
     failed_request_info: FailedRequestInfo | None = None
 
-
-PropertyRuleIssueReason = Literal[
-    "InvalidSyntax", "InvalidInitialValue", "InvalidInherits", "InvalidName"
-]
-
+PropertyRuleIssueReason = Literal["InvalidSyntax", "InvalidInitialValue", "InvalidInherits", "InvalidName"]
 
 class PropertyRuleIssueDetails(CDPModel):
     """
     This issue warns about errors in property rules that lead to property registrations
     being ignored.
     """
-
     source_code_location: SourceCodeLocation
     property_rule_issue_reason: PropertyRuleIssueReason
     property_value: str | None = None
 
-
-UserReidentificationIssueType = Literal[
-    "BlockedFrameNavigation", "BlockedSubresource", "NoisedCanvasReadback"
-]
-
+UserReidentificationIssueType = Literal["BlockedFrameNavigation", "BlockedSubresource", "NoisedCanvasReadback"]
 
 class UserReidentificationIssueDetails(CDPModel):
     """
     This issue warns about uses of APIs that may be considered misuse to re-identify
     users.
     """
-
     type: UserReidentificationIssueType
     request: AffectedRequest | None = None
     source_code_location: SourceCodeLocation | None = None
 
-
-PermissionElementIssueType = Literal[
-    "InvalidType",
-    "FencedFrameDisallowed",
-    "CspFrameAncestorsMissing",
-    "PermissionsPolicyBlocked",
-    "PaddingRightUnsupported",
-    "PaddingBottomUnsupported",
-    "InsetBoxShadowUnsupported",
-    "RequestInProgress",
-    "UntrustedEvent",
-    "RegistrationFailed",
-    "TypeNotSupported",
-    "InvalidTypeActivation",
-    "SecurityChecksFailed",
-    "ActivationDisabled",
-    "GeolocationDeprecated",
-    "InvalidDisplayStyle",
-    "NonOpaqueColor",
-    "LowContrast",
-    "FontSizeTooSmall",
-    "FontSizeTooLarge",
-    "InvalidSizeValue",
-]
-
+PermissionElementIssueType = Literal["InvalidType", "FencedFrameDisallowed", "CspFrameAncestorsMissing", "PermissionsPolicyBlocked", "PaddingRightUnsupported", "PaddingBottomUnsupported", "InsetBoxShadowUnsupported", "RequestInProgress", "UntrustedEvent", "RegistrationFailed", "TypeNotSupported", "InvalidTypeActivation", "SecurityChecksFailed", "ActivationDisabled", "GeolocationDeprecated", "InvalidDisplayStyle", "NonOpaqueColor", "LowContrast", "FontSizeTooSmall", "FontSizeTooLarge", "InvalidSizeValue"]
 
 class PermissionElementIssueDetails(CDPModel):
     """
     This issue warns about improper usage of the <permission> element.
     """
-
     issue_type: PermissionElementIssueType
     type: str | None = None
     node_id: dom.BackendNodeId | None = None
@@ -672,41 +339,11 @@ class PermissionElementIssueDetails(CDPModel):
     occluder_parent_node_info: str | None = None
     disable_reason: str | None = None
 
-
 """
 A unique identifier for the type of issue. Each type may use one of the optional fields
 in InspectorIssueDetails to convey more specific information about the kind of issue.
 """
-InspectorIssueCode = Literal[
-    "CookieIssue",
-    "MixedContentIssue",
-    "BlockedByResponseIssue",
-    "HeavyAdIssue",
-    "ContentSecurityPolicyIssue",
-    "SharedArrayBufferIssue",
-    "LowTextContrastIssue",
-    "CorsIssue",
-    "AttributionReportingIssue",
-    "QuirksModeIssue",
-    "PartitioningBlobURLIssue",
-    "NavigatorUserAgentIssue",
-    "GenericIssue",
-    "DeprecationIssue",
-    "ClientHintIssue",
-    "FederatedAuthRequestIssue",
-    "BounceTrackingIssue",
-    "CookieDeprecationMetadataIssue",
-    "StylesheetLoadingIssue",
-    "FederatedAuthUserInfoRequestIssue",
-    "PropertyRuleIssue",
-    "SharedDictionaryIssue",
-    "ElementAccessibilityIssue",
-    "SRIMessageSignatureIssue",
-    "UnencodedDigestIssue",
-    "UserReidentificationIssue",
-    "PermissionElementIssue",
-]
-
+InspectorIssueCode = Literal["CookieIssue", "MixedContentIssue", "BlockedByResponseIssue", "HeavyAdIssue", "ContentSecurityPolicyIssue", "SharedArrayBufferIssue", "LowTextContrastIssue", "CorsIssue", "AttributionReportingIssue", "QuirksModeIssue", "PartitioningBlobURLIssue", "NavigatorUserAgentIssue", "GenericIssue", "DeprecationIssue", "ClientHintIssue", "FederatedAuthRequestIssue", "BounceTrackingIssue", "CookieDeprecationMetadataIssue", "StylesheetLoadingIssue", "FederatedAuthUserInfoRequestIssue", "PropertyRuleIssue", "SharedDictionaryIssue", "ElementAccessibilityIssue", "SRIMessageSignatureIssue", "UnencodedDigestIssue", "UserReidentificationIssue", "PermissionElementIssue"]
 
 class InspectorIssueDetails(CDPModel):
     """
@@ -714,14 +351,11 @@ class InspectorIssueDetails(CDPModel):
     the kind of issue. When adding a new issue code, please also add a new optional
     field to this type.
     """
-
     cookie_issue_details: CookieIssueDetails | None = None
     mixed_content_issue_details: MixedContentIssueDetails | None = None
     blocked_by_response_issue_details: BlockedByResponseIssueDetails | None = None
     heavy_ad_issue_details: HeavyAdIssueDetails | None = None
-    content_security_policy_issue_details: ContentSecurityPolicyIssueDetails | None = (
-        None
-    )
+    content_security_policy_issue_details: ContentSecurityPolicyIssueDetails | None = None
     shared_array_buffer_issue_details: SharedArrayBufferIssueDetails | None = None
     low_text_contrast_issue_details: LowTextContrastIssueDetails | None = None
     cors_issue_details: CorsIssueDetails | None = None
@@ -734,14 +368,10 @@ class InspectorIssueDetails(CDPModel):
     client_hint_issue_details: ClientHintIssueDetails | None = None
     federated_auth_request_issue_details: FederatedAuthRequestIssueDetails | None = None
     bounce_tracking_issue_details: BounceTrackingIssueDetails | None = None
-    cookie_deprecation_metadata_issue_details: (
-        CookieDeprecationMetadataIssueDetails | None
-    ) = None
+    cookie_deprecation_metadata_issue_details: CookieDeprecationMetadataIssueDetails | None = None
     stylesheet_loading_issue_details: StylesheetLoadingIssueDetails | None = None
     property_rule_issue_details: PropertyRuleIssueDetails | None = None
-    federated_auth_user_info_request_issue_details: (
-        FederatedAuthUserInfoRequestIssueDetails | None
-    ) = None
+    federated_auth_user_info_request_issue_details: FederatedAuthUserInfoRequestIssueDetails | None = None
     shared_dictionary_issue_details: SharedDictionaryIssueDetails | None = None
     element_accessibility_issue_details: ElementAccessibilityIssueDetails | None = None
     sri_message_signature_issue_details: SRIMessageSignatureIssueDetails | None = None
@@ -749,19 +379,16 @@ class InspectorIssueDetails(CDPModel):
     user_reidentification_issue_details: UserReidentificationIssueDetails | None = None
     permission_element_issue_details: PermissionElementIssueDetails | None = None
 
-
 """
 A unique id for a DevTools inspector issue. Allows other entities (e.g. exceptions, CDP
 message, console messages, etc.) to reference an issue.
 """
 IssueId = str
 
-
 class InspectorIssue(CDPModel):
     """
     An inspector issue reported from the back-end.
     """
-
     code: InspectorIssueCode
     details: InspectorIssueDetails
     issue_id: IssueId | None = None

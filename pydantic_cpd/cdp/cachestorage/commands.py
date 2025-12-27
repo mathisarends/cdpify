@@ -7,62 +7,49 @@ from .types import *
 
 from pydantic_cpd.cdp import storage
 
-
 class DeleteCacheParams(CDPModel):
     """
     Deletes a cache.
     """
-
     cache_id: CacheId
-
 
 class DeleteEntryParams(CDPModel):
     """
     Deletes a cache entry.
     """
-
     cache_id: CacheId
     request: str
-
 
 class RequestCacheNamesParams(CDPModel):
     """
     Requests cache names.
     """
-
     security_origin: str | None = None
     storage_key: str | None = None
     storage_bucket: storage.StorageBucket | None = None
 
-
 class RequestCacheNamesResult(CDPModel):
     caches: list[Cache]
-
 
 class RequestCachedResponseParams(CDPModel):
     """
     Fetches cache entry.
     """
-
     cache_id: CacheId
     request_u_r_l: str
     request_headers: list[Header]
 
-
 class RequestCachedResponseResult(CDPModel):
     response: CachedResponse
-
 
 class RequestEntriesParams(CDPModel):
     """
     Requests data from cache.
     """
-
     cache_id: CacheId
     skip_count: int | None = None
     page_size: int | None = None
     path_filter: str | None = None
-
 
 class RequestEntriesResult(CDPModel):
     cache_data_entries: list[DataEntry]

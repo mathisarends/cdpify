@@ -3,7 +3,6 @@
 from typing import Literal
 from pydantic_cpd.cdp.base import CDPModel
 
-
 class SafeAreaInsets(CDPModel):
     top: int | None = None
     top_max: int | None = None
@@ -14,32 +13,24 @@ class SafeAreaInsets(CDPModel):
     right: int | None = None
     right_max: int | None = None
 
-
 class ScreenOrientation(CDPModel):
     """
     Screen orientation.
     """
-
-    type: Literal[
-        "portraitPrimary", "portraitSecondary", "landscapePrimary", "landscapeSecondary"
-    ]
+    type: Literal["portraitPrimary", "portraitSecondary", "landscapePrimary", "landscapeSecondary"]
     angle: int
-
 
 class DisplayFeature(CDPModel):
     orientation: Literal["vertical", "horizontal"]
     offset: int
     mask_length: int
 
-
 class DevicePosture(CDPModel):
     type: Literal["continuous", "folded"]
-
 
 class MediaFeature(CDPModel):
     name: str
     value: str
-
 
 """
 advance: If the scheduler runs out of immediate work, the virtual time base may fast
@@ -49,16 +40,13 @@ there are any pending resource fetches.
 """
 VirtualTimePolicy = Literal["advance", "pause", "pauseIfNetworkFetchesPending"]
 
-
 class UserAgentBrandVersion(CDPModel):
     """
     Used to specify User Agent Client Hints to emulate. See
     https://wicg.github.io/ua-client-hints
     """
-
     brand: str
     version: str
-
 
 class UserAgentMetadata(CDPModel):
     """
@@ -66,7 +54,6 @@ class UserAgentMetadata(CDPModel):
     https://wicg.github.io/ua-client-hints Missing optional values will be filled in by
     the target with what it would normally use.
     """
-
     brands: list[UserAgentBrandVersion] | None = None
     full_version_list: list[UserAgentBrandVersion] | None = None
     full_version: str | None = None
@@ -79,38 +66,24 @@ class UserAgentMetadata(CDPModel):
     wow64: bool | None = None
     form_factors: list[str] | None = None
 
-
 """
 Used to specify sensor types to emulate. See https://w3c.github.io/sensors/#automation
 for more information.
 """
-SensorType = Literal[
-    "absolute-orientation",
-    "accelerometer",
-    "ambient-light",
-    "gravity",
-    "gyroscope",
-    "linear-acceleration",
-    "magnetometer",
-    "relative-orientation",
-]
-
+SensorType = Literal["absolute-orientation", "accelerometer", "ambient-light", "gravity", "gyroscope", "linear-acceleration", "magnetometer", "relative-orientation"]
 
 class SensorMetadata(CDPModel):
     available: bool | None = None
     minimum_frequency: float | None = None
     maximum_frequency: float | None = None
 
-
 class SensorReadingSingle(CDPModel):
     value: float
-
 
 class SensorReadingXYZ(CDPModel):
     x: float
     y: float
     z: float
-
 
 class SensorReadingQuaternion(CDPModel):
     x: float
@@ -118,21 +91,17 @@ class SensorReadingQuaternion(CDPModel):
     z: float
     w: float
 
-
 class SensorReading(CDPModel):
     single: SensorReadingSingle | None = None
     xyz: SensorReadingXYZ | None = None
     quaternion: SensorReadingQuaternion | None = None
 
-
 PressureSource = Literal["cpu"]
 
 PressureState = Literal["nominal", "fair", "serious", "critical"]
 
-
 class PressureMetadata(CDPModel):
     available: bool | None = None
-
 
 class WorkAreaInsets(CDPModel):
     top: int | None = None
@@ -140,16 +109,13 @@ class WorkAreaInsets(CDPModel):
     bottom: int | None = None
     right: int | None = None
 
-
 ScreenId = str
-
 
 class ScreenInfo(CDPModel):
     """
     Screen information similar to the one returned by window.getScreenDetails() method,
     see https://w3c.github.io/window-management/#screendetailed.
     """
-
     left: int
     top: int
     width: int
@@ -166,7 +132,6 @@ class ScreenInfo(CDPModel):
     is_primary: bool
     label: str
     id: ScreenId
-
 
 """
 Enum of image types that can be disabled.

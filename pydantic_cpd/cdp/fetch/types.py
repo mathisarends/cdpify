@@ -19,38 +19,31 @@ received).
 """
 RequestStage = Literal["Request", "Response"]
 
-
 class RequestPattern(CDPModel):
     url_pattern: str | None = None
     resource_type: network.ResourceType | None = None
     request_stage: RequestStage | None = None
 
-
 class HeaderEntry(CDPModel):
     """
     Response HTTP header entry
     """
-
     name: str
     value: str
-
 
 class AuthChallenge(CDPModel):
     """
     Authorization challenge for HTTP status code 401 or 407.
     """
-
     source: Literal["Server", "Proxy"] | None = None
     origin: str
     scheme: str
     realm: str
 
-
 class AuthChallengeResponse(CDPModel):
     """
     Response to an AuthChallenge.
     """
-
     response: Literal["Default", "CancelAuth", "ProvideCredentials"]
     username: str | None = None
     password: str | None = None

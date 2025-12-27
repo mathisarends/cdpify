@@ -16,16 +16,13 @@ from .commands import (
     TakePreciseCoverageResult,
 )
 
-
 class ProfilerClient:
-    """
-    CDP Profiler domain client.
-    """
-
     def __init__(self, client: CDPClient) -> None:
         self._client = client
 
-    async def disable(self, session_id: str | None = None) -> dict[str, Any]:
+    async def disable(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Profiler.disable",
             params=None,
@@ -33,7 +30,9 @@ class ProfilerClient:
         )
         return result
 
-    async def enable(self, session_id: str | None = None) -> dict[str, Any]:
+    async def enable(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Profiler.enable",
             params=None,
@@ -61,7 +60,9 @@ class ProfilerClient:
         )
         return result
 
-    async def start(self, session_id: str | None = None) -> dict[str, Any]:
+    async def start(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Profiler.start",
             params=None,
@@ -70,9 +71,7 @@ class ProfilerClient:
         return result
 
     async def start_precise_coverage(
-        self,
-        params: StartPreciseCoverageParams | None = None,
-        session_id: str | None = None,
+        self, params: StartPreciseCoverageParams | None = None, session_id: str | None = None
     ) -> StartPreciseCoverageResult:
         result = await self._client.send_raw(
             method="Profiler.startPreciseCoverage",
@@ -81,7 +80,9 @@ class ProfilerClient:
         )
         return StartPreciseCoverageResult.model_validate(result)
 
-    async def stop(self, session_id: str | None = None) -> StopResult:
+    async def stop(
+        self, session_id: str | None = None
+    ) -> StopResult:
         result = await self._client.send_raw(
             method="Profiler.stop",
             params=None,

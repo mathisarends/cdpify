@@ -14,16 +14,12 @@ CacheId = str
 """
 type of HTTP response cached
 """
-CachedResponseType = Literal[
-    "basic", "cors", "default", "error", "opaqueResponse", "opaqueRedirect"
-]
-
+CachedResponseType = Literal["basic", "cors", "default", "error", "opaqueResponse", "opaqueRedirect"]
 
 class DataEntry(CDPModel):
     """
     Data entry.
     """
-
     request_u_r_l: str
     request_method: str
     request_headers: list[Header]
@@ -33,27 +29,22 @@ class DataEntry(CDPModel):
     response_type: CachedResponseType
     response_headers: list[Header]
 
-
 class Cache(CDPModel):
     """
     Cache identifier.
     """
-
     cache_id: CacheId
     security_origin: str
     storage_key: str
     storage_bucket: storage.StorageBucket | None = None
     cache_name: str
 
-
 class Header(CDPModel):
     name: str
     value: str
-
 
 class CachedResponse(CDPModel):
     """
     Cached response
     """
-
     body: str

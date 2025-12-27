@@ -55,13 +55,7 @@ from .commands import (
     StepOverParams,
 )
 
-
 class DebuggerClient:
-    """
-    Debugger domain exposes JavaScript debugging capabilities. It allows setting and
-    removing breakpoints, stepping through execution, exploring stack traces, etc.
-    """
-
     def __init__(self, client: CDPClient) -> None:
         self._client = client
 
@@ -75,7 +69,9 @@ class DebuggerClient:
         )
         return result
 
-    async def disable(self, session_id: str | None = None) -> dict[str, Any]:
+    async def disable(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Debugger.disable",
             params=None,
@@ -163,7 +159,9 @@ class DebuggerClient:
         )
         return GetStackTraceResult.model_validate(result)
 
-    async def pause(self, session_id: str | None = None) -> dict[str, Any]:
+    async def pause(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Debugger.pause",
             params=None,
@@ -371,7 +369,9 @@ class DebuggerClient:
         )
         return result
 
-    async def step_out(self, session_id: str | None = None) -> dict[str, Any]:
+    async def step_out(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Debugger.stepOut",
             params=None,

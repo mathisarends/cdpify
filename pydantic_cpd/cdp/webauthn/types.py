@@ -11,7 +11,6 @@ Ctap2Version = Literal["ctap2_0", "ctap2_1"]
 
 AuthenticatorTransport = Literal["usb", "nfc", "ble", "cable", "internal"]
 
-
 class VirtualAuthenticatorOptions(CDPModel):
     protocol: AuthenticatorProtocol
     ctap2_version: Ctap2Version | None = None
@@ -26,7 +25,6 @@ class VirtualAuthenticatorOptions(CDPModel):
     is_user_verified: bool | None = None
     default_backup_eligibility: bool | None = None
     default_backup_state: bool | None = None
-
 
 class Credential(CDPModel):
     credential_id: str

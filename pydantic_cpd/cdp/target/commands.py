@@ -7,43 +7,33 @@ from .types import *
 
 from pydantic_cpd.cdp import browser
 
-
 class ActivateTargetParams(CDPModel):
     """
     Activates (focuses) the target.
     """
-
     target_id: TargetID
-
 
 class AttachToTargetParams(CDPModel):
     """
     Attaches to the target with given id.
     """
-
     target_id: TargetID
     flatten: bool | None = None
-
 
 class AttachToTargetResult(CDPModel):
     session_id: SessionID
 
-
 class AttachToBrowserTargetResult(CDPModel):
     session_id: SessionID
-
 
 class CloseTargetParams(CDPModel):
     """
     Closes the target. If the target is a page that gets closed too.
     """
-
     target_id: TargetID
-
 
 class CloseTargetResult(CDPModel):
     success: bool
-
 
 class ExposeDevToolsProtocolParams(CDPModel):
     """
@@ -54,38 +44,31 @@ class ExposeDevToolsProtocolParams(CDPModel):
     handleMessage(json)` - a callback that will be called for the protocol notifications
     and command responses.
     """
-
     target_id: TargetID
     binding_name: str | None = None
     inherit_permissions: bool | None = None
-
 
 class CreateBrowserContextParams(CDPModel):
     """
     Creates a new empty BrowserContext. Similar to an incognito profile but you can
     have more than one.
     """
-
     dispose_on_detach: bool | None = None
     proxy_server: str | None = None
     proxy_bypass_list: str | None = None
     origins_with_universal_network_access: list[str] | None = None
 
-
 class CreateBrowserContextResult(CDPModel):
     browser_context_id: browser.BrowserContextID
-
 
 class GetBrowserContextsResult(CDPModel):
     browser_context_ids: list[browser.BrowserContextID]
     default_browser_context_id: browser.BrowserContextID | None = None
 
-
 class CreateTargetParams(CDPModel):
     """
     Creates a new page.
     """
-
     url: str
     left: int | None = None
     top: int | None = None
@@ -99,63 +82,49 @@ class CreateTargetParams(CDPModel):
     for_tab: bool | None = None
     hidden: bool | None = None
 
-
 class CreateTargetResult(CDPModel):
     target_id: TargetID
-
 
 class DetachFromTargetParams(CDPModel):
     """
     Detaches session with given id.
     """
-
     session_id: SessionID | None = None
     target_id: TargetID | None = None
-
 
 class DisposeBrowserContextParams(CDPModel):
     """
     Deletes a BrowserContext. All the belonging pages will be closed without calling
     their beforeunload hooks.
     """
-
     browser_context_id: browser.BrowserContextID
-
 
 class GetTargetInfoParams(CDPModel):
     """
     Returns information about a target.
     """
-
     target_id: TargetID | None = None
-
 
 class GetTargetInfoResult(CDPModel):
     target_info: TargetInfo
-
 
 class GetTargetsParams(CDPModel):
     """
     Retrieves a list of available targets.
     """
-
     filter: TargetFilter | None = None
-
 
 class GetTargetsResult(CDPModel):
     target_infos: list[TargetInfo]
-
 
 class SendMessageToTargetParams(CDPModel):
     """
     Sends protocol message over session with given id. Consider using flat mode
     instead; see commands attachToTarget, setAutoAttach, and crbug.com/991325.
     """
-
     message: str
     session_id: SessionID | None = None
     target_id: TargetID | None = None
-
 
 class SetAutoAttachParams(CDPModel):
     """
@@ -167,12 +136,10 @@ class SetAutoAttachParams(CDPModel):
     targets. You might want to call this recursively for auto-attached targets to attach
     to all available targets.
     """
-
     auto_attach: bool
     wait_for_debugger_on_start: bool
     flatten: bool | None = None
     filter: TargetFilter | None = None
-
 
 class AutoAttachRelatedParams(CDPModel):
     """
@@ -182,51 +149,40 @@ class AutoAttachRelatedParams(CDPModel):
     also auto-attached. This cancels the effect of any previous `setAutoAttach` and is
     also cancelled by subsequent `setAutoAttach`. Only available at the Browser target.
     """
-
     target_id: TargetID
     wait_for_debugger_on_start: bool
     filter: TargetFilter | None = None
-
 
 class SetDiscoverTargetsParams(CDPModel):
     """
     Controls whether to discover available targets and notify via
     `targetCreated/targetInfoChanged/targetDestroyed` events.
     """
-
     discover: bool
     filter: TargetFilter | None = None
-
 
 class SetRemoteLocationsParams(CDPModel):
     """
     Enables target discovery for the specified locations, when `setDiscoverTargets` was
     set to `true`.
     """
-
     locations: list[RemoteLocation]
-
 
 class GetDevToolsTargetParams(CDPModel):
     """
     Gets the targetId of the DevTools page target opened for the given target (if any).
     """
-
     target_id: TargetID
-
 
 class GetDevToolsTargetResult(CDPModel):
     target_id: TargetID | None = None
-
 
 class OpenDevToolsParams(CDPModel):
     """
     Opens a DevTools window for the target.
     """
-
     target_id: TargetID
     panel_id: str | None = None
-
 
 class OpenDevToolsResult(CDPModel):
     target_id: TargetID

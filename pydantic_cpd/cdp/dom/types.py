@@ -22,62 +22,18 @@ Unique identifier for a CSS stylesheet.
 """
 StyleSheetId = str
 
-
 class BackendNode(CDPModel):
     """
     Backend node with a friendly name.
     """
-
     node_type: int
     node_name: str
     backend_node_id: BackendNodeId
 
-
 """
 Pseudo element type.
 """
-PseudoType = Literal[
-    "first-line",
-    "first-letter",
-    "checkmark",
-    "before",
-    "after",
-    "picker-icon",
-    "interest-hint",
-    "marker",
-    "backdrop",
-    "column",
-    "selection",
-    "search-text",
-    "target-text",
-    "spelling-error",
-    "grammar-error",
-    "highlight",
-    "first-line-inherited",
-    "scroll-marker",
-    "scroll-marker-group",
-    "scroll-button",
-    "scrollbar",
-    "scrollbar-thumb",
-    "scrollbar-button",
-    "scrollbar-track",
-    "scrollbar-track-piece",
-    "scrollbar-corner",
-    "resizer",
-    "input-list-button",
-    "view-transition",
-    "view-transition-group",
-    "view-transition-image-pair",
-    "view-transition-group-children",
-    "view-transition-old",
-    "view-transition-new",
-    "placeholder",
-    "file-selector-button",
-    "details-content",
-    "picker",
-    "permission-icon",
-    "overscroll-area-parent",
-]
+PseudoType = Literal["first-line", "first-letter", "checkmark", "before", "after", "picker-icon", "interest-hint", "marker", "backdrop", "column", "selection", "search-text", "target-text", "spelling-error", "grammar-error", "highlight", "first-line-inherited", "scroll-marker", "scroll-marker-group", "scroll-button", "scrollbar", "scrollbar-thumb", "scrollbar-button", "scrollbar-track", "scrollbar-track-piece", "scrollbar-corner", "resizer", "input-list-button", "view-transition", "view-transition-group", "view-transition-image-pair", "view-transition-group-children", "view-transition-old", "view-transition-new", "placeholder", "file-selector-button", "details-content", "picker", "permission-icon", "overscroll-area-parent"]
 
 """
 Shadow root type.
@@ -104,13 +60,11 @@ Physical scroll orientation
 """
 ScrollOrientation = Literal["horizontal", "vertical"]
 
-
 class Node(CDPModel):
     """
     DOM interaction is implemented in terms of mirror objects that represent the actual
     DOM nodes. DOMNode is a base node mirror type.
     """
-
     node_id: NodeId
     parent_id: NodeId | None = None
     backend_node_id: BackendNodeId
@@ -146,27 +100,22 @@ class Node(CDPModel):
     affected_by_starting_styles: bool | None = None
     adopted_style_sheets: list[StyleSheetId] | None = None
 
-
 class DetachedElementInfo(CDPModel):
     """
     A structure to hold the top-level node of a detached tree and an array of its
     retained descendants.
     """
-
     tree_node: Node
     retained_node_ids: list[NodeId]
-
 
 class RGBA(CDPModel):
     """
     A structure holding an RGBA color.
     """
-
     r: int
     g: int
     b: int
     a: float | None = None
-
 
 """
 An array of quad vertices, x immediately followed by y for each point, points
@@ -174,12 +123,10 @@ clock-wise.
 """
 Quad = list[Any]
 
-
 class BoxModel(CDPModel):
     """
     Box model.
     """
-
     content: Quad
     padding: Quad
     border: Quad
@@ -188,27 +135,22 @@ class BoxModel(CDPModel):
     height: int
     shape_outside: ShapeOutsideInfo | None = None
 
-
 class ShapeOutsideInfo(CDPModel):
     """
     CSS Shape Outside details.
     """
-
     bounds: Quad
     shape: list[Any]
     margin_shape: list[Any]
-
 
 class Rect(CDPModel):
     """
     Rectangle.
     """
-
     x: float
     y: float
     width: float
     height: float
-
 
 class CSSComputedStyleProperty(CDPModel):
     name: str

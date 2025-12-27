@@ -18,12 +18,7 @@ from .commands import (
     RequestEntriesResult,
 )
 
-
 class CacheStorageClient:
-    """
-    CDP CacheStorage domain client.
-    """
-
     def __init__(self, client: CDPClient) -> None:
         self._client = client
 
@@ -48,9 +43,7 @@ class CacheStorageClient:
         return result
 
     async def request_cache_names(
-        self,
-        params: RequestCacheNamesParams | None = None,
-        session_id: str | None = None,
+        self, params: RequestCacheNamesParams | None = None, session_id: str | None = None
     ) -> RequestCacheNamesResult:
         result = await self._client.send_raw(
             method="CacheStorage.requestCacheNames",

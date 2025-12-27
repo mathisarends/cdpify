@@ -67,18 +67,7 @@ from .commands import (
     TrackComputedStyleUpdatesParams,
 )
 
-
 class CSSClient:
-    """
-    This domain exposes CSS read/write operations. All CSS objects (stylesheets, rules,
-    and styles) have an associated `id` used in subsequent operations on the related
-    object. Each object type has a specific `id` structure, and those are not
-    interchangeable between objects of different kinds. CSS objects can be loaded using
-    the `get*ForNode()` calls (which accept a DOM node id). A client can also keep track
-    of stylesheets via the `styleSheetAdded`/`styleSheetRemoved` events and subsequently
-    load the required stylesheet contents using the `getStyleSheet[Text]()` methods.
-    """
-
     def __init__(self, client: CDPClient) -> None:
         self._client = client
 
@@ -112,7 +101,9 @@ class CSSClient:
         )
         return CreateStyleSheetResult.model_validate(result)
 
-    async def disable(self, session_id: str | None = None) -> dict[str, Any]:
+    async def disable(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="CSS.disable",
             params=None,
@@ -120,7 +111,9 @@ class CSSClient:
         )
         return result
 
-    async def enable(self, session_id: str | None = None) -> dict[str, Any]:
+    async def enable(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="CSS.enable",
             params=None,
@@ -279,9 +272,7 @@ class CSSClient:
         return GetLocationForSelectorResult.model_validate(result)
 
     async def track_computed_style_updates_for_node(
-        self,
-        params: TrackComputedStyleUpdatesForNodeParams | None = None,
-        session_id: str | None = None,
+        self, params: TrackComputedStyleUpdatesForNodeParams | None = None, session_id: str | None = None
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="CSS.trackComputedStyleUpdatesForNode",
@@ -311,9 +302,7 @@ class CSSClient:
         return TakeComputedStyleUpdatesResult.model_validate(result)
 
     async def set_effective_property_value_for_node(
-        self,
-        params: SetEffectivePropertyValueForNodeParams,
-        session_id: str | None = None,
+        self, params: SetEffectivePropertyValueForNodeParams, session_id: str | None = None
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="CSS.setEffectivePropertyValueForNode",

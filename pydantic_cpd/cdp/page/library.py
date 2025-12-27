@@ -73,12 +73,7 @@ from .commands import (
     StartScreencastParams,
 )
 
-
 class PageClient:
-    """
-    Actions and events related to the inspected page belong to the page domain.
-    """
-
     def __init__(self, client: CDPClient) -> None:
         self._client = client
 
@@ -93,9 +88,7 @@ class PageClient:
         return AddScriptToEvaluateOnLoadResult.model_validate(result)
 
     async def add_script_to_evaluate_on_new_document(
-        self,
-        params: AddScriptToEvaluateOnNewDocumentParams,
-        session_id: str | None = None,
+        self, params: AddScriptToEvaluateOnNewDocumentParams, session_id: str | None = None
     ) -> AddScriptToEvaluateOnNewDocumentResult:
         result = await self._client.send_raw(
             method="Page.addScriptToEvaluateOnNewDocument",
@@ -104,7 +97,9 @@ class PageClient:
         )
         return AddScriptToEvaluateOnNewDocumentResult.model_validate(result)
 
-    async def bring_to_front(self, session_id: str | None = None) -> dict[str, Any]:
+    async def bring_to_front(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Page.bringToFront",
             params=None,
@@ -113,9 +108,7 @@ class PageClient:
         return result
 
     async def capture_screenshot(
-        self,
-        params: CaptureScreenshotParams | None = None,
-        session_id: str | None = None,
+        self, params: CaptureScreenshotParams | None = None, session_id: str | None = None
     ) -> CaptureScreenshotResult:
         result = await self._client.send_raw(
             method="Page.captureScreenshot",
@@ -184,7 +177,9 @@ class PageClient:
         )
         return result
 
-    async def disable(self, session_id: str | None = None) -> dict[str, Any]:
+    async def disable(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Page.disable",
             params=None,
@@ -232,7 +227,9 @@ class PageClient:
         )
         return GetManifestIconsResult.model_validate(result)
 
-    async def get_app_id(self, session_id: str | None = None) -> GetAppIdResult:
+    async def get_app_id(
+        self, session_id: str | None = None
+    ) -> GetAppIdResult:
         result = await self._client.send_raw(
             method="Page.getAppId",
             params=None,
@@ -250,7 +247,9 @@ class PageClient:
         )
         return GetAdScriptAncestryResult.model_validate(result)
 
-    async def get_frame_tree(self, session_id: str | None = None) -> GetFrameTreeResult:
+    async def get_frame_tree(
+        self, session_id: str | None = None
+    ) -> GetFrameTreeResult:
         result = await self._client.send_raw(
             method="Page.getFrameTree",
             params=None,
@@ -369,9 +368,7 @@ class PageClient:
         return result
 
     async def remove_script_to_evaluate_on_new_document(
-        self,
-        params: RemoveScriptToEvaluateOnNewDocumentParams,
-        session_id: str | None = None,
+        self, params: RemoveScriptToEvaluateOnNewDocumentParams, session_id: str | None = None
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Page.removeScriptToEvaluateOnNewDocument",
@@ -501,9 +498,7 @@ class PageClient:
         return result
 
     async def set_geolocation_override(
-        self,
-        params: SetGeolocationOverrideParams | None = None,
-        session_id: str | None = None,
+        self, params: SetGeolocationOverrideParams | None = None, session_id: str | None = None
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Page.setGeolocationOverride",
@@ -542,7 +537,9 @@ class PageClient:
         )
         return result
 
-    async def stop_loading(self, session_id: str | None = None) -> dict[str, Any]:
+    async def stop_loading(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Page.stopLoading",
             params=None,
@@ -550,7 +547,9 @@ class PageClient:
         )
         return result
 
-    async def crash(self, session_id: str | None = None) -> dict[str, Any]:
+    async def crash(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Page.crash",
             params=None,
@@ -558,7 +557,9 @@ class PageClient:
         )
         return result
 
-    async def close(self, session_id: str | None = None) -> dict[str, Any]:
+    async def close(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Page.close",
             params=None,
@@ -576,7 +577,9 @@ class PageClient:
         )
         return result
 
-    async def stop_screencast(self, session_id: str | None = None) -> dict[str, Any]:
+    async def stop_screencast(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Page.stopScreencast",
             params=None,
@@ -644,7 +647,9 @@ class PageClient:
         )
         return result
 
-    async def wait_for_debugger(self, session_id: str | None = None) -> dict[str, Any]:
+    async def wait_for_debugger(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Page.waitForDebugger",
             params=None,
@@ -673,9 +678,7 @@ class PageClient:
         return result
 
     async def get_annotated_page_content(
-        self,
-        params: GetAnnotatedPageContentParams | None = None,
-        session_id: str | None = None,
+        self, params: GetAnnotatedPageContentParams | None = None, session_id: str | None = None
     ) -> GetAnnotatedPageContentResult:
         result = await self._client.send_raw(
             method="Page.getAnnotatedPageContent",

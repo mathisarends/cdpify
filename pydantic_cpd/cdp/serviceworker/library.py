@@ -19,12 +19,7 @@ from .commands import (
     UpdateRegistrationParams,
 )
 
-
 class ServiceWorkerClient:
-    """
-    CDP ServiceWorker domain client.
-    """
-
     def __init__(self, client: CDPClient) -> None:
         self._client = client
 
@@ -38,7 +33,9 @@ class ServiceWorkerClient:
         )
         return result
 
-    async def disable(self, session_id: str | None = None) -> dict[str, Any]:
+    async def disable(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="ServiceWorker.disable",
             params=None,
@@ -66,7 +63,9 @@ class ServiceWorkerClient:
         )
         return result
 
-    async def enable(self, session_id: str | None = None) -> dict[str, Any]:
+    async def enable(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="ServiceWorker.enable",
             params=None,
@@ -104,7 +103,9 @@ class ServiceWorkerClient:
         )
         return result
 
-    async def stop_all_workers(self, session_id: str | None = None) -> dict[str, Any]:
+    async def stop_all_workers(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="ServiceWorker.stopAllWorkers",
             params=None,

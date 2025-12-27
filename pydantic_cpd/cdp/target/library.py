@@ -37,12 +37,7 @@ from .commands import (
     SetRemoteLocationsParams,
 )
 
-
 class TargetClient:
-    """
-    Supports additional targets discovery and allows to attach to them.
-    """
-
     def __init__(self, client: CDPClient) -> None:
         self._client = client
 
@@ -97,9 +92,7 @@ class TargetClient:
         return result
 
     async def create_browser_context(
-        self,
-        params: CreateBrowserContextParams | None = None,
-        session_id: str | None = None,
+        self, params: CreateBrowserContextParams | None = None, session_id: str | None = None
     ) -> CreateBrowserContextResult:
         result = await self._client.send_raw(
             method="Target.createBrowserContext",
@@ -129,9 +122,7 @@ class TargetClient:
         return CreateTargetResult.model_validate(result)
 
     async def detach_from_target(
-        self,
-        params: DetachFromTargetParams | None = None,
-        session_id: str | None = None,
+        self, params: DetachFromTargetParams | None = None, session_id: str | None = None
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Target.detachFromTarget",

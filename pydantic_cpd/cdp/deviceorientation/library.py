@@ -11,12 +11,7 @@ from .commands import (
     SetDeviceOrientationOverrideParams,
 )
 
-
 class DeviceOrientationClient:
-    """
-    CDP DeviceOrientation domain client.
-    """
-
     def __init__(self, client: CDPClient) -> None:
         self._client = client
 

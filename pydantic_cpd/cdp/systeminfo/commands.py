@@ -4,25 +4,20 @@ from pydantic_cpd.cdp.base import CDPModel
 
 from .types import *
 
-
 class GetInfoResult(CDPModel):
     gpu: GPUInfo
     model_name: str
     model_version: str
     command_line: str
 
-
 class GetFeatureStateParams(CDPModel):
     """
     Returns information about the feature state.
     """
-
     feature_state: str
-
 
 class GetFeatureStateResult(CDPModel):
     feature_enabled: bool
-
 
 class GetProcessInfoResult(CDPModel):
     process_info: list[ProcessInfo]

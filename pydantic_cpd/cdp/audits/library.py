@@ -14,12 +14,7 @@ from .commands import (
     GetEncodedResponseResult,
 )
 
-
 class AuditsClient:
-    """
-    Audits domain allows investigation of page violations and possible improvements.
-    """
-
     def __init__(self, client: CDPClient) -> None:
         self._client = client
 
@@ -33,7 +28,9 @@ class AuditsClient:
         )
         return GetEncodedResponseResult.model_validate(result)
 
-    async def disable(self, session_id: str | None = None) -> dict[str, Any]:
+    async def disable(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Audits.disable",
             params=None,
@@ -41,7 +38,9 @@ class AuditsClient:
         )
         return result
 
-    async def enable(self, session_id: str | None = None) -> dict[str, Any]:
+    async def enable(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Audits.enable",
             params=None,

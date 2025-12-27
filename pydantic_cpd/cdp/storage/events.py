@@ -8,56 +8,46 @@ from .types import *
 if TYPE_CHECKING:
     from pydantic_cpd.cdp import network, page, target
 
-
 class CacheStorageContentUpdatedEvent(CDPModel):
     """
     A cache's contents have been modified.
     """
-
     origin: str
     storage_key: str
     bucket_id: str
     cache_name: str
 
-
 class CacheStorageListUpdatedEvent(CDPModel):
     """
     A cache has been added/deleted.
     """
-
     origin: str
     storage_key: str
     bucket_id: str
-
 
 class IndexedDBContentUpdatedEvent(CDPModel):
     """
     The origin's IndexedDB object store has been modified.
     """
-
     origin: str
     storage_key: str
     bucket_id: str
     database_name: str
     object_store_name: str
 
-
 class IndexedDBListUpdatedEvent(CDPModel):
     """
     The origin's IndexedDB database list has been modified.
     """
-
     origin: str
     storage_key: str
     bucket_id: str
-
 
 class InterestGroupAccessedEvent(CDPModel):
     """
     One of the interest groups was accessed. Note that these events are global to all
     targets sharing an interest group store.
     """
-
     access_time: network.TimeSinceEpoch
     type: InterestGroupAccessType
     owner_origin: str
@@ -67,19 +57,16 @@ class InterestGroupAccessedEvent(CDPModel):
     bid_currency: str | None = None
     unique_auction_id: InterestGroupAuctionId | None = None
 
-
 class InterestGroupAuctionEventOccurredEvent(CDPModel):
     """
     An auction involving interest groups is taking place. These events are
     target-specific.
     """
-
     event_time: network.TimeSinceEpoch
     type: InterestGroupAuctionEventType
     unique_auction_id: InterestGroupAuctionId
     parent_auction_id: InterestGroupAuctionId | None = None
     auction_config: dict[str, Any] | None = None
-
 
 class InterestGroupAuctionNetworkRequestCreatedEvent(CDPModel):
     """
@@ -87,18 +74,15 @@ class InterestGroupAuctionNetworkRequestCreatedEvent(CDPModel):
     role. Note that it is not ordered with respect to Network.requestWillBeSent (but
     will happen before loadingFinished loadingFailed).
     """
-
     type: InterestGroupAuctionFetchType
     request_id: network.RequestId
     auctions: list[InterestGroupAuctionId]
-
 
 class SharedStorageAccessedEvent(CDPModel):
     """
     Shared storage was accessed by the associated page. The following parameters are
     included in all events.
     """
-
     access_time: network.TimeSinceEpoch
     scope: SharedStorageAccessScope
     method: SharedStorageAccessMethod
@@ -107,13 +91,11 @@ class SharedStorageAccessedEvent(CDPModel):
     owner_site: str
     params: SharedStorageAccessParams
 
-
 class SharedStorageWorkletOperationExecutionFinishedEvent(CDPModel):
     """
     A shared storage run or selectURL operation finished its execution. The following
     parameters are included in all events.
     """
-
     finished_time: network.TimeSinceEpoch
     execution_time: int
     method: SharedStorageAccessMethod
@@ -122,25 +104,20 @@ class SharedStorageWorkletOperationExecutionFinishedEvent(CDPModel):
     main_frame_id: page.FrameId
     owner_origin: str
 
-
 class StorageBucketCreatedOrUpdatedEvent(CDPModel):
     bucket_info: StorageBucketInfo
 
-
 class StorageBucketDeletedEvent(CDPModel):
     bucket_id: str
-
 
 class AttributionReportingSourceRegisteredEvent(CDPModel):
     registration: AttributionReportingSourceRegistration
     result: AttributionReportingSourceRegistrationResult
 
-
 class AttributionReportingTriggerRegisteredEvent(CDPModel):
     registration: AttributionReportingTriggerRegistration
     event_level: AttributionReportingEventLevelResult
     aggregatable: AttributionReportingAggregatableResult
-
 
 class AttributionReportingReportSentEvent(CDPModel):
     url: str
@@ -149,7 +126,6 @@ class AttributionReportingReportSentEvent(CDPModel):
     net_error: int | None = None
     net_error_name: str | None = None
     http_status_code: int | None = None
-
 
 class AttributionReportingVerboseDebugReportSentEvent(CDPModel):
     url: str

@@ -8,53 +8,23 @@ Unique script identifier.
 """
 ScriptId = str
 
-
 class SerializationOptions(CDPModel):
     """
     Represents options for serialization. Overrides `generatePreview` and
     `returnByValue`.
     """
-
     serialization: Literal["deep", "json", "idOnly"]
     max_depth: int | None = None
     additional_parameters: dict[str, Any] | None = None
-
 
 class DeepSerializedValue(CDPModel):
     """
     Represents deep serialized value.
     """
-
-    type: Literal[
-        "undefined",
-        "null",
-        "string",
-        "number",
-        "boolean",
-        "bigint",
-        "regexp",
-        "date",
-        "symbol",
-        "array",
-        "object",
-        "function",
-        "map",
-        "set",
-        "weakmap",
-        "weakset",
-        "error",
-        "proxy",
-        "promise",
-        "typedarray",
-        "arraybuffer",
-        "node",
-        "window",
-        "generator",
-    ]
+    type: Literal["undefined", "null", "string", "number", "boolean", "bigint", "regexp", "date", "symbol", "array", "object", "function", "map", "set", "weakmap", "weakset", "error", "proxy", "promise", "typedarray", "arraybuffer", "node", "window", "generator"]
     value: Any | None = None
     object_id: str | None = None
     weak_local_object_reference: int | None = None
-
 
 """
 Unique object identifier.
@@ -67,47 +37,12 @@ Primitive value which cannot be JSON-stringified. Includes values `-0`, `NaN`,
 """
 UnserializableValue = str
 
-
 class RemoteObject(CDPModel):
     """
     Mirror object referencing original JavaScript object.
     """
-
-    type: Literal[
-        "object",
-        "function",
-        "undefined",
-        "string",
-        "number",
-        "boolean",
-        "symbol",
-        "bigint",
-    ]
-    subtype: (
-        Literal[
-            "array",
-            "null",
-            "node",
-            "regexp",
-            "date",
-            "map",
-            "set",
-            "weakmap",
-            "weakset",
-            "iterator",
-            "generator",
-            "error",
-            "proxy",
-            "promise",
-            "typedarray",
-            "arraybuffer",
-            "dataview",
-            "webassemblymemory",
-            "wasmvalue",
-            "trustedtype",
-        ]
-        | None
-    ) = None
+    type: Literal["object", "function", "undefined", "string", "number", "boolean", "symbol", "bigint"]
+    subtype: Literal["array", "null", "node", "regexp", "date", "map", "set", "weakmap", "weakset", "iterator", "generator", "error", "proxy", "promise", "typedarray", "arraybuffer", "dataview", "webassemblymemory", "wasmvalue", "trustedtype"] | None = None
     class_name: str | None = None
     value: Any | None = None
     unserializable_value: UnserializableValue | None = None
@@ -117,110 +52,36 @@ class RemoteObject(CDPModel):
     preview: ObjectPreview | None = None
     custom_preview: CustomPreview | None = None
 
-
 class CustomPreview(CDPModel):
     header: str
     body_getter_id: RemoteObjectId | None = None
-
 
 class ObjectPreview(CDPModel):
     """
     Object containing abbreviated remote object value.
     """
-
-    type: Literal[
-        "object",
-        "function",
-        "undefined",
-        "string",
-        "number",
-        "boolean",
-        "symbol",
-        "bigint",
-    ]
-    subtype: (
-        Literal[
-            "array",
-            "null",
-            "node",
-            "regexp",
-            "date",
-            "map",
-            "set",
-            "weakmap",
-            "weakset",
-            "iterator",
-            "generator",
-            "error",
-            "proxy",
-            "promise",
-            "typedarray",
-            "arraybuffer",
-            "dataview",
-            "webassemblymemory",
-            "wasmvalue",
-            "trustedtype",
-        ]
-        | None
-    ) = None
+    type: Literal["object", "function", "undefined", "string", "number", "boolean", "symbol", "bigint"]
+    subtype: Literal["array", "null", "node", "regexp", "date", "map", "set", "weakmap", "weakset", "iterator", "generator", "error", "proxy", "promise", "typedarray", "arraybuffer", "dataview", "webassemblymemory", "wasmvalue", "trustedtype"] | None = None
     description: str | None = None
     overflow: bool
     properties: list[PropertyPreview]
     entries: list[EntryPreview] | None = None
 
-
 class PropertyPreview(CDPModel):
     name: str
-    type: Literal[
-        "object",
-        "function",
-        "undefined",
-        "string",
-        "number",
-        "boolean",
-        "symbol",
-        "accessor",
-        "bigint",
-    ]
+    type: Literal["object", "function", "undefined", "string", "number", "boolean", "symbol", "accessor", "bigint"]
     value: str | None = None
     value_preview: ObjectPreview | None = None
-    subtype: (
-        Literal[
-            "array",
-            "null",
-            "node",
-            "regexp",
-            "date",
-            "map",
-            "set",
-            "weakmap",
-            "weakset",
-            "iterator",
-            "generator",
-            "error",
-            "proxy",
-            "promise",
-            "typedarray",
-            "arraybuffer",
-            "dataview",
-            "webassemblymemory",
-            "wasmvalue",
-            "trustedtype",
-        ]
-        | None
-    ) = None
-
+    subtype: Literal["array", "null", "node", "regexp", "date", "map", "set", "weakmap", "weakset", "iterator", "generator", "error", "proxy", "promise", "typedarray", "arraybuffer", "dataview", "webassemblymemory", "wasmvalue", "trustedtype"] | None = None
 
 class EntryPreview(CDPModel):
     key: ObjectPreview | None = None
     value: ObjectPreview
 
-
 class PropertyDescriptor(CDPModel):
     """
     Object property descriptor.
     """
-
     name: str
     value: RemoteObject | None = None
     writable: bool | None = None
@@ -232,27 +93,22 @@ class PropertyDescriptor(CDPModel):
     is_own: bool | None = None
     symbol: RemoteObject | None = None
 
-
 class InternalPropertyDescriptor(CDPModel):
     """
     Object internal property descriptor. This property isn't normally visible in
     JavaScript code.
     """
-
     name: str
     value: RemoteObject | None = None
-
 
 class PrivatePropertyDescriptor(CDPModel):
     """
     Object private field descriptor.
     """
-
     name: str
     value: RemoteObject | None = None
     get: RemoteObject | None = None
     set: RemoteObject | None = None
-
 
 class CallArgument(CDPModel):
     """
@@ -260,36 +116,30 @@ class CallArgument(CDPModel):
     `value`, unserializable primitive value or neither of (for undefined) them should be
     specified.
     """
-
     value: Any | None = None
     unserializable_value: UnserializableValue | None = None
     object_id: RemoteObjectId | None = None
-
 
 """
 Id of an execution context.
 """
 ExecutionContextId = int
 
-
 class ExecutionContextDescription(CDPModel):
     """
     Description of an isolated world.
     """
-
     id: ExecutionContextId
     origin: str
     name: str
     unique_id: str
     aux_data: dict[str, Any] | None = None
 
-
 class ExceptionDetails(CDPModel):
     """
     Detailed information about exception (or error) that was thrown during script
     compilation or execution.
     """
-
     exception_id: int
     text: str
     line_number: int
@@ -301,7 +151,6 @@ class ExceptionDetails(CDPModel):
     execution_context_id: ExecutionContextId | None = None
     exception_meta_data: dict[str, Any] | None = None
 
-
 """
 Number of milliseconds since epoch.
 """
@@ -312,35 +161,29 @@ Number of milliseconds.
 """
 TimeDelta = float
 
-
 class CallFrame(CDPModel):
     """
     Stack entry for runtime errors and assertions.
     """
-
     function_name: str
     script_id: ScriptId
     url: str
     line_number: int
     column_number: int
 
-
 class StackTrace(CDPModel):
     """
     Call frames for assertions or error messages.
     """
-
     description: str | None = None
     call_frames: list[CallFrame]
     parent: StackTrace | None = None
     parent_id: StackTraceId | None = None
 
-
 """
 Unique identifier of current debugger.
 """
 UniqueDebuggerId = str
-
 
 class StackTraceId(CDPModel):
     """
@@ -348,6 +191,5 @@ class StackTraceId(CDPModel):
     there. This allows to track cross-debugger calls. See `Runtime.StackTrace` and
     `Debugger.paused` for usages.
     """
-
     id: str
     debugger_id: UniqueDebuggerId | None = None

@@ -21,14 +21,7 @@ from .commands import (
     SetXHRBreakpointParams,
 )
 
-
 class DOMDebuggerClient:
-    """
-    DOM debugging allows setting breakpoints on particular DOM operations and events.
-    JavaScript execution will stop on these operations as if there was a regular
-    breakpoint set.
-    """
-
     def __init__(self, client: CDPClient) -> None:
         self._client = client
 
@@ -63,9 +56,7 @@ class DOMDebuggerClient:
         return result
 
     async def remove_instrumentation_breakpoint(
-        self,
-        params: RemoveInstrumentationBreakpointParams,
-        session_id: str | None = None,
+        self, params: RemoveInstrumentationBreakpointParams, session_id: str | None = None
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="DOMDebugger.removeInstrumentationBreakpoint",

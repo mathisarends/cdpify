@@ -11,41 +11,22 @@ SerializedStorageKey = str
 """
 Enum of possible storage types.
 """
-StorageType = Literal[
-    "cookies",
-    "file_systems",
-    "indexeddb",
-    "local_storage",
-    "shader_cache",
-    "websql",
-    "service_workers",
-    "cache_storage",
-    "interest_groups",
-    "shared_storage",
-    "storage_buckets",
-    "all",
-    "other",
-]
-
+StorageType = Literal["cookies", "file_systems", "indexeddb", "local_storage", "shader_cache", "websql", "service_workers", "cache_storage", "interest_groups", "shared_storage", "storage_buckets", "all", "other"]
 
 class UsageForType(CDPModel):
     """
     Usage for a storage type.
     """
-
     storage_type: StorageType
     usage: float
-
 
 class TrustTokens(CDPModel):
     """
     Pair of issuer origin and number of available (signed, but not used) Trust Tokens
     from that issuer.
     """
-
     issuer_origin: str
     count: float
-
 
 """
 Protected audience interest group auction identifier.
@@ -55,19 +36,7 @@ InterestGroupAuctionId = str
 """
 Enum of interest group access types.
 """
-InterestGroupAccessType = Literal[
-    "join",
-    "leave",
-    "update",
-    "loaded",
-    "bid",
-    "win",
-    "additionalBid",
-    "additionalBidWin",
-    "topLevelBid",
-    "topLevelAdditionalBid",
-    "clear",
-]
+InterestGroupAccessType = Literal["join", "leave", "update", "loaded", "bid", "win", "additionalBid", "additionalBidWin", "topLevelBid", "topLevelAdditionalBid", "clear"]
 
 """
 Enum of auction events.
@@ -77,95 +46,63 @@ InterestGroupAuctionEventType = Literal["started", "configResolved"]
 """
 Enum of network fetches auctions can do.
 """
-InterestGroupAuctionFetchType = Literal[
-    "bidderJs", "bidderWasm", "sellerJs", "bidderTrustedSignals", "sellerTrustedSignals"
-]
+InterestGroupAuctionFetchType = Literal["bidderJs", "bidderWasm", "sellerJs", "bidderTrustedSignals", "sellerTrustedSignals"]
 
 """
 Enum of shared storage access scopes.
 """
-SharedStorageAccessScope = Literal[
-    "window", "sharedStorageWorklet", "protectedAudienceWorklet", "header"
-]
+SharedStorageAccessScope = Literal["window", "sharedStorageWorklet", "protectedAudienceWorklet", "header"]
 
 """
 Enum of shared storage access methods.
 """
-SharedStorageAccessMethod = Literal[
-    "addModule",
-    "createWorklet",
-    "selectURL",
-    "run",
-    "batchUpdate",
-    "set",
-    "append",
-    "delete",
-    "clear",
-    "get",
-    "keys",
-    "values",
-    "entries",
-    "length",
-    "remainingBudget",
-]
-
+SharedStorageAccessMethod = Literal["addModule", "createWorklet", "selectURL", "run", "batchUpdate", "set", "append", "delete", "clear", "get", "keys", "values", "entries", "length", "remainingBudget"]
 
 class SharedStorageEntry(CDPModel):
     """
     Struct for a single key-value pair in an origin's shared storage.
     """
-
     key: str
     value: str
-
 
 class SharedStorageMetadata(CDPModel):
     """
     Details for an origin's shared storage.
     """
-
     creation_time: network.TimeSinceEpoch
     length: int
     remaining_budget: float
     bytes_used: int
-
 
 class SharedStoragePrivateAggregationConfig(CDPModel):
     """
     Represents a dictionary object passed in as privateAggregationConfig to run or
     selectURL.
     """
-
     aggregation_coordinator_origin: str | None = None
     context_id: str | None = None
     filtering_id_max_bytes: int
     max_contributions: int | None = None
 
-
 class SharedStorageReportingMetadata(CDPModel):
     """
     Pair of reporting metadata details for a candidate URL for `selectURL()`.
     """
-
     event_type: str
     reporting_url: str
-
 
 class SharedStorageUrlWithMetadata(CDPModel):
     """
     Bundles a candidate URL with its reporting metadata.
     """
-
     url: str
     reporting_metadata: list[SharedStorageReportingMetadata]
-
 
 class SharedStorageAccessParams(CDPModel):
     """
     Bundles the parameters for shared storage access events whose presence/absence can
     vary according to SharedStorageAccessType.
     """
-
     script_source_url: str | None = None
     data_origin: str | None = None
     operation_name: str | None = None
@@ -184,14 +121,11 @@ class SharedStorageAccessParams(CDPModel):
     batch_update_id: str | None = None
     batch_size: int | None = None
 
-
 StorageBucketsDurability = Literal["relaxed", "strict"]
-
 
 class StorageBucket(CDPModel):
     storage_key: SerializedStorageKey
     name: str | None = None
-
 
 class StorageBucketInfo(CDPModel):
     bucket: StorageBucket
@@ -201,7 +135,6 @@ class StorageBucketInfo(CDPModel):
     persistent: bool
     durability: StorageBucketsDurability
 
-
 AttributionReportingSourceType = Literal["navigation", "event"]
 
 UnsignedInt64AsBase10 = str
@@ -210,40 +143,32 @@ UnsignedInt128AsBase16 = str
 
 SignedInt64AsBase10 = str
 
-
 class AttributionReportingFilterDataEntry(CDPModel):
     key: str
     values: list[str]
-
 
 class AttributionReportingFilterConfig(CDPModel):
     filter_values: list[AttributionReportingFilterDataEntry]
     lookback_window: int | None = None
 
-
 class AttributionReportingFilterPair(CDPModel):
     filters: list[AttributionReportingFilterConfig]
     not_filters: list[AttributionReportingFilterConfig]
-
 
 class AttributionReportingAggregationKeysEntry(CDPModel):
     key: str
     value: UnsignedInt128AsBase16
 
-
 class AttributionReportingEventReportWindows(CDPModel):
     start: int
     ends: list[int]
 
-
 AttributionReportingTriggerDataMatching = Literal["exact", "modulus"]
-
 
 class AttributionReportingAggregatableDebugReportingData(CDPModel):
     key_piece: UnsignedInt128AsBase16
     value: float
     types: list[str]
-
 
 class AttributionReportingAggregatableDebugReportingConfig(CDPModel):
     budget: float | None = None
@@ -251,17 +176,14 @@ class AttributionReportingAggregatableDebugReportingConfig(CDPModel):
     debug_data: list[AttributionReportingAggregatableDebugReportingData]
     aggregation_coordinator_origin: str | None = None
 
-
 class AttributionScopesData(CDPModel):
     values: list[str]
     limit: float
     max_event_states: float
 
-
 class AttributionReportingNamedBudgetDef(CDPModel):
     name: str
     budget: int
-
 
 class AttributionReportingSourceRegistration(CDPModel):
     time: network.TimeSinceEpoch
@@ -280,48 +202,25 @@ class AttributionReportingSourceRegistration(CDPModel):
     debug_key: UnsignedInt64AsBase10 | None = None
     trigger_data_matching: AttributionReportingTriggerDataMatching
     destination_limit_priority: SignedInt64AsBase10
-    aggregatable_debug_reporting_config: (
-        AttributionReportingAggregatableDebugReportingConfig
-    )
+    aggregatable_debug_reporting_config: AttributionReportingAggregatableDebugReportingConfig
     scopes_data: AttributionScopesData | None = None
     max_event_level_reports: int
     named_budgets: list[AttributionReportingNamedBudgetDef]
     debug_reporting: bool
     event_level_epsilon: float
 
-
-AttributionReportingSourceRegistrationResult = Literal[
-    "success",
-    "internalError",
-    "insufficientSourceCapacity",
-    "insufficientUniqueDestinationCapacity",
-    "excessiveReportingOrigins",
-    "prohibitedByBrowserPolicy",
-    "successNoised",
-    "destinationReportingLimitReached",
-    "destinationGlobalLimitReached",
-    "destinationBothLimitsReached",
-    "reportingOriginsPerSiteLimitReached",
-    "exceedsMaxChannelCapacity",
-    "exceedsMaxScopesChannelCapacity",
-    "exceedsMaxTriggerStateCardinality",
-    "exceedsMaxEventStatesLimit",
-    "destinationPerDayReportingLimitReached",
-]
+AttributionReportingSourceRegistrationResult = Literal["success", "internalError", "insufficientSourceCapacity", "insufficientUniqueDestinationCapacity", "excessiveReportingOrigins", "prohibitedByBrowserPolicy", "successNoised", "destinationReportingLimitReached", "destinationGlobalLimitReached", "destinationBothLimitsReached", "reportingOriginsPerSiteLimitReached", "exceedsMaxChannelCapacity", "exceedsMaxScopesChannelCapacity", "exceedsMaxTriggerStateCardinality", "exceedsMaxEventStatesLimit", "destinationPerDayReportingLimitReached"]
 
 AttributionReportingSourceRegistrationTimeConfig = Literal["include", "exclude"]
-
 
 class AttributionReportingAggregatableValueDictEntry(CDPModel):
     key: str
     value: float
     filtering_id: UnsignedInt64AsBase10
 
-
 class AttributionReportingAggregatableValueEntry(CDPModel):
     values: list[AttributionReportingAggregatableValueDictEntry]
     filters: AttributionReportingFilterPair
-
 
 class AttributionReportingEventTriggerData(CDPModel):
     data: UnsignedInt64AsBase10
@@ -329,22 +228,18 @@ class AttributionReportingEventTriggerData(CDPModel):
     dedup_key: UnsignedInt64AsBase10 | None = None
     filters: AttributionReportingFilterPair
 
-
 class AttributionReportingAggregatableTriggerData(CDPModel):
     key_piece: UnsignedInt128AsBase16
     source_keys: list[str]
     filters: AttributionReportingFilterPair
 
-
 class AttributionReportingAggregatableDedupKey(CDPModel):
     dedup_key: UnsignedInt64AsBase10 | None = None
     filters: AttributionReportingFilterPair
 
-
 class AttributionReportingNamedBudgetCandidate(CDPModel):
     name: str | None = None
     filters: AttributionReportingFilterPair
-
 
 class AttributionReportingTriggerRegistration(CDPModel):
     filters: AttributionReportingFilterPair
@@ -358,63 +253,20 @@ class AttributionReportingTriggerRegistration(CDPModel):
     aggregation_coordinator_origin: str | None = None
     source_registration_time_config: AttributionReportingSourceRegistrationTimeConfig
     trigger_context_id: str | None = None
-    aggregatable_debug_reporting_config: (
-        AttributionReportingAggregatableDebugReportingConfig
-    )
+    aggregatable_debug_reporting_config: AttributionReportingAggregatableDebugReportingConfig
     scopes: list[str]
     named_budgets: list[AttributionReportingNamedBudgetCandidate]
 
+AttributionReportingEventLevelResult = Literal["success", "successDroppedLowerPriority", "internalError", "noCapacityForAttributionDestination", "noMatchingSources", "deduplicated", "excessiveAttributions", "priorityTooLow", "neverAttributedSource", "excessiveReportingOrigins", "noMatchingSourceFilterData", "prohibitedByBrowserPolicy", "noMatchingConfigurations", "excessiveReports", "falselyAttributedSource", "reportWindowPassed", "notRegistered", "reportWindowNotStarted", "noMatchingTriggerData"]
 
-AttributionReportingEventLevelResult = Literal[
-    "success",
-    "successDroppedLowerPriority",
-    "internalError",
-    "noCapacityForAttributionDestination",
-    "noMatchingSources",
-    "deduplicated",
-    "excessiveAttributions",
-    "priorityTooLow",
-    "neverAttributedSource",
-    "excessiveReportingOrigins",
-    "noMatchingSourceFilterData",
-    "prohibitedByBrowserPolicy",
-    "noMatchingConfigurations",
-    "excessiveReports",
-    "falselyAttributedSource",
-    "reportWindowPassed",
-    "notRegistered",
-    "reportWindowNotStarted",
-    "noMatchingTriggerData",
-]
+AttributionReportingAggregatableResult = Literal["success", "internalError", "noCapacityForAttributionDestination", "noMatchingSources", "excessiveAttributions", "excessiveReportingOrigins", "noHistograms", "insufficientBudget", "insufficientNamedBudget", "noMatchingSourceFilterData", "notRegistered", "prohibitedByBrowserPolicy", "deduplicated", "reportWindowPassed", "excessiveReports"]
 
-AttributionReportingAggregatableResult = Literal[
-    "success",
-    "internalError",
-    "noCapacityForAttributionDestination",
-    "noMatchingSources",
-    "excessiveAttributions",
-    "excessiveReportingOrigins",
-    "noHistograms",
-    "insufficientBudget",
-    "insufficientNamedBudget",
-    "noMatchingSourceFilterData",
-    "notRegistered",
-    "prohibitedByBrowserPolicy",
-    "deduplicated",
-    "reportWindowPassed",
-    "excessiveReports",
-]
-
-AttributionReportingReportResult = Literal[
-    "sent", "prohibited", "failedToAssemble", "expired"
-]
-
+AttributionReportingReportResult = Literal["sent", "prohibited", "failedToAssemble", "expired"]
 
 class RelatedWebsiteSet(CDPModel):
     """
     A single Related Website Set object.
     """
-
     primary_sites: list[str]
     associated_sites: list[str]
     service_sites: list[str]

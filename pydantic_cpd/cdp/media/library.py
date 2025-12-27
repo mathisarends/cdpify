@@ -9,14 +9,12 @@ if TYPE_CHECKING:
 
 
 class MediaClient:
-    """
-    This domain allows detailed inspection of media elements.
-    """
-
     def __init__(self, client: CDPClient) -> None:
         self._client = client
 
-    async def enable(self, session_id: str | None = None) -> dict[str, Any]:
+    async def enable(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Media.enable",
             params=None,
@@ -24,7 +22,9 @@ class MediaClient:
         )
         return result
 
-    async def disable(self, session_id: str | None = None) -> dict[str, Any]:
+    async def disable(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Media.disable",
             params=None,

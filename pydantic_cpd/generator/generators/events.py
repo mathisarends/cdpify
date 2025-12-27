@@ -83,7 +83,8 @@ class EventsGenerator:
         lines = [f"class {class_name}(CDPModel):"]
 
         if event.description:
-            lines.append(format_docstring(event.description, indent=4))
+            doc = format_docstring(event.description, indent=4)
+            lines.extend(doc.rstrip().splitlines())
 
         if event.parameters:
             for param in event.parameters:

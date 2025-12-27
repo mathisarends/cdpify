@@ -13,16 +13,13 @@ from .commands import (
     SetTimeDomainParams,
 )
 
-
 class PerformanceClient:
-    """
-    CDP Performance domain client.
-    """
-
     def __init__(self, client: CDPClient) -> None:
         self._client = client
 
-    async def disable(self, session_id: str | None = None) -> dict[str, Any]:
+    async def disable(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="Performance.disable",
             params=None,
@@ -50,7 +47,9 @@ class PerformanceClient:
         )
         return result
 
-    async def get_metrics(self, session_id: str | None = None) -> GetMetricsResult:
+    async def get_metrics(
+        self, session_id: str | None = None
+    ) -> GetMetricsResult:
         result = await self._client.send_raw(
             method="Performance.getMetrics",
             params=None,

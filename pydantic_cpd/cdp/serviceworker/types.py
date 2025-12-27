@@ -8,31 +8,22 @@ if TYPE_CHECKING:
 
 RegistrationID = str
 
-
 class ServiceWorkerRegistration(CDPModel):
     """
     ServiceWorker registration.
     """
-
     registration_id: RegistrationID
     scope_u_r_l: str
     is_deleted: bool
 
+ServiceWorkerVersionRunningStatus = Literal["stopped", "starting", "running", "stopping"]
 
-ServiceWorkerVersionRunningStatus = Literal[
-    "stopped", "starting", "running", "stopping"
-]
-
-ServiceWorkerVersionStatus = Literal[
-    "new", "installing", "installed", "activating", "activated", "redundant"
-]
-
+ServiceWorkerVersionStatus = Literal["new", "installing", "installed", "activating", "activated", "redundant"]
 
 class ServiceWorkerVersion(CDPModel):
     """
     ServiceWorker version.
     """
-
     version_id: str
     registration_id: RegistrationID
     script_u_r_l: str
@@ -44,12 +35,10 @@ class ServiceWorkerVersion(CDPModel):
     target_id: target.TargetID | None = None
     router_rules: str | None = None
 
-
 class ServiceWorkerErrorMessage(CDPModel):
     """
     ServiceWorker error message.
     """
-
     error_message: str
     registration_id: RegistrationID
     version_id: str

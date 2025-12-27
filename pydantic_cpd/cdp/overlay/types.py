@@ -6,21 +6,17 @@ from pydantic_cpd.cdp.base import CDPModel
 if TYPE_CHECKING:
     from pydantic_cpd.cdp import dom
 
-
 class SourceOrderConfig(CDPModel):
     """
     Configuration data for drawing the source order of an elements children.
     """
-
     parent_outline_color: dom.RGBA
     child_outline_color: dom.RGBA
-
 
 class GridHighlightConfig(CDPModel):
     """
     Configuration data for the highlighting of Grid elements.
     """
-
     show_grid_extension_lines: bool | None = None
     show_positive_line_numbers: bool | None = None
     show_negative_line_numbers: bool | None = None
@@ -42,12 +38,10 @@ class GridHighlightConfig(CDPModel):
     area_border_color: dom.RGBA | None = None
     grid_background_color: dom.RGBA | None = None
 
-
 class FlexContainerHighlightConfig(CDPModel):
     """
     Configuration data for the highlighting of Flex container elements.
     """
-
     container_border: LineStyle | None = None
     line_separator: LineStyle | None = None
     item_separator: LineStyle | None = None
@@ -57,43 +51,34 @@ class FlexContainerHighlightConfig(CDPModel):
     column_gap_space: BoxStyle | None = None
     cross_alignment: LineStyle | None = None
 
-
 class FlexItemHighlightConfig(CDPModel):
     """
     Configuration data for the highlighting of Flex item elements.
     """
-
     base_size_box: BoxStyle | None = None
     base_size_border: LineStyle | None = None
     flexibility_arrow: LineStyle | None = None
-
 
 class LineStyle(CDPModel):
     """
     Style information for drawing a line.
     """
-
     color: dom.RGBA | None = None
     pattern: Literal["dashed", "dotted"] | None = None
-
 
 class BoxStyle(CDPModel):
     """
     Style information for drawing a box.
     """
-
     fill_color: dom.RGBA | None = None
     hatch_color: dom.RGBA | None = None
 
-
 ContrastAlgorithm = Literal["aa", "aaa", "apca"]
-
 
 class HighlightConfig(CDPModel):
     """
     Configuration data for the highlighting of page elements.
     """
-
     show_info: bool | None = None
     show_styles: bool | None = None
     show_rulers: bool | None = None
@@ -112,27 +97,20 @@ class HighlightConfig(CDPModel):
     flex_container_highlight_config: FlexContainerHighlightConfig | None = None
     flex_item_highlight_config: FlexItemHighlightConfig | None = None
     contrast_algorithm: ContrastAlgorithm | None = None
-    container_query_container_highlight_config: (
-        ContainerQueryContainerHighlightConfig | None
-    ) = None
-
+    container_query_container_highlight_config: ContainerQueryContainerHighlightConfig | None = None
 
 ColorFormat = Literal["rgb", "hsl", "hwb", "hex"]
-
 
 class GridNodeHighlightConfig(CDPModel):
     """
     Configurations for Persistent Grid Highlight
     """
-
     grid_highlight_config: GridHighlightConfig
     node_id: dom.NodeId
-
 
 class FlexNodeHighlightConfig(CDPModel):
     flex_container_highlight_config: FlexContainerHighlightConfig
     node_id: dom.NodeId
-
 
 class ScrollSnapContainerHighlightConfig(CDPModel):
     snapport_border: LineStyle | None = None
@@ -140,53 +118,41 @@ class ScrollSnapContainerHighlightConfig(CDPModel):
     scroll_margin_color: dom.RGBA | None = None
     scroll_padding_color: dom.RGBA | None = None
 
-
 class ScrollSnapHighlightConfig(CDPModel):
     scroll_snap_container_highlight_config: ScrollSnapContainerHighlightConfig
     node_id: dom.NodeId
-
 
 class HingeConfig(CDPModel):
     """
     Configuration for dual screen hinge
     """
-
     rect: dom.Rect
     content_color: dom.RGBA | None = None
     outline_color: dom.RGBA | None = None
-
 
 class WindowControlsOverlayConfig(CDPModel):
     """
     Configuration for Window Controls Overlay
     """
-
     show_c_s_s: bool
     selected_platform: str
     theme_color: str
-
 
 class ContainerQueryHighlightConfig(CDPModel):
     container_query_container_highlight_config: ContainerQueryContainerHighlightConfig
     node_id: dom.NodeId
 
-
 class ContainerQueryContainerHighlightConfig(CDPModel):
     container_border: LineStyle | None = None
     descendant_border: LineStyle | None = None
 
-
 class IsolatedElementHighlightConfig(CDPModel):
     isolation_mode_highlight_config: IsolationModeHighlightConfig
     node_id: dom.NodeId
-
 
 class IsolationModeHighlightConfig(CDPModel):
     resizer_color: dom.RGBA | None = None
     resizer_handle_color: dom.RGBA | None = None
     mask_color: dom.RGBA | None = None
 
-
-InspectMode = Literal[
-    "searchForNode", "searchForUAShadowDOM", "captureAreaScreenshot", "none"
-]
+InspectMode = Literal["searchForNode", "searchForUAShadowDOM", "captureAreaScreenshot", "none"]

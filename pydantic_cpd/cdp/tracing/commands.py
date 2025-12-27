@@ -5,42 +5,33 @@ from pydantic_cpd.cdp.base import CDPModel
 
 from .types import *
 
-
 class GetCategoriesResult(CDPModel):
     categories: list[str]
 
-
 class GetTrackEventDescriptorResult(CDPModel):
     descriptor: str
-
 
 class RecordClockSyncMarkerParams(CDPModel):
     """
     Record a clock sync marker in the trace.
     """
-
     sync_id: str
-
 
 class RequestMemoryDumpParams(CDPModel):
     """
     Request a global memory dump.
     """
-
     deterministic: bool | None = None
     level_of_detail: MemoryDumpLevelOfDetail | None = None
-
 
 class RequestMemoryDumpResult(CDPModel):
     dump_guid: str
     success: bool
 
-
 class StartParams(CDPModel):
     """
     Start trace events collection.
     """
-
     categories: str | None = None
     options: str | None = None
     buffer_usage_reporting_interval: float | None = None

@@ -7,36 +7,28 @@ from .types import *
 
 from pydantic_cpd.cdp import runtime
 
-
 class AddInspectedHeapObjectParams(CDPModel):
     """
     Enables console to refer to the node with given id via $x (see Command Line API for
     more details $x functions).
     """
-
     heap_object_id: HeapSnapshotObjectId
-
 
 class GetHeapObjectIdParams(CDPModel):
     object_id: runtime.RemoteObjectId
 
-
 class GetHeapObjectIdResult(CDPModel):
     heap_snapshot_object_id: HeapSnapshotObjectId
-
 
 class GetObjectByHeapObjectIdParams(CDPModel):
     object_id: HeapSnapshotObjectId
     object_group: str | None = None
 
-
 class GetObjectByHeapObjectIdResult(CDPModel):
     result: runtime.RemoteObject
 
-
 class GetSamplingProfileResult(CDPModel):
     profile: SamplingHeapProfile
-
 
 class StartSamplingParams(CDPModel):
     sampling_interval: float | None = None
@@ -44,21 +36,17 @@ class StartSamplingParams(CDPModel):
     include_objects_collected_by_major_g_c: bool | None = None
     include_objects_collected_by_minor_g_c: bool | None = None
 
-
 class StartTrackingHeapObjectsParams(CDPModel):
     track_allocations: bool | None = None
 
-
 class StopSamplingResult(CDPModel):
     profile: SamplingHeapProfile
-
 
 class StopTrackingHeapObjectsParams(CDPModel):
     report_progress: bool | None = None
     treat_global_objects_as_roots: bool | None = None
     capture_numeric_value: bool | None = None
     expose_internals: bool | None = None
-
 
 class TakeHeapSnapshotParams(CDPModel):
     report_progress: bool | None = None

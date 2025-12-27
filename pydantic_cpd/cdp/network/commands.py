@@ -10,27 +10,21 @@ from pydantic_cpd.cdp import emulation
 from pydantic_cpd.cdp import io
 from pydantic_cpd.cdp import page
 
-
 class SetAcceptedEncodingsParams(CDPModel):
     """
     Sets a list of content encodings that will be accepted. Empty list means no
     encoding is accepted.
     """
-
     encodings: list[ContentEncoding]
-
 
 class CanClearBrowserCacheResult(CDPModel):
     result: bool
 
-
 class CanClearBrowserCookiesResult(CDPModel):
     result: bool
 
-
 class CanEmulateNetworkConditionsResult(CDPModel):
     result: bool
-
 
 class ContinueInterceptedRequestParams(CDPModel):
     """
@@ -41,7 +35,6 @@ class ContinueInterceptedRequestParams(CDPModel):
     InterceptionId. Deprecated, use Fetch.continueRequest, Fetch.fulfillRequest and
     Fetch.failRequest instead.
     """
-
     interception_id: InterceptionId
     error_reason: ErrorReason | None = None
     raw_response: str | None = None
@@ -51,19 +44,16 @@ class ContinueInterceptedRequestParams(CDPModel):
     headers: Headers | None = None
     auth_challenge_response: AuthChallengeResponse | None = None
 
-
 class DeleteCookiesParams(CDPModel):
     """
     Deletes browser cookies with matching name and url or domain/path/partitionKey
     pair.
     """
-
     name: str
     url: str | None = None
     domain: str | None = None
     path: str | None = None
     partition_key: CookiePartitionKey | None = None
-
 
 class EmulateNetworkConditionsParams(CDPModel):
     """
@@ -71,7 +61,6 @@ class EmulateNetworkConditionsParams(CDPModel):
     the emulateNetworkConditionsByRule and overrideNetworkState commands, which can be
     used together to the same effect.
     """
-
     offline: bool
     latency: float
     download_throughput: float
@@ -81,7 +70,6 @@ class EmulateNetworkConditionsParams(CDPModel):
     packet_queue_length: int | None = None
     packet_reordering: bool | None = None
 
-
 class EmulateNetworkConditionsByRuleParams(CDPModel):
     """
     Activates emulation of network conditions for individual requests using URL match
@@ -89,38 +77,31 @@ class EmulateNetworkConditionsByRuleParams(CDPModel):
     not affect `navigator` state. Use Network.overrideNetworkState to explicitly modify
     `navigator` behavior.
     """
-
     offline: bool
     matched_network_conditions: list[NetworkConditions]
 
-
 class EmulateNetworkConditionsByRuleResult(CDPModel):
     rule_ids: list[str]
-
 
 class OverrideNetworkStateParams(CDPModel):
     """
     Override the state of navigator.onLine and navigator.connection.
     """
-
     offline: bool
     latency: float
     download_throughput: float
     upload_throughput: float
     connection_type: ConnectionType | None = None
 
-
 class EnableParams(CDPModel):
     """
     Enables network tracking, network events will now be delivered to the client.
     """
-
     max_total_buffer_size: int | None = None
     max_resource_buffer_size: int | None = None
     max_post_data_size: int | None = None
     report_direct_socket_traffic: bool | None = None
     enable_durable_messages: bool | None = None
-
 
 class ConfigureDurableMessagesParams(CDPModel):
     """
@@ -128,78 +109,60 @@ class ConfigureDurableMessagesParams(CDPModel):
     cross-process navigation. If maxTotalBufferSize is not set, durable messages are
     disabled.
     """
-
     max_total_buffer_size: int | None = None
     max_resource_buffer_size: int | None = None
 
-
 class GetAllCookiesResult(CDPModel):
     cookies: list[Cookie]
-
 
 class GetCertificateParams(CDPModel):
     """
     Returns the DER-encoded certificate.
     """
-
     origin: str
-
 
 class GetCertificateResult(CDPModel):
     table_names: list[str]
-
 
 class GetCookiesParams(CDPModel):
     """
     Returns all browser cookies for the current URL. Depending on the backend support,
     will return detailed cookie information in the `cookies` field.
     """
-
     urls: list[str] | None = None
-
 
 class GetCookiesResult(CDPModel):
     cookies: list[Cookie]
-
 
 class GetResponseBodyParams(CDPModel):
     """
     Returns content served for the given request.
     """
-
     request_id: RequestId
-
 
 class GetResponseBodyResult(CDPModel):
     body: str
     base64_encoded: bool
-
 
 class GetRequestPostDataParams(CDPModel):
     """
     Returns post data sent with the request. Returns an error when no data was sent
     with the request.
     """
-
     request_id: RequestId
-
 
 class GetRequestPostDataResult(CDPModel):
     post_data: str
-
 
 class GetResponseBodyForInterceptionParams(CDPModel):
     """
     Returns content served for the given currently intercepted request.
     """
-
     interception_id: InterceptionId
-
 
 class GetResponseBodyForInterceptionResult(CDPModel):
     body: str
     base64_encoded: bool
-
 
 class TakeResponseBodyForInterceptionAsStreamParams(CDPModel):
     """
@@ -208,13 +171,10 @@ class TakeResponseBodyForInterceptionAsStreamParams(CDPModel):
     cancel it or to provide the response body. The stream only supports sequential read,
     IO.read will fail if the position is specified.
     """
-
     interception_id: InterceptionId
-
 
 class TakeResponseBodyForInterceptionAsStreamResult(CDPModel):
     stream: io.StreamHandle
-
 
 class ReplayXHRParams(CDPModel):
     """
@@ -222,56 +182,44 @@ class ReplayXHRParams(CDPModel):
     following parameters should be identical: method, url, async, request body, extra
     headers, withCredentials attribute, user, password.
     """
-
     request_id: RequestId
-
 
 class SearchInResponseBodyParams(CDPModel):
     """
     Searches for given string in response content.
     """
-
     request_id: RequestId
     query: str
     case_sensitive: bool | None = None
     is_regex: bool | None = None
 
-
 class SearchInResponseBodyResult(CDPModel):
     result: list[debugger.SearchMatch]
-
 
 class SetBlockedURLsParams(CDPModel):
     """
     Blocks URLs from loading.
     """
-
     url_patterns: list[BlockPattern] | None = None
     urls: list[str] | None = None
-
 
 class SetBypassServiceWorkerParams(CDPModel):
     """
     Toggles ignoring of service worker for each request.
     """
-
     bypass: bool
-
 
 class SetCacheDisabledParams(CDPModel):
     """
     Toggles ignoring cache for each request. If `true`, cache will not be used.
     """
-
     cache_disabled: bool
-
 
 class SetCookieParams(CDPModel):
     """
     Sets a cookie with the given cookie data; may overwrite equivalent cookies if they
     exist.
     """
-
     name: str
     value: str
     url: str | None = None
@@ -287,80 +235,62 @@ class SetCookieParams(CDPModel):
     source_port: int | None = None
     partition_key: CookiePartitionKey | None = None
 
-
 class SetCookieResult(CDPModel):
     success: bool
-
 
 class SetCookiesParams(CDPModel):
     """
     Sets given cookies.
     """
-
     cookies: list[CookieParam]
-
 
 class SetExtraHTTPHeadersParams(CDPModel):
     """
     Specifies whether to always send extra HTTP headers with the requests from this
     page.
     """
-
     headers: Headers
-
 
 class SetAttachDebugStackParams(CDPModel):
     """
     Specifies whether to attach a page script stack id in requests
     """
-
     enabled: bool
-
 
 class SetRequestInterceptionParams(CDPModel):
     """
     Sets the requests to intercept that match the provided patterns and optionally
     resource types. Deprecated, please use Fetch.enable instead.
     """
-
     patterns: list[RequestPattern]
-
 
 class SetUserAgentOverrideParams(CDPModel):
     """
     Allows overriding user agent with the given string.
     """
-
     user_agent: str
     accept_language: str | None = None
     platform: str | None = None
     user_agent_metadata: emulation.UserAgentMetadata | None = None
-
 
 class StreamResourceContentParams(CDPModel):
     """
     Enables streaming of the response for the given requestId. If enabled, the
     dataReceived event contains the data that was received during streaming.
     """
-
     request_id: RequestId
-
 
 class StreamResourceContentResult(CDPModel):
     buffered_data: str
-
 
 class GetSecurityIsolationStatusParams(CDPModel):
     """
     Returns information about the COEP/COOP isolation status.
     """
-
     frame_id: page.FrameId | None = None
-
 
 class GetSecurityIsolationStatusResult(CDPModel):
     status: SecurityIsolationStatus
-
 
 class EnableReportingApiParams(CDPModel):
     """
@@ -368,30 +298,24 @@ class EnableReportingApiParams(CDPModel):
     now be delivered to the client. Enabling triggers 'reportingApiReportAdded' for all
     existing reports.
     """
-
     enable: bool
-
 
 class LoadNetworkResourceParams(CDPModel):
     """
     Fetches the resource and returns the content.
     """
-
     frame_id: page.FrameId | None = None
     url: str
     options: LoadNetworkResourceOptions
 
-
 class LoadNetworkResourceResult(CDPModel):
     resource: LoadNetworkResourcePageResult
-
 
 class SetCookieControlsParams(CDPModel):
     """
     Sets Controls for third-party cookie access Page reload is required before the new
     cookie behavior will be observed
     """
-
     enable_third_party_cookie_restriction: bool
     disable_third_party_cookie_metadata: bool
     disable_third_party_cookie_heuristics: bool

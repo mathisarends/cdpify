@@ -1,14 +1,12 @@
-import subprocess
 from pathlib import Path
 
-from pydantic_cpd.generator.models import Domain
 from pydantic_cpd.generator.generators import (
-    TypesGenerator,
     CommandsGenerator,
     EventsGenerator,
     LibraryGenerator,
+    TypesGenerator,
 )
-
+from pydantic_cpd.generator.models import Domain
 
 CDP_DIR = Path(__file__).parent.parent / "cdp"
 
@@ -29,7 +27,6 @@ class DomainGenerator:
 
         self._generate_base_file()
         self._generate_init_file(domains)
-        self._format_code()
 
         print("\n✅ Domain generation complete!")
 
@@ -105,20 +102,6 @@ class CDPModel(BaseModel):
 
         (CDP_DIR / "__init__.py").write_text("\n".join(lines))
         print("  ✓ __init__.py")
-
-    def _format_code(self) -> None:
-        print("\n🎨 Formatting code...")
-        try:
-            subprocess.run(
-                ["ruff", "format", str(CDP_DIR)],
-                check=True,
-                capture_output=True,
-            )
-            print("  ✓ Code formatted")
-        except subprocess.CalledProcessError as e:
-            print(f"  ⚠ Warning: ruff formatting failed: {e.stderr.decode()}")
-        except FileNotFoundError:
-            print("  ⚠ Warning: ruff not found, skipping formatting")
 
 
 def generate_all_domains(domains: list[Domain]) -> None:

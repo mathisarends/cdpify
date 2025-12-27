@@ -112,7 +112,8 @@ class TypesGenerator:
         lines = [f"class {type_def.id}(CDPModel):"]
 
         if type_def.description:
-            lines.append(format_docstring(type_def.description, indent=4))
+            doc = format_docstring(type_def.description, indent=4)
+            lines.extend(doc.rstrip().splitlines())
 
         for prop in type_def.properties:
             lines.append(f"    {self._create_field(prop)}")

@@ -12,14 +12,7 @@ from .commands import (
     SetInstrumentationBreakpointParams,
 )
 
-
 class EventBreakpointsClient:
-    """
-    EventBreakpoints permits setting JavaScript breakpoints on operations and events
-    occurring in native code invoked from JavaScript. Once breakpoint is hit, it is
-    reported through Debugger domain, similarly to regular breakpoints being hit.
-    """
-
     def __init__(self, client: CDPClient) -> None:
         self._client = client
 
@@ -34,9 +27,7 @@ class EventBreakpointsClient:
         return result
 
     async def remove_instrumentation_breakpoint(
-        self,
-        params: RemoveInstrumentationBreakpointParams,
-        session_id: str | None = None,
+        self, params: RemoveInstrumentationBreakpointParams, session_id: str | None = None
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="EventBreakpoints.removeInstrumentationBreakpoint",
@@ -45,7 +36,9 @@ class EventBreakpointsClient:
         )
         return result
 
-    async def disable(self, session_id: str | None = None) -> dict[str, Any]:
+    async def disable(
+        self, session_id: str | None = None
+    ) -> dict[str, Any]:
         result = await self._client.send_raw(
             method="EventBreakpoints.disable",
             params=None,

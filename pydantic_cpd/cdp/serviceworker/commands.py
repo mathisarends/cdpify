@@ -4,12 +4,10 @@ from pydantic_cpd.cdp.base import CDPModel
 
 from .types import *
 
-
 class DeliverPushMessageParams(CDPModel):
     origin: str
     registration_id: RegistrationID
     data: str
-
 
 class DispatchSyncEventParams(CDPModel):
     origin: str
@@ -17,32 +15,25 @@ class DispatchSyncEventParams(CDPModel):
     tag: str
     last_chance: bool
 
-
 class DispatchPeriodicSyncEventParams(CDPModel):
     origin: str
     registration_id: RegistrationID
     tag: str
 
-
 class SetForceUpdateOnPageLoadParams(CDPModel):
     force_update_on_page_load: bool
-
 
 class SkipWaitingParams(CDPModel):
     scope_u_r_l: str
 
-
 class StartWorkerParams(CDPModel):
     scope_u_r_l: str
-
 
 class StopWorkerParams(CDPModel):
     version_id: str
 
-
 class UnregisterParams(CDPModel):
     scope_u_r_l: str
-
 
 class UpdateRegistrationParams(CDPModel):
     scope_u_r_l: str

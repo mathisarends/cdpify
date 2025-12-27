@@ -7,33 +7,27 @@ from .types import *
 
 from pydantic_cpd.cdp import network
 
-
 class GetEncodedResponseParams(CDPModel):
     """
     Returns the response body and size if it were re-encoded with the specified
     settings. Only applies to images.
     """
-
     request_id: network.RequestId
     encoding: Literal["webp", "jpeg", "png"]
     quality: float | None = None
     size_only: bool | None = None
-
 
 class GetEncodedResponseResult(CDPModel):
     body: str | None = None
     original_size: int
     encoded_size: int
 
-
 class CheckContrastParams(CDPModel):
     """
     Runs the contrast check for the target page. Found issues are reported using
     Audits.issueAdded event.
     """
-
     report_a_a_a: bool | None = None
-
 
 class CheckFormsIssuesResult(CDPModel):
     form_issues: list[GenericIssueDetails]

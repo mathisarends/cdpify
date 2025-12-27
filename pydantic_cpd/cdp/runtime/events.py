@@ -5,98 +5,63 @@ from pydantic_cpd.cdp.base import CDPModel
 
 from .types import *
 
-
 class BindingCalledEvent(CDPModel):
     """
     Notification is issued every time when binding is called.
     """
-
     name: str
     payload: str
     execution_context_id: ExecutionContextId
-
 
 class ConsoleAPICalledEvent(CDPModel):
     """
     Issued when console API was called.
     """
-
-    type: Literal[
-        "log",
-        "debug",
-        "info",
-        "error",
-        "warning",
-        "dir",
-        "dirxml",
-        "table",
-        "trace",
-        "clear",
-        "startGroup",
-        "startGroupCollapsed",
-        "endGroup",
-        "assert",
-        "profile",
-        "profileEnd",
-        "count",
-        "timeEnd",
-    ]
+    type: Literal["log", "debug", "info", "error", "warning", "dir", "dirxml", "table", "trace", "clear", "startGroup", "startGroupCollapsed", "endGroup", "assert", "profile", "profileEnd", "count", "timeEnd"]
     args: list[RemoteObject]
     execution_context_id: ExecutionContextId
     timestamp: Timestamp
     stack_trace: StackTrace | None = None
     context: str | None = None
 
-
 class ExceptionRevokedEvent(CDPModel):
     """
     Issued when unhandled exception was revoked.
     """
-
     reason: str
     exception_id: int
-
 
 class ExceptionThrownEvent(CDPModel):
     """
     Issued when exception was thrown and unhandled.
     """
-
     timestamp: Timestamp
     exception_details: ExceptionDetails
-
 
 class ExecutionContextCreatedEvent(CDPModel):
     """
     Issued when new execution context is created.
     """
-
     context: ExecutionContextDescription
-
 
 class ExecutionContextDestroyedEvent(CDPModel):
     """
     Issued when execution context is destroyed.
     """
-
     execution_context_id: ExecutionContextId
     execution_context_unique_id: str
-
 
 class ExecutionContextsClearedEvent(CDPModel):
     """
     Issued when all executionContexts were cleared in browser
     """
-
     pass
-
 
 class InspectRequestedEvent(CDPModel):
     """
     Issued when object should be inspected (for example, as a result of inspect()
     command line API call).
     """
-
     object: RemoteObject
     hints: dict[str, Any]
     execution_context_id: ExecutionContextId | None = None

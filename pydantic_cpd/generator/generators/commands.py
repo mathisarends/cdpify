@@ -90,7 +90,8 @@ class CommandsGenerator:
         lines = [f"class {class_name}(CDPModel):"]
 
         if command.description:
-            lines.append(format_docstring(command.description, indent=4))
+            doc = format_docstring(command.description, indent=4)
+            lines.extend(doc.rstrip().splitlines())
 
         for param in command.parameters:
             lines.append(f"    {self._create_field(param)}")

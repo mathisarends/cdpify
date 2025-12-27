@@ -11,16 +11,13 @@ from .commands import (
     GetDomainsResult,
 )
 
-
 class SchemaClient:
-    """
-    This domain is deprecated.
-    """
-
     def __init__(self, client: CDPClient) -> None:
         self._client = client
 
-    async def get_domains(self, session_id: str | None = None) -> GetDomainsResult:
+    async def get_domains(
+        self, session_id: str | None = None
+    ) -> GetDomainsResult:
         result = await self._client.send_raw(
             method="Schema.getDomains",
             params=None,

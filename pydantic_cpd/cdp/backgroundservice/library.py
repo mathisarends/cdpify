@@ -14,12 +14,7 @@ from .commands import (
     StopObservingParams,
 )
 
-
 class BackgroundServiceClient:
-    """
-    Defines events for background web platform features.
-    """
-
     def __init__(self, client: CDPClient) -> None:
         self._client = client
 
