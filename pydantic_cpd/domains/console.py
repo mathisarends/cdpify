@@ -1,12 +1,10 @@
 """Generated from CDP specification"""
 
-from pydantic import BaseModel
+from pydantic_cpd.domains.base import CDPModel
 from typing import Literal, Any
 
-# Domain Types
 
-
-class ConsoleMessage(BaseModel):
+class ConsoleMessage(CDPModel):
     """Console message."""
 
     source: Literal[
@@ -29,11 +27,6 @@ class ConsoleMessage(BaseModel):
     column: int | None = None
 
 
-# Command Parameters and Results
-
-# Client
-
-
 class ConsoleClient:
     """This domain is deprecated - use Runtime or Log instead."""
 
@@ -46,12 +39,17 @@ class ConsoleClient:
         return None
 
     async def disable(self) -> None:
-        """Disables console domain, prevents further console messages from being reported to the client."""
+        """
+        Disables console domain, prevents further console messages from being reported
+        to the client.
+        """
         result = await self._cdp.call("Console.disable", {})
         return None
 
     async def enable(self) -> None:
-        """Enables console domain, sends the messages collected so far to the client by means of the
-        `messageAdded` notification."""
+        """
+        Enables console domain, sends the messages collected so far to the client by
+        means of the `messageAdded` notification.
+        """
         result = await self._cdp.call("Console.enable", {})
         return None

@@ -1,6 +1,6 @@
 """Generated from CDP specification"""
 
-from pydantic import BaseModel, Field
+from pydantic_cpd.domains.base import CDPModel
 from typing import Literal, Any
 
 from pydantic_cpd.domains import debugger
@@ -20,7 +20,6 @@ Page = page
 Runtime = runtime
 Security = security
 
-# Domain Types
 
 ResourceType = Literal[
     "Document",
@@ -81,7 +80,7 @@ CookiePriority = Literal["Low", "Medium", "High"]
 CookieSourceScheme = Literal["Unset", "NonSecure", "Secure"]
 
 
-class ResourceTiming(BaseModel):
+class ResourceTiming(CDPModel):
     """Timing information for the request."""
 
     request_time: float
@@ -117,13 +116,13 @@ RenderBlockingBehavior = Literal[
 ]
 
 
-class PostDataEntry(BaseModel):
+class PostDataEntry(CDPModel):
     """Post data entry for HTTP request"""
 
     bytes: str | None = None
 
 
-class Request(BaseModel):
+class Request(CDPModel):
     """HTTP request data."""
 
     url: str
@@ -151,7 +150,7 @@ class Request(BaseModel):
     is_ad_related: bool | None = None
 
 
-class SignedCertificateTimestamp(BaseModel):
+class SignedCertificateTimestamp(CDPModel):
     """Details of a signed certificate timestamp (SCT)."""
 
     status: str
@@ -164,7 +163,7 @@ class SignedCertificateTimestamp(BaseModel):
     signature_data: str
 
 
-class SecurityDetails(BaseModel):
+class SecurityDetails(CDPModel):
     """Security details about a request."""
 
     protocol: str
@@ -242,7 +241,7 @@ CorsError = Literal[
 ]
 
 
-class CorsErrorStatus(BaseModel):
+class CorsErrorStatus(CDPModel):
     cors_error: CorsError
     failed_parameter: str
 
@@ -252,10 +251,12 @@ ServiceWorkerResponseSource = Literal[
 ]
 
 
-class TrustTokenParams(BaseModel):
-    """Determines what type of Trust Token operation is executed and
-    depending on the type, some additional parameters. The values
-    are specified in third_party/blink/renderer/core/fetch/trust_token.idl."""
+class TrustTokenParams(CDPModel):
+    """
+    Determines what type of Trust Token operation is executed and depending on the type,
+    some additional parameters. The values are specified in
+    third_party/blink/renderer/core/fetch/trust_token.idl.
+    """
 
     operation: TrustTokenOperationType
     refresh_policy: Literal["UseCached", "Refresh"]
@@ -282,13 +283,13 @@ ServiceWorkerRouterSource = Literal[
 ]
 
 
-class ServiceWorkerRouterInfo(BaseModel):
+class ServiceWorkerRouterInfo(CDPModel):
     rule_id_matched: int | None = None
     matched_source_type: ServiceWorkerRouterSource | None = None
     actual_source_type: ServiceWorkerRouterSource | None = None
 
 
-class Response(BaseModel):
+class Response(CDPModel):
     """HTTP response data."""
 
     url: str
@@ -320,13 +321,13 @@ class Response(BaseModel):
     security_details: SecurityDetails | None = None
 
 
-class WebSocketRequest(BaseModel):
+class WebSocketRequest(CDPModel):
     """WebSocket request data."""
 
     headers: Headers
 
 
-class WebSocketResponse(BaseModel):
+class WebSocketResponse(CDPModel):
     """WebSocket response data."""
 
     status: int
@@ -337,15 +338,18 @@ class WebSocketResponse(BaseModel):
     request_headers_text: str | None = None
 
 
-class WebSocketFrame(BaseModel):
-    """WebSocket message data. This represents an entire WebSocket message, not just a fragmented frame as the name suggests."""
+class WebSocketFrame(CDPModel):
+    """
+    WebSocket message data. This represents an entire WebSocket message, not just a
+    fragmented frame as the name suggests.
+    """
 
     opcode: float
     mask: bool
     payload_data: str
 
 
-class CachedResource(BaseModel):
+class CachedResource(CDPModel):
     """Information about the cached resource."""
 
     url: str
@@ -354,7 +358,7 @@ class CachedResource(BaseModel):
     body_size: float
 
 
-class Initiator(BaseModel):
+class Initiator(CDPModel):
     """Information about the request initiator."""
 
     type: Literal[
@@ -367,15 +371,18 @@ class Initiator(BaseModel):
     request_id: RequestId | None = None
 
 
-class CookiePartitionKey(BaseModel):
-    """cookiePartitionKey object
-    The representation of the components of the key that are created by the cookiePartitionKey class contained in net/cookies/cookie_partition_key.h."""
+class CookiePartitionKey(CDPModel):
+    """
+    cookiePartitionKey object The representation of the components of the key that are
+    created by the cookiePartitionKey class contained in
+    net/cookies/cookie_partition_key.h.
+    """
 
     top_level_site: str
     has_cross_site_ancestor: bool
 
 
-class Cookie(BaseModel):
+class Cookie(CDPModel):
     """Cookie object"""
 
     name: str
@@ -456,7 +463,7 @@ CookieExemptionReason = Literal[
 ]
 
 
-class BlockedSetCookieWithReason(BaseModel):
+class BlockedSetCookieWithReason(CDPModel):
     """A cookie which was not stored from a response with the corresponding reason."""
 
     blocked_reasons: list[SetCookieBlockedReason]
@@ -464,25 +471,30 @@ class BlockedSetCookieWithReason(BaseModel):
     cookie: Cookie | None = None
 
 
-class ExemptedSetCookieWithReason(BaseModel):
-    """A cookie should have been blocked by 3PCD but is exempted and stored from a response with the
-    corresponding reason. A cookie could only have at most one exemption reason."""
+class ExemptedSetCookieWithReason(CDPModel):
+    """
+    A cookie should have been blocked by 3PCD but is exempted and stored from a response
+    with the corresponding reason. A cookie could only have at most one exemption
+    reason.
+    """
 
     exemption_reason: CookieExemptionReason
     cookie_line: str
     cookie: Cookie
 
 
-class AssociatedCookie(BaseModel):
-    """A cookie associated with the request which may or may not be sent with it.
-    Includes the cookies itself and reasons for blocking or exemption."""
+class AssociatedCookie(CDPModel):
+    """
+    A cookie associated with the request which may or may not be sent with it. Includes
+    the cookies itself and reasons for blocking or exemption.
+    """
 
     cookie: Cookie
     blocked_reasons: list[CookieBlockedReason]
     exemption_reason: CookieExemptionReason | None = None
 
 
-class CookieParam(BaseModel):
+class CookieParam(CDPModel):
     """Cookie parameter object"""
 
     name: str
@@ -501,7 +513,7 @@ class CookieParam(BaseModel):
     partition_key: CookiePartitionKey | None = None
 
 
-class AuthChallenge(BaseModel):
+class AuthChallenge(CDPModel):
     """Authorization challenge for HTTP status code 401 or 407."""
 
     source: Literal["Server", "Proxy"] | None = None
@@ -510,7 +522,7 @@ class AuthChallenge(BaseModel):
     realm: str
 
 
-class AuthChallengeResponse(BaseModel):
+class AuthChallengeResponse(CDPModel):
     """Response to an AuthChallenge."""
 
     response: Literal["Default", "CancelAuth", "ProvideCredentials"]
@@ -521,7 +533,7 @@ class AuthChallengeResponse(BaseModel):
 InterceptionStage = Literal["Request", "HeadersReceived"]
 
 
-class RequestPattern(BaseModel):
+class RequestPattern(CDPModel):
     """Request pattern for interception."""
 
     url_pattern: str | None = None
@@ -529,9 +541,12 @@ class RequestPattern(BaseModel):
     interception_stage: InterceptionStage | None = None
 
 
-class SignedExchangeSignature(BaseModel):
-    """Information about a signed exchange signature.
-    https://wicg.github.io/webpackage/draft-yasskin-httpbis-origin-signed-exchanges-impl.html#rfc.section.3.1"""
+class SignedExchangeSignature(CDPModel):
+    """
+    Information about a signed exchange signature.
+    https://wicg.github.io/webpackage/draft-yasskin-httpbis-origin-signed-exchanges-
+    impl.html#rfc.section.3.1
+    """
 
     label: str
     signature: str
@@ -544,9 +559,11 @@ class SignedExchangeSignature(BaseModel):
     certificates: list[str] | None = None
 
 
-class SignedExchangeHeader(BaseModel):
-    """Information about a signed exchange header.
-    https://wicg.github.io/webpackage/draft-yasskin-httpbis-origin-signed-exchanges-impl.html#cbor-representation"""
+class SignedExchangeHeader(CDPModel):
+    """
+    Information about a signed exchange header. https://wicg.github.io/webpackage/draft-
+    yasskin-httpbis-origin-signed-exchanges-impl.html#cbor-representation
+    """
 
     request_url: str
     response_code: int
@@ -565,7 +582,7 @@ SignedExchangeErrorField = Literal[
 ]
 
 
-class SignedExchangeError(BaseModel):
+class SignedExchangeError(CDPModel):
     """Information about a signed exchange response."""
 
     message: str
@@ -573,7 +590,7 @@ class SignedExchangeError(BaseModel):
     error_field: SignedExchangeErrorField | None = None
 
 
-class SignedExchangeInfo(BaseModel):
+class SignedExchangeInfo(CDPModel):
     """Information about a signed exchange response."""
 
     outer_response: Response
@@ -586,7 +603,7 @@ class SignedExchangeInfo(BaseModel):
 ContentEncoding = Literal["deflate", "gzip", "br", "zstd"]
 
 
-class NetworkConditions(BaseModel):
+class NetworkConditions(CDPModel):
     url_pattern: str
     latency: float
     download_throughput: float
@@ -597,7 +614,7 @@ class NetworkConditions(BaseModel):
     packet_reordering: bool | None = None
 
 
-class BlockPattern(BaseModel):
+class BlockPattern(CDPModel):
     url_pattern: str
     block: bool
 
@@ -605,7 +622,7 @@ class BlockPattern(BaseModel):
 DirectSocketDnsQueryType = Literal["ipv4", "ipv6"]
 
 
-class DirectTCPSocketOptions(BaseModel):
+class DirectTCPSocketOptions(CDPModel):
     no_delay: bool
     keep_alive_delay: float | None = None
     send_buffer_size: float | None = None
@@ -613,7 +630,7 @@ class DirectTCPSocketOptions(BaseModel):
     dns_query_type: DirectSocketDnsQueryType | None = None
 
 
-class DirectUDPSocketOptions(BaseModel):
+class DirectUDPSocketOptions(CDPModel):
     remote_addr: str | None = None
     remote_port: int | None = None
     local_addr: str | None = None
@@ -626,7 +643,7 @@ class DirectUDPSocketOptions(BaseModel):
     multicast_allow_address_sharing: bool | None = None
 
 
-class DirectUDPMessage(BaseModel):
+class DirectUDPMessage(CDPModel):
     data: str
     remote_addr: str | None = None
     remote_port: int | None = None
@@ -642,11 +659,11 @@ PrivateNetworkRequestPolicy = Literal[
 IPAddressSpace = Literal["Loopback", "Local", "Public", "Unknown"]
 
 
-class ConnectTiming(BaseModel):
+class ConnectTiming(CDPModel):
     request_time: float
 
 
-class ClientSecurityState(BaseModel):
+class ClientSecurityState(CDPModel):
     initiator_is_secure_context: bool
     initiator_i_p_address_space: IPAddressSpace
     private_network_request_policy: PrivateNetworkRequestPolicy
@@ -663,7 +680,7 @@ CrossOriginOpenerPolicyValue = Literal[
 ]
 
 
-class CrossOriginOpenerPolicyStatus(BaseModel):
+class CrossOriginOpenerPolicyStatus(CDPModel):
     value: CrossOriginOpenerPolicyValue
     report_only_value: CrossOriginOpenerPolicyValue
     reporting_endpoint: str | None = None
@@ -673,7 +690,7 @@ class CrossOriginOpenerPolicyStatus(BaseModel):
 CrossOriginEmbedderPolicyValue = Literal["None", "Credentialless", "RequireCorp"]
 
 
-class CrossOriginEmbedderPolicyStatus(BaseModel):
+class CrossOriginEmbedderPolicyStatus(CDPModel):
     value: CrossOriginEmbedderPolicyValue
     report_only_value: CrossOriginEmbedderPolicyValue
     reporting_endpoint: str | None = None
@@ -683,13 +700,13 @@ class CrossOriginEmbedderPolicyStatus(BaseModel):
 ContentSecurityPolicySource = Literal["HTTP", "Meta"]
 
 
-class ContentSecurityPolicyStatus(BaseModel):
+class ContentSecurityPolicyStatus(CDPModel):
     effective_directives: str
     is_enforced: bool
     source: ContentSecurityPolicySource
 
 
-class SecurityIsolationStatus(BaseModel):
+class SecurityIsolationStatus(CDPModel):
     coop: CrossOriginOpenerPolicyStatus | None = None
     coep: CrossOriginEmbedderPolicyStatus | None = None
     csp: list[ContentSecurityPolicyStatus] | None = None
@@ -699,7 +716,7 @@ ReportStatus = Literal["Queued", "Pending", "MarkedForRemoval", "Success"]
 ReportId = str
 
 
-class ReportingApiReport(BaseModel):
+class ReportingApiReport(CDPModel):
     """An object representing a report generated by the Reporting API."""
 
     id: ReportId
@@ -713,12 +730,12 @@ class ReportingApiReport(BaseModel):
     status: ReportStatus
 
 
-class ReportingApiEndpoint(BaseModel):
+class ReportingApiEndpoint(CDPModel):
     url: str
     group_name: str
 
 
-class LoadNetworkResourcePageResult(BaseModel):
+class LoadNetworkResourcePageResult(CDPModel):
     """An object providing the result of a network resource load."""
 
     success: bool
@@ -729,366 +746,388 @@ class LoadNetworkResourcePageResult(BaseModel):
     headers: Network.Headers | None = None
 
 
-class LoadNetworkResourceOptions(BaseModel):
-    """An options object that may be extended later to better support CORS,
-    CORB and streaming."""
+class LoadNetworkResourceOptions(CDPModel):
+    """
+    An options object that may be extended later to better support CORS, CORB and
+    streaming.
+    """
 
     disable_cache: bool
     include_credentials: bool
 
 
-# Command Parameters and Results
+class SetacceptedencodingsParams(CDPModel):
+    """
+    Sets a list of content encodings that will be accepted. Empty list means no encoding
+    is accepted.
+    """
+
+    encodings: list[ContentEncoding]
 
 
-class SetacceptedencodingsParams(BaseModel):
-    """Sets a list of content encodings that will be accepted. Empty list means no encoding is accepted."""
-
-    encodings: list[ContentEncoding] = Field(alias="encodings")
+class CanclearbrowsercacheResult(CDPModel):
+    result: bool
 
 
-class CanclearbrowsercacheResult(BaseModel):
-    result: bool = Field(alias="result")
+class CanclearbrowsercookiesResult(CDPModel):
+    result: bool
 
 
-class CanclearbrowsercookiesResult(BaseModel):
-    result: bool = Field(alias="result")
+class CanemulatenetworkconditionsResult(CDPModel):
+    result: bool
 
 
-class CanemulatenetworkconditionsResult(BaseModel):
-    result: bool = Field(alias="result")
+class ContinueinterceptedrequestParams(CDPModel):
+    """
+    Response to Network.requestIntercepted which either modifies the request to continue
+    with any modifications, or blocks it, or completes it with the provided response
+    bytes. If a network fetch occurs as a result which encounters a redirect an
+    additional Network.requestIntercepted event will be sent with the same
+    InterceptionId. Deprecated, use Fetch.continueRequest, Fetch.fulfillRequest and
+    Fetch.failRequest instead.
+    """
+
+    interception_id: InterceptionId
+    error_reason: ErrorReason | None = None
+    raw_response: str | None = None
+    url: str | None = None
+    method: str | None = None
+    post_data: str | None = None
+    headers: Headers | None = None
+    auth_challenge_response: AuthChallengeResponse | None = None
 
 
-class ContinueinterceptedrequestParams(BaseModel):
-    """Response to Network.requestIntercepted which either modifies the request to continue with any
-    modifications, or blocks it, or completes it with the provided response bytes. If a network
-    fetch occurs as a result which encounters a redirect an additional Network.requestIntercepted
-    event will be sent with the same InterceptionId.
-    Deprecated, use Fetch.continueRequest, Fetch.fulfillRequest and Fetch.failRequest instead."""
+class DeletecookiesParams(CDPModel):
+    """
+    Deletes browser cookies with matching name and url or domain/path/partitionKey pair.
+    """
 
-    interception_id: InterceptionId = Field(alias="interceptionId")
-    error_reason: ErrorReason | None = Field(default=None, alias="errorReason")
-    raw_response: str | None = Field(default=None, alias="rawResponse")
-    url: str | None = Field(default=None, alias="url")
-    method: str | None = Field(default=None, alias="method")
-    post_data: str | None = Field(default=None, alias="postData")
-    headers: Headers | None = Field(default=None, alias="headers")
-    auth_challenge_response: AuthChallengeResponse | None = Field(
-        default=None, alias="authChallengeResponse"
-    )
+    name: str
+    url: str | None = None
+    domain: str | None = None
+    path: str | None = None
+    partition_key: CookiePartitionKey | None = None
 
 
-class DeletecookiesParams(BaseModel):
-    """Deletes browser cookies with matching name and url or domain/path/partitionKey pair."""
+class EmulatenetworkconditionsParams(CDPModel):
+    """
+    Activates emulation of network conditions. This command is deprecated in favor of
+    the emulateNetworkConditionsByRule and overrideNetworkState commands, which can be
+    used together to the same effect.
+    """
 
-    name: str = Field(alias="name")
-    url: str | None = Field(default=None, alias="url")
-    domain: str | None = Field(default=None, alias="domain")
-    path: str | None = Field(default=None, alias="path")
-    partition_key: CookiePartitionKey | None = Field(default=None, alias="partitionKey")
-
-
-class EmulatenetworkconditionsParams(BaseModel):
-    """Activates emulation of network conditions. This command is deprecated in favor of the emulateNetworkConditionsByRule
-    and overrideNetworkState commands, which can be used together to the same effect."""
-
-    offline: bool = Field(alias="offline")
-    latency: float = Field(alias="latency")
-    download_throughput: float = Field(alias="downloadThroughput")
-    upload_throughput: float = Field(alias="uploadThroughput")
-    connection_type: ConnectionType | None = Field(default=None, alias="connectionType")
-    packet_loss: float | None = Field(default=None, alias="packetLoss")
-    packet_queue_length: int | None = Field(default=None, alias="packetQueueLength")
-    packet_reordering: bool | None = Field(default=None, alias="packetReordering")
+    offline: bool
+    latency: float
+    download_throughput: float
+    upload_throughput: float
+    connection_type: ConnectionType | None = None
+    packet_loss: float | None = None
+    packet_queue_length: int | None = None
+    packet_reordering: bool | None = None
 
 
-class EmulatenetworkconditionsbyruleParams(BaseModel):
-    """Activates emulation of network conditions for individual requests using URL match patterns. Unlike the deprecated
-    Network.emulateNetworkConditions this method does not affect `navigator` state. Use Network.overrideNetworkState to
-    explicitly modify `navigator` behavior."""
+class EmulatenetworkconditionsbyruleParams(CDPModel):
+    """
+    Activates emulation of network conditions for individual requests using URL match
+    patterns. Unlike the deprecated Network.emulateNetworkConditions this method does
+    not affect `navigator` state. Use Network.overrideNetworkState to explicitly modify
+    `navigator` behavior.
+    """
 
-    offline: bool = Field(alias="offline")
-    matched_network_conditions: list[NetworkConditions] = Field(
-        alias="matchedNetworkConditions"
-    )
-
-
-class EmulatenetworkconditionsbyruleResult(BaseModel):
-    rule_ids: list[str] = Field(alias="ruleIds")
+    offline: bool
+    matched_network_conditions: list[NetworkConditions]
 
 
-class OverridenetworkstateParams(BaseModel):
+class EmulatenetworkconditionsbyruleResult(CDPModel):
+    rule_ids: list[str]
+
+
+class OverridenetworkstateParams(CDPModel):
     """Override the state of navigator.onLine and navigator.connection."""
 
-    offline: bool = Field(alias="offline")
-    latency: float = Field(alias="latency")
-    download_throughput: float = Field(alias="downloadThroughput")
-    upload_throughput: float = Field(alias="uploadThroughput")
-    connection_type: ConnectionType | None = Field(default=None, alias="connectionType")
+    offline: bool
+    latency: float
+    download_throughput: float
+    upload_throughput: float
+    connection_type: ConnectionType | None = None
 
 
-class EnableParams(BaseModel):
+class EnableParams(CDPModel):
     """Enables network tracking, network events will now be delivered to the client."""
 
-    max_total_buffer_size: int | None = Field(default=None, alias="maxTotalBufferSize")
-    max_resource_buffer_size: int | None = Field(
-        default=None, alias="maxResourceBufferSize"
-    )
-    max_post_data_size: int | None = Field(default=None, alias="maxPostDataSize")
-    report_direct_socket_traffic: bool | None = Field(
-        default=None, alias="reportDirectSocketTraffic"
-    )
-    enable_durable_messages: bool | None = Field(
-        default=None, alias="enableDurableMessages"
-    )
+    max_total_buffer_size: int | None = None
+    max_resource_buffer_size: int | None = None
+    max_post_data_size: int | None = None
+    report_direct_socket_traffic: bool | None = None
+    enable_durable_messages: bool | None = None
 
 
-class ConfiguredurablemessagesParams(BaseModel):
-    """Configures storing response bodies outside of renderer, so that these survive
-    a cross-process navigation.
-    If maxTotalBufferSize is not set, durable messages are disabled."""
+class ConfiguredurablemessagesParams(CDPModel):
+    """
+    Configures storing response bodies outside of renderer, so that these survive a
+    cross-process navigation. If maxTotalBufferSize is not set, durable messages are
+    disabled.
+    """
 
-    max_total_buffer_size: int | None = Field(default=None, alias="maxTotalBufferSize")
-    max_resource_buffer_size: int | None = Field(
-        default=None, alias="maxResourceBufferSize"
-    )
-
-
-class GetallcookiesResult(BaseModel):
-    cookies: list[Cookie] = Field(alias="cookies")
+    max_total_buffer_size: int | None = None
+    max_resource_buffer_size: int | None = None
 
 
-class GetcertificateParams(BaseModel):
+class GetallcookiesResult(CDPModel):
+    cookies: list[Cookie]
+
+
+class GetcertificateParams(CDPModel):
     """Returns the DER-encoded certificate."""
 
-    origin: str = Field(alias="origin")
+    origin: str
 
 
-class GetcertificateResult(BaseModel):
-    table_names: list[str] = Field(alias="tableNames")
+class GetcertificateResult(CDPModel):
+    table_names: list[str]
 
 
-class GetcookiesParams(BaseModel):
-    """Returns all browser cookies for the current URL. Depending on the backend support, will return
-    detailed cookie information in the `cookies` field."""
+class GetcookiesParams(CDPModel):
+    """
+    Returns all browser cookies for the current URL. Depending on the backend support,
+    will return detailed cookie information in the `cookies` field.
+    """
 
-    urls: list[str] | None = Field(default=None, alias="urls")
-
-
-class GetcookiesResult(BaseModel):
-    cookies: list[Cookie] = Field(alias="cookies")
+    urls: list[str] | None = None
 
 
-class GetresponsebodyParams(BaseModel):
+class GetcookiesResult(CDPModel):
+    cookies: list[Cookie]
+
+
+class GetresponsebodyParams(CDPModel):
     """Returns content served for the given request."""
 
-    request_id: RequestId = Field(alias="requestId")
+    request_id: RequestId
 
 
-class GetresponsebodyResult(BaseModel):
-    body: str = Field(alias="body")
-    base64_encoded: bool = Field(alias="base64Encoded")
+class GetresponsebodyResult(CDPModel):
+    body: str
+    base64_encoded: bool
 
 
-class GetrequestpostdataParams(BaseModel):
-    """Returns post data sent with the request. Returns an error when no data was sent with the request."""
+class GetrequestpostdataParams(CDPModel):
+    """
+    Returns post data sent with the request. Returns an error when no data was sent with
+    the request.
+    """
 
-    request_id: RequestId = Field(alias="requestId")
+    request_id: RequestId
 
 
-class GetrequestpostdataResult(BaseModel):
-    post_data: str = Field(alias="postData")
+class GetrequestpostdataResult(CDPModel):
+    post_data: str
 
 
-class GetresponsebodyforinterceptionParams(BaseModel):
+class GetresponsebodyforinterceptionParams(CDPModel):
     """Returns content served for the given currently intercepted request."""
 
-    interception_id: InterceptionId = Field(alias="interceptionId")
+    interception_id: InterceptionId
 
 
-class GetresponsebodyforinterceptionResult(BaseModel):
-    body: str = Field(alias="body")
-    base64_encoded: bool = Field(alias="base64Encoded")
+class GetresponsebodyforinterceptionResult(CDPModel):
+    body: str
+    base64_encoded: bool
 
 
-class TakeresponsebodyforinterceptionasstreamParams(BaseModel):
-    """Returns a handle to the stream representing the response body. Note that after this command,
-    the intercepted request can't be continued as is -- you either need to cancel it or to provide
-    the response body. The stream only supports sequential read, IO.read will fail if the position
-    is specified."""
+class TakeresponsebodyforinterceptionasstreamParams(CDPModel):
+    """
+    Returns a handle to the stream representing the response body. Note that after this
+    command, the intercepted request can't be continued as is -- you either need to
+    cancel it or to provide the response body. The stream only supports sequential read,
+    IO.read will fail if the position is specified.
+    """
 
-    interception_id: InterceptionId = Field(alias="interceptionId")
-
-
-class TakeresponsebodyforinterceptionasstreamResult(BaseModel):
-    stream: IO.StreamHandle = Field(alias="stream")
+    interception_id: InterceptionId
 
 
-class ReplayxhrParams(BaseModel):
-    """This method sends a new XMLHttpRequest which is identical to the original one. The following
-    parameters should be identical: method, url, async, request body, extra headers, withCredentials
-    attribute, user, password."""
-
-    request_id: RequestId = Field(alias="requestId")
+class TakeresponsebodyforinterceptionasstreamResult(CDPModel):
+    stream: IO.StreamHandle
 
 
-class SearchinresponsebodyParams(BaseModel):
+class ReplayxhrParams(CDPModel):
+    """
+    This method sends a new XMLHttpRequest which is identical to the original one. The
+    following parameters should be identical: method, url, async, request body, extra
+    headers, withCredentials attribute, user, password.
+    """
+
+    request_id: RequestId
+
+
+class SearchinresponsebodyParams(CDPModel):
     """Searches for given string in response content."""
 
-    request_id: RequestId = Field(alias="requestId")
-    query: str = Field(alias="query")
-    case_sensitive: bool | None = Field(default=None, alias="caseSensitive")
-    is_regex: bool | None = Field(default=None, alias="isRegex")
+    request_id: RequestId
+    query: str
+    case_sensitive: bool | None = None
+    is_regex: bool | None = None
 
 
-class SearchinresponsebodyResult(BaseModel):
-    result: list[Debugger.SearchMatch] = Field(alias="result")
+class SearchinresponsebodyResult(CDPModel):
+    result: list[Debugger.SearchMatch]
 
 
-class SetblockedurlsParams(BaseModel):
+class SetblockedurlsParams(CDPModel):
     """Blocks URLs from loading."""
 
-    url_patterns: list[BlockPattern] | None = Field(default=None, alias="urlPatterns")
-    urls: list[str] | None = Field(default=None, alias="urls")
+    url_patterns: list[BlockPattern] | None = None
+    urls: list[str] | None = None
 
 
-class SetbypassserviceworkerParams(BaseModel):
+class SetbypassserviceworkerParams(CDPModel):
     """Toggles ignoring of service worker for each request."""
 
-    bypass: bool = Field(alias="bypass")
+    bypass: bool
 
 
-class SetcachedisabledParams(BaseModel):
+class SetcachedisabledParams(CDPModel):
     """Toggles ignoring cache for each request. If `true`, cache will not be used."""
 
-    cache_disabled: bool = Field(alias="cacheDisabled")
+    cache_disabled: bool
 
 
-class SetcookieParams(BaseModel):
-    """Sets a cookie with the given cookie data; may overwrite equivalent cookies if they exist."""
+class SetcookieParams(CDPModel):
+    """
+    Sets a cookie with the given cookie data; may overwrite equivalent cookies if they
+    exist.
+    """
 
-    name: str = Field(alias="name")
-    value: str = Field(alias="value")
-    url: str | None = Field(default=None, alias="url")
-    domain: str | None = Field(default=None, alias="domain")
-    path: str | None = Field(default=None, alias="path")
-    secure: bool | None = Field(default=None, alias="secure")
-    http_only: bool | None = Field(default=None, alias="httpOnly")
-    same_site: CookieSameSite | None = Field(default=None, alias="sameSite")
-    expires: TimeSinceEpoch | None = Field(default=None, alias="expires")
-    priority: CookiePriority | None = Field(default=None, alias="priority")
-    same_party: bool | None = Field(default=None, alias="sameParty")
-    source_scheme: CookieSourceScheme | None = Field(default=None, alias="sourceScheme")
-    source_port: int | None = Field(default=None, alias="sourcePort")
-    partition_key: CookiePartitionKey | None = Field(default=None, alias="partitionKey")
+    name: str
+    value: str
+    url: str | None = None
+    domain: str | None = None
+    path: str | None = None
+    secure: bool | None = None
+    http_only: bool | None = None
+    same_site: CookieSameSite | None = None
+    expires: TimeSinceEpoch | None = None
+    priority: CookiePriority | None = None
+    same_party: bool | None = None
+    source_scheme: CookieSourceScheme | None = None
+    source_port: int | None = None
+    partition_key: CookiePartitionKey | None = None
 
 
-class SetcookieResult(BaseModel):
-    success: bool = Field(alias="success")
+class SetcookieResult(CDPModel):
+    success: bool
 
 
-class SetcookiesParams(BaseModel):
+class SetcookiesParams(CDPModel):
     """Sets given cookies."""
 
-    cookies: list[CookieParam] = Field(alias="cookies")
+    cookies: list[CookieParam]
 
 
-class SetextrahttpheadersParams(BaseModel):
-    """Specifies whether to always send extra HTTP headers with the requests from this page."""
+class SetextrahttpheadersParams(CDPModel):
+    """
+    Specifies whether to always send extra HTTP headers with the requests from this
+    page.
+    """
 
-    headers: Headers = Field(alias="headers")
+    headers: Headers
 
 
-class SetattachdebugstackParams(BaseModel):
+class SetattachdebugstackParams(CDPModel):
     """Specifies whether to attach a page script stack id in requests"""
 
-    enabled: bool = Field(alias="enabled")
+    enabled: bool
 
 
-class SetrequestinterceptionParams(BaseModel):
-    """Sets the requests to intercept that match the provided patterns and optionally resource types.
-    Deprecated, please use Fetch.enable instead."""
+class SetrequestinterceptionParams(CDPModel):
+    """
+    Sets the requests to intercept that match the provided patterns and optionally
+    resource types. Deprecated, please use Fetch.enable instead.
+    """
 
-    patterns: list[RequestPattern] = Field(alias="patterns")
+    patterns: list[RequestPattern]
 
 
-class SetuseragentoverrideParams(BaseModel):
+class SetuseragentoverrideParams(CDPModel):
     """Allows overriding user agent with the given string."""
 
-    user_agent: str = Field(alias="userAgent")
-    accept_language: str | None = Field(default=None, alias="acceptLanguage")
-    platform: str | None = Field(default=None, alias="platform")
-    user_agent_metadata: Emulation.UserAgentMetadata | None = Field(
-        default=None, alias="userAgentMetadata"
-    )
+    user_agent: str
+    accept_language: str | None = None
+    platform: str | None = None
+    user_agent_metadata: Emulation.UserAgentMetadata | None = None
 
 
-class StreamresourcecontentParams(BaseModel):
-    """Enables streaming of the response for the given requestId.
-    If enabled, the dataReceived event contains the data that was received during streaming."""
+class StreamresourcecontentParams(CDPModel):
+    """
+    Enables streaming of the response for the given requestId. If enabled, the
+    dataReceived event contains the data that was received during streaming.
+    """
 
-    request_id: RequestId = Field(alias="requestId")
-
-
-class StreamresourcecontentResult(BaseModel):
-    buffered_data: str = Field(alias="bufferedData")
+    request_id: RequestId
 
 
-class GetsecurityisolationstatusParams(BaseModel):
+class StreamresourcecontentResult(CDPModel):
+    buffered_data: str
+
+
+class GetsecurityisolationstatusParams(CDPModel):
     """Returns information about the COEP/COOP isolation status."""
 
-    frame_id: Page.FrameId | None = Field(default=None, alias="frameId")
+    frame_id: Page.FrameId | None = None
 
 
-class GetsecurityisolationstatusResult(BaseModel):
-    status: SecurityIsolationStatus = Field(alias="status")
+class GetsecurityisolationstatusResult(CDPModel):
+    status: SecurityIsolationStatus
 
 
-class EnablereportingapiParams(BaseModel):
-    """Enables tracking for the Reporting API, events generated by the Reporting API will now be delivered to the client.
-    Enabling triggers 'reportingApiReportAdded' for all existing reports."""
+class EnablereportingapiParams(CDPModel):
+    """
+    Enables tracking for the Reporting API, events generated by the Reporting API will
+    now be delivered to the client. Enabling triggers 'reportingApiReportAdded' for all
+    existing reports.
+    """
 
-    enable: bool = Field(alias="enable")
+    enable: bool
 
 
-class LoadnetworkresourceParams(BaseModel):
+class LoadnetworkresourceParams(CDPModel):
     """Fetches the resource and returns the content."""
 
-    frame_id: Page.FrameId | None = Field(default=None, alias="frameId")
-    url: str = Field(alias="url")
-    options: LoadNetworkResourceOptions = Field(alias="options")
+    frame_id: Page.FrameId | None = None
+    url: str
+    options: LoadNetworkResourceOptions
 
 
-class LoadnetworkresourceResult(BaseModel):
-    resource: LoadNetworkResourcePageResult = Field(alias="resource")
+class LoadnetworkresourceResult(CDPModel):
+    resource: LoadNetworkResourcePageResult
 
 
-class SetcookiecontrolsParams(BaseModel):
-    """Sets Controls for third-party cookie access
-    Page reload is required before the new cookie behavior will be observed"""
+class SetcookiecontrolsParams(CDPModel):
+    """
+    Sets Controls for third-party cookie access Page reload is required before the new
+    cookie behavior will be observed
+    """
 
-    enable_third_party_cookie_restriction: bool = Field(
-        alias="enableThirdPartyCookieRestriction"
-    )
-    disable_third_party_cookie_metadata: bool = Field(
-        alias="disableThirdPartyCookieMetadata"
-    )
-    disable_third_party_cookie_heuristics: bool = Field(
-        alias="disableThirdPartyCookieHeuristics"
-    )
-
-
-# Client
+    enable_third_party_cookie_restriction: bool
+    disable_third_party_cookie_metadata: bool
+    disable_third_party_cookie_heuristics: bool
 
 
 class NetworkClient:
-    """Network domain allows tracking network activities of the page. It exposes information about http,
-    file, data and other requests and responses, their headers, bodies, timing, etc."""
+    """
+    Network domain allows tracking network activities of the page. It exposes
+    information about http, file, data and other requests and responses, their headers,
+    bodies, timing, etc.
+    """
 
     def __init__(self, cdp_client: Any) -> None:
         self._cdp = cdp_client
 
     async def set_accepted_encodings(self, encodings: list[ContentEncoding]) -> None:
-        """Sets a list of content encodings that will be accepted. Empty list means no encoding is accepted."""
+        """
+        Sets a list of content encodings that will be accepted. Empty list means no
+        encoding is accepted.
+        """
         params = SetacceptedencodingsParams(
             encodings=encodings,
         )
@@ -1139,11 +1178,14 @@ class NetworkClient:
         headers: Headers | None = None,
         auth_challenge_response: AuthChallengeResponse | None = None,
     ) -> None:
-        """Response to Network.requestIntercepted which either modifies the request to continue with any
-        modifications, or blocks it, or completes it with the provided response bytes. If a network
-        fetch occurs as a result which encounters a redirect an additional Network.requestIntercepted
-        event will be sent with the same InterceptionId.
-        Deprecated, use Fetch.continueRequest, Fetch.fulfillRequest and Fetch.failRequest instead."""
+        """
+        Response to Network.requestIntercepted which either modifies the request to
+        continue with any modifications, or blocks it, or completes it with the provided
+        response bytes. If a network fetch occurs as a result which encounters a
+        redirect an additional Network.requestIntercepted event will be sent with the
+        same InterceptionId. Deprecated, use Fetch.continueRequest, Fetch.fulfillRequest
+        and Fetch.failRequest instead.
+        """
         params = ContinueinterceptedrequestParams(
             interception_id=interception_id,
             error_reason=error_reason,
@@ -1168,7 +1210,10 @@ class NetworkClient:
         path: str | None = None,
         partition_key: CookiePartitionKey | None = None,
     ) -> None:
-        """Deletes browser cookies with matching name and url or domain/path/partitionKey pair."""
+        """
+        Deletes browser cookies with matching name and url or domain/path/partitionKey
+        pair.
+        """
         params = DeletecookiesParams(
             name=name,
             url=url,
@@ -1182,7 +1227,10 @@ class NetworkClient:
         return None
 
     async def disable(self) -> None:
-        """Disables network tracking, prevents network events from being sent to the client."""
+        """
+        Disables network tracking, prevents network events from being sent to the
+        client.
+        """
         result = await self._cdp.call("Network.disable", {})
         return None
 
@@ -1197,8 +1245,11 @@ class NetworkClient:
         packet_queue_length: int | None = None,
         packet_reordering: bool | None = None,
     ) -> None:
-        """Activates emulation of network conditions. This command is deprecated in favor of the emulateNetworkConditionsByRule
-        and overrideNetworkState commands, which can be used together to the same effect."""
+        """
+        Activates emulation of network conditions. This command is deprecated in favor
+        of the emulateNetworkConditionsByRule and overrideNetworkState commands, which
+        can be used together to the same effect.
+        """
         params = EmulatenetworkconditionsParams(
             offline=offline,
             latency=latency,
@@ -1218,9 +1269,12 @@ class NetworkClient:
     async def emulate_network_conditions_by_rule(
         self, offline: bool, matched_network_conditions: list[NetworkConditions]
     ) -> EmulatenetworkconditionsbyruleResult:
-        """Activates emulation of network conditions for individual requests using URL match patterns. Unlike the deprecated
-        Network.emulateNetworkConditions this method does not affect `navigator` state. Use Network.overrideNetworkState to
-        explicitly modify `navigator` behavior."""
+        """
+        Activates emulation of network conditions for individual requests using URL
+        match patterns. Unlike the deprecated Network.emulateNetworkConditions this
+        method does not affect `navigator` state. Use Network.overrideNetworkState to
+        explicitly modify `navigator` behavior.
+        """
         params = EmulatenetworkconditionsbyruleParams(
             offline=offline,
             matched_network_conditions=matched_network_conditions,
@@ -1261,7 +1315,9 @@ class NetworkClient:
         report_direct_socket_traffic: bool | None = None,
         enable_durable_messages: bool | None = None,
     ) -> None:
-        """Enables network tracking, network events will now be delivered to the client."""
+        """
+        Enables network tracking, network events will now be delivered to the client.
+        """
         params = EnableParams(
             max_total_buffer_size=max_total_buffer_size,
             max_resource_buffer_size=max_resource_buffer_size,
@@ -1279,9 +1335,11 @@ class NetworkClient:
         max_total_buffer_size: int | None = None,
         max_resource_buffer_size: int | None = None,
     ) -> None:
-        """Configures storing response bodies outside of renderer, so that these survive
-        a cross-process navigation.
-        If maxTotalBufferSize is not set, durable messages are disabled."""
+        """
+        Configures storing response bodies outside of renderer, so that these survive a
+        cross-process navigation. If maxTotalBufferSize is not set, durable messages are
+        disabled.
+        """
         params = ConfiguredurablemessagesParams(
             max_total_buffer_size=max_total_buffer_size,
             max_resource_buffer_size=max_resource_buffer_size,
@@ -1293,9 +1351,11 @@ class NetworkClient:
         return None
 
     async def get_all_cookies(self) -> GetallcookiesResult:
-        """Returns all browser cookies. Depending on the backend support, will return detailed cookie
-        information in the `cookies` field.
-        Deprecated. Use Storage.getCookies instead."""
+        """
+        Returns all browser cookies. Depending on the backend support, will return
+        detailed cookie information in the `cookies` field. Deprecated. Use
+        Storage.getCookies instead.
+        """
         result = await self._cdp.call("Network.getAllCookies", {})
         return GetallcookiesResult(**result)
 
@@ -1311,8 +1371,10 @@ class NetworkClient:
         return GetcertificateResult(**result)
 
     async def get_cookies(self, urls: list[str] | None = None) -> GetcookiesResult:
-        """Returns all browser cookies for the current URL. Depending on the backend support, will return
-        detailed cookie information in the `cookies` field."""
+        """
+        Returns all browser cookies for the current URL. Depending on the backend
+        support, will return detailed cookie information in the `cookies` field.
+        """
         params = GetcookiesParams(
             urls=urls,
         )
@@ -1335,7 +1397,10 @@ class NetworkClient:
     async def get_request_post_data(
         self, request_id: RequestId
     ) -> GetrequestpostdataResult:
-        """Returns post data sent with the request. Returns an error when no data was sent with the request."""
+        """
+        Returns post data sent with the request. Returns an error when no data was sent
+        with the request.
+        """
         params = GetrequestpostdataParams(
             request_id=request_id,
         )
@@ -1361,10 +1426,12 @@ class NetworkClient:
     async def take_response_body_for_interception_as_stream(
         self, interception_id: InterceptionId
     ) -> TakeresponsebodyforinterceptionasstreamResult:
-        """Returns a handle to the stream representing the response body. Note that after this command,
-        the intercepted request can't be continued as is -- you either need to cancel it or to provide
-        the response body. The stream only supports sequential read, IO.read will fail if the position
-        is specified."""
+        """
+        Returns a handle to the stream representing the response body. Note that after
+        this command, the intercepted request can't be continued as is -- you either
+        need to cancel it or to provide the response body. The stream only supports
+        sequential read, IO.read will fail if the position is specified.
+        """
         params = TakeresponsebodyforinterceptionasstreamParams(
             interception_id=interception_id,
         )
@@ -1375,9 +1442,11 @@ class NetworkClient:
         return TakeresponsebodyforinterceptionasstreamResult(**result)
 
     async def replay_x_h_r(self, request_id: RequestId) -> None:
-        """This method sends a new XMLHttpRequest which is identical to the original one. The following
-        parameters should be identical: method, url, async, request body, extra headers, withCredentials
-        attribute, user, password."""
+        """
+        This method sends a new XMLHttpRequest which is identical to the original one.
+        The following parameters should be identical: method, url, async, request body,
+        extra headers, withCredentials attribute, user, password.
+        """
         params = ReplayxhrParams(
             request_id=request_id,
         )
@@ -1434,7 +1503,9 @@ class NetworkClient:
         return None
 
     async def set_cache_disabled(self, cache_disabled: bool) -> None:
-        """Toggles ignoring cache for each request. If `true`, cache will not be used."""
+        """
+        Toggles ignoring cache for each request. If `true`, cache will not be used.
+        """
         params = SetcachedisabledParams(
             cache_disabled=cache_disabled,
         )
@@ -1461,7 +1532,10 @@ class NetworkClient:
         source_port: int | None = None,
         partition_key: CookiePartitionKey | None = None,
     ) -> SetcookieResult:
-        """Sets a cookie with the given cookie data; may overwrite equivalent cookies if they exist."""
+        """
+        Sets a cookie with the given cookie data; may overwrite equivalent cookies if
+        they exist.
+        """
         params = SetcookieParams(
             name=name,
             value=value,
@@ -1494,7 +1568,10 @@ class NetworkClient:
         return None
 
     async def set_extra_h_t_t_p_headers(self, headers: Headers) -> None:
-        """Specifies whether to always send extra HTTP headers with the requests from this page."""
+        """
+        Specifies whether to always send extra HTTP headers with the requests from this
+        page.
+        """
         params = SetextrahttpheadersParams(
             headers=headers,
         )
@@ -1516,8 +1593,10 @@ class NetworkClient:
         return None
 
     async def set_request_interception(self, patterns: list[RequestPattern]) -> None:
-        """Sets the requests to intercept that match the provided patterns and optionally resource types.
-        Deprecated, please use Fetch.enable instead."""
+        """
+        Sets the requests to intercept that match the provided patterns and optionally
+        resource types. Deprecated, please use Fetch.enable instead.
+        """
         params = SetrequestinterceptionParams(
             patterns=patterns,
         )
@@ -1550,8 +1629,10 @@ class NetworkClient:
     async def stream_resource_content(
         self, request_id: RequestId
     ) -> StreamresourcecontentResult:
-        """Enables streaming of the response for the given requestId.
-        If enabled, the dataReceived event contains the data that was received during streaming."""
+        """
+        Enables streaming of the response for the given requestId. If enabled, the
+        dataReceived event contains the data that was received during streaming.
+        """
         params = StreamresourcecontentParams(
             request_id=request_id,
         )
@@ -1575,8 +1656,11 @@ class NetworkClient:
         return GetsecurityisolationstatusResult(**result)
 
     async def enable_reporting_api(self, enable: bool) -> None:
-        """Enables tracking for the Reporting API, events generated by the Reporting API will now be delivered to the client.
-        Enabling triggers 'reportingApiReportAdded' for all existing reports."""
+        """
+        Enables tracking for the Reporting API, events generated by the Reporting API
+        will now be delivered to the client. Enabling triggers 'reportingApiReportAdded'
+        for all existing reports.
+        """
         params = EnablereportingapiParams(
             enable=enable,
         )
@@ -1610,8 +1694,10 @@ class NetworkClient:
         disable_third_party_cookie_metadata: bool,
         disable_third_party_cookie_heuristics: bool,
     ) -> None:
-        """Sets Controls for third-party cookie access
-        Page reload is required before the new cookie behavior will be observed"""
+        """
+        Sets Controls for third-party cookie access Page reload is required before the
+        new cookie behavior will be observed
+        """
         params = SetcookiecontrolsParams(
             enable_third_party_cookie_restriction=enable_third_party_cookie_restriction,
             disable_third_party_cookie_metadata=disable_third_party_cookie_metadata,

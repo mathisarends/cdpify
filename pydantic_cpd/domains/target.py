@@ -1,6 +1,6 @@
 """Generated from CDP specification"""
 
-from pydantic import BaseModel, Field
+from pydantic_cpd.domains.base import CDPModel
 from typing import Literal, Any
 
 from pydantic_cpd.domains import browser
@@ -10,13 +10,12 @@ from pydantic_cpd.domains import page
 Browser = browser
 Page = page
 
-# Domain Types
 
 TargetID = str
 SessionID = str
 
 
-class TargetInfo(BaseModel):
+class TargetInfo(CDPModel):
     target_id: TargetID
     type: str
     title: str
@@ -30,7 +29,7 @@ class TargetInfo(BaseModel):
     subtype: str | None = None
 
 
-class FilterEntry(BaseModel):
+class FilterEntry(CDPModel):
     """A filter used by target query/discovery/auto-attach operations."""
 
     exclude: bool | None = None
@@ -40,222 +39,220 @@ class FilterEntry(BaseModel):
 TargetFilter = list[Any]
 
 
-class RemoteLocation(BaseModel):
+class RemoteLocation(CDPModel):
     host: str
     port: int
 
 
 WindowState = Literal["normal", "minimized", "maximized", "fullscreen"]
 
-# Command Parameters and Results
 
-
-class ActivatetargetParams(BaseModel):
+class ActivatetargetParams(CDPModel):
     """Activates (focuses) the target."""
 
-    target_id: TargetID = Field(alias="targetId")
+    target_id: TargetID
 
 
-class AttachtotargetParams(BaseModel):
+class AttachtotargetParams(CDPModel):
     """Attaches to the target with given id."""
 
-    target_id: TargetID = Field(alias="targetId")
-    flatten: bool | None = Field(default=None, alias="flatten")
+    target_id: TargetID
+    flatten: bool | None = None
 
 
-class AttachtotargetResult(BaseModel):
-    session_id: SessionID = Field(alias="sessionId")
+class AttachtotargetResult(CDPModel):
+    session_id: SessionID
 
 
-class AttachtobrowsertargetResult(BaseModel):
-    session_id: SessionID = Field(alias="sessionId")
+class AttachtobrowsertargetResult(CDPModel):
+    session_id: SessionID
 
 
-class ClosetargetParams(BaseModel):
+class ClosetargetParams(CDPModel):
     """Closes the target. If the target is a page that gets closed too."""
 
-    target_id: TargetID = Field(alias="targetId")
+    target_id: TargetID
 
 
-class ClosetargetResult(BaseModel):
-    success: bool = Field(alias="success")
+class ClosetargetResult(CDPModel):
+    success: bool
 
 
-class ExposedevtoolsprotocolParams(BaseModel):
-    """Inject object to the target's main frame that provides a communication
-    channel with browser target.
+class ExposedevtoolsprotocolParams(CDPModel):
+    """
+    Inject object to the target's main frame that provides a communication channel with
+    browser target.  Injected object will be available as `window[bindingName]`.  The
+    object has the following API: - `binding.send(json)` - a method to send messages
+    over the remote debugging protocol - `binding.onmessage = json =>
+    handleMessage(json)` - a callback that will be called for the protocol notifications
+    and command responses.
+    """
 
-    Injected object will be available as `window[bindingName]`.
-
-    The object has the following API:
-    - `binding.send(json)` - a method to send messages over the remote debugging protocol
-    - `binding.onmessage = json => handleMessage(json)` - a callback that will be called for the protocol notifications and command responses."""
-
-    target_id: TargetID = Field(alias="targetId")
-    binding_name: str | None = Field(default=None, alias="bindingName")
-    inherit_permissions: bool | None = Field(default=None, alias="inheritPermissions")
-
-
-class CreatebrowsercontextParams(BaseModel):
-    """Creates a new empty BrowserContext. Similar to an incognito profile but you can have more than
-    one."""
-
-    dispose_on_detach: bool | None = Field(default=None, alias="disposeOnDetach")
-    proxy_server: str | None = Field(default=None, alias="proxyServer")
-    proxy_bypass_list: str | None = Field(default=None, alias="proxyBypassList")
-    origins_with_universal_network_access: list[str] | None = Field(
-        default=None, alias="originsWithUniversalNetworkAccess"
-    )
+    target_id: TargetID
+    binding_name: str | None = None
+    inherit_permissions: bool | None = None
 
 
-class CreatebrowsercontextResult(BaseModel):
-    browser_context_id: Browser.BrowserContextID = Field(alias="browserContextId")
+class CreatebrowsercontextParams(CDPModel):
+    """
+    Creates a new empty BrowserContext. Similar to an incognito profile but you can have
+    more than one.
+    """
+
+    dispose_on_detach: bool | None = None
+    proxy_server: str | None = None
+    proxy_bypass_list: str | None = None
+    origins_with_universal_network_access: list[str] | None = None
 
 
-class GetbrowsercontextsResult(BaseModel):
-    browser_context_ids: list[Browser.BrowserContextID] = Field(
-        alias="browserContextIds"
-    )
-    default_browser_context_id: Browser.BrowserContextID | None = Field(
-        default=None, alias="defaultBrowserContextId"
-    )
+class CreatebrowsercontextResult(CDPModel):
+    browser_context_id: Browser.BrowserContextID
 
 
-class CreatetargetParams(BaseModel):
+class GetbrowsercontextsResult(CDPModel):
+    browser_context_ids: list[Browser.BrowserContextID]
+    default_browser_context_id: Browser.BrowserContextID | None = None
+
+
+class CreatetargetParams(CDPModel):
     """Creates a new page."""
 
-    url: str = Field(alias="url")
-    left: int | None = Field(default=None, alias="left")
-    top: int | None = Field(default=None, alias="top")
-    width: int | None = Field(default=None, alias="width")
-    height: int | None = Field(default=None, alias="height")
-    window_state: WindowState | None = Field(default=None, alias="windowState")
-    browser_context_id: Browser.BrowserContextID | None = Field(
-        default=None, alias="browserContextId"
-    )
-    enable_begin_frame_control: bool | None = Field(
-        default=None, alias="enableBeginFrameControl"
-    )
-    new_window: bool | None = Field(default=None, alias="newWindow")
-    background: bool | None = Field(default=None, alias="background")
-    for_tab: bool | None = Field(default=None, alias="forTab")
-    hidden: bool | None = Field(default=None, alias="hidden")
+    url: str
+    left: int | None = None
+    top: int | None = None
+    width: int | None = None
+    height: int | None = None
+    window_state: WindowState | None = None
+    browser_context_id: Browser.BrowserContextID | None = None
+    enable_begin_frame_control: bool | None = None
+    new_window: bool | None = None
+    background: bool | None = None
+    for_tab: bool | None = None
+    hidden: bool | None = None
 
 
-class CreatetargetResult(BaseModel):
-    target_id: TargetID = Field(alias="targetId")
+class CreatetargetResult(CDPModel):
+    target_id: TargetID
 
 
-class DetachfromtargetParams(BaseModel):
+class DetachfromtargetParams(CDPModel):
     """Detaches session with given id."""
 
-    session_id: SessionID | None = Field(default=None, alias="sessionId")
-    target_id: TargetID | None = Field(default=None, alias="targetId")
+    session_id: SessionID | None = None
+    target_id: TargetID | None = None
 
 
-class DisposebrowsercontextParams(BaseModel):
-    """Deletes a BrowserContext. All the belonging pages will be closed without calling their
-    beforeunload hooks."""
+class DisposebrowsercontextParams(CDPModel):
+    """
+    Deletes a BrowserContext. All the belonging pages will be closed without calling
+    their beforeunload hooks.
+    """
 
-    browser_context_id: Browser.BrowserContextID = Field(alias="browserContextId")
+    browser_context_id: Browser.BrowserContextID
 
 
-class GettargetinfoParams(BaseModel):
+class GettargetinfoParams(CDPModel):
     """Returns information about a target."""
 
-    target_id: TargetID | None = Field(default=None, alias="targetId")
+    target_id: TargetID | None = None
 
 
-class GettargetinfoResult(BaseModel):
-    target_info: TargetInfo = Field(alias="targetInfo")
+class GettargetinfoResult(CDPModel):
+    target_info: TargetInfo
 
 
-class GettargetsParams(BaseModel):
+class GettargetsParams(CDPModel):
     """Retrieves a list of available targets."""
 
-    filter: TargetFilter | None = Field(default=None, alias="filter")
+    filter: TargetFilter | None = None
 
 
-class GettargetsResult(BaseModel):
-    target_infos: list[TargetInfo] = Field(alias="targetInfos")
+class GettargetsResult(CDPModel):
+    target_infos: list[TargetInfo]
 
 
-class SendmessagetotargetParams(BaseModel):
-    """Sends protocol message over session with given id.
-    Consider using flat mode instead; see commands attachToTarget, setAutoAttach,
-    and crbug.com/991325."""
+class SendmessagetotargetParams(CDPModel):
+    """
+    Sends protocol message over session with given id. Consider using flat mode instead;
+    see commands attachToTarget, setAutoAttach, and crbug.com/991325.
+    """
 
-    message: str = Field(alias="message")
-    session_id: SessionID | None = Field(default=None, alias="sessionId")
-    target_id: TargetID | None = Field(default=None, alias="targetId")
-
-
-class SetautoattachParams(BaseModel):
-    """Controls whether to automatically attach to new targets which are considered
-    to be directly related to this one (for example, iframes or workers).
-    When turned on, attaches to all existing related targets as well. When turned off,
-    automatically detaches from all currently attached targets.
-    This also clears all targets added by `autoAttachRelated` from the list of targets to watch
-    for creation of related targets.
-    You might want to call this recursively for auto-attached targets to attach
-    to all available targets."""
-
-    auto_attach: bool = Field(alias="autoAttach")
-    wait_for_debugger_on_start: bool = Field(alias="waitForDebuggerOnStart")
-    flatten: bool | None = Field(default=None, alias="flatten")
-    filter: TargetFilter | None = Field(default=None, alias="filter")
+    message: str
+    session_id: SessionID | None = None
+    target_id: TargetID | None = None
 
 
-class AutoattachrelatedParams(BaseModel):
-    """Adds the specified target to the list of targets that will be monitored for any related target
-    creation (such as child frames, child workers and new versions of service worker) and reported
-    through `attachedToTarget`. The specified target is also auto-attached.
-    This cancels the effect of any previous `setAutoAttach` and is also cancelled by subsequent
-    `setAutoAttach`. Only available at the Browser target."""
+class SetautoattachParams(CDPModel):
+    """
+    Controls whether to automatically attach to new targets which are considered to be
+    directly related to this one (for example, iframes or workers). When turned on,
+    attaches to all existing related targets as well. When turned off, automatically
+    detaches from all currently attached targets. This also clears all targets added by
+    `autoAttachRelated` from the list of targets to watch for creation of related
+    targets. You might want to call this recursively for auto-attached targets to attach
+    to all available targets.
+    """
 
-    target_id: TargetID = Field(alias="targetId")
-    wait_for_debugger_on_start: bool = Field(alias="waitForDebuggerOnStart")
-    filter: TargetFilter | None = Field(default=None, alias="filter")
-
-
-class SetdiscovertargetsParams(BaseModel):
-    """Controls whether to discover available targets and notify via
-    `targetCreated/targetInfoChanged/targetDestroyed` events."""
-
-    discover: bool = Field(alias="discover")
-    filter: TargetFilter | None = Field(default=None, alias="filter")
+    auto_attach: bool
+    wait_for_debugger_on_start: bool
+    flatten: bool | None = None
+    filter: TargetFilter | None = None
 
 
-class SetremotelocationsParams(BaseModel):
-    """Enables target discovery for the specified locations, when `setDiscoverTargets` was set to
-    `true`."""
+class AutoattachrelatedParams(CDPModel):
+    """
+    Adds the specified target to the list of targets that will be monitored for any
+    related target creation (such as child frames, child workers and new versions of
+    service worker) and reported through `attachedToTarget`. The specified target is
+    also auto-attached. This cancels the effect of any previous `setAutoAttach` and is
+    also cancelled by subsequent `setAutoAttach`. Only available at the Browser target.
+    """
 
-    locations: list[RemoteLocation] = Field(alias="locations")
-
-
-class GetdevtoolstargetParams(BaseModel):
-    """Gets the targetId of the DevTools page target opened for the given target
-    (if any)."""
-
-    target_id: TargetID = Field(alias="targetId")
-
-
-class GetdevtoolstargetResult(BaseModel):
-    target_id: TargetID | None = Field(default=None, alias="targetId")
+    target_id: TargetID
+    wait_for_debugger_on_start: bool
+    filter: TargetFilter | None = None
 
 
-class OpendevtoolsParams(BaseModel):
+class SetdiscovertargetsParams(CDPModel):
+    """
+    Controls whether to discover available targets and notify via
+    `targetCreated/targetInfoChanged/targetDestroyed` events.
+    """
+
+    discover: bool
+    filter: TargetFilter | None = None
+
+
+class SetremotelocationsParams(CDPModel):
+    """
+    Enables target discovery for the specified locations, when `setDiscoverTargets` was
+    set to `true`.
+    """
+
+    locations: list[RemoteLocation]
+
+
+class GetdevtoolstargetParams(CDPModel):
+    """
+    Gets the targetId of the DevTools page target opened for the given target (if any).
+    """
+
+    target_id: TargetID
+
+
+class GetdevtoolstargetResult(CDPModel):
+    target_id: TargetID | None = None
+
+
+class OpendevtoolsParams(CDPModel):
     """Opens a DevTools window for the target."""
 
-    target_id: TargetID = Field(alias="targetId")
-    panel_id: str | None = Field(default=None, alias="panelId")
+    target_id: TargetID
+    panel_id: str | None = None
 
 
-class OpendevtoolsResult(BaseModel):
-    target_id: TargetID = Field(alias="targetId")
-
-
-# Client
+class OpendevtoolsResult(CDPModel):
+    target_id: TargetID
 
 
 class TargetClient:
@@ -308,14 +305,14 @@ class TargetClient:
         binding_name: str | None = None,
         inherit_permissions: bool | None = None,
     ) -> None:
-        """Inject object to the target's main frame that provides a communication
-        channel with browser target.
-
-        Injected object will be available as `window[bindingName]`.
-
-        The object has the following API:
-        - `binding.send(json)` - a method to send messages over the remote debugging protocol
-        - `binding.onmessage = json => handleMessage(json)` - a callback that will be called for the protocol notifications and command responses."""
+        """
+        Inject object to the target's main frame that provides a communication channel
+        with browser target.  Injected object will be available as
+        `window[bindingName]`.  The object has the following API: - `binding.send(json)`
+        - a method to send messages over the remote debugging protocol -
+        `binding.onmessage = json => handleMessage(json)` - a callback that will be
+        called for the protocol notifications and command responses.
+        """
         params = ExposedevtoolsprotocolParams(
             target_id=target_id,
             binding_name=binding_name,
@@ -334,8 +331,10 @@ class TargetClient:
         proxy_bypass_list: str | None = None,
         origins_with_universal_network_access: list[str] | None = None,
     ) -> CreatebrowsercontextResult:
-        """Creates a new empty BrowserContext. Similar to an incognito profile but you can have more than
-        one."""
+        """
+        Creates a new empty BrowserContext. Similar to an incognito profile but you can
+        have more than one.
+        """
         params = CreatebrowsercontextParams(
             dispose_on_detach=dispose_on_detach,
             proxy_server=proxy_server,
@@ -349,7 +348,9 @@ class TargetClient:
         return CreatebrowsercontextResult(**result)
 
     async def get_browser_contexts(self) -> GetbrowsercontextsResult:
-        """Returns all browser contexts created with `Target.createBrowserContext` method."""
+        """
+        Returns all browser contexts created with `Target.createBrowserContext` method.
+        """
         result = await self._cdp.call("Target.getBrowserContexts", {})
         return GetbrowsercontextsResult(**result)
 
@@ -405,8 +406,10 @@ class TargetClient:
     async def dispose_browser_context(
         self, browser_context_id: Browser.BrowserContextID
     ) -> None:
-        """Deletes a BrowserContext. All the belonging pages will be closed without calling their
-        beforeunload hooks."""
+        """
+        Deletes a BrowserContext. All the belonging pages will be closed without calling
+        their beforeunload hooks.
+        """
         params = DisposebrowsercontextParams(
             browser_context_id=browser_context_id,
         )
@@ -444,9 +447,10 @@ class TargetClient:
         session_id: SessionID | None = None,
         target_id: TargetID | None = None,
     ) -> None:
-        """Sends protocol message over session with given id.
-        Consider using flat mode instead; see commands attachToTarget, setAutoAttach,
-        and crbug.com/991325."""
+        """
+        Sends protocol message over session with given id. Consider using flat mode
+        instead; see commands attachToTarget, setAutoAttach, and crbug.com/991325.
+        """
         params = SendmessagetotargetParams(
             message=message,
             session_id=session_id,
@@ -465,14 +469,15 @@ class TargetClient:
         flatten: bool | None = None,
         filter: TargetFilter | None = None,
     ) -> None:
-        """Controls whether to automatically attach to new targets which are considered
-        to be directly related to this one (for example, iframes or workers).
-        When turned on, attaches to all existing related targets as well. When turned off,
-        automatically detaches from all currently attached targets.
-        This also clears all targets added by `autoAttachRelated` from the list of targets to watch
-        for creation of related targets.
-        You might want to call this recursively for auto-attached targets to attach
-        to all available targets."""
+        """
+        Controls whether to automatically attach to new targets which are considered to
+        be directly related to this one (for example, iframes or workers). When turned
+        on, attaches to all existing related targets as well. When turned off,
+        automatically detaches from all currently attached targets. This also clears all
+        targets added by `autoAttachRelated` from the list of targets to watch for
+        creation of related targets. You might want to call this recursively for auto-
+        attached targets to attach to all available targets.
+        """
         params = SetautoattachParams(
             auto_attach=auto_attach,
             wait_for_debugger_on_start=wait_for_debugger_on_start,
@@ -490,11 +495,14 @@ class TargetClient:
         wait_for_debugger_on_start: bool,
         filter: TargetFilter | None = None,
     ) -> None:
-        """Adds the specified target to the list of targets that will be monitored for any related target
-        creation (such as child frames, child workers and new versions of service worker) and reported
-        through `attachedToTarget`. The specified target is also auto-attached.
-        This cancels the effect of any previous `setAutoAttach` and is also cancelled by subsequent
-        `setAutoAttach`. Only available at the Browser target."""
+        """
+        Adds the specified target to the list of targets that will be monitored for any
+        related target creation (such as child frames, child workers and new versions of
+        service worker) and reported through `attachedToTarget`. The specified target is
+        also auto-attached. This cancels the effect of any previous `setAutoAttach` and
+        is also cancelled by subsequent `setAutoAttach`. Only available at the Browser
+        target.
+        """
         params = AutoattachrelatedParams(
             target_id=target_id,
             wait_for_debugger_on_start=wait_for_debugger_on_start,
@@ -509,8 +517,10 @@ class TargetClient:
     async def set_discover_targets(
         self, discover: bool, filter: TargetFilter | None = None
     ) -> None:
-        """Controls whether to discover available targets and notify via
-        `targetCreated/targetInfoChanged/targetDestroyed` events."""
+        """
+        Controls whether to discover available targets and notify via
+        `targetCreated/targetInfoChanged/targetDestroyed` events.
+        """
         params = SetdiscovertargetsParams(
             discover=discover,
             filter=filter,
@@ -522,8 +532,10 @@ class TargetClient:
         return None
 
     async def set_remote_locations(self, locations: list[RemoteLocation]) -> None:
-        """Enables target discovery for the specified locations, when `setDiscoverTargets` was set to
-        `true`."""
+        """
+        Enables target discovery for the specified locations, when `setDiscoverTargets`
+        was set to `true`.
+        """
         params = SetremotelocationsParams(
             locations=locations,
         )
@@ -536,8 +548,10 @@ class TargetClient:
     async def get_dev_tools_target(
         self, target_id: TargetID
     ) -> GetdevtoolstargetResult:
-        """Gets the targetId of the DevTools page target opened for the given target
-        (if any)."""
+        """
+        Gets the targetId of the DevTools page target opened for the given target (if
+        any).
+        """
         params = GetdevtoolstargetParams(
             target_id=target_id,
         )

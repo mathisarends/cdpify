@@ -1,6 +1,6 @@
 """Generated from CDP specification"""
 
-from pydantic import BaseModel, Field
+from pydantic_cpd.domains.base import CDPModel
 from typing import Literal, Any
 
 from pydantic_cpd.domains import dom
@@ -18,32 +18,33 @@ IO = io
 Network = network
 Runtime = runtime
 
-# Domain Types
 
 FrameId = str
 AdFrameType = Literal["none", "child", "root"]
 AdFrameExplanation = Literal["ParentIsAd", "CreatedByAdScript", "MatchedBlockingRule"]
 
 
-class AdFrameStatus(BaseModel):
+class AdFrameStatus(CDPModel):
     """Indicates whether a frame has been identified as an ad and why."""
 
     ad_frame_type: AdFrameType
     explanations: list[AdFrameExplanation] | None = None
 
 
-class AdScriptId(BaseModel):
-    """Identifies the script which caused a script or frame to be labelled as an
-    ad."""
+class AdScriptId(CDPModel):
+    """
+    Identifies the script which caused a script or frame to be labelled as an ad.
+    """
 
     script_id: Runtime.ScriptId
     debugger_id: Runtime.UniqueDebuggerId
 
 
-class AdScriptAncestry(BaseModel):
-    """Encapsulates the script ancestry and the root script filterlist rule that
-    caused the frame to be labelled as an ad. Only created when `ancestryChain`
-    is not empty."""
+class AdScriptAncestry(CDPModel):
+    """
+    Encapsulates the script ancestry and the root script filterlist rule that caused the
+    frame to be labelled as an ad. Only created when `ancestryChain` is not empty.
+    """
 
     ancestry_chain: list[AdScriptId]
     root_script_filterlist_rule: str | None = None
@@ -178,12 +179,12 @@ PermissionsPolicyBlockReason = Literal[
 ]
 
 
-class PermissionsPolicyBlockLocator(BaseModel):
+class PermissionsPolicyBlockLocator(CDPModel):
     frame_id: FrameId
     block_reason: PermissionsPolicyBlockReason
 
 
-class PermissionsPolicyFeatureState(BaseModel):
+class PermissionsPolicyFeatureState(CDPModel):
     feature: PermissionsPolicyFeature
     allowed: bool
     locator: PermissionsPolicyBlockLocator | None = None
@@ -209,7 +210,7 @@ OriginTrialStatus = Literal[
 OriginTrialUsageRestriction = Literal["None", "Subset"]
 
 
-class OriginTrialToken(BaseModel):
+class OriginTrialToken(CDPModel):
     origin: str
     match_sub_domains: bool
     trial_name: str
@@ -218,25 +219,25 @@ class OriginTrialToken(BaseModel):
     usage_restriction: OriginTrialUsageRestriction
 
 
-class OriginTrialTokenWithStatus(BaseModel):
+class OriginTrialTokenWithStatus(CDPModel):
     raw_token_text: str
     parsed_token: OriginTrialToken | None = None
     status: OriginTrialTokenStatus
 
 
-class OriginTrial(BaseModel):
+class OriginTrial(CDPModel):
     trial_name: str
     status: OriginTrialStatus
     tokens_with_status: list[OriginTrialTokenWithStatus]
 
 
-class SecurityOriginDetails(BaseModel):
+class SecurityOriginDetails(CDPModel):
     """Additional information about the frame document's security origin."""
 
     is_localhost: bool
 
 
-class Frame(BaseModel):
+class Frame(CDPModel):
     """Information about the Frame on the page."""
 
     id: FrameId
@@ -256,7 +257,7 @@ class Frame(BaseModel):
     gated_a_p_i_features: list[GatedAPIFeatures]
 
 
-class FrameResource(BaseModel):
+class FrameResource(CDPModel):
     """Information about the Resource on the page."""
 
     url: str
@@ -268,7 +269,7 @@ class FrameResource(BaseModel):
     canceled: bool | None = None
 
 
-class FrameResourceTree(BaseModel):
+class FrameResourceTree(CDPModel):
     """Information about the Frame hierarchy along with their cached resources."""
 
     frame: Frame
@@ -276,7 +277,7 @@ class FrameResourceTree(BaseModel):
     resources: list[FrameResource]
 
 
-class FrameTree(BaseModel):
+class FrameTree(CDPModel):
     """Information about the Frame hierarchy."""
 
     frame: Frame
@@ -301,7 +302,7 @@ TransitionType = Literal[
 ]
 
 
-class NavigationEntry(BaseModel):
+class NavigationEntry(CDPModel):
     """Navigation history entry."""
 
     id: int
@@ -311,7 +312,7 @@ class NavigationEntry(BaseModel):
     transition_type: TransitionType
 
 
-class ScreencastFrameMetadata(BaseModel):
+class ScreencastFrameMetadata(CDPModel):
     """Screencast frame metadata."""
 
     offset_top: float
@@ -326,7 +327,7 @@ class ScreencastFrameMetadata(BaseModel):
 DialogType = Literal["alert", "confirm", "prompt", "beforeunload"]
 
 
-class AppManifestError(BaseModel):
+class AppManifestError(CDPModel):
     """Error while paring app manifest."""
 
     message: str
@@ -335,13 +336,13 @@ class AppManifestError(BaseModel):
     column: int
 
 
-class AppManifestParsedProperties(BaseModel):
+class AppManifestParsedProperties(CDPModel):
     """Parsed app manifest properties."""
 
     scope: str
 
 
-class LayoutViewport(BaseModel):
+class LayoutViewport(CDPModel):
     """Layout viewport position and dimensions."""
 
     page_x: int
@@ -350,7 +351,7 @@ class LayoutViewport(BaseModel):
     client_height: int
 
 
-class VisualViewport(BaseModel):
+class VisualViewport(CDPModel):
     """Visual viewport position, dimensions, and scale."""
 
     offset_x: float
@@ -363,7 +364,7 @@ class VisualViewport(BaseModel):
     zoom: float | None = None
 
 
-class Viewport(BaseModel):
+class Viewport(CDPModel):
     """Viewport for capturing screenshot."""
 
     x: float
@@ -373,7 +374,7 @@ class Viewport(BaseModel):
     scale: float
 
 
-class FontFamilies(BaseModel):
+class FontFamilies(CDPModel):
     """Generic font families collection."""
 
     standard: str | None = None
@@ -385,14 +386,14 @@ class FontFamilies(BaseModel):
     math: str | None = None
 
 
-class ScriptFontFamilies(BaseModel):
+class ScriptFontFamilies(CDPModel):
     """Font families collection for a script."""
 
     script: str
     font_families: FontFamilies
 
 
-class FontSizes(BaseModel):
+class FontSizes(CDPModel):
     """Default font sizes."""
 
     standard: int | None = None
@@ -414,12 +415,12 @@ ClientNavigationReason = Literal[
 ClientNavigationDisposition = Literal["currentTab", "newTab", "newWindow", "download"]
 
 
-class InstallabilityErrorArgument(BaseModel):
+class InstallabilityErrorArgument(CDPModel):
     name: str
     value: str
 
 
-class InstallabilityError(BaseModel):
+class InstallabilityError(CDPModel):
     """The installability error"""
 
     error_id: str
@@ -438,19 +439,19 @@ ReferrerPolicy = Literal[
 ]
 
 
-class CompilationCacheParams(BaseModel):
+class CompilationCacheParams(CDPModel):
     """Per-script compilation cache parameters for `Page.produceCompilationCache`"""
 
     url: str
     eager: bool | None = None
 
 
-class FileFilter(BaseModel):
+class FileFilter(CDPModel):
     name: str | None = None
     accepts: list[str] | None = None
 
 
-class FileHandler(BaseModel):
+class FileHandler(CDPModel):
     action: str
     name: str
     icons: list[ImageResource] | None = None
@@ -458,7 +459,7 @@ class FileHandler(BaseModel):
     launch_type: str
 
 
-class ImageResource(BaseModel):
+class ImageResource(CDPModel):
     """The image definition used in both icon and screenshot."""
 
     url: str
@@ -466,32 +467,32 @@ class ImageResource(BaseModel):
     type: str | None = None
 
 
-class LaunchHandler(BaseModel):
+class LaunchHandler(CDPModel):
     client_mode: str
 
 
-class ProtocolHandler(BaseModel):
+class ProtocolHandler(CDPModel):
     protocol: str
     url: str
 
 
-class RelatedApplication(BaseModel):
+class RelatedApplication(CDPModel):
     id: str | None = None
     url: str
 
 
-class ScopeExtension(BaseModel):
+class ScopeExtension(CDPModel):
     origin: str
     has_origin_wildcard: bool
 
 
-class Screenshot(BaseModel):
+class Screenshot(CDPModel):
     image: ImageResource
     form_factor: str
     label: str | None = None
 
 
-class ShareTarget(BaseModel):
+class ShareTarget(CDPModel):
     action: str
     method: str
     enctype: str
@@ -501,12 +502,12 @@ class ShareTarget(BaseModel):
     files: list[FileFilter] | None = None
 
 
-class Shortcut(BaseModel):
+class Shortcut(CDPModel):
     name: str
     url: str
 
 
-class WebAppManifest(BaseModel):
+class WebAppManifest(CDPModel):
     background_color: str | None = None
     description: str | None = None
     dir: str | None = None
@@ -685,502 +686,492 @@ BackForwardCacheNotRestoredReasonType = Literal[
 ]
 
 
-class BackForwardCacheBlockingDetails(BaseModel):
+class BackForwardCacheBlockingDetails(CDPModel):
     url: str | None = None
     function: str | None = None
     line_number: int
     column_number: int
 
 
-class BackForwardCacheNotRestoredExplanation(BaseModel):
+class BackForwardCacheNotRestoredExplanation(CDPModel):
     type: BackForwardCacheNotRestoredReasonType
     reason: BackForwardCacheNotRestoredReason
     context: str | None = None
     details: list[BackForwardCacheBlockingDetails] | None = None
 
 
-class BackForwardCacheNotRestoredExplanationTree(BaseModel):
+class BackForwardCacheNotRestoredExplanationTree(CDPModel):
     url: str
     explanations: list[BackForwardCacheNotRestoredExplanation]
     children: list[BackForwardCacheNotRestoredExplanationTree]
 
 
-# Command Parameters and Results
-
-
-class AddscripttoevaluateonloadParams(BaseModel):
+class AddscripttoevaluateonloadParams(CDPModel):
     """Deprecated, please use addScriptToEvaluateOnNewDocument instead."""
 
-    script_source: str = Field(alias="scriptSource")
+    script_source: str
 
 
-class AddscripttoevaluateonloadResult(BaseModel):
-    identifier: ScriptIdentifier = Field(alias="identifier")
+class AddscripttoevaluateonloadResult(CDPModel):
+    identifier: ScriptIdentifier
 
 
-class AddscripttoevaluateonnewdocumentParams(BaseModel):
-    """Evaluates given script in every frame upon creation (before loading frame's scripts)."""
+class AddscripttoevaluateonnewdocumentParams(CDPModel):
+    """
+    Evaluates given script in every frame upon creation (before loading frame's
+    scripts).
+    """
 
-    source: str = Field(alias="source")
-    world_name: str | None = Field(default=None, alias="worldName")
-    include_command_line_a_p_i: bool | None = Field(
-        default=None, alias="includeCommandLineAPI"
-    )
-    run_immediately: bool | None = Field(default=None, alias="runImmediately")
-
-
-class AddscripttoevaluateonnewdocumentResult(BaseModel):
-    identifier: ScriptIdentifier = Field(alias="identifier")
+    source: str
+    world_name: str | None = None
+    include_command_line_a_p_i: bool | None = None
+    run_immediately: bool | None = None
 
 
-class CapturescreenshotParams(BaseModel):
+class AddscripttoevaluateonnewdocumentResult(CDPModel):
+    identifier: ScriptIdentifier
+
+
+class CapturescreenshotParams(CDPModel):
     """Capture page screenshot."""
 
-    format: Literal["jpeg", "png", "webp"] | None = Field(default=None, alias="format")
-    quality: int | None = Field(default=None, alias="quality")
-    clip: Viewport | None = Field(default=None, alias="clip")
-    from_surface: bool | None = Field(default=None, alias="fromSurface")
-    capture_beyond_viewport: bool | None = Field(
-        default=None, alias="captureBeyondViewport"
-    )
-    optimize_for_speed: bool | None = Field(default=None, alias="optimizeForSpeed")
+    format: Literal["jpeg", "png", "webp"] | None = None
+    quality: int | None = None
+    clip: Viewport | None = None
+    from_surface: bool | None = None
+    capture_beyond_viewport: bool | None = None
+    optimize_for_speed: bool | None = None
 
 
-class CapturescreenshotResult(BaseModel):
-    data: str = Field(alias="data")
+class CapturescreenshotResult(CDPModel):
+    data: str
 
 
-class CapturesnapshotParams(BaseModel):
-    """Returns a snapshot of the page as a string. For MHTML format, the serialization includes
-    iframes, shadow DOM, external resources, and element-inline styles."""
+class CapturesnapshotParams(CDPModel):
+    """
+    Returns a snapshot of the page as a string. For MHTML format, the serialization
+    includes iframes, shadow DOM, external resources, and element-inline styles.
+    """
 
-    format: Literal["mhtml"] | None = Field(default=None, alias="format")
-
-
-class CapturesnapshotResult(BaseModel):
-    data: str = Field(alias="data")
+    format: Literal["mhtml"] | None = None
 
 
-class CreateisolatedworldParams(BaseModel):
+class CapturesnapshotResult(CDPModel):
+    data: str
+
+
+class CreateisolatedworldParams(CDPModel):
     """Creates an isolated world for the given frame."""
 
-    frame_id: FrameId = Field(alias="frameId")
-    world_name: str | None = Field(default=None, alias="worldName")
-    grant_univeral_access: bool | None = Field(
-        default=None, alias="grantUniveralAccess"
-    )
+    frame_id: FrameId
+    world_name: str | None = None
+    grant_univeral_access: bool | None = None
 
 
-class CreateisolatedworldResult(BaseModel):
-    execution_context_id: Runtime.ExecutionContextId = Field(alias="executionContextId")
+class CreateisolatedworldResult(CDPModel):
+    execution_context_id: Runtime.ExecutionContextId
 
 
-class DeletecookieParams(BaseModel):
+class DeletecookieParams(CDPModel):
     """Deletes browser cookie with given name, domain and path."""
 
-    cookie_name: str = Field(alias="cookieName")
-    url: str = Field(alias="url")
+    cookie_name: str
+    url: str
 
 
-class EnableParams(BaseModel):
+class EnableParams(CDPModel):
     """Enables page domain notifications."""
 
-    enable_file_chooser_opened_event: bool | None = Field(
-        default=None, alias="enableFileChooserOpenedEvent"
-    )
+    enable_file_chooser_opened_event: bool | None = None
 
 
-class GetappmanifestParams(BaseModel):
-    """Gets the processed manifest for this current document.
-    This API always waits for the manifest to be loaded.
-    If manifestId is provided, and it does not match the manifest of the
-      current document, this API errors out.
-    If there is not a loaded page, this API errors out immediately."""
+class GetappmanifestParams(CDPModel):
+    """
+    Gets the processed manifest for this current document.   This API always waits for
+    the manifest to be loaded.   If manifestId is provided, and it does not match the
+    manifest of the     current document, this API errors out.   If there is not a
+    loaded page, this API errors out immediately.
+    """
 
-    manifest_id: str | None = Field(default=None, alias="manifestId")
-
-
-class GetappmanifestResult(BaseModel):
-    url: str = Field(alias="url")
-    errors: list[AppManifestError] = Field(alias="errors")
-    data: str | None = Field(default=None, alias="data")
-    parsed: AppManifestParsedProperties | None = Field(default=None, alias="parsed")
-    manifest: WebAppManifest = Field(alias="manifest")
+    manifest_id: str | None = None
 
 
-class GetinstallabilityerrorsResult(BaseModel):
-    installability_errors: list[InstallabilityError] = Field(
-        alias="installabilityErrors"
-    )
+class GetappmanifestResult(CDPModel):
+    url: str
+    errors: list[AppManifestError]
+    data: str | None = None
+    parsed: AppManifestParsedProperties | None = None
+    manifest: WebAppManifest
 
 
-class GetmanifesticonsResult(BaseModel):
-    primary_icon: str | None = Field(default=None, alias="primaryIcon")
+class GetinstallabilityerrorsResult(CDPModel):
+    installability_errors: list[InstallabilityError]
 
 
-class GetappidResult(BaseModel):
-    app_id: str | None = Field(default=None, alias="appId")
-    recommended_id: str | None = Field(default=None, alias="recommendedId")
+class GetmanifesticonsResult(CDPModel):
+    primary_icon: str | None = None
 
 
-class GetadscriptancestryParams(BaseModel):
-    frame_id: FrameId = Field(alias="frameId")
+class GetappidResult(CDPModel):
+    app_id: str | None = None
+    recommended_id: str | None = None
 
 
-class GetadscriptancestryResult(BaseModel):
-    ad_script_ancestry: AdScriptAncestry | None = Field(
-        default=None, alias="adScriptAncestry"
-    )
+class GetadscriptancestryParams(CDPModel):
+    frame_id: FrameId
 
 
-class GetframetreeResult(BaseModel):
-    frame_tree: FrameTree = Field(alias="frameTree")
+class GetadscriptancestryResult(CDPModel):
+    ad_script_ancestry: AdScriptAncestry | None = None
 
 
-class GetlayoutmetricsResult(BaseModel):
-    layout_viewport: LayoutViewport = Field(alias="layoutViewport")
-    visual_viewport: VisualViewport = Field(alias="visualViewport")
-    content_size: DOM.Rect = Field(alias="contentSize")
-    css_layout_viewport: LayoutViewport = Field(alias="cssLayoutViewport")
-    css_visual_viewport: VisualViewport = Field(alias="cssVisualViewport")
-    css_content_size: DOM.Rect = Field(alias="cssContentSize")
+class GetframetreeResult(CDPModel):
+    frame_tree: FrameTree
 
 
-class GetnavigationhistoryResult(BaseModel):
-    current_index: int = Field(alias="currentIndex")
-    entries: list[NavigationEntry] = Field(alias="entries")
+class GetlayoutmetricsResult(CDPModel):
+    layout_viewport: LayoutViewport
+    visual_viewport: VisualViewport
+    content_size: DOM.Rect
+    css_layout_viewport: LayoutViewport
+    css_visual_viewport: VisualViewport
+    css_content_size: DOM.Rect
 
 
-class GetresourcecontentParams(BaseModel):
+class GetnavigationhistoryResult(CDPModel):
+    current_index: int
+    entries: list[NavigationEntry]
+
+
+class GetresourcecontentParams(CDPModel):
     """Returns content of the given resource."""
 
-    frame_id: FrameId = Field(alias="frameId")
-    url: str = Field(alias="url")
+    frame_id: FrameId
+    url: str
 
 
-class GetresourcecontentResult(BaseModel):
-    content: str = Field(alias="content")
-    base64_encoded: bool = Field(alias="base64Encoded")
+class GetresourcecontentResult(CDPModel):
+    content: str
+    base64_encoded: bool
 
 
-class GetresourcetreeResult(BaseModel):
-    frame_tree: FrameResourceTree = Field(alias="frameTree")
+class GetresourcetreeResult(CDPModel):
+    frame_tree: FrameResourceTree
 
 
-class HandlejavascriptdialogParams(BaseModel):
-    """Accepts or dismisses a JavaScript initiated dialog (alert, confirm, prompt, or onbeforeunload)."""
+class HandlejavascriptdialogParams(CDPModel):
+    """
+    Accepts or dismisses a JavaScript initiated dialog (alert, confirm, prompt, or
+    onbeforeunload).
+    """
 
-    accept: bool = Field(alias="accept")
-    prompt_text: str | None = Field(default=None, alias="promptText")
+    accept: bool
+    prompt_text: str | None = None
 
 
-class NavigateParams(BaseModel):
+class NavigateParams(CDPModel):
     """Navigates current page to the given URL."""
 
-    url: str = Field(alias="url")
-    referrer: str | None = Field(default=None, alias="referrer")
-    transition_type: TransitionType | None = Field(default=None, alias="transitionType")
-    frame_id: FrameId | None = Field(default=None, alias="frameId")
-    referrer_policy: ReferrerPolicy | None = Field(default=None, alias="referrerPolicy")
+    url: str
+    referrer: str | None = None
+    transition_type: TransitionType | None = None
+    frame_id: FrameId | None = None
+    referrer_policy: ReferrerPolicy | None = None
 
 
-class NavigateResult(BaseModel):
-    frame_id: FrameId = Field(alias="frameId")
-    loader_id: Network.LoaderId | None = Field(default=None, alias="loaderId")
-    error_text: str | None = Field(default=None, alias="errorText")
-    is_download: bool | None = Field(default=None, alias="isDownload")
+class NavigateResult(CDPModel):
+    frame_id: FrameId
+    loader_id: Network.LoaderId | None = None
+    error_text: str | None = None
+    is_download: bool | None = None
 
 
-class NavigatetohistoryentryParams(BaseModel):
+class NavigatetohistoryentryParams(CDPModel):
     """Navigates current page to the given history entry."""
 
-    entry_id: int = Field(alias="entryId")
+    entry_id: int
 
 
-class PrinttopdfParams(BaseModel):
+class PrinttopdfParams(CDPModel):
     """Print page as PDF."""
 
-    landscape: bool | None = Field(default=None, alias="landscape")
-    display_header_footer: bool | None = Field(
-        default=None, alias="displayHeaderFooter"
-    )
-    print_background: bool | None = Field(default=None, alias="printBackground")
-    scale: float | None = Field(default=None, alias="scale")
-    paper_width: float | None = Field(default=None, alias="paperWidth")
-    paper_height: float | None = Field(default=None, alias="paperHeight")
-    margin_top: float | None = Field(default=None, alias="marginTop")
-    margin_bottom: float | None = Field(default=None, alias="marginBottom")
-    margin_left: float | None = Field(default=None, alias="marginLeft")
-    margin_right: float | None = Field(default=None, alias="marginRight")
-    page_ranges: str | None = Field(default=None, alias="pageRanges")
-    header_template: str | None = Field(default=None, alias="headerTemplate")
-    footer_template: str | None = Field(default=None, alias="footerTemplate")
-    prefer_c_s_s_page_size: bool | None = Field(default=None, alias="preferCSSPageSize")
-    transfer_mode: Literal["ReturnAsBase64", "ReturnAsStream"] | None = Field(
-        default=None, alias="transferMode"
-    )
-    generate_tagged_p_d_f: bool | None = Field(default=None, alias="generateTaggedPDF")
-    generate_document_outline: bool | None = Field(
-        default=None, alias="generateDocumentOutline"
-    )
+    landscape: bool | None = None
+    display_header_footer: bool | None = None
+    print_background: bool | None = None
+    scale: float | None = None
+    paper_width: float | None = None
+    paper_height: float | None = None
+    margin_top: float | None = None
+    margin_bottom: float | None = None
+    margin_left: float | None = None
+    margin_right: float | None = None
+    page_ranges: str | None = None
+    header_template: str | None = None
+    footer_template: str | None = None
+    prefer_c_s_s_page_size: bool | None = None
+    transfer_mode: Literal["ReturnAsBase64", "ReturnAsStream"] | None = None
+    generate_tagged_p_d_f: bool | None = None
+    generate_document_outline: bool | None = None
 
 
-class PrinttopdfResult(BaseModel):
-    data: str = Field(alias="data")
-    stream: IO.StreamHandle | None = Field(default=None, alias="stream")
+class PrinttopdfResult(CDPModel):
+    data: str
+    stream: IO.StreamHandle | None = None
 
 
-class ReloadParams(BaseModel):
+class ReloadParams(CDPModel):
     """Reloads given page optionally ignoring the cache."""
 
-    ignore_cache: bool | None = Field(default=None, alias="ignoreCache")
-    script_to_evaluate_on_load: str | None = Field(
-        default=None, alias="scriptToEvaluateOnLoad"
-    )
-    loader_id: Network.LoaderId | None = Field(default=None, alias="loaderId")
+    ignore_cache: bool | None = None
+    script_to_evaluate_on_load: str | None = None
+    loader_id: Network.LoaderId | None = None
 
 
-class RemovescripttoevaluateonloadParams(BaseModel):
+class RemovescripttoevaluateonloadParams(CDPModel):
     """Deprecated, please use removeScriptToEvaluateOnNewDocument instead."""
 
-    identifier: ScriptIdentifier = Field(alias="identifier")
+    identifier: ScriptIdentifier
 
 
-class RemovescripttoevaluateonnewdocumentParams(BaseModel):
+class RemovescripttoevaluateonnewdocumentParams(CDPModel):
     """Removes given script from the list."""
 
-    identifier: ScriptIdentifier = Field(alias="identifier")
+    identifier: ScriptIdentifier
 
 
-class ScreencastframeackParams(BaseModel):
+class ScreencastframeackParams(CDPModel):
     """Acknowledges that a screencast frame has been received by the frontend."""
 
-    session_id: int = Field(alias="sessionId")
+    session_id: int
 
 
-class SearchinresourceParams(BaseModel):
+class SearchinresourceParams(CDPModel):
     """Searches for given string in resource content."""
 
-    frame_id: FrameId = Field(alias="frameId")
-    url: str = Field(alias="url")
-    query: str = Field(alias="query")
-    case_sensitive: bool | None = Field(default=None, alias="caseSensitive")
-    is_regex: bool | None = Field(default=None, alias="isRegex")
+    frame_id: FrameId
+    url: str
+    query: str
+    case_sensitive: bool | None = None
+    is_regex: bool | None = None
 
 
-class SearchinresourceResult(BaseModel):
-    result: list[Debugger.SearchMatch] = Field(alias="result")
+class SearchinresourceResult(CDPModel):
+    result: list[Debugger.SearchMatch]
 
 
-class SetadblockingenabledParams(BaseModel):
+class SetadblockingenabledParams(CDPModel):
     """Enable Chrome's experimental ad filter on all sites."""
 
-    enabled: bool = Field(alias="enabled")
+    enabled: bool
 
 
-class SetbypasscspParams(BaseModel):
+class SetbypasscspParams(CDPModel):
     """Enable page Content Security Policy by-passing."""
 
-    enabled: bool = Field(alias="enabled")
+    enabled: bool
 
 
-class GetpermissionspolicystateParams(BaseModel):
+class GetpermissionspolicystateParams(CDPModel):
     """Get Permissions Policy state on given frame."""
 
-    frame_id: FrameId = Field(alias="frameId")
+    frame_id: FrameId
 
 
-class GetpermissionspolicystateResult(BaseModel):
-    states: list[PermissionsPolicyFeatureState] = Field(alias="states")
+class GetpermissionspolicystateResult(CDPModel):
+    states: list[PermissionsPolicyFeatureState]
 
 
-class GetorigintrialsParams(BaseModel):
+class GetorigintrialsParams(CDPModel):
     """Get Origin Trials on given frame."""
 
-    frame_id: FrameId = Field(alias="frameId")
+    frame_id: FrameId
 
 
-class GetorigintrialsResult(BaseModel):
-    origin_trials: list[OriginTrial] = Field(alias="originTrials")
+class GetorigintrialsResult(CDPModel):
+    origin_trials: list[OriginTrial]
 
 
-class SetdevicemetricsoverrideParams(BaseModel):
-    """Overrides the values of device screen dimensions (window.screen.width, window.screen.height,
-    window.innerWidth, window.innerHeight, and "device-width"/"device-height"-related CSS media
-    query results)."""
+class SetdevicemetricsoverrideParams(CDPModel):
+    """
+    Overrides the values of device screen dimensions (window.screen.width,
+    window.screen.height, window.innerWidth, window.innerHeight, and "device-
+    width"/"device-height"-related CSS media query results).
+    """
 
-    width: int = Field(alias="width")
-    height: int = Field(alias="height")
-    device_scale_factor: float = Field(alias="deviceScaleFactor")
-    mobile: bool = Field(alias="mobile")
-    scale: float | None = Field(default=None, alias="scale")
-    screen_width: int | None = Field(default=None, alias="screenWidth")
-    screen_height: int | None = Field(default=None, alias="screenHeight")
-    position_x: int | None = Field(default=None, alias="positionX")
-    position_y: int | None = Field(default=None, alias="positionY")
-    dont_set_visible_size: bool | None = Field(default=None, alias="dontSetVisibleSize")
-    screen_orientation: Emulation.ScreenOrientation | None = Field(
-        default=None, alias="screenOrientation"
-    )
-    viewport: Viewport | None = Field(default=None, alias="viewport")
+    width: int
+    height: int
+    device_scale_factor: float
+    mobile: bool
+    scale: float | None = None
+    screen_width: int | None = None
+    screen_height: int | None = None
+    position_x: int | None = None
+    position_y: int | None = None
+    dont_set_visible_size: bool | None = None
+    screen_orientation: Emulation.ScreenOrientation | None = None
+    viewport: Viewport | None = None
 
 
-class SetdeviceorientationoverrideParams(BaseModel):
+class SetdeviceorientationoverrideParams(CDPModel):
     """Overrides the Device Orientation."""
 
-    alpha: float = Field(alias="alpha")
-    beta: float = Field(alias="beta")
-    gamma: float = Field(alias="gamma")
+    alpha: float
+    beta: float
+    gamma: float
 
 
-class SetfontfamiliesParams(BaseModel):
+class SetfontfamiliesParams(CDPModel):
     """Set generic font families."""
 
-    font_families: FontFamilies = Field(alias="fontFamilies")
-    for_scripts: list[ScriptFontFamilies] | None = Field(
-        default=None, alias="forScripts"
-    )
+    font_families: FontFamilies
+    for_scripts: list[ScriptFontFamilies] | None = None
 
 
-class SetfontsizesParams(BaseModel):
+class SetfontsizesParams(CDPModel):
     """Set default font sizes."""
 
-    font_sizes: FontSizes = Field(alias="fontSizes")
+    font_sizes: FontSizes
 
 
-class SetdocumentcontentParams(BaseModel):
+class SetdocumentcontentParams(CDPModel):
     """Sets given markup as the document's HTML."""
 
-    frame_id: FrameId = Field(alias="frameId")
-    html: str = Field(alias="html")
+    frame_id: FrameId
+    html: str
 
 
-class SetdownloadbehaviorParams(BaseModel):
+class SetdownloadbehaviorParams(CDPModel):
     """Set the behavior when downloading a file."""
 
-    behavior: Literal["deny", "allow", "default"] = Field(alias="behavior")
-    download_path: str | None = Field(default=None, alias="downloadPath")
+    behavior: Literal["deny", "allow", "default"]
+    download_path: str | None = None
 
 
-class SetgeolocationoverrideParams(BaseModel):
-    """Overrides the Geolocation Position or Error. Omitting any of the parameters emulates position
-    unavailable."""
+class SetgeolocationoverrideParams(CDPModel):
+    """
+    Overrides the Geolocation Position or Error. Omitting any of the parameters emulates
+    position unavailable.
+    """
 
-    latitude: float | None = Field(default=None, alias="latitude")
-    longitude: float | None = Field(default=None, alias="longitude")
-    accuracy: float | None = Field(default=None, alias="accuracy")
+    latitude: float | None = None
+    longitude: float | None = None
+    accuracy: float | None = None
 
 
-class SetlifecycleeventsenabledParams(BaseModel):
+class SetlifecycleeventsenabledParams(CDPModel):
     """Controls whether page will emit lifecycle events."""
 
-    enabled: bool = Field(alias="enabled")
+    enabled: bool
 
 
-class SettouchemulationenabledParams(BaseModel):
+class SettouchemulationenabledParams(CDPModel):
     """Toggles mouse event-based touch event emulation."""
 
-    enabled: bool = Field(alias="enabled")
-    configuration: Literal["mobile", "desktop"] | None = Field(
-        default=None, alias="configuration"
-    )
+    enabled: bool
+    configuration: Literal["mobile", "desktop"] | None = None
 
 
-class StartscreencastParams(BaseModel):
+class StartscreencastParams(CDPModel):
     """Starts sending each frame using the `screencastFrame` event."""
 
-    format: Literal["jpeg", "png"] | None = Field(default=None, alias="format")
-    quality: int | None = Field(default=None, alias="quality")
-    max_width: int | None = Field(default=None, alias="maxWidth")
-    max_height: int | None = Field(default=None, alias="maxHeight")
-    every_nth_frame: int | None = Field(default=None, alias="everyNthFrame")
+    format: Literal["jpeg", "png"] | None = None
+    quality: int | None = None
+    max_width: int | None = None
+    max_height: int | None = None
+    every_nth_frame: int | None = None
 
 
-class SetweblifecyclestateParams(BaseModel):
-    """Tries to update the web lifecycle state of the page.
-    It will transition the page to the given state according to:
-    https://github.com/WICG/web-lifecycle/"""
+class SetweblifecyclestateParams(CDPModel):
+    """
+    Tries to update the web lifecycle state of the page. It will transition the page to
+    the given state according to: https://github.com/WICG/web-lifecycle/
+    """
 
-    state: Literal["frozen", "active"] = Field(alias="state")
-
-
-class ProducecompilationcacheParams(BaseModel):
-    """Requests backend to produce compilation cache for the specified scripts.
-    `scripts` are appended to the list of scripts for which the cache
-    would be produced. The list may be reset during page navigation.
-    When script with a matching URL is encountered, the cache is optionally
-    produced upon backend discretion, based on internal heuristics.
-    See also: `Page.compilationCacheProduced`."""
-
-    scripts: list[CompilationCacheParams] = Field(alias="scripts")
+    state: Literal["frozen", "active"]
 
 
-class AddcompilationcacheParams(BaseModel):
-    """Seeds compilation cache for given url. Compilation cache does not survive
-    cross-process navigation."""
+class ProducecompilationcacheParams(CDPModel):
+    """
+    Requests backend to produce compilation cache for the specified scripts. `scripts`
+    are appended to the list of scripts for which the cache would be produced. The list
+    may be reset during page navigation. When script with a matching URL is encountered,
+    the cache is optionally produced upon backend discretion, based on internal
+    heuristics. See also: `Page.compilationCacheProduced`.
+    """
 
-    url: str = Field(alias="url")
-    data: str = Field(alias="data")
+    scripts: list[CompilationCacheParams]
 
 
-class SetspctransactionmodeParams(BaseModel):
-    """Sets the Secure Payment Confirmation transaction mode.
-    https://w3c.github.io/secure-payment-confirmation/#sctn-automation-set-spc-transaction-mode"""
+class AddcompilationcacheParams(CDPModel):
+    """
+    Seeds compilation cache for given url. Compilation cache does not survive cross-
+    process navigation.
+    """
+
+    url: str
+    data: str
+
+
+class SetspctransactionmodeParams(CDPModel):
+    """
+    Sets the Secure Payment Confirmation transaction mode. https://w3c.github.io/secure-
+    payment-confirmation/#sctn-automation-set-spc-transaction-mode
+    """
 
     mode: Literal[
         "none", "autoAccept", "autoChooseToAuthAnotherWay", "autoReject", "autoOptOut"
-    ] = Field(alias="mode")
+    ]
 
 
-class SetrphregistrationmodeParams(BaseModel):
-    """Extensions for Custom Handlers API:
-    https://html.spec.whatwg.org/multipage/system-state.html#rph-automation"""
+class SetrphregistrationmodeParams(CDPModel):
+    """
+    Extensions for Custom Handlers API: https://html.spec.whatwg.org/multipage/system-
+    state.html#rph-automation
+    """
 
-    mode: Literal["none", "autoAccept", "autoReject"] = Field(alias="mode")
+    mode: Literal["none", "autoAccept", "autoReject"]
 
 
-class GeneratetestreportParams(BaseModel):
+class GeneratetestreportParams(CDPModel):
     """Generates a report for testing."""
 
-    message: str = Field(alias="message")
-    group: str | None = Field(default=None, alias="group")
+    message: str
+    group: str | None = None
 
 
-class SetinterceptfilechooserdialogParams(BaseModel):
-    """Intercept file chooser requests and transfer control to protocol clients.
-    When file chooser interception is enabled, native file chooser dialog is not shown.
-    Instead, a protocol event `Page.fileChooserOpened` is emitted."""
+class SetinterceptfilechooserdialogParams(CDPModel):
+    """
+    Intercept file chooser requests and transfer control to protocol clients. When file
+    chooser interception is enabled, native file chooser dialog is not shown. Instead, a
+    protocol event `Page.fileChooserOpened` is emitted.
+    """
 
-    enabled: bool = Field(alias="enabled")
-    cancel: bool | None = Field(default=None, alias="cancel")
-
-
-class SetprerenderingallowedParams(BaseModel):
-    """Enable/disable prerendering manually.
-
-    This command is a short-term solution for https://crbug.com/1440085.
-    See https://docs.google.com/document/d/12HVmFxYj5Jc-eJr5OmWsa2bqTJsbgGLKI6ZIyx0_wpA
-    for more details.
-
-    TODO(https://crbug.com/1440085): Remove this once Puppeteer supports tab targets."""
-
-    is_allowed: bool = Field(alias="isAllowed")
+    enabled: bool
+    cancel: bool | None = None
 
 
-class GetannotatedpagecontentParams(BaseModel):
-    """Get the annotated page content for the main frame.
-    This is an experimental command that is subject to change."""
+class SetprerenderingallowedParams(CDPModel):
+    """
+    Enable/disable prerendering manually.  This command is a short-term solution for
+    https://crbug.com/1440085. See https://docs.google.com/document/d/12HVmFxYj5Jc-
+    eJr5OmWsa2bqTJsbgGLKI6ZIyx0_wpA for more details.  TODO(https://crbug.com/1440085):
+    Remove this once Puppeteer supports tab targets.
+    """
 
-    include_actionable_information: bool | None = Field(
-        default=None, alias="includeActionableInformation"
-    )
-
-
-class GetannotatedpagecontentResult(BaseModel):
-    content: str = Field(alias="content")
+    is_allowed: bool
 
 
-# Client
+class GetannotatedpagecontentParams(CDPModel):
+    """
+    Get the annotated page content for the main frame. This is an experimental command
+    that is subject to change.
+    """
+
+    include_actionable_information: bool | None = None
+
+
+class GetannotatedpagecontentResult(CDPModel):
+    content: str
 
 
 class PageClient:
@@ -1209,7 +1200,10 @@ class PageClient:
         include_command_line_a_p_i: bool | None = None,
         run_immediately: bool | None = None,
     ) -> AddscripttoevaluateonnewdocumentResult:
-        """Evaluates given script in every frame upon creation (before loading frame's scripts)."""
+        """
+        Evaluates given script in every frame upon creation (before loading frame's
+        scripts).
+        """
         params = AddscripttoevaluateonnewdocumentParams(
             source=source,
             world_name=world_name,
@@ -1254,8 +1248,10 @@ class PageClient:
     async def capture_snapshot(
         self, format: Literal["mhtml"] | None = None
     ) -> CapturesnapshotResult:
-        """Returns a snapshot of the page as a string. For MHTML format, the serialization includes
-        iframes, shadow DOM, external resources, and element-inline styles."""
+        """
+        Returns a snapshot of the page as a string. For MHTML format, the serialization
+        includes iframes, shadow DOM, external resources, and element-inline styles.
+        """
         params = CapturesnapshotParams(
             format=format,
         )
@@ -1328,11 +1324,12 @@ class PageClient:
     async def get_app_manifest(
         self, manifest_id: str | None = None
     ) -> GetappmanifestResult:
-        """Gets the processed manifest for this current document.
-        This API always waits for the manifest to be loaded.
-        If manifestId is provided, and it does not match the manifest of the
-          current document, this API errors out.
-        If there is not a loaded page, this API errors out immediately."""
+        """
+        Gets the processed manifest for this current document.   This API always waits
+        for the manifest to be loaded.   If manifestId is provided, and it does not
+        match the manifest of the     current document, this API errors out.   If there
+        is not a loaded page, this API errors out immediately.
+        """
         params = GetappmanifestParams(
             manifest_id=manifest_id,
         )
@@ -1346,13 +1343,18 @@ class PageClient:
         return GetinstallabilityerrorsResult(**result)
 
     async def get_manifest_icons(self) -> GetmanifesticonsResult:
-        """Deprecated because it's not guaranteed that the returned icon is in fact the one used for PWA installation."""
+        """
+        Deprecated because it's not guaranteed that the returned icon is in fact the one
+        used for PWA installation.
+        """
         result = await self._cdp.call("Page.getManifestIcons", {})
         return GetmanifesticonsResult(**result)
 
     async def get_app_id(self) -> GetappidResult:
-        """Returns the unique (PWA) app id.
-        Only returns values if the feature flag 'WebAppEnableManifestId' is enabled"""
+        """
+        Returns the unique (PWA) app id. Only returns values if the feature flag
+        'WebAppEnableManifestId' is enabled
+        """
         result = await self._cdp.call("Page.getAppId", {})
         return GetappidResult(**result)
 
@@ -1374,7 +1376,10 @@ class PageClient:
         return GetframetreeResult(**result)
 
     async def get_layout_metrics(self) -> GetlayoutmetricsResult:
-        """Returns metrics relating to the layouting of the page, such as viewport bounds/scale."""
+        """
+        Returns metrics relating to the layouting of the page, such as viewport
+        bounds/scale.
+        """
         result = await self._cdp.call("Page.getLayoutMetrics", {})
         return GetlayoutmetricsResult(**result)
 
@@ -1410,7 +1415,10 @@ class PageClient:
     async def handle_java_script_dialog(
         self, accept: bool, prompt_text: str | None = None
     ) -> None:
-        """Accepts or dismisses a JavaScript initiated dialog (alert, confirm, prompt, or onbeforeunload)."""
+        """
+        Accepts or dismisses a JavaScript initiated dialog (alert, confirm, prompt, or
+        onbeforeunload).
+        """
         params = HandlejavascriptdialogParams(
             accept=accept,
             prompt_text=prompt_text,
@@ -1632,9 +1640,11 @@ class PageClient:
         screen_orientation: Emulation.ScreenOrientation | None = None,
         viewport: Viewport | None = None,
     ) -> None:
-        """Overrides the values of device screen dimensions (window.screen.width, window.screen.height,
-        window.innerWidth, window.innerHeight, and "device-width"/"device-height"-related CSS media
-        query results)."""
+        """
+        Overrides the values of device screen dimensions (window.screen.width,
+        window.screen.height, window.innerWidth, window.innerHeight, and "device-
+        width"/"device-height"-related CSS media query results).
+        """
         params = SetdevicemetricsoverrideParams(
             width=width,
             height=height,
@@ -1729,8 +1739,10 @@ class PageClient:
         longitude: float | None = None,
         accuracy: float | None = None,
     ) -> None:
-        """Overrides the Geolocation Position or Error. Omitting any of the parameters emulates position
-        unavailable."""
+        """
+        Overrides the Geolocation Position or Error. Omitting any of the parameters
+        emulates position unavailable.
+        """
         params = SetgeolocationoverrideParams(
             latitude=latitude,
             longitude=longitude,
@@ -1804,9 +1816,10 @@ class PageClient:
         return None
 
     async def set_web_lifecycle_state(self, state: Literal["frozen", "active"]) -> None:
-        """Tries to update the web lifecycle state of the page.
-        It will transition the page to the given state according to:
-        https://github.com/WICG/web-lifecycle/"""
+        """
+        Tries to update the web lifecycle state of the page. It will transition the page
+        to the given state according to: https://github.com/WICG/web-lifecycle/
+        """
         params = SetweblifecyclestateParams(
             state=state,
         )
@@ -1824,12 +1837,14 @@ class PageClient:
     async def produce_compilation_cache(
         self, scripts: list[CompilationCacheParams]
     ) -> None:
-        """Requests backend to produce compilation cache for the specified scripts.
-        `scripts` are appended to the list of scripts for which the cache
-        would be produced. The list may be reset during page navigation.
-        When script with a matching URL is encountered, the cache is optionally
-        produced upon backend discretion, based on internal heuristics.
-        See also: `Page.compilationCacheProduced`."""
+        """
+        Requests backend to produce compilation cache for the specified scripts.
+        `scripts` are appended to the list of scripts for which the cache would be
+        produced. The list may be reset during page navigation. When script with a
+        matching URL is encountered, the cache is optionally produced upon backend
+        discretion, based on internal heuristics. See also:
+        `Page.compilationCacheProduced`.
+        """
         params = ProducecompilationcacheParams(
             scripts=scripts,
         )
@@ -1840,8 +1855,10 @@ class PageClient:
         return None
 
     async def add_compilation_cache(self, url: str, data: str) -> None:
-        """Seeds compilation cache for given url. Compilation cache does not survive
-        cross-process navigation."""
+        """
+        Seeds compilation cache for given url. Compilation cache does not survive cross-
+        process navigation.
+        """
         params = AddcompilationcacheParams(
             url=url,
             data=data,
@@ -1867,8 +1884,11 @@ class PageClient:
             "autoOptOut",
         ],
     ) -> None:
-        """Sets the Secure Payment Confirmation transaction mode.
-        https://w3c.github.io/secure-payment-confirmation/#sctn-automation-set-spc-transaction-mode"""
+        """
+        Sets the Secure Payment Confirmation transaction mode.
+        https://w3c.github.io/secure-payment-confirmation/#sctn-automation-set-spc-
+        transaction-mode
+        """
         params = SetspctransactionmodeParams(
             mode=mode,
         )
@@ -1881,8 +1901,10 @@ class PageClient:
     async def set_r_p_h_registration_mode(
         self, mode: Literal["none", "autoAccept", "autoReject"]
     ) -> None:
-        """Extensions for Custom Handlers API:
-        https://html.spec.whatwg.org/multipage/system-state.html#rph-automation"""
+        """
+        Extensions for Custom Handlers API:
+        https://html.spec.whatwg.org/multipage/system-state.html#rph-automation
+        """
         params = SetrphregistrationmodeParams(
             mode=mode,
         )
@@ -1907,16 +1929,21 @@ class PageClient:
         return None
 
     async def wait_for_debugger(self) -> None:
-        """Pauses page execution. Can be resumed using generic Runtime.runIfWaitingForDebugger."""
+        """
+        Pauses page execution. Can be resumed using generic
+        Runtime.runIfWaitingForDebugger.
+        """
         result = await self._cdp.call("Page.waitForDebugger", {})
         return None
 
     async def set_intercept_file_chooser_dialog(
         self, enabled: bool, cancel: bool | None = None
     ) -> None:
-        """Intercept file chooser requests and transfer control to protocol clients.
-        When file chooser interception is enabled, native file chooser dialog is not shown.
-        Instead, a protocol event `Page.fileChooserOpened` is emitted."""
+        """
+        Intercept file chooser requests and transfer control to protocol clients. When
+        file chooser interception is enabled, native file chooser dialog is not shown.
+        Instead, a protocol event `Page.fileChooserOpened` is emitted.
+        """
         params = SetinterceptfilechooserdialogParams(
             enabled=enabled,
             cancel=cancel,
@@ -1928,13 +1955,13 @@ class PageClient:
         return None
 
     async def set_prerendering_allowed(self, is_allowed: bool) -> None:
-        """Enable/disable prerendering manually.
-
-        This command is a short-term solution for https://crbug.com/1440085.
-        See https://docs.google.com/document/d/12HVmFxYj5Jc-eJr5OmWsa2bqTJsbgGLKI6ZIyx0_wpA
-        for more details.
-
-        TODO(https://crbug.com/1440085): Remove this once Puppeteer supports tab targets."""
+        """
+        Enable/disable prerendering manually.  This command is a short-term solution for
+        https://crbug.com/1440085. See https://docs.google.com/document/d/12HVmFxYj5Jc-
+        eJr5OmWsa2bqTJsbgGLKI6ZIyx0_wpA for more details.
+        TODO(https://crbug.com/1440085): Remove this once Puppeteer supports tab
+        targets.
+        """
         params = SetprerenderingallowedParams(
             is_allowed=is_allowed,
         )
@@ -1947,8 +1974,10 @@ class PageClient:
     async def get_annotated_page_content(
         self, include_actionable_information: bool | None = None
     ) -> GetannotatedpagecontentResult:
-        """Get the annotated page content for the main frame.
-        This is an experimental command that is subject to change."""
+        """
+        Get the annotated page content for the main frame. This is an experimental
+        command that is subject to change.
+        """
         params = GetannotatedpagecontentParams(
             include_actionable_information=include_actionable_information,
         )

@@ -1,6 +1,6 @@
 """Generated from CDP specification"""
 
-from pydantic import BaseModel, Field
+from pydantic_cpd.domains.base import CDPModel
 from typing import Literal, Any
 
 from pydantic_cpd.domains import dom
@@ -12,14 +12,13 @@ DOM = dom
 Page = page
 Runtime = runtime
 
-# Domain Types
 
 NodeId = int
 BackendNodeId = int
 StyleSheetId = str
 
 
-class BackendNode(BaseModel):
+class BackendNode(CDPModel):
     """Backend node with a friendly name."""
 
     node_type: int
@@ -76,9 +75,11 @@ LogicalAxes = Literal["Inline", "Block", "Both"]
 ScrollOrientation = Literal["horizontal", "vertical"]
 
 
-class Node(BaseModel):
-    """DOM interaction is implemented in terms of mirror objects that represent the actual DOM nodes.
-    DOMNode is a base node mirror type."""
+class Node(CDPModel):
+    """
+    DOM interaction is implemented in terms of mirror objects that represent the actual
+    DOM nodes. DOMNode is a base node mirror type.
+    """
 
     node_id: NodeId
     parent_id: NodeId | None = None
@@ -116,14 +117,17 @@ class Node(BaseModel):
     adopted_style_sheets: list[StyleSheetId] | None = None
 
 
-class DetachedElementInfo(BaseModel):
-    """A structure to hold the top-level node of a detached tree and an array of its retained descendants."""
+class DetachedElementInfo(CDPModel):
+    """
+    A structure to hold the top-level node of a detached tree and an array of its
+    retained descendants.
+    """
 
     tree_node: Node
     retained_node_ids: list[NodeId]
 
 
-class RGBA(BaseModel):
+class RGBA(CDPModel):
     """A structure holding an RGBA color."""
 
     r: int
@@ -135,7 +139,7 @@ class RGBA(BaseModel):
 Quad = list[Any]
 
 
-class BoxModel(BaseModel):
+class BoxModel(CDPModel):
     """Box model."""
 
     content: Quad
@@ -147,7 +151,7 @@ class BoxModel(BaseModel):
     shape_outside: ShapeOutsideInfo | None = None
 
 
-class ShapeOutsideInfo(BaseModel):
+class ShapeOutsideInfo(CDPModel):
     """CSS Shape Outside details."""
 
     bounds: Quad
@@ -155,7 +159,7 @@ class ShapeOutsideInfo(BaseModel):
     margin_shape: list[Any]
 
 
-class Rect(BaseModel):
+class Rect(CDPModel):
     """Rectangle."""
 
     x: float
@@ -164,521 +168,547 @@ class Rect(BaseModel):
     height: float
 
 
-class CSSComputedStyleProperty(BaseModel):
+class CSSComputedStyleProperty(CDPModel):
     name: str
     value: str
 
 
-# Command Parameters and Results
-
-
-class CollectclassnamesfromsubtreeParams(BaseModel):
+class CollectclassnamesfromsubtreeParams(CDPModel):
     """Collects class names for the node with given id and all of it's child nodes."""
 
-    node_id: NodeId = Field(alias="nodeId")
+    node_id: NodeId
 
 
-class CollectclassnamesfromsubtreeResult(BaseModel):
-    class_names: list[str] = Field(alias="classNames")
+class CollectclassnamesfromsubtreeResult(CDPModel):
+    class_names: list[str]
 
 
-class CopytoParams(BaseModel):
-    """Creates a deep copy of the specified node and places it into the target container before the
-    given anchor."""
+class CopytoParams(CDPModel):
+    """
+    Creates a deep copy of the specified node and places it into the target container
+    before the given anchor.
+    """
 
-    node_id: NodeId = Field(alias="nodeId")
-    target_node_id: NodeId = Field(alias="targetNodeId")
-    insert_before_node_id: NodeId | None = Field(
-        default=None, alias="insertBeforeNodeId"
-    )
-
-
-class CopytoResult(BaseModel):
-    node_id: NodeId = Field(alias="nodeId")
+    node_id: NodeId
+    target_node_id: NodeId
+    insert_before_node_id: NodeId | None = None
 
 
-class DescribenodeParams(BaseModel):
-    """Describes node given its id, does not require domain to be enabled. Does not start tracking any
-    objects, can be used for automation."""
-
-    node_id: NodeId | None = Field(default=None, alias="nodeId")
-    backend_node_id: BackendNodeId | None = Field(default=None, alias="backendNodeId")
-    object_id: Runtime.RemoteObjectId | None = Field(default=None, alias="objectId")
-    depth: int | None = Field(default=None, alias="depth")
-    pierce: bool | None = Field(default=None, alias="pierce")
+class CopytoResult(CDPModel):
+    node_id: NodeId
 
 
-class DescribenodeResult(BaseModel):
-    node: Node = Field(alias="node")
+class DescribenodeParams(CDPModel):
+    """
+    Describes node given its id, does not require domain to be enabled. Does not start
+    tracking any objects, can be used for automation.
+    """
+
+    node_id: NodeId | None = None
+    backend_node_id: BackendNodeId | None = None
+    object_id: Runtime.RemoteObjectId | None = None
+    depth: int | None = None
+    pierce: bool | None = None
 
 
-class ScrollintoviewifneededParams(BaseModel):
-    """Scrolls the specified rect of the given node into view if not already visible.
-    Note: exactly one between nodeId, backendNodeId and objectId should be passed
-    to identify the node."""
-
-    node_id: NodeId | None = Field(default=None, alias="nodeId")
-    backend_node_id: BackendNodeId | None = Field(default=None, alias="backendNodeId")
-    object_id: Runtime.RemoteObjectId | None = Field(default=None, alias="objectId")
-    rect: Rect | None = Field(default=None, alias="rect")
+class DescribenodeResult(CDPModel):
+    node: Node
 
 
-class DiscardsearchresultsParams(BaseModel):
-    """Discards search results from the session with the given id. `getSearchResults` should no longer
-    be called for that search."""
+class ScrollintoviewifneededParams(CDPModel):
+    """
+    Scrolls the specified rect of the given node into view if not already visible. Note:
+    exactly one between nodeId, backendNodeId and objectId should be passed to identify
+    the node.
+    """
 
-    search_id: str = Field(alias="searchId")
+    node_id: NodeId | None = None
+    backend_node_id: BackendNodeId | None = None
+    object_id: Runtime.RemoteObjectId | None = None
+    rect: Rect | None = None
 
 
-class EnableParams(BaseModel):
+class DiscardsearchresultsParams(CDPModel):
+    """
+    Discards search results from the session with the given id. `getSearchResults`
+    should no longer be called for that search.
+    """
+
+    search_id: str
+
+
+class EnableParams(CDPModel):
     """Enables DOM agent for the given page."""
 
-    include_whitespace: Literal["none", "all"] | None = Field(
-        default=None, alias="includeWhitespace"
-    )
+    include_whitespace: Literal["none", "all"] | None = None
 
 
-class FocusParams(BaseModel):
+class FocusParams(CDPModel):
     """Focuses the given element."""
 
-    node_id: NodeId | None = Field(default=None, alias="nodeId")
-    backend_node_id: BackendNodeId | None = Field(default=None, alias="backendNodeId")
-    object_id: Runtime.RemoteObjectId | None = Field(default=None, alias="objectId")
+    node_id: NodeId | None = None
+    backend_node_id: BackendNodeId | None = None
+    object_id: Runtime.RemoteObjectId | None = None
 
 
-class GetattributesParams(BaseModel):
+class GetattributesParams(CDPModel):
     """Returns attributes for the specified node."""
 
-    node_id: NodeId = Field(alias="nodeId")
+    node_id: NodeId
 
 
-class GetattributesResult(BaseModel):
-    attributes: list[str] = Field(alias="attributes")
+class GetattributesResult(CDPModel):
+    attributes: list[str]
 
 
-class GetboxmodelParams(BaseModel):
+class GetboxmodelParams(CDPModel):
     """Returns boxes for the given node."""
 
-    node_id: NodeId | None = Field(default=None, alias="nodeId")
-    backend_node_id: BackendNodeId | None = Field(default=None, alias="backendNodeId")
-    object_id: Runtime.RemoteObjectId | None = Field(default=None, alias="objectId")
+    node_id: NodeId | None = None
+    backend_node_id: BackendNodeId | None = None
+    object_id: Runtime.RemoteObjectId | None = None
 
 
-class GetboxmodelResult(BaseModel):
-    model: BoxModel = Field(alias="model")
+class GetboxmodelResult(CDPModel):
+    model: BoxModel
 
 
-class GetcontentquadsParams(BaseModel):
-    """Returns quads that describe node position on the page. This method
-    might return multiple quads for inline nodes."""
+class GetcontentquadsParams(CDPModel):
+    """
+    Returns quads that describe node position on the page. This method might return
+    multiple quads for inline nodes.
+    """
 
-    node_id: NodeId | None = Field(default=None, alias="nodeId")
-    backend_node_id: BackendNodeId | None = Field(default=None, alias="backendNodeId")
-    object_id: Runtime.RemoteObjectId | None = Field(default=None, alias="objectId")
-
-
-class GetcontentquadsResult(BaseModel):
-    quads: list[Quad] = Field(alias="quads")
+    node_id: NodeId | None = None
+    backend_node_id: BackendNodeId | None = None
+    object_id: Runtime.RemoteObjectId | None = None
 
 
-class GetdocumentParams(BaseModel):
-    """Returns the root DOM node (and optionally the subtree) to the caller.
-    Implicitly enables the DOM domain events for the current target."""
-
-    depth: int | None = Field(default=None, alias="depth")
-    pierce: bool | None = Field(default=None, alias="pierce")
+class GetcontentquadsResult(CDPModel):
+    quads: list[Quad]
 
 
-class GetdocumentResult(BaseModel):
-    root: Node = Field(alias="root")
+class GetdocumentParams(CDPModel):
+    """
+    Returns the root DOM node (and optionally the subtree) to the caller. Implicitly
+    enables the DOM domain events for the current target.
+    """
+
+    depth: int | None = None
+    pierce: bool | None = None
 
 
-class GetflatteneddocumentParams(BaseModel):
-    """Returns the root DOM node (and optionally the subtree) to the caller.
-    Deprecated, as it is not designed to work well with the rest of the DOM agent.
-    Use DOMSnapshot.captureSnapshot instead."""
-
-    depth: int | None = Field(default=None, alias="depth")
-    pierce: bool | None = Field(default=None, alias="pierce")
+class GetdocumentResult(CDPModel):
+    root: Node
 
 
-class GetflatteneddocumentResult(BaseModel):
-    nodes: list[Node] = Field(alias="nodes")
+class GetflatteneddocumentParams(CDPModel):
+    """
+    Returns the root DOM node (and optionally the subtree) to the caller. Deprecated, as
+    it is not designed to work well with the rest of the DOM agent. Use
+    DOMSnapshot.captureSnapshot instead.
+    """
+
+    depth: int | None = None
+    pierce: bool | None = None
 
 
-class GetnodesforsubtreebystyleParams(BaseModel):
+class GetflatteneddocumentResult(CDPModel):
+    nodes: list[Node]
+
+
+class GetnodesforsubtreebystyleParams(CDPModel):
     """Finds nodes with a given computed style in a subtree."""
 
-    node_id: NodeId = Field(alias="nodeId")
-    computed_styles: list[CSSComputedStyleProperty] = Field(alias="computedStyles")
-    pierce: bool | None = Field(default=None, alias="pierce")
+    node_id: NodeId
+    computed_styles: list[CSSComputedStyleProperty]
+    pierce: bool | None = None
 
 
-class GetnodesforsubtreebystyleResult(BaseModel):
-    node_ids: list[NodeId] = Field(alias="nodeIds")
+class GetnodesforsubtreebystyleResult(CDPModel):
+    node_ids: list[NodeId]
 
 
-class GetnodeforlocationParams(BaseModel):
-    """Returns node id at given location. Depending on whether DOM domain is enabled, nodeId is
-    either returned or not."""
+class GetnodeforlocationParams(CDPModel):
+    """
+    Returns node id at given location. Depending on whether DOM domain is enabled,
+    nodeId is either returned or not.
+    """
 
-    x: int = Field(alias="x")
-    y: int = Field(alias="y")
-    include_user_agent_shadow_d_o_m: bool | None = Field(
-        default=None, alias="includeUserAgentShadowDOM"
-    )
-    ignore_pointer_events_none: bool | None = Field(
-        default=None, alias="ignorePointerEventsNone"
-    )
+    x: int
+    y: int
+    include_user_agent_shadow_d_o_m: bool | None = None
+    ignore_pointer_events_none: bool | None = None
 
 
-class GetnodeforlocationResult(BaseModel):
-    backend_node_id: BackendNodeId = Field(alias="backendNodeId")
-    frame_id: Page.FrameId = Field(alias="frameId")
-    node_id: NodeId | None = Field(default=None, alias="nodeId")
+class GetnodeforlocationResult(CDPModel):
+    backend_node_id: BackendNodeId
+    frame_id: Page.FrameId
+    node_id: NodeId | None = None
 
 
-class GetouterhtmlParams(BaseModel):
+class GetouterhtmlParams(CDPModel):
     """Returns node's HTML markup."""
 
-    node_id: NodeId | None = Field(default=None, alias="nodeId")
-    backend_node_id: BackendNodeId | None = Field(default=None, alias="backendNodeId")
-    object_id: Runtime.RemoteObjectId | None = Field(default=None, alias="objectId")
-    include_shadow_d_o_m: bool | None = Field(default=None, alias="includeShadowDOM")
+    node_id: NodeId | None = None
+    backend_node_id: BackendNodeId | None = None
+    object_id: Runtime.RemoteObjectId | None = None
+    include_shadow_d_o_m: bool | None = None
 
 
-class GetouterhtmlResult(BaseModel):
-    outer_h_t_m_l: str = Field(alias="outerHTML")
+class GetouterhtmlResult(CDPModel):
+    outer_h_t_m_l: str
 
 
-class GetrelayoutboundaryParams(BaseModel):
+class GetrelayoutboundaryParams(CDPModel):
     """Returns the id of the nearest ancestor that is a relayout boundary."""
 
-    node_id: NodeId = Field(alias="nodeId")
+    node_id: NodeId
 
 
-class GetrelayoutboundaryResult(BaseModel):
-    node_id: NodeId = Field(alias="nodeId")
+class GetrelayoutboundaryResult(CDPModel):
+    node_id: NodeId
 
 
-class GetsearchresultsParams(BaseModel):
-    """Returns search results from given `fromIndex` to given `toIndex` from the search with the given
-    identifier."""
+class GetsearchresultsParams(CDPModel):
+    """
+    Returns search results from given `fromIndex` to given `toIndex` from the search
+    with the given identifier.
+    """
 
-    search_id: str = Field(alias="searchId")
-    from_index: int = Field(alias="fromIndex")
-    to_index: int = Field(alias="toIndex")
-
-
-class GetsearchresultsResult(BaseModel):
-    node_ids: list[NodeId] = Field(alias="nodeIds")
+    search_id: str
+    from_index: int
+    to_index: int
 
 
-class MovetoParams(BaseModel):
+class GetsearchresultsResult(CDPModel):
+    node_ids: list[NodeId]
+
+
+class MovetoParams(CDPModel):
     """Moves node into the new container, places it before the given anchor."""
 
-    node_id: NodeId = Field(alias="nodeId")
-    target_node_id: NodeId = Field(alias="targetNodeId")
-    insert_before_node_id: NodeId | None = Field(
-        default=None, alias="insertBeforeNodeId"
-    )
+    node_id: NodeId
+    target_node_id: NodeId
+    insert_before_node_id: NodeId | None = None
 
 
-class MovetoResult(BaseModel):
-    node_id: NodeId = Field(alias="nodeId")
+class MovetoResult(CDPModel):
+    node_id: NodeId
 
 
-class PerformsearchParams(BaseModel):
-    """Searches for a given string in the DOM tree. Use `getSearchResults` to access search results or
-    `cancelSearch` to end this search session."""
+class PerformsearchParams(CDPModel):
+    """
+    Searches for a given string in the DOM tree. Use `getSearchResults` to access search
+    results or `cancelSearch` to end this search session.
+    """
 
-    query: str = Field(alias="query")
-    include_user_agent_shadow_d_o_m: bool | None = Field(
-        default=None, alias="includeUserAgentShadowDOM"
-    )
-
-
-class PerformsearchResult(BaseModel):
-    search_id: str = Field(alias="searchId")
-    result_count: int = Field(alias="resultCount")
+    query: str
+    include_user_agent_shadow_d_o_m: bool | None = None
 
 
-class PushnodebypathtofrontendParams(BaseModel):
-    """Requests that the node is sent to the caller given its path. // FIXME, use XPath"""
-
-    path: str = Field(alias="path")
-
-
-class PushnodebypathtofrontendResult(BaseModel):
-    node_id: NodeId = Field(alias="nodeId")
+class PerformsearchResult(CDPModel):
+    search_id: str
+    result_count: int
 
 
-class PushnodesbybackendidstofrontendParams(BaseModel):
-    """Requests that a batch of nodes is sent to the caller given their backend node ids."""
+class PushnodebypathtofrontendParams(CDPModel):
+    """
+    Requests that the node is sent to the caller given its path. // FIXME, use XPath
+    """
 
-    backend_node_ids: list[BackendNodeId] = Field(alias="backendNodeIds")
-
-
-class PushnodesbybackendidstofrontendResult(BaseModel):
-    node_ids: list[NodeId] = Field(alias="nodeIds")
+    path: str
 
 
-class QueryselectorParams(BaseModel):
+class PushnodebypathtofrontendResult(CDPModel):
+    node_id: NodeId
+
+
+class PushnodesbybackendidstofrontendParams(CDPModel):
+    """
+    Requests that a batch of nodes is sent to the caller given their backend node ids.
+    """
+
+    backend_node_ids: list[BackendNodeId]
+
+
+class PushnodesbybackendidstofrontendResult(CDPModel):
+    node_ids: list[NodeId]
+
+
+class QueryselectorParams(CDPModel):
     """Executes `querySelector` on a given node."""
 
-    node_id: NodeId = Field(alias="nodeId")
-    selector: str = Field(alias="selector")
+    node_id: NodeId
+    selector: str
 
 
-class QueryselectorResult(BaseModel):
-    node_id: NodeId = Field(alias="nodeId")
+class QueryselectorResult(CDPModel):
+    node_id: NodeId
 
 
-class QueryselectorallParams(BaseModel):
+class QueryselectorallParams(CDPModel):
     """Executes `querySelectorAll` on a given node."""
 
-    node_id: NodeId = Field(alias="nodeId")
-    selector: str = Field(alias="selector")
+    node_id: NodeId
+    selector: str
 
 
-class QueryselectorallResult(BaseModel):
-    node_ids: list[NodeId] = Field(alias="nodeIds")
+class QueryselectorallResult(CDPModel):
+    node_ids: list[NodeId]
 
 
-class GettoplayerelementsResult(BaseModel):
-    node_ids: list[NodeId] = Field(alias="nodeIds")
+class GettoplayerelementsResult(CDPModel):
+    node_ids: list[NodeId]
 
 
-class GetelementbyrelationParams(BaseModel):
+class GetelementbyrelationParams(CDPModel):
     """Returns the NodeId of the matched element according to certain relations."""
 
-    node_id: NodeId = Field(alias="nodeId")
-    relation: Literal["PopoverTarget", "InterestTarget", "CommandFor"] = Field(
-        alias="relation"
-    )
+    node_id: NodeId
+    relation: Literal["PopoverTarget", "InterestTarget", "CommandFor"]
 
 
-class GetelementbyrelationResult(BaseModel):
-    node_id: NodeId = Field(alias="nodeId")
+class GetelementbyrelationResult(CDPModel):
+    node_id: NodeId
 
 
-class RemoveattributeParams(BaseModel):
+class RemoveattributeParams(CDPModel):
     """Removes attribute with given name from an element with given id."""
 
-    node_id: NodeId = Field(alias="nodeId")
-    name: str = Field(alias="name")
+    node_id: NodeId
+    name: str
 
 
-class RemovenodeParams(BaseModel):
+class RemovenodeParams(CDPModel):
     """Removes node with given id."""
 
-    node_id: NodeId = Field(alias="nodeId")
+    node_id: NodeId
 
 
-class RequestchildnodesParams(BaseModel):
-    """Requests that children of the node with given id are returned to the caller in form of
-    `setChildNodes` events where not only immediate children are retrieved, but all children down to
-    the specified depth."""
+class RequestchildnodesParams(CDPModel):
+    """
+    Requests that children of the node with given id are returned to the caller in form
+    of `setChildNodes` events where not only immediate children are retrieved, but all
+    children down to the specified depth.
+    """
 
-    node_id: NodeId = Field(alias="nodeId")
-    depth: int | None = Field(default=None, alias="depth")
-    pierce: bool | None = Field(default=None, alias="pierce")
-
-
-class RequestnodeParams(BaseModel):
-    """Requests that the node is sent to the caller given the JavaScript node object reference. All
-    nodes that form the path from the node to the root are also sent to the client as a series of
-    `setChildNodes` notifications."""
-
-    object_id: Runtime.RemoteObjectId = Field(alias="objectId")
+    node_id: NodeId
+    depth: int | None = None
+    pierce: bool | None = None
 
 
-class RequestnodeResult(BaseModel):
-    node_id: NodeId = Field(alias="nodeId")
+class RequestnodeParams(CDPModel):
+    """
+    Requests that the node is sent to the caller given the JavaScript node object
+    reference. All nodes that form the path from the node to the root are also sent to
+    the client as a series of `setChildNodes` notifications.
+    """
+
+    object_id: Runtime.RemoteObjectId
 
 
-class ResolvenodeParams(BaseModel):
+class RequestnodeResult(CDPModel):
+    node_id: NodeId
+
+
+class ResolvenodeParams(CDPModel):
     """Resolves the JavaScript node object for a given NodeId or BackendNodeId."""
 
-    node_id: NodeId | None = Field(default=None, alias="nodeId")
-    backend_node_id: DOM.BackendNodeId | None = Field(
-        default=None, alias="backendNodeId"
-    )
-    object_group: str | None = Field(default=None, alias="objectGroup")
-    execution_context_id: Runtime.ExecutionContextId | None = Field(
-        default=None, alias="executionContextId"
-    )
+    node_id: NodeId | None = None
+    backend_node_id: DOM.BackendNodeId | None = None
+    object_group: str | None = None
+    execution_context_id: Runtime.ExecutionContextId | None = None
 
 
-class ResolvenodeResult(BaseModel):
-    object: Runtime.RemoteObject = Field(alias="object")
+class ResolvenodeResult(CDPModel):
+    object: Runtime.RemoteObject
 
 
-class SetattributevalueParams(BaseModel):
+class SetattributevalueParams(CDPModel):
     """Sets attribute for an element with given id."""
 
-    node_id: NodeId = Field(alias="nodeId")
-    name: str = Field(alias="name")
-    value: str = Field(alias="value")
+    node_id: NodeId
+    name: str
+    value: str
 
 
-class SetattributesastextParams(BaseModel):
-    """Sets attributes on element with given id. This method is useful when user edits some existing
-    attribute value and types in several attribute name/value pairs."""
+class SetattributesastextParams(CDPModel):
+    """
+    Sets attributes on element with given id. This method is useful when user edits some
+    existing attribute value and types in several attribute name/value pairs.
+    """
 
-    node_id: NodeId = Field(alias="nodeId")
-    text: str = Field(alias="text")
-    name: str | None = Field(default=None, alias="name")
+    node_id: NodeId
+    text: str
+    name: str | None = None
 
 
-class SetfileinputfilesParams(BaseModel):
+class SetfileinputfilesParams(CDPModel):
     """Sets files for the given file input element."""
 
-    files: list[str] = Field(alias="files")
-    node_id: NodeId | None = Field(default=None, alias="nodeId")
-    backend_node_id: BackendNodeId | None = Field(default=None, alias="backendNodeId")
-    object_id: Runtime.RemoteObjectId | None = Field(default=None, alias="objectId")
+    files: list[str]
+    node_id: NodeId | None = None
+    backend_node_id: BackendNodeId | None = None
+    object_id: Runtime.RemoteObjectId | None = None
 
 
-class SetnodestacktracesenabledParams(BaseModel):
-    """Sets if stack traces should be captured for Nodes. See `Node.getNodeStackTraces`. Default is disabled."""
+class SetnodestacktracesenabledParams(CDPModel):
+    """
+    Sets if stack traces should be captured for Nodes. See `Node.getNodeStackTraces`.
+    Default is disabled.
+    """
 
-    enable: bool = Field(alias="enable")
-
-
-class GetnodestacktracesParams(BaseModel):
-    """Gets stack traces associated with a Node. As of now, only provides stack trace for Node creation."""
-
-    node_id: NodeId = Field(alias="nodeId")
+    enable: bool
 
 
-class GetnodestacktracesResult(BaseModel):
-    creation: Runtime.StackTrace | None = Field(default=None, alias="creation")
+class GetnodestacktracesParams(CDPModel):
+    """
+    Gets stack traces associated with a Node. As of now, only provides stack trace for
+    Node creation.
+    """
+
+    node_id: NodeId
 
 
-class GetfileinfoParams(BaseModel):
-    """Returns file information for the given
-    File wrapper."""
-
-    object_id: Runtime.RemoteObjectId = Field(alias="objectId")
+class GetnodestacktracesResult(CDPModel):
+    creation: Runtime.StackTrace | None = None
 
 
-class GetfileinfoResult(BaseModel):
-    path: str = Field(alias="path")
+class GetfileinfoParams(CDPModel):
+    """
+    Returns file information for the given File wrapper.
+    """
+
+    object_id: Runtime.RemoteObjectId
 
 
-class GetdetacheddomnodesResult(BaseModel):
-    detached_nodes: list[DetachedElementInfo] = Field(alias="detachedNodes")
+class GetfileinfoResult(CDPModel):
+    path: str
 
 
-class SetinspectednodeParams(BaseModel):
-    """Enables console to refer to the node with given id via $x (see Command Line API for more details
-    $x functions)."""
-
-    node_id: NodeId = Field(alias="nodeId")
+class GetdetacheddomnodesResult(CDPModel):
+    detached_nodes: list[DetachedElementInfo]
 
 
-class SetnodenameParams(BaseModel):
+class SetinspectednodeParams(CDPModel):
+    """
+    Enables console to refer to the node with given id via $x (see Command Line API for
+    more details $x functions).
+    """
+
+    node_id: NodeId
+
+
+class SetnodenameParams(CDPModel):
     """Sets node name for a node with given id."""
 
-    node_id: NodeId = Field(alias="nodeId")
-    name: str = Field(alias="name")
+    node_id: NodeId
+    name: str
 
 
-class SetnodenameResult(BaseModel):
-    node_id: NodeId = Field(alias="nodeId")
+class SetnodenameResult(CDPModel):
+    node_id: NodeId
 
 
-class SetnodevalueParams(BaseModel):
+class SetnodevalueParams(CDPModel):
     """Sets node value for a node with given id."""
 
-    node_id: NodeId = Field(alias="nodeId")
-    value: str = Field(alias="value")
+    node_id: NodeId
+    value: str
 
 
-class SetouterhtmlParams(BaseModel):
+class SetouterhtmlParams(CDPModel):
     """Sets node HTML markup, returns new node id."""
 
-    node_id: NodeId = Field(alias="nodeId")
-    outer_h_t_m_l: str = Field(alias="outerHTML")
+    node_id: NodeId
+    outer_h_t_m_l: str
 
 
-class GetframeownerParams(BaseModel):
+class GetframeownerParams(CDPModel):
     """Returns iframe node that owns iframe with the given domain."""
 
-    frame_id: Page.FrameId = Field(alias="frameId")
+    frame_id: Page.FrameId
 
 
-class GetframeownerResult(BaseModel):
-    backend_node_id: BackendNodeId = Field(alias="backendNodeId")
-    node_id: NodeId | None = Field(default=None, alias="nodeId")
+class GetframeownerResult(CDPModel):
+    backend_node_id: BackendNodeId
+    node_id: NodeId | None = None
 
 
-class GetcontainerfornodeParams(BaseModel):
-    """Returns the query container of the given node based on container query
-    conditions: containerName, physical and logical axes, and whether it queries
-    scroll-state or anchored elements. If no axes are provided and
-    queriesScrollState is false, the style container is returned, which is the
-    direct parent or the closest element with a matching container-name."""
+class GetcontainerfornodeParams(CDPModel):
+    """
+    Returns the query container of the given node based on container query conditions:
+    containerName, physical and logical axes, and whether it queries scroll-state or
+    anchored elements. If no axes are provided and queriesScrollState is false, the
+    style container is returned, which is the direct parent or the closest element with
+    a matching container-name.
+    """
 
-    node_id: NodeId = Field(alias="nodeId")
-    container_name: str | None = Field(default=None, alias="containerName")
-    physical_axes: PhysicalAxes | None = Field(default=None, alias="physicalAxes")
-    logical_axes: LogicalAxes | None = Field(default=None, alias="logicalAxes")
-    queries_scroll_state: bool | None = Field(default=None, alias="queriesScrollState")
-    queries_anchored: bool | None = Field(default=None, alias="queriesAnchored")
-
-
-class GetcontainerfornodeResult(BaseModel):
-    node_id: NodeId | None = Field(default=None, alias="nodeId")
+    node_id: NodeId
+    container_name: str | None = None
+    physical_axes: PhysicalAxes | None = None
+    logical_axes: LogicalAxes | None = None
+    queries_scroll_state: bool | None = None
+    queries_anchored: bool | None = None
 
 
-class GetqueryingdescendantsforcontainerParams(BaseModel):
-    """Returns the descendants of a container query container that have
-    container queries against this container."""
-
-    node_id: NodeId = Field(alias="nodeId")
+class GetcontainerfornodeResult(CDPModel):
+    node_id: NodeId | None = None
 
 
-class GetqueryingdescendantsforcontainerResult(BaseModel):
-    node_ids: list[NodeId] = Field(alias="nodeIds")
+class GetqueryingdescendantsforcontainerParams(CDPModel):
+    """
+    Returns the descendants of a container query container that have container queries
+    against this container.
+    """
+
+    node_id: NodeId
 
 
-class GetanchorelementParams(BaseModel):
-    """Returns the target anchor element of the given anchor query according to
-    https://www.w3.org/TR/css-anchor-position-1/#target."""
-
-    node_id: NodeId = Field(alias="nodeId")
-    anchor_specifier: str | None = Field(default=None, alias="anchorSpecifier")
+class GetqueryingdescendantsforcontainerResult(CDPModel):
+    node_ids: list[NodeId]
 
 
-class GetanchorelementResult(BaseModel):
-    node_id: NodeId = Field(alias="nodeId")
+class GetanchorelementParams(CDPModel):
+    """
+    Returns the target anchor element of the given anchor query according to
+    https://www.w3.org/TR/css-anchor-position-1/#target.
+    """
+
+    node_id: NodeId
+    anchor_specifier: str | None = None
 
 
-class ForceshowpopoverParams(BaseModel):
-    """When enabling, this API force-opens the popover identified by nodeId
-    and keeps it open until disabled."""
-
-    node_id: NodeId = Field(alias="nodeId")
-    enable: bool = Field(alias="enable")
+class GetanchorelementResult(CDPModel):
+    node_id: NodeId
 
 
-class ForceshowpopoverResult(BaseModel):
-    node_ids: list[NodeId] = Field(alias="nodeIds")
+class ForceshowpopoverParams(CDPModel):
+    """
+    When enabling, this API force-opens the popover identified by nodeId and keeps it
+    open until disabled.
+    """
+
+    node_id: NodeId
+    enable: bool
 
 
-# Client
+class ForceshowpopoverResult(CDPModel):
+    node_ids: list[NodeId]
 
 
 class DOMClient:
-    """This domain exposes DOM read/write operations. Each DOM Node is represented with its mirror object
-    that has an `id`. This `id` can be used to get additional information on the Node, resolve it into
-    the JavaScript object wrapper, etc. It is important that client receives DOM events only for the
-    nodes that are known to the client. Backend keeps track of the nodes that were sent to the client
-    and never sends the same node twice. It is client's responsibility to collect information about
-    the nodes that were sent to the client. Note that `iframe` owner elements will return
-    corresponding document elements as their child nodes."""
+    """
+    This domain exposes DOM read/write operations. Each DOM Node is represented with its
+    mirror object that has an `id`. This `id` can be used to get additional information
+    on the Node, resolve it into the JavaScript object wrapper, etc. It is important
+    that client receives DOM events only for the nodes that are known to the client.
+    Backend keeps track of the nodes that were sent to the client and never sends the
+    same node twice. It is client's responsibility to collect information about the
+    nodes that were sent to the client. Note that `iframe` owner elements will return
+    corresponding document elements as their child nodes.
+    """
 
     def __init__(self, cdp_client: Any) -> None:
         self._cdp = cdp_client
@@ -686,7 +716,9 @@ class DOMClient:
     async def collect_class_names_from_subtree(
         self, node_id: NodeId
     ) -> CollectclassnamesfromsubtreeResult:
-        """Collects class names for the node with given id and all of it's child nodes."""
+        """
+        Collects class names for the node with given id and all of it's child nodes.
+        """
         params = CollectclassnamesfromsubtreeParams(
             node_id=node_id,
         )
@@ -702,8 +734,10 @@ class DOMClient:
         target_node_id: NodeId,
         insert_before_node_id: NodeId | None = None,
     ) -> CopytoResult:
-        """Creates a deep copy of the specified node and places it into the target container before the
-        given anchor."""
+        """
+        Creates a deep copy of the specified node and places it into the target
+        container before the given anchor.
+        """
         params = CopytoParams(
             node_id=node_id,
             target_node_id=target_node_id,
@@ -722,8 +756,10 @@ class DOMClient:
         depth: int | None = None,
         pierce: bool | None = None,
     ) -> DescribenodeResult:
-        """Describes node given its id, does not require domain to be enabled. Does not start tracking any
-        objects, can be used for automation."""
+        """
+        Describes node given its id, does not require domain to be enabled. Does not
+        start tracking any objects, can be used for automation.
+        """
         params = DescribenodeParams(
             node_id=node_id,
             backend_node_id=backend_node_id,
@@ -743,9 +779,11 @@ class DOMClient:
         object_id: Runtime.RemoteObjectId | None = None,
         rect: Rect | None = None,
     ) -> None:
-        """Scrolls the specified rect of the given node into view if not already visible.
-        Note: exactly one between nodeId, backendNodeId and objectId should be passed
-        to identify the node."""
+        """
+        Scrolls the specified rect of the given node into view if not already visible.
+        Note: exactly one between nodeId, backendNodeId and objectId should be passed to
+        identify the node.
+        """
         params = ScrollintoviewifneededParams(
             node_id=node_id,
             backend_node_id=backend_node_id,
@@ -764,8 +802,10 @@ class DOMClient:
         return None
 
     async def discard_search_results(self, search_id: str) -> None:
-        """Discards search results from the session with the given id. `getSearchResults` should no longer
-        be called for that search."""
+        """
+        Discards search results from the session with the given id. `getSearchResults`
+        should no longer be called for that search.
+        """
         params = DiscardsearchresultsParams(
             search_id=search_id,
         )
@@ -837,8 +877,10 @@ class DOMClient:
         backend_node_id: BackendNodeId | None = None,
         object_id: Runtime.RemoteObjectId | None = None,
     ) -> GetcontentquadsResult:
-        """Returns quads that describe node position on the page. This method
-        might return multiple quads for inline nodes."""
+        """
+        Returns quads that describe node position on the page. This method might return
+        multiple quads for inline nodes.
+        """
         params = GetcontentquadsParams(
             node_id=node_id,
             backend_node_id=backend_node_id,
@@ -852,8 +894,10 @@ class DOMClient:
     async def get_document(
         self, depth: int | None = None, pierce: bool | None = None
     ) -> GetdocumentResult:
-        """Returns the root DOM node (and optionally the subtree) to the caller.
-        Implicitly enables the DOM domain events for the current target."""
+        """
+        Returns the root DOM node (and optionally the subtree) to the caller. Implicitly
+        enables the DOM domain events for the current target.
+        """
         params = GetdocumentParams(
             depth=depth,
             pierce=pierce,
@@ -866,9 +910,11 @@ class DOMClient:
     async def get_flattened_document(
         self, depth: int | None = None, pierce: bool | None = None
     ) -> GetflatteneddocumentResult:
-        """Returns the root DOM node (and optionally the subtree) to the caller.
+        """
+        Returns the root DOM node (and optionally the subtree) to the caller.
         Deprecated, as it is not designed to work well with the rest of the DOM agent.
-        Use DOMSnapshot.captureSnapshot instead."""
+        Use DOMSnapshot.captureSnapshot instead.
+        """
         params = GetflatteneddocumentParams(
             depth=depth,
             pierce=pierce,
@@ -904,8 +950,10 @@ class DOMClient:
         include_user_agent_shadow_d_o_m: bool | None = None,
         ignore_pointer_events_none: bool | None = None,
     ) -> GetnodeforlocationResult:
-        """Returns node id at given location. Depending on whether DOM domain is enabled, nodeId is
-        either returned or not."""
+        """
+        Returns node id at given location. Depending on whether DOM domain is enabled,
+        nodeId is either returned or not.
+        """
         params = GetnodeforlocationParams(
             x=x,
             y=y,
@@ -951,8 +999,10 @@ class DOMClient:
     async def get_search_results(
         self, search_id: str, from_index: int, to_index: int
     ) -> GetsearchresultsResult:
-        """Returns search results from given `fromIndex` to given `toIndex` from the search with the given
-        identifier."""
+        """
+        Returns search results from given `fromIndex` to given `toIndex` from the search
+        with the given identifier.
+        """
         params = GetsearchresultsParams(
             search_id=search_id,
             from_index=from_index,
@@ -1003,8 +1053,10 @@ class DOMClient:
     async def perform_search(
         self, query: str, include_user_agent_shadow_d_o_m: bool | None = None
     ) -> PerformsearchResult:
-        """Searches for a given string in the DOM tree. Use `getSearchResults` to access search results or
-        `cancelSearch` to end this search session."""
+        """
+        Searches for a given string in the DOM tree. Use `getSearchResults` to access
+        search results or `cancelSearch` to end this search session.
+        """
         params = PerformsearchParams(
             query=query,
             include_user_agent_shadow_d_o_m=include_user_agent_shadow_d_o_m,
@@ -1017,7 +1069,9 @@ class DOMClient:
     async def push_node_by_path_to_frontend(
         self, path: str
     ) -> PushnodebypathtofrontendResult:
-        """Requests that the node is sent to the caller given its path. // FIXME, use XPath"""
+        """
+        Requests that the node is sent to the caller given its path. // FIXME, use XPath
+        """
         params = PushnodebypathtofrontendParams(
             path=path,
         )
@@ -1030,7 +1084,10 @@ class DOMClient:
     async def push_nodes_by_backend_ids_to_frontend(
         self, backend_node_ids: list[BackendNodeId]
     ) -> PushnodesbybackendidstofrontendResult:
-        """Requests that a batch of nodes is sent to the caller given their backend node ids."""
+        """
+        Requests that a batch of nodes is sent to the caller given their backend node
+        ids.
+        """
         params = PushnodesbybackendidstofrontendParams(
             backend_node_ids=backend_node_ids,
         )
@@ -1067,9 +1124,11 @@ class DOMClient:
         return QueryselectorallResult(**result)
 
     async def get_top_layer_elements(self) -> GettoplayerelementsResult:
-        """Returns NodeIds of current top layer elements.
-        Top layer is rendered closest to the user within a viewport, therefore its elements always
-        appear on top of all other content."""
+        """
+        Returns NodeIds of current top layer elements. Top layer is rendered closest to
+        the user within a viewport, therefore its elements always appear on top of all
+        other content.
+        """
         result = await self._cdp.call("DOM.getTopLayerElements", {})
         return GettoplayerelementsResult(**result)
 
@@ -1118,9 +1177,11 @@ class DOMClient:
     async def request_child_nodes(
         self, node_id: NodeId, depth: int | None = None, pierce: bool | None = None
     ) -> None:
-        """Requests that children of the node with given id are returned to the caller in form of
-        `setChildNodes` events where not only immediate children are retrieved, but all children down to
-        the specified depth."""
+        """
+        Requests that children of the node with given id are returned to the caller in
+        form of `setChildNodes` events where not only immediate children are retrieved,
+        but all children down to the specified depth.
+        """
         params = RequestchildnodesParams(
             node_id=node_id,
             depth=depth,
@@ -1134,9 +1195,11 @@ class DOMClient:
     async def request_node(
         self, object_id: Runtime.RemoteObjectId
     ) -> RequestnodeResult:
-        """Requests that the node is sent to the caller given the JavaScript node object reference. All
-        nodes that form the path from the node to the root are also sent to the client as a series of
-        `setChildNodes` notifications."""
+        """
+        Requests that the node is sent to the caller given the JavaScript node object
+        reference. All nodes that form the path from the node to the root are also sent
+        to the client as a series of `setChildNodes` notifications.
+        """
         params = RequestnodeParams(
             object_id=object_id,
         )
@@ -1179,8 +1242,10 @@ class DOMClient:
     async def set_attributes_as_text(
         self, node_id: NodeId, text: str, name: str | None = None
     ) -> None:
-        """Sets attributes on element with given id. This method is useful when user edits some existing
-        attribute value and types in several attribute name/value pairs."""
+        """
+        Sets attributes on element with given id. This method is useful when user edits
+        some existing attribute value and types in several attribute name/value pairs.
+        """
         params = SetattributesastextParams(
             node_id=node_id,
             text=text,
@@ -1212,7 +1277,10 @@ class DOMClient:
         return None
 
     async def set_node_stack_traces_enabled(self, enable: bool) -> None:
-        """Sets if stack traces should be captured for Nodes. See `Node.getNodeStackTraces`. Default is disabled."""
+        """
+        Sets if stack traces should be captured for Nodes. See
+        `Node.getNodeStackTraces`. Default is disabled.
+        """
         params = SetnodestacktracesenabledParams(
             enable=enable,
         )
@@ -1223,7 +1291,10 @@ class DOMClient:
         return None
 
     async def get_node_stack_traces(self, node_id: NodeId) -> GetnodestacktracesResult:
-        """Gets stack traces associated with a Node. As of now, only provides stack trace for Node creation."""
+        """
+        Gets stack traces associated with a Node. As of now, only provides stack trace
+        for Node creation.
+        """
         params = GetnodestacktracesParams(
             node_id=node_id,
         )
@@ -1236,8 +1307,9 @@ class DOMClient:
     async def get_file_info(
         self, object_id: Runtime.RemoteObjectId
     ) -> GetfileinfoResult:
-        """Returns file information for the given
-        File wrapper."""
+        """
+        Returns file information for the given File wrapper.
+        """
         params = GetfileinfoParams(
             object_id=object_id,
         )
@@ -1252,8 +1324,10 @@ class DOMClient:
         return GetdetacheddomnodesResult(**result)
 
     async def set_inspected_node(self, node_id: NodeId) -> None:
-        """Enables console to refer to the node with given id via $x (see Command Line API for more details
-        $x functions)."""
+        """
+        Enables console to refer to the node with given id via $x (see Command Line API
+        for more details $x functions).
+        """
         params = SetinspectednodeParams(
             node_id=node_id,
         )
@@ -1319,11 +1393,13 @@ class DOMClient:
         queries_scroll_state: bool | None = None,
         queries_anchored: bool | None = None,
     ) -> GetcontainerfornodeResult:
-        """Returns the query container of the given node based on container query
+        """
+        Returns the query container of the given node based on container query
         conditions: containerName, physical and logical axes, and whether it queries
         scroll-state or anchored elements. If no axes are provided and
         queriesScrollState is false, the style container is returned, which is the
-        direct parent or the closest element with a matching container-name."""
+        direct parent or the closest element with a matching container-name.
+        """
         params = GetcontainerfornodeParams(
             node_id=node_id,
             container_name=container_name,
@@ -1341,8 +1417,10 @@ class DOMClient:
     async def get_querying_descendants_for_container(
         self, node_id: NodeId
     ) -> GetqueryingdescendantsforcontainerResult:
-        """Returns the descendants of a container query container that have
-        container queries against this container."""
+        """
+        Returns the descendants of a container query container that have container
+        queries against this container.
+        """
         params = GetqueryingdescendantsforcontainerParams(
             node_id=node_id,
         )
@@ -1355,8 +1433,10 @@ class DOMClient:
     async def get_anchor_element(
         self, node_id: NodeId, anchor_specifier: str | None = None
     ) -> GetanchorelementResult:
-        """Returns the target anchor element of the given anchor query according to
-        https://www.w3.org/TR/css-anchor-position-1/#target."""
+        """
+        Returns the target anchor element of the given anchor query according to
+        https://www.w3.org/TR/css-anchor-position-1/#target.
+        """
         params = GetanchorelementParams(
             node_id=node_id,
             anchor_specifier=anchor_specifier,
@@ -1369,8 +1449,10 @@ class DOMClient:
     async def force_show_popover(
         self, node_id: NodeId, enable: bool
     ) -> ForceshowpopoverResult:
-        """When enabling, this API force-opens the popover identified by nodeId
-        and keeps it open until disabled."""
+        """
+        When enabling, this API force-opens the popover identified by nodeId and keeps
+        it open until disabled.
+        """
         params = ForceshowpopoverParams(
             node_id=node_id,
             enable=enable,
