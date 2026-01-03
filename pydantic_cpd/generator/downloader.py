@@ -1,11 +1,10 @@
-from pathlib import Path
 import json
+from pathlib import Path
+
 import httpx
 
+from pydantic_cpd.generator.constants import BROWSER_PROTOCOL_URL, JS_PROTOCOL_URL
 from pydantic_cpd.generator.models import CDPSpecs, ProtocolSpec
-
-JS_PROTOCOL_URL = "https://raw.githubusercontent.com/ChromeDevTools/devtools-protocol/refs/heads/master/json/js_protocol.json"
-BROWSER_PROTOCOL_URL = "https://raw.githubusercontent.com/ChromeDevTools/devtools-protocol/refs/heads/master/json/browser_protocol.json"
 
 SPECS_DIR = Path(__file__).parent.parent.parent / "specs"
 

@@ -1,10 +1,10 @@
 from pydantic_cpd.generator.generators.base import BaseGenerator
-from pydantic_cpd.generator.models import Command, Domain, Parameter
-from pydantic_cpd.generator.type_mapper import (
+from pydantic_cpd.generator.generators.utils import (
     map_cdp_type,
     to_pascal_case,
     to_snake_case,
 )
+from pydantic_cpd.generator.models import Command, Domain, Parameter
 
 
 class LibraryGenerator(BaseGenerator):
