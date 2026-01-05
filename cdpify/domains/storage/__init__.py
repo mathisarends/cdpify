@@ -1,8 +1,8 @@
 """CDP Storage Domain"""
 
-from .client import StorageClient
+from .types import *
 from .commands import *
 from .events import *
-from .types import *
+from .client import StorageClient
 
 __all__ = ["StorageClient"]

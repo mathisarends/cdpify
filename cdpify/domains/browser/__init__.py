@@ -1,8 +1,8 @@
 """CDP Browser Domain"""
 
-from .client import BrowserClient
+from .types import *
 from .commands import *
 from .events import *
-from .types import *
+from .client import BrowserClient
 
 __all__ = ["BrowserClient"]

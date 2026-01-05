@@ -1,8 +1,8 @@
 """CDP Accessibility Domain"""
 
-from .client import AccessibilityClient
+from .types import *
 from .commands import *
 from .events import *
-from .types import *
+from .client import AccessibilityClient
 
 __all__ = ["AccessibilityClient"]

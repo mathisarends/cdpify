@@ -1,8 +1,8 @@
 """CDP DOMStorage Domain"""
 
-from .client import DOMStorageClient
+from .types import *
 from .commands import *
 from .events import *
-from .types import *
+from .client import DOMStorageClient
 
 __all__ = ["DOMStorageClient"]

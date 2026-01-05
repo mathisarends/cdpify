@@ -1,8 +1,8 @@
 """CDP LayerTree Domain"""
 
-from .client import LayerTreeClient
+from .types import *
 from .commands import *
 from .events import *
-from .types import *
+from .client import LayerTreeClient
 
 __all__ = ["LayerTreeClient"]

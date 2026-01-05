@@ -3,7 +3,6 @@
 # Generated from Chrome DevTools Protocol specifications.
 
 from typing import Literal
-
 from cdpify.domains.base import CDPModel
 
 

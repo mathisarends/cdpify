@@ -3,7 +3,6 @@
 # Generated from Chrome DevTools Protocol specifications.
 
 from typing import Any
-
 from cdpify.domains.base import CDPModel
 
 SerializedStorageKey = str

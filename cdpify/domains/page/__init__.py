@@ -1,8 +1,8 @@
 """CDP Page Domain"""
 
-from .client import PageClient
+from .types import *
 from .commands import *
 from .events import *
-from .types import *
+from .client import PageClient
 
 __all__ = ["PageClient"]

@@ -1,8 +1,8 @@
 """CDP WebAuthn Domain"""
 
-from .client import WebAuthnClient
+from .types import *
 from .commands import *
 from .events import *
-from .types import *
+from .client import WebAuthnClient
 
 __all__ = ["WebAuthnClient"]

@@ -1,8 +1,8 @@
 """CDP IO Domain"""
 
-from .client import IOClient
+from .types import *
 from .commands import *
 from .events import *
-from .types import *
+from .client import IOClient
 
 __all__ = ["IOClient"]

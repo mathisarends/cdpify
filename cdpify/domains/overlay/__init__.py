@@ -1,8 +1,8 @@
 """CDP Overlay Domain"""
 
-from .client import OverlayClient
+from .types import *
 from .commands import *
 from .events import *
-from .types import *
+from .client import OverlayClient
 
 __all__ = ["OverlayClient"]

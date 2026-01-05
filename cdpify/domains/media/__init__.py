@@ -1,8 +1,8 @@
 """CDP Media Domain"""
 
-from .client import MediaClient
+from .types import *
 from .commands import *
 from .events import *
-from .types import *
+from .client import MediaClient
 
 __all__ = ["MediaClient"]

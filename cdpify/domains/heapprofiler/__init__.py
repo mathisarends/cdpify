@@ -1,8 +1,8 @@
 """CDP HeapProfiler Domain"""
 
-from .client import HeapProfilerClient
+from .types import *
 from .commands import *
 from .events import *
-from .types import *
+from .client import HeapProfilerClient
 
 __all__ = ["HeapProfilerClient"]

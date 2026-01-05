@@ -1,8 +1,8 @@
 """CDP Input Domain"""
 
-from .client import InputClient
+from .types import *
 from .commands import *
 from .events import *
-from .types import *
+from .client import InputClient
 
 __all__ = ["InputClient"]

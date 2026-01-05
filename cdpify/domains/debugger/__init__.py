@@ -1,8 +1,8 @@
 """CDP Debugger Domain"""
 
-from .client import DebuggerClient
+from .types import *
 from .commands import *
 from .events import *
-from .types import *
+from .client import DebuggerClient
 
 __all__ = ["DebuggerClient"]

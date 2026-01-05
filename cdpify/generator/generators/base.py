@@ -55,13 +55,9 @@ class BaseGenerator:
         domains_list = ", ".join(sorted(unique_domains))
 
         if use_type_checking:
-            return (
-                "if TYPE_CHECKING:\n    from pydantic_cpd.domains import "
-                f"{domains_list}"
-            )
+            return f"if TYPE_CHECKING:\n    from cdpify.domains import {domains_list}"
 
         lines = [
-            f"from pydantic_cpd.domains import {domain}"
-            for domain in sorted(unique_domains)
+            f"from cdpify.domains import {domain}" for domain in sorted(unique_domains)
         ]
         return "\n".join(lines)

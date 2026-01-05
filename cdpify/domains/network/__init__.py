@@ -1,8 +1,8 @@
 """CDP Network Domain"""
 
-from .client import NetworkClient
+from .types import *
 from .commands import *
 from .events import *
-from .types import *
+from .client import NetworkClient
 
 __all__ = ["NetworkClient"]

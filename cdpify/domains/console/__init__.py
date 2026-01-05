@@ -1,8 +1,8 @@
 """CDP Console Domain"""
 
-from .client import ConsoleClient
+from .types import *
 from .commands import *
 from .events import *
-from .types import *
+from .client import ConsoleClient
 
 __all__ = ["ConsoleClient"]

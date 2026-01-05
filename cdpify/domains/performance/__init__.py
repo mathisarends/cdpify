@@ -1,8 +1,8 @@
 """CDP Performance Domain"""
 
-from .client import PerformanceClient
+from .types import *
 from .commands import *
 from .events import *
-from .types import *
+from .client import PerformanceClient
 
 __all__ = ["PerformanceClient"]

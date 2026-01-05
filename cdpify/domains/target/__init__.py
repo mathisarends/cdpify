@@ -1,8 +1,8 @@
 """CDP Target Domain"""
 
-from .client import TargetClient
+from .types import *
 from .commands import *
 from .events import *
-from .types import *
+from .client import TargetClient
 
 __all__ = ["TargetClient"]

@@ -1,8 +1,8 @@
 """CDP Schema Domain"""
 
-from .client import SchemaClient
+from .types import *
 from .commands import *
 from .events import *
-from .types import *
+from .client import SchemaClient
 
 __all__ = ["SchemaClient"]

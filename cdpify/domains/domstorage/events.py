@@ -3,7 +3,6 @@
 # Generated from Chrome DevTools Protocol specifications.
 
 from enum import StrEnum
-
 from cdpify.domains.base import CDPModel
 
 from .types import *

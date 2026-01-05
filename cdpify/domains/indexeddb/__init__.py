@@ -1,8 +1,8 @@
 """CDP IndexedDB Domain"""
 
-from .client import IndexedDBClient
+from .types import *
 from .commands import *
 from .events import *
-from .types import *
+from .client import IndexedDBClient
 
 __all__ = ["IndexedDBClient"]

@@ -1,8 +1,8 @@
 """CDP Emulation Domain"""
 
-from .client import EmulationClient
+from .types import *
 from .commands import *
 from .events import *
-from .types import *
+from .client import EmulationClient
 
 __all__ = ["EmulationClient"]

@@ -1,8 +1,8 @@
 """CDP CSS Domain"""
 
-from .client import CSSClient
+from .types import *
 from .commands import *
 from .events import *
-from .types import *
+from .client import CSSClient
 
 __all__ = ["CSSClient"]

@@ -4,12 +4,10 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Literal
 
 if TYPE_CHECKING:
     from cdpify.client import CDPClient
-
-from pydantic_cpd.domains import network
 
 from .commands import (
     ClearCookiesParams,
@@ -60,9 +58,12 @@ from .commands import (
     UntrackIndexedDBForOriginParams,
     UntrackIndexedDBForStorageKeyParams,
 )
+
 from .types import (
     StorageBucket,
 )
+
+from cdpify.domains import network
 
 
 class StorageClient:

@@ -1,8 +1,8 @@
 """CDP WebAudio Domain"""
 
-from .client import WebAudioClient
+from .types import *
 from .commands import *
 from .events import *
-from .types import *
+from .client import WebAudioClient
 
 __all__ = ["WebAudioClient"]

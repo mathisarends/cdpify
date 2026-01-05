@@ -1,8 +1,8 @@
 """CDP DeviceOrientation Domain"""
 
-from .client import DeviceOrientationClient
+from .types import *
 from .commands import *
 from .events import *
-from .types import *
+from .client import DeviceOrientationClient
 
 __all__ = ["DeviceOrientationClient"]

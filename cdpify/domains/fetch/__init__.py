@@ -1,8 +1,8 @@
 """CDP Fetch Domain"""
 
-from .client import FetchClient
+from .types import *
 from .commands import *
 from .events import *
-from .types import *
+from .client import FetchClient
 
 __all__ = ["FetchClient"]

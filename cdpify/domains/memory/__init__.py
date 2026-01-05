@@ -1,8 +1,8 @@
 """CDP Memory Domain"""
 
-from .client import MemoryClient
+from .types import *
 from .commands import *
 from .events import *
-from .types import *
+from .client import MemoryClient
 
 __all__ = ["MemoryClient"]

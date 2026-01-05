@@ -1,8 +1,8 @@
 """CDP Animation Domain"""
 
-from .client import AnimationClient
+from .types import *
 from .commands import *
 from .events import *
-from .types import *
+from .client import AnimationClient
 
 __all__ = ["AnimationClient"]

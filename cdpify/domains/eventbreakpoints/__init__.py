@@ -1,8 +1,8 @@
 """CDP EventBreakpoints Domain"""
 
-from .client import EventBreakpointsClient
+from .types import *
 from .commands import *
 from .events import *
-from .types import *
+from .client import EventBreakpointsClient
 
 __all__ = ["EventBreakpointsClient"]
