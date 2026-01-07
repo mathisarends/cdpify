@@ -3,11 +3,24 @@
 # Generated from Chrome DevTools Protocol specifications.
 
 from typing import TYPE_CHECKING
+from enum import StrEnum
 from cdpify.domains.base import CDPModel
 
 from .types import *
 
 from cdpify.domains import storage
+
+
+class IndexedDBCommand(StrEnum):
+    CLEAR_OBJECT_STORE = "IndexedDB.clearObjectStore"
+    DELETE_DATABASE = "IndexedDB.deleteDatabase"
+    DELETE_OBJECT_STORE_ENTRIES = "IndexedDB.deleteObjectStoreEntries"
+    DISABLE = "IndexedDB.disable"
+    ENABLE = "IndexedDB.enable"
+    REQUEST_DATA = "IndexedDB.requestData"
+    GET_METADATA = "IndexedDB.getMetadata"
+    REQUEST_DATABASE = "IndexedDB.requestDatabase"
+    REQUEST_DATABASE_NAMES = "IndexedDB.requestDatabaseNames"
 
 
 class ClearObjectStoreParams(CDPModel):

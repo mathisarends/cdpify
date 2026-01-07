@@ -3,6 +3,7 @@
 # Generated from Chrome DevTools Protocol specifications.
 
 from typing import Any, TYPE_CHECKING
+from enum import StrEnum
 from cdpify.domains.base import CDPModel
 
 from .types import *
@@ -10,6 +11,51 @@ from .types import *
 from cdpify.domains import browser
 from cdpify.domains import network
 from cdpify.domains import page
+
+
+class StorageCommand(StrEnum):
+    GET_STORAGE_KEY_FOR_FRAME = "Storage.getStorageKeyForFrame"
+    GET_STORAGE_KEY = "Storage.getStorageKey"
+    CLEAR_DATA_FOR_ORIGIN = "Storage.clearDataForOrigin"
+    CLEAR_DATA_FOR_STORAGE_KEY = "Storage.clearDataForStorageKey"
+    GET_COOKIES = "Storage.getCookies"
+    SET_COOKIES = "Storage.setCookies"
+    CLEAR_COOKIES = "Storage.clearCookies"
+    GET_USAGE_AND_QUOTA = "Storage.getUsageAndQuota"
+    OVERRIDE_QUOTA_FOR_ORIGIN = "Storage.overrideQuotaForOrigin"
+    TRACK_CACHE_STORAGE_FOR_ORIGIN = "Storage.trackCacheStorageForOrigin"
+    TRACK_CACHE_STORAGE_FOR_STORAGE_KEY = "Storage.trackCacheStorageForStorageKey"
+    TRACK_INDEXED_D_B_FOR_ORIGIN = "Storage.trackIndexedDBForOrigin"
+    TRACK_INDEXED_D_B_FOR_STORAGE_KEY = "Storage.trackIndexedDBForStorageKey"
+    UNTRACK_CACHE_STORAGE_FOR_ORIGIN = "Storage.untrackCacheStorageForOrigin"
+    UNTRACK_CACHE_STORAGE_FOR_STORAGE_KEY = "Storage.untrackCacheStorageForStorageKey"
+    UNTRACK_INDEXED_D_B_FOR_ORIGIN = "Storage.untrackIndexedDBForOrigin"
+    UNTRACK_INDEXED_D_B_FOR_STORAGE_KEY = "Storage.untrackIndexedDBForStorageKey"
+    GET_TRUST_TOKENS = "Storage.getTrustTokens"
+    CLEAR_TRUST_TOKENS = "Storage.clearTrustTokens"
+    GET_INTEREST_GROUP_DETAILS = "Storage.getInterestGroupDetails"
+    SET_INTEREST_GROUP_TRACKING = "Storage.setInterestGroupTracking"
+    SET_INTEREST_GROUP_AUCTION_TRACKING = "Storage.setInterestGroupAuctionTracking"
+    GET_SHARED_STORAGE_METADATA = "Storage.getSharedStorageMetadata"
+    GET_SHARED_STORAGE_ENTRIES = "Storage.getSharedStorageEntries"
+    SET_SHARED_STORAGE_ENTRY = "Storage.setSharedStorageEntry"
+    DELETE_SHARED_STORAGE_ENTRY = "Storage.deleteSharedStorageEntry"
+    CLEAR_SHARED_STORAGE_ENTRIES = "Storage.clearSharedStorageEntries"
+    RESET_SHARED_STORAGE_BUDGET = "Storage.resetSharedStorageBudget"
+    SET_SHARED_STORAGE_TRACKING = "Storage.setSharedStorageTracking"
+    SET_STORAGE_BUCKET_TRACKING = "Storage.setStorageBucketTracking"
+    DELETE_STORAGE_BUCKET = "Storage.deleteStorageBucket"
+    RUN_BOUNCE_TRACKING_MITIGATIONS = "Storage.runBounceTrackingMitigations"
+    SET_ATTRIBUTION_REPORTING_LOCAL_TESTING_MODE = (
+        "Storage.setAttributionReportingLocalTestingMode"
+    )
+    SET_ATTRIBUTION_REPORTING_TRACKING = "Storage.setAttributionReportingTracking"
+    SEND_PENDING_ATTRIBUTION_REPORTS = "Storage.sendPendingAttributionReports"
+    GET_RELATED_WEBSITE_SETS = "Storage.getRelatedWebsiteSets"
+    GET_AFFECTED_URLS_FOR_THIRD_PARTY_COOKIE_METADATA = (
+        "Storage.getAffectedUrlsForThirdPartyCookieMetadata"
+    )
+    SET_PROTECTED_AUDIENCE_K_ANONYMITY = "Storage.setProtectedAudienceKAnonymity"
 
 
 class GetStorageKeyForFrameParams(CDPModel):

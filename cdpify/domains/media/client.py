@@ -9,6 +9,10 @@ from typing import TYPE_CHECKING, Any, Literal
 if TYPE_CHECKING:
     from cdpify.client import CDPClient
 
+from .commands import (
+    MediaCommand,
+)
+
 
 class MediaClient:
     def __init__(self, client: CDPClient) -> None:
@@ -19,7 +23,7 @@ class MediaClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Media.enable",
+            method=MediaCommand.ENABLE,
             params=None,
             session_id=session_id,
         )
@@ -30,7 +34,7 @@ class MediaClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Media.disable",
+            method=MediaCommand.DISABLE,
             params=None,
             session_id=session_id,
         )

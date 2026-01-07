@@ -3,9 +3,19 @@
 # Generated from Chrome DevTools Protocol specifications.
 
 from typing import Literal
+from enum import StrEnum
 from cdpify.domains.base import CDPModel
 
 from .types import *
+
+
+class TracingCommand(StrEnum):
+    END = "Tracing.end"
+    GET_CATEGORIES = "Tracing.getCategories"
+    GET_TRACK_EVENT_DESCRIPTOR = "Tracing.getTrackEventDescriptor"
+    RECORD_CLOCK_SYNC_MARKER = "Tracing.recordClockSyncMarker"
+    REQUEST_MEMORY_DUMP = "Tracing.requestMemoryDump"
+    START = "Tracing.start"
 
 
 class GetCategoriesResult(CDPModel):

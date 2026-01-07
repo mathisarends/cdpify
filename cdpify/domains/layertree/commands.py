@@ -3,11 +3,24 @@
 # Generated from Chrome DevTools Protocol specifications.
 
 from typing import Any, TYPE_CHECKING
+from enum import StrEnum
 from cdpify.domains.base import CDPModel
 
 from .types import *
 
 from cdpify.domains import dom
+
+
+class LayerTreeCommand(StrEnum):
+    COMPOSITING_REASONS = "LayerTree.compositingReasons"
+    DISABLE = "LayerTree.disable"
+    ENABLE = "LayerTree.enable"
+    LOAD_SNAPSHOT = "LayerTree.loadSnapshot"
+    MAKE_SNAPSHOT = "LayerTree.makeSnapshot"
+    PROFILE_SNAPSHOT = "LayerTree.profileSnapshot"
+    RELEASE_SNAPSHOT = "LayerTree.releaseSnapshot"
+    REPLAY_SNAPSHOT = "LayerTree.replaySnapshot"
+    SNAPSHOT_COMMAND_LOG = "LayerTree.snapshotCommandLog"
 
 
 class CompositingReasonsParams(CDPModel):

@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from cdpify.client import CDPClient
 
 from .commands import (
+    RuntimeCommand,
     AddBindingParams,
     AwaitPromiseParams,
     AwaitPromiseResult,
@@ -68,7 +69,7 @@ class RuntimeClient:
         )
 
         result = await self._client.send_raw(
-            method="Runtime.awaitPromise",
+            method=RuntimeCommand.AWAIT_PROMISE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -109,7 +110,7 @@ class RuntimeClient:
         )
 
         result = await self._client.send_raw(
-            method="Runtime.callFunctionOn",
+            method=RuntimeCommand.CALL_FUNCTION_ON,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -132,7 +133,7 @@ class RuntimeClient:
         )
 
         result = await self._client.send_raw(
-            method="Runtime.compileScript",
+            method=RuntimeCommand.COMPILE_SCRIPT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -143,7 +144,7 @@ class RuntimeClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Runtime.disable",
+            method=RuntimeCommand.DISABLE,
             params=None,
             session_id=session_id,
         )
@@ -154,7 +155,7 @@ class RuntimeClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Runtime.discardConsoleEntries",
+            method=RuntimeCommand.DISCARD_CONSOLE_ENTRIES,
             params=None,
             session_id=session_id,
         )
@@ -165,7 +166,7 @@ class RuntimeClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Runtime.enable",
+            method=RuntimeCommand.ENABLE,
             params=None,
             session_id=session_id,
         )
@@ -212,7 +213,7 @@ class RuntimeClient:
         )
 
         result = await self._client.send_raw(
-            method="Runtime.evaluate",
+            method=RuntimeCommand.EVALUATE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -223,7 +224,7 @@ class RuntimeClient:
         session_id: str | None = None,
     ) -> GetIsolateIdResult:
         result = await self._client.send_raw(
-            method="Runtime.getIsolateId",
+            method=RuntimeCommand.GET_ISOLATE_ID,
             params=None,
             session_id=session_id,
         )
@@ -234,7 +235,7 @@ class RuntimeClient:
         session_id: str | None = None,
     ) -> GetHeapUsageResult:
         result = await self._client.send_raw(
-            method="Runtime.getHeapUsage",
+            method=RuntimeCommand.GET_HEAP_USAGE,
             params=None,
             session_id=session_id,
         )
@@ -259,7 +260,7 @@ class RuntimeClient:
         )
 
         result = await self._client.send_raw(
-            method="Runtime.getProperties",
+            method=RuntimeCommand.GET_PROPERTIES,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -274,7 +275,7 @@ class RuntimeClient:
         params = GlobalLexicalScopeNamesParams(executionContextId=execution_context_id)
 
         result = await self._client.send_raw(
-            method="Runtime.globalLexicalScopeNames",
+            method=RuntimeCommand.GLOBAL_LEXICAL_SCOPE_NAMES,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -292,7 +293,7 @@ class RuntimeClient:
         )
 
         result = await self._client.send_raw(
-            method="Runtime.queryObjects",
+            method=RuntimeCommand.QUERY_OBJECTS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -307,7 +308,7 @@ class RuntimeClient:
         params = ReleaseObjectParams(objectId=object_id)
 
         result = await self._client.send_raw(
-            method="Runtime.releaseObject",
+            method=RuntimeCommand.RELEASE_OBJECT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -322,7 +323,7 @@ class RuntimeClient:
         params = ReleaseObjectGroupParams(objectGroup=object_group)
 
         result = await self._client.send_raw(
-            method="Runtime.releaseObjectGroup",
+            method=RuntimeCommand.RELEASE_OBJECT_GROUP,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -333,7 +334,7 @@ class RuntimeClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Runtime.runIfWaitingForDebugger",
+            method=RuntimeCommand.RUN_IF_WAITING_FOR_DEBUGGER,
             params=None,
             session_id=session_id,
         )
@@ -364,7 +365,7 @@ class RuntimeClient:
         )
 
         result = await self._client.send_raw(
-            method="Runtime.runScript",
+            method=RuntimeCommand.RUN_SCRIPT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -379,7 +380,7 @@ class RuntimeClient:
         params = SetAsyncCallStackDepthParams(maxDepth=max_depth)
 
         result = await self._client.send_raw(
-            method="Runtime.setAsyncCallStackDepth",
+            method=RuntimeCommand.SET_ASYNC_CALL_STACK_DEPTH,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -394,7 +395,7 @@ class RuntimeClient:
         params = SetCustomObjectFormatterEnabledParams(enabled=enabled)
 
         result = await self._client.send_raw(
-            method="Runtime.setCustomObjectFormatterEnabled",
+            method=RuntimeCommand.SET_CUSTOM_OBJECT_FORMATTER_ENABLED,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -409,7 +410,7 @@ class RuntimeClient:
         params = SetMaxCallStackSizeToCaptureParams(size=size)
 
         result = await self._client.send_raw(
-            method="Runtime.setMaxCallStackSizeToCapture",
+            method=RuntimeCommand.SET_MAX_CALL_STACK_SIZE_TO_CAPTURE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -420,7 +421,7 @@ class RuntimeClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Runtime.terminateExecution",
+            method=RuntimeCommand.TERMINATE_EXECUTION,
             params=None,
             session_id=session_id,
         )
@@ -441,7 +442,7 @@ class RuntimeClient:
         )
 
         result = await self._client.send_raw(
-            method="Runtime.addBinding",
+            method=RuntimeCommand.ADD_BINDING,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -456,7 +457,7 @@ class RuntimeClient:
         params = RemoveBindingParams(name=name)
 
         result = await self._client.send_raw(
-            method="Runtime.removeBinding",
+            method=RuntimeCommand.REMOVE_BINDING,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -471,7 +472,7 @@ class RuntimeClient:
         params = GetExceptionDetailsParams(errorObjectId=error_object_id)
 
         result = await self._client.send_raw(
-            method="Runtime.getExceptionDetails",
+            method=RuntimeCommand.GET_EXCEPTION_DETAILS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )

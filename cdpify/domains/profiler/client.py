@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from cdpify.client import CDPClient
 
 from .commands import (
+    ProfilerCommand,
     GetBestEffortCoverageResult,
     SetSamplingIntervalParams,
     StartPreciseCoverageParams,
@@ -28,7 +29,7 @@ class ProfilerClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Profiler.disable",
+            method=ProfilerCommand.DISABLE,
             params=None,
             session_id=session_id,
         )
@@ -39,7 +40,7 @@ class ProfilerClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Profiler.enable",
+            method=ProfilerCommand.ENABLE,
             params=None,
             session_id=session_id,
         )
@@ -50,7 +51,7 @@ class ProfilerClient:
         session_id: str | None = None,
     ) -> GetBestEffortCoverageResult:
         result = await self._client.send_raw(
-            method="Profiler.getBestEffortCoverage",
+            method=ProfilerCommand.GET_BEST_EFFORT_COVERAGE,
             params=None,
             session_id=session_id,
         )
@@ -65,7 +66,7 @@ class ProfilerClient:
         params = SetSamplingIntervalParams(interval=interval)
 
         result = await self._client.send_raw(
-            method="Profiler.setSamplingInterval",
+            method=ProfilerCommand.SET_SAMPLING_INTERVAL,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -76,7 +77,7 @@ class ProfilerClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Profiler.start",
+            method=ProfilerCommand.START,
             params=None,
             session_id=session_id,
         )
@@ -97,7 +98,7 @@ class ProfilerClient:
         )
 
         result = await self._client.send_raw(
-            method="Profiler.startPreciseCoverage",
+            method=ProfilerCommand.START_PRECISE_COVERAGE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -108,7 +109,7 @@ class ProfilerClient:
         session_id: str | None = None,
     ) -> StopResult:
         result = await self._client.send_raw(
-            method="Profiler.stop",
+            method=ProfilerCommand.STOP,
             params=None,
             session_id=session_id,
         )
@@ -119,7 +120,7 @@ class ProfilerClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Profiler.stopPreciseCoverage",
+            method=ProfilerCommand.STOP_PRECISE_COVERAGE,
             params=None,
             session_id=session_id,
         )
@@ -130,7 +131,7 @@ class ProfilerClient:
         session_id: str | None = None,
     ) -> TakePreciseCoverageResult:
         result = await self._client.send_raw(
-            method="Profiler.takePreciseCoverage",
+            method=ProfilerCommand.TAKE_PRECISE_COVERAGE,
             params=None,
             session_id=session_id,
         )

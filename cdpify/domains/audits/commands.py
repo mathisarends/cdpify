@@ -3,11 +3,20 @@
 # Generated from Chrome DevTools Protocol specifications.
 
 from typing import Literal, TYPE_CHECKING
+from enum import StrEnum
 from cdpify.domains.base import CDPModel
 
 from .types import *
 
 from cdpify.domains import network
+
+
+class AuditsCommand(StrEnum):
+    GET_ENCODED_RESPONSE = "Audits.getEncodedResponse"
+    DISABLE = "Audits.disable"
+    ENABLE = "Audits.enable"
+    CHECK_CONTRAST = "Audits.checkContrast"
+    CHECK_FORMS_ISSUES = "Audits.checkFormsIssues"
 
 
 class GetEncodedResponseParams(CDPModel):

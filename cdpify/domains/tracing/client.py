@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from cdpify.client import CDPClient
 
 from .commands import (
+    TracingCommand,
     GetCategoriesResult,
     GetTrackEventDescriptorResult,
     RecordClockSyncMarkerParams,
@@ -36,7 +37,7 @@ class TracingClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Tracing.end",
+            method=TracingCommand.END,
             params=None,
             session_id=session_id,
         )
@@ -47,7 +48,7 @@ class TracingClient:
         session_id: str | None = None,
     ) -> GetCategoriesResult:
         result = await self._client.send_raw(
-            method="Tracing.getCategories",
+            method=TracingCommand.GET_CATEGORIES,
             params=None,
             session_id=session_id,
         )
@@ -58,7 +59,7 @@ class TracingClient:
         session_id: str | None = None,
     ) -> GetTrackEventDescriptorResult:
         result = await self._client.send_raw(
-            method="Tracing.getTrackEventDescriptor",
+            method=TracingCommand.GET_TRACK_EVENT_DESCRIPTOR,
             params=None,
             session_id=session_id,
         )
@@ -73,7 +74,7 @@ class TracingClient:
         params = RecordClockSyncMarkerParams(syncId=sync_id)
 
         result = await self._client.send_raw(
-            method="Tracing.recordClockSyncMarker",
+            method=TracingCommand.RECORD_CLOCK_SYNC_MARKER,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -91,7 +92,7 @@ class TracingClient:
         )
 
         result = await self._client.send_raw(
-            method="Tracing.requestMemoryDump",
+            method=TracingCommand.REQUEST_MEMORY_DUMP,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -124,7 +125,7 @@ class TracingClient:
         )
 
         result = await self._client.send_raw(
-            method="Tracing.start",
+            method=TracingCommand.START,
             params=params.to_cdp_params(),
             session_id=session_id,
         )

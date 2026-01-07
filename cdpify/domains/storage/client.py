@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from cdpify.client import CDPClient
 
 from .commands import (
+    StorageCommand,
     ClearCookiesParams,
     ClearDataForOriginParams,
     ClearDataForStorageKeyParams,
@@ -79,7 +80,7 @@ class StorageClient:
         params = GetStorageKeyForFrameParams(frameId=frame_id)
 
         result = await self._client.send_raw(
-            method="Storage.getStorageKeyForFrame",
+            method=StorageCommand.GET_STORAGE_KEY_FOR_FRAME,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -94,7 +95,7 @@ class StorageClient:
         params = GetStorageKeyParams(frameId=frame_id)
 
         result = await self._client.send_raw(
-            method="Storage.getStorageKey",
+            method=StorageCommand.GET_STORAGE_KEY,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -110,7 +111,7 @@ class StorageClient:
         params = ClearDataForOriginParams(origin=origin, storageTypes=storage_types)
 
         result = await self._client.send_raw(
-            method="Storage.clearDataForOrigin",
+            method=StorageCommand.CLEAR_DATA_FOR_ORIGIN,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -128,7 +129,7 @@ class StorageClient:
         )
 
         result = await self._client.send_raw(
-            method="Storage.clearDataForStorageKey",
+            method=StorageCommand.CLEAR_DATA_FOR_STORAGE_KEY,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -143,7 +144,7 @@ class StorageClient:
         params = GetCookiesParams(browserContextId=browser_context_id)
 
         result = await self._client.send_raw(
-            method="Storage.getCookies",
+            method=StorageCommand.GET_COOKIES,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -159,7 +160,7 @@ class StorageClient:
         params = SetCookiesParams(cookies=cookies, browserContextId=browser_context_id)
 
         result = await self._client.send_raw(
-            method="Storage.setCookies",
+            method=StorageCommand.SET_COOKIES,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -174,7 +175,7 @@ class StorageClient:
         params = ClearCookiesParams(browserContextId=browser_context_id)
 
         result = await self._client.send_raw(
-            method="Storage.clearCookies",
+            method=StorageCommand.CLEAR_COOKIES,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -189,7 +190,7 @@ class StorageClient:
         params = GetUsageAndQuotaParams(origin=origin)
 
         result = await self._client.send_raw(
-            method="Storage.getUsageAndQuota",
+            method=StorageCommand.GET_USAGE_AND_QUOTA,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -205,7 +206,7 @@ class StorageClient:
         params = OverrideQuotaForOriginParams(origin=origin, quotaSize=quota_size)
 
         result = await self._client.send_raw(
-            method="Storage.overrideQuotaForOrigin",
+            method=StorageCommand.OVERRIDE_QUOTA_FOR_ORIGIN,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -220,7 +221,7 @@ class StorageClient:
         params = TrackCacheStorageForOriginParams(origin=origin)
 
         result = await self._client.send_raw(
-            method="Storage.trackCacheStorageForOrigin",
+            method=StorageCommand.TRACK_CACHE_STORAGE_FOR_ORIGIN,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -235,7 +236,7 @@ class StorageClient:
         params = TrackCacheStorageForStorageKeyParams(storageKey=storage_key)
 
         result = await self._client.send_raw(
-            method="Storage.trackCacheStorageForStorageKey",
+            method=StorageCommand.TRACK_CACHE_STORAGE_FOR_STORAGE_KEY,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -250,7 +251,7 @@ class StorageClient:
         params = TrackIndexedDBForOriginParams(origin=origin)
 
         result = await self._client.send_raw(
-            method="Storage.trackIndexedDBForOrigin",
+            method=StorageCommand.TRACK_INDEXED_D_B_FOR_ORIGIN,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -265,7 +266,7 @@ class StorageClient:
         params = TrackIndexedDBForStorageKeyParams(storageKey=storage_key)
 
         result = await self._client.send_raw(
-            method="Storage.trackIndexedDBForStorageKey",
+            method=StorageCommand.TRACK_INDEXED_D_B_FOR_STORAGE_KEY,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -280,7 +281,7 @@ class StorageClient:
         params = UntrackCacheStorageForOriginParams(origin=origin)
 
         result = await self._client.send_raw(
-            method="Storage.untrackCacheStorageForOrigin",
+            method=StorageCommand.UNTRACK_CACHE_STORAGE_FOR_ORIGIN,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -295,7 +296,7 @@ class StorageClient:
         params = UntrackCacheStorageForStorageKeyParams(storageKey=storage_key)
 
         result = await self._client.send_raw(
-            method="Storage.untrackCacheStorageForStorageKey",
+            method=StorageCommand.UNTRACK_CACHE_STORAGE_FOR_STORAGE_KEY,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -310,7 +311,7 @@ class StorageClient:
         params = UntrackIndexedDBForOriginParams(origin=origin)
 
         result = await self._client.send_raw(
-            method="Storage.untrackIndexedDBForOrigin",
+            method=StorageCommand.UNTRACK_INDEXED_D_B_FOR_ORIGIN,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -325,7 +326,7 @@ class StorageClient:
         params = UntrackIndexedDBForStorageKeyParams(storageKey=storage_key)
 
         result = await self._client.send_raw(
-            method="Storage.untrackIndexedDBForStorageKey",
+            method=StorageCommand.UNTRACK_INDEXED_D_B_FOR_STORAGE_KEY,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -336,7 +337,7 @@ class StorageClient:
         session_id: str | None = None,
     ) -> GetTrustTokensResult:
         result = await self._client.send_raw(
-            method="Storage.getTrustTokens",
+            method=StorageCommand.GET_TRUST_TOKENS,
             params=None,
             session_id=session_id,
         )
@@ -351,7 +352,7 @@ class StorageClient:
         params = ClearTrustTokensParams(issuerOrigin=issuer_origin)
 
         result = await self._client.send_raw(
-            method="Storage.clearTrustTokens",
+            method=StorageCommand.CLEAR_TRUST_TOKENS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -367,7 +368,7 @@ class StorageClient:
         params = GetInterestGroupDetailsParams(ownerOrigin=owner_origin, name=name)
 
         result = await self._client.send_raw(
-            method="Storage.getInterestGroupDetails",
+            method=StorageCommand.GET_INTEREST_GROUP_DETAILS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -382,7 +383,7 @@ class StorageClient:
         params = SetInterestGroupTrackingParams(enable=enable)
 
         result = await self._client.send_raw(
-            method="Storage.setInterestGroupTracking",
+            method=StorageCommand.SET_INTEREST_GROUP_TRACKING,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -397,7 +398,7 @@ class StorageClient:
         params = SetInterestGroupAuctionTrackingParams(enable=enable)
 
         result = await self._client.send_raw(
-            method="Storage.setInterestGroupAuctionTracking",
+            method=StorageCommand.SET_INTEREST_GROUP_AUCTION_TRACKING,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -412,7 +413,7 @@ class StorageClient:
         params = GetSharedStorageMetadataParams(ownerOrigin=owner_origin)
 
         result = await self._client.send_raw(
-            method="Storage.getSharedStorageMetadata",
+            method=StorageCommand.GET_SHARED_STORAGE_METADATA,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -427,7 +428,7 @@ class StorageClient:
         params = GetSharedStorageEntriesParams(ownerOrigin=owner_origin)
 
         result = await self._client.send_raw(
-            method="Storage.getSharedStorageEntries",
+            method=StorageCommand.GET_SHARED_STORAGE_ENTRIES,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -450,7 +451,7 @@ class StorageClient:
         )
 
         result = await self._client.send_raw(
-            method="Storage.setSharedStorageEntry",
+            method=StorageCommand.SET_SHARED_STORAGE_ENTRY,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -466,7 +467,7 @@ class StorageClient:
         params = DeleteSharedStorageEntryParams(ownerOrigin=owner_origin, key=key)
 
         result = await self._client.send_raw(
-            method="Storage.deleteSharedStorageEntry",
+            method=StorageCommand.DELETE_SHARED_STORAGE_ENTRY,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -481,7 +482,7 @@ class StorageClient:
         params = ClearSharedStorageEntriesParams(ownerOrigin=owner_origin)
 
         result = await self._client.send_raw(
-            method="Storage.clearSharedStorageEntries",
+            method=StorageCommand.CLEAR_SHARED_STORAGE_ENTRIES,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -496,7 +497,7 @@ class StorageClient:
         params = ResetSharedStorageBudgetParams(ownerOrigin=owner_origin)
 
         result = await self._client.send_raw(
-            method="Storage.resetSharedStorageBudget",
+            method=StorageCommand.RESET_SHARED_STORAGE_BUDGET,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -511,7 +512,7 @@ class StorageClient:
         params = SetSharedStorageTrackingParams(enable=enable)
 
         result = await self._client.send_raw(
-            method="Storage.setSharedStorageTracking",
+            method=StorageCommand.SET_SHARED_STORAGE_TRACKING,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -527,7 +528,7 @@ class StorageClient:
         params = SetStorageBucketTrackingParams(storageKey=storage_key, enable=enable)
 
         result = await self._client.send_raw(
-            method="Storage.setStorageBucketTracking",
+            method=StorageCommand.SET_STORAGE_BUCKET_TRACKING,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -542,7 +543,7 @@ class StorageClient:
         params = DeleteStorageBucketParams(bucket=bucket)
 
         result = await self._client.send_raw(
-            method="Storage.deleteStorageBucket",
+            method=StorageCommand.DELETE_STORAGE_BUCKET,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -553,7 +554,7 @@ class StorageClient:
         session_id: str | None = None,
     ) -> RunBounceTrackingMitigationsResult:
         result = await self._client.send_raw(
-            method="Storage.runBounceTrackingMitigations",
+            method=StorageCommand.RUN_BOUNCE_TRACKING_MITIGATIONS,
             params=None,
             session_id=session_id,
         )
@@ -568,7 +569,7 @@ class StorageClient:
         params = SetAttributionReportingLocalTestingModeParams(enabled=enabled)
 
         result = await self._client.send_raw(
-            method="Storage.setAttributionReportingLocalTestingMode",
+            method=StorageCommand.SET_ATTRIBUTION_REPORTING_LOCAL_TESTING_MODE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -583,7 +584,7 @@ class StorageClient:
         params = SetAttributionReportingTrackingParams(enable=enable)
 
         result = await self._client.send_raw(
-            method="Storage.setAttributionReportingTracking",
+            method=StorageCommand.SET_ATTRIBUTION_REPORTING_TRACKING,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -594,7 +595,7 @@ class StorageClient:
         session_id: str | None = None,
     ) -> SendPendingAttributionReportsResult:
         result = await self._client.send_raw(
-            method="Storage.sendPendingAttributionReports",
+            method=StorageCommand.SEND_PENDING_ATTRIBUTION_REPORTS,
             params=None,
             session_id=session_id,
         )
@@ -605,7 +606,7 @@ class StorageClient:
         session_id: str | None = None,
     ) -> GetRelatedWebsiteSetsResult:
         result = await self._client.send_raw(
-            method="Storage.getRelatedWebsiteSets",
+            method=StorageCommand.GET_RELATED_WEBSITE_SETS,
             params=None,
             session_id=session_id,
         )
@@ -623,7 +624,7 @@ class StorageClient:
         )
 
         result = await self._client.send_raw(
-            method="Storage.getAffectedUrlsForThirdPartyCookieMetadata",
+            method=StorageCommand.GET_AFFECTED_URLS_FOR_THIRD_PARTY_COOKIE_METADATA,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -642,7 +643,7 @@ class StorageClient:
         )
 
         result = await self._client.send_raw(
-            method="Storage.setProtectedAudienceKAnonymity",
+            method=StorageCommand.SET_PROTECTED_AUDIENCE_K_ANONYMITY,
             params=params.to_cdp_params(),
             session_id=session_id,
         )

@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from cdpify.client import CDPClient
 
 from .commands import (
+    TetheringCommand,
     BindParams,
     UnbindParams,
 )
@@ -28,7 +29,7 @@ class TetheringClient:
         params = BindParams(port=port)
 
         result = await self._client.send_raw(
-            method="Tethering.bind",
+            method=TetheringCommand.BIND,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -43,7 +44,7 @@ class TetheringClient:
         params = UnbindParams(port=port)
 
         result = await self._client.send_raw(
-            method="Tethering.unbind",
+            method=TetheringCommand.UNBIND,
             params=params.to_cdp_params(),
             session_id=session_id,
         )

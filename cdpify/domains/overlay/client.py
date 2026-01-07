@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from cdpify.client import CDPClient
 
 from .commands import (
+    OverlayCommand,
     GetGridHighlightObjectsForTestParams,
     GetGridHighlightObjectsForTestResult,
     GetHighlightObjectForTestParams,
@@ -67,7 +68,7 @@ class OverlayClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Overlay.disable",
+            method=OverlayCommand.DISABLE,
             params=None,
             session_id=session_id,
         )
@@ -78,7 +79,7 @@ class OverlayClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Overlay.enable",
+            method=OverlayCommand.ENABLE,
             params=None,
             session_id=session_id,
         )
@@ -103,7 +104,7 @@ class OverlayClient:
         )
 
         result = await self._client.send_raw(
-            method="Overlay.getHighlightObjectForTest",
+            method=OverlayCommand.GET_HIGHLIGHT_OBJECT_FOR_TEST,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -118,7 +119,7 @@ class OverlayClient:
         params = GetGridHighlightObjectsForTestParams(nodeIds=node_ids)
 
         result = await self._client.send_raw(
-            method="Overlay.getGridHighlightObjectsForTest",
+            method=OverlayCommand.GET_GRID_HIGHLIGHT_OBJECTS_FOR_TEST,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -133,7 +134,7 @@ class OverlayClient:
         params = GetSourceOrderHighlightObjectForTestParams(nodeId=node_id)
 
         result = await self._client.send_raw(
-            method="Overlay.getSourceOrderHighlightObjectForTest",
+            method=OverlayCommand.GET_SOURCE_ORDER_HIGHLIGHT_OBJECT_FOR_TEST,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -144,7 +145,7 @@ class OverlayClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Overlay.hideHighlight",
+            method=OverlayCommand.HIDE_HIGHLIGHT,
             params=None,
             session_id=session_id,
         )
@@ -165,7 +166,7 @@ class OverlayClient:
         )
 
         result = await self._client.send_raw(
-            method="Overlay.highlightFrame",
+            method=OverlayCommand.HIGHLIGHT_FRAME,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -190,7 +191,7 @@ class OverlayClient:
         )
 
         result = await self._client.send_raw(
-            method="Overlay.highlightNode",
+            method=OverlayCommand.HIGHLIGHT_NODE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -207,7 +208,7 @@ class OverlayClient:
         params = HighlightQuadParams(quad=quad, color=color, outlineColor=outline_color)
 
         result = await self._client.send_raw(
-            method="Overlay.highlightQuad",
+            method=OverlayCommand.HIGHLIGHT_QUAD,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -234,7 +235,7 @@ class OverlayClient:
         )
 
         result = await self._client.send_raw(
-            method="Overlay.highlightRect",
+            method=OverlayCommand.HIGHLIGHT_RECT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -257,7 +258,7 @@ class OverlayClient:
         )
 
         result = await self._client.send_raw(
-            method="Overlay.highlightSourceOrder",
+            method=OverlayCommand.HIGHLIGHT_SOURCE_ORDER,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -273,7 +274,7 @@ class OverlayClient:
         params = SetInspectModeParams(mode=mode, highlightConfig=highlight_config)
 
         result = await self._client.send_raw(
-            method="Overlay.setInspectMode",
+            method=OverlayCommand.SET_INSPECT_MODE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -288,7 +289,7 @@ class OverlayClient:
         params = SetShowAdHighlightsParams(show=show)
 
         result = await self._client.send_raw(
-            method="Overlay.setShowAdHighlights",
+            method=OverlayCommand.SET_SHOW_AD_HIGHLIGHTS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -303,7 +304,7 @@ class OverlayClient:
         params = SetPausedInDebuggerMessageParams(message=message)
 
         result = await self._client.send_raw(
-            method="Overlay.setPausedInDebuggerMessage",
+            method=OverlayCommand.SET_PAUSED_IN_DEBUGGER_MESSAGE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -318,7 +319,7 @@ class OverlayClient:
         params = SetShowDebugBordersParams(show=show)
 
         result = await self._client.send_raw(
-            method="Overlay.setShowDebugBorders",
+            method=OverlayCommand.SET_SHOW_DEBUG_BORDERS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -333,7 +334,7 @@ class OverlayClient:
         params = SetShowFPSCounterParams(show=show)
 
         result = await self._client.send_raw(
-            method="Overlay.setShowFPSCounter",
+            method=OverlayCommand.SET_SHOW_F_P_S_COUNTER,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -350,7 +351,7 @@ class OverlayClient:
         )
 
         result = await self._client.send_raw(
-            method="Overlay.setShowGridOverlays",
+            method=OverlayCommand.SET_SHOW_GRID_OVERLAYS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -367,7 +368,7 @@ class OverlayClient:
         )
 
         result = await self._client.send_raw(
-            method="Overlay.setShowFlexOverlays",
+            method=OverlayCommand.SET_SHOW_FLEX_OVERLAYS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -384,7 +385,7 @@ class OverlayClient:
         )
 
         result = await self._client.send_raw(
-            method="Overlay.setShowScrollSnapOverlays",
+            method=OverlayCommand.SET_SHOW_SCROLL_SNAP_OVERLAYS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -401,7 +402,7 @@ class OverlayClient:
         )
 
         result = await self._client.send_raw(
-            method="Overlay.setShowContainerQueryOverlays",
+            method=OverlayCommand.SET_SHOW_CONTAINER_QUERY_OVERLAYS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -416,7 +417,7 @@ class OverlayClient:
         params = SetShowPaintRectsParams(result=result)
 
         result = await self._client.send_raw(
-            method="Overlay.setShowPaintRects",
+            method=OverlayCommand.SET_SHOW_PAINT_RECTS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -431,7 +432,7 @@ class OverlayClient:
         params = SetShowLayoutShiftRegionsParams(result=result)
 
         result = await self._client.send_raw(
-            method="Overlay.setShowLayoutShiftRegions",
+            method=OverlayCommand.SET_SHOW_LAYOUT_SHIFT_REGIONS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -446,7 +447,7 @@ class OverlayClient:
         params = SetShowScrollBottleneckRectsParams(show=show)
 
         result = await self._client.send_raw(
-            method="Overlay.setShowScrollBottleneckRects",
+            method=OverlayCommand.SET_SHOW_SCROLL_BOTTLENECK_RECTS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -461,7 +462,7 @@ class OverlayClient:
         params = SetShowHitTestBordersParams(show=show)
 
         result = await self._client.send_raw(
-            method="Overlay.setShowHitTestBorders",
+            method=OverlayCommand.SET_SHOW_HIT_TEST_BORDERS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -476,7 +477,7 @@ class OverlayClient:
         params = SetShowWebVitalsParams(show=show)
 
         result = await self._client.send_raw(
-            method="Overlay.setShowWebVitals",
+            method=OverlayCommand.SET_SHOW_WEB_VITALS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -491,7 +492,7 @@ class OverlayClient:
         params = SetShowViewportSizeOnResizeParams(show=show)
 
         result = await self._client.send_raw(
-            method="Overlay.setShowViewportSizeOnResize",
+            method=OverlayCommand.SET_SHOW_VIEWPORT_SIZE_ON_RESIZE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -506,7 +507,7 @@ class OverlayClient:
         params = SetShowHingeParams(hingeConfig=hinge_config)
 
         result = await self._client.send_raw(
-            method="Overlay.setShowHinge",
+            method=OverlayCommand.SET_SHOW_HINGE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -523,7 +524,7 @@ class OverlayClient:
         )
 
         result = await self._client.send_raw(
-            method="Overlay.setShowIsolatedElements",
+            method=OverlayCommand.SET_SHOW_ISOLATED_ELEMENTS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -540,7 +541,7 @@ class OverlayClient:
         )
 
         result = await self._client.send_raw(
-            method="Overlay.setShowWindowControlsOverlay",
+            method=OverlayCommand.SET_SHOW_WINDOW_CONTROLS_OVERLAY,
             params=params.to_cdp_params(),
             session_id=session_id,
         )

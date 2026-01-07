@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from cdpify.client import CDPClient
 
 from .commands import (
+    NetworkCommand,
     CanClearBrowserCacheResult,
     CanClearBrowserCookiesResult,
     CanEmulateNetworkConditionsResult,
@@ -19,8 +20,11 @@ from .commands import (
     EmulateNetworkConditionsByRuleParams,
     EmulateNetworkConditionsByRuleResult,
     EmulateNetworkConditionsParams,
+    EnableDeviceBoundSessionsParams,
     EnableParams,
     EnableReportingApiParams,
+    FetchSchemefulSiteParams,
+    FetchSchemefulSiteResult,
     GetAllCookiesResult,
     GetCertificateParams,
     GetCertificateResult,
@@ -92,7 +96,7 @@ class NetworkClient:
         params = SetAcceptedEncodingsParams(encodings=encodings)
 
         result = await self._client.send_raw(
-            method="Network.setAcceptedEncodings",
+            method=NetworkCommand.SET_ACCEPTED_ENCODINGS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -103,7 +107,7 @@ class NetworkClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Network.clearAcceptedEncodingsOverride",
+            method=NetworkCommand.CLEAR_ACCEPTED_ENCODINGS_OVERRIDE,
             params=None,
             session_id=session_id,
         )
@@ -114,7 +118,7 @@ class NetworkClient:
         session_id: str | None = None,
     ) -> CanClearBrowserCacheResult:
         result = await self._client.send_raw(
-            method="Network.canClearBrowserCache",
+            method=NetworkCommand.CAN_CLEAR_BROWSER_CACHE,
             params=None,
             session_id=session_id,
         )
@@ -125,7 +129,7 @@ class NetworkClient:
         session_id: str | None = None,
     ) -> CanClearBrowserCookiesResult:
         result = await self._client.send_raw(
-            method="Network.canClearBrowserCookies",
+            method=NetworkCommand.CAN_CLEAR_BROWSER_COOKIES,
             params=None,
             session_id=session_id,
         )
@@ -136,7 +140,7 @@ class NetworkClient:
         session_id: str | None = None,
     ) -> CanEmulateNetworkConditionsResult:
         result = await self._client.send_raw(
-            method="Network.canEmulateNetworkConditions",
+            method=NetworkCommand.CAN_EMULATE_NETWORK_CONDITIONS,
             params=None,
             session_id=session_id,
         )
@@ -147,7 +151,7 @@ class NetworkClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Network.clearBrowserCache",
+            method=NetworkCommand.CLEAR_BROWSER_CACHE,
             params=None,
             session_id=session_id,
         )
@@ -158,7 +162,7 @@ class NetworkClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Network.clearBrowserCookies",
+            method=NetworkCommand.CLEAR_BROWSER_COOKIES,
             params=None,
             session_id=session_id,
         )
@@ -189,7 +193,7 @@ class NetworkClient:
         )
 
         result = await self._client.send_raw(
-            method="Network.continueInterceptedRequest",
+            method=NetworkCommand.CONTINUE_INTERCEPTED_REQUEST,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -210,7 +214,7 @@ class NetworkClient:
         )
 
         result = await self._client.send_raw(
-            method="Network.deleteCookies",
+            method=NetworkCommand.DELETE_COOKIES,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -221,7 +225,7 @@ class NetworkClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Network.disable",
+            method=NetworkCommand.DISABLE,
             params=None,
             session_id=session_id,
         )
@@ -252,7 +256,7 @@ class NetworkClient:
         )
 
         result = await self._client.send_raw(
-            method="Network.emulateNetworkConditions",
+            method=NetworkCommand.EMULATE_NETWORK_CONDITIONS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -270,7 +274,7 @@ class NetworkClient:
         )
 
         result = await self._client.send_raw(
-            method="Network.emulateNetworkConditionsByRule",
+            method=NetworkCommand.EMULATE_NETWORK_CONDITIONS_BY_RULE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -295,7 +299,7 @@ class NetworkClient:
         )
 
         result = await self._client.send_raw(
-            method="Network.overrideNetworkState",
+            method=NetworkCommand.OVERRIDE_NETWORK_STATE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -320,7 +324,7 @@ class NetworkClient:
         )
 
         result = await self._client.send_raw(
-            method="Network.enable",
+            method=NetworkCommand.ENABLE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -339,7 +343,7 @@ class NetworkClient:
         )
 
         result = await self._client.send_raw(
-            method="Network.configureDurableMessages",
+            method=NetworkCommand.CONFIGURE_DURABLE_MESSAGES,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -350,7 +354,7 @@ class NetworkClient:
         session_id: str | None = None,
     ) -> GetAllCookiesResult:
         result = await self._client.send_raw(
-            method="Network.getAllCookies",
+            method=NetworkCommand.GET_ALL_COOKIES,
             params=None,
             session_id=session_id,
         )
@@ -365,7 +369,7 @@ class NetworkClient:
         params = GetCertificateParams(origin=origin)
 
         result = await self._client.send_raw(
-            method="Network.getCertificate",
+            method=NetworkCommand.GET_CERTIFICATE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -380,7 +384,7 @@ class NetworkClient:
         params = GetCookiesParams(urls=urls)
 
         result = await self._client.send_raw(
-            method="Network.getCookies",
+            method=NetworkCommand.GET_COOKIES,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -395,7 +399,7 @@ class NetworkClient:
         params = GetResponseBodyParams(requestId=request_id)
 
         result = await self._client.send_raw(
-            method="Network.getResponseBody",
+            method=NetworkCommand.GET_RESPONSE_BODY,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -410,7 +414,7 @@ class NetworkClient:
         params = GetRequestPostDataParams(requestId=request_id)
 
         result = await self._client.send_raw(
-            method="Network.getRequestPostData",
+            method=NetworkCommand.GET_REQUEST_POST_DATA,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -425,7 +429,7 @@ class NetworkClient:
         params = GetResponseBodyForInterceptionParams(interceptionId=interception_id)
 
         result = await self._client.send_raw(
-            method="Network.getResponseBodyForInterception",
+            method=NetworkCommand.GET_RESPONSE_BODY_FOR_INTERCEPTION,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -442,7 +446,7 @@ class NetworkClient:
         )
 
         result = await self._client.send_raw(
-            method="Network.takeResponseBodyForInterceptionAsStream",
+            method=NetworkCommand.TAKE_RESPONSE_BODY_FOR_INTERCEPTION_AS_STREAM,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -457,7 +461,7 @@ class NetworkClient:
         params = ReplayXHRParams(requestId=request_id)
 
         result = await self._client.send_raw(
-            method="Network.replayXHR",
+            method=NetworkCommand.REPLAY_X_H_R,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -480,7 +484,7 @@ class NetworkClient:
         )
 
         result = await self._client.send_raw(
-            method="Network.searchInResponseBody",
+            method=NetworkCommand.SEARCH_IN_RESPONSE_BODY,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -496,7 +500,7 @@ class NetworkClient:
         params = SetBlockedURLsParams(urlPatterns=url_patterns, urls=urls)
 
         result = await self._client.send_raw(
-            method="Network.setBlockedURLs",
+            method=NetworkCommand.SET_BLOCKED_U_R_LS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -511,7 +515,7 @@ class NetworkClient:
         params = SetBypassServiceWorkerParams(bypass=bypass)
 
         result = await self._client.send_raw(
-            method="Network.setBypassServiceWorker",
+            method=NetworkCommand.SET_BYPASS_SERVICE_WORKER,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -526,7 +530,7 @@ class NetworkClient:
         params = SetCacheDisabledParams(cacheDisabled=cache_disabled)
 
         result = await self._client.send_raw(
-            method="Network.setCacheDisabled",
+            method=NetworkCommand.SET_CACHE_DISABLED,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -569,7 +573,7 @@ class NetworkClient:
         )
 
         result = await self._client.send_raw(
-            method="Network.setCookie",
+            method=NetworkCommand.SET_COOKIE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -584,7 +588,7 @@ class NetworkClient:
         params = SetCookiesParams(cookies=cookies)
 
         result = await self._client.send_raw(
-            method="Network.setCookies",
+            method=NetworkCommand.SET_COOKIES,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -599,7 +603,7 @@ class NetworkClient:
         params = SetExtraHTTPHeadersParams(headers=headers)
 
         result = await self._client.send_raw(
-            method="Network.setExtraHTTPHeaders",
+            method=NetworkCommand.SET_EXTRA_H_T_T_P_HEADERS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -614,7 +618,7 @@ class NetworkClient:
         params = SetAttachDebugStackParams(enabled=enabled)
 
         result = await self._client.send_raw(
-            method="Network.setAttachDebugStack",
+            method=NetworkCommand.SET_ATTACH_DEBUG_STACK,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -629,7 +633,7 @@ class NetworkClient:
         params = SetRequestInterceptionParams(patterns=patterns)
 
         result = await self._client.send_raw(
-            method="Network.setRequestInterception",
+            method=NetworkCommand.SET_REQUEST_INTERCEPTION,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -652,7 +656,7 @@ class NetworkClient:
         )
 
         result = await self._client.send_raw(
-            method="Network.setUserAgentOverride",
+            method=NetworkCommand.SET_USER_AGENT_OVERRIDE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -667,7 +671,7 @@ class NetworkClient:
         params = StreamResourceContentParams(requestId=request_id)
 
         result = await self._client.send_raw(
-            method="Network.streamResourceContent",
+            method=NetworkCommand.STREAM_RESOURCE_CONTENT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -682,7 +686,7 @@ class NetworkClient:
         params = GetSecurityIsolationStatusParams(frameId=frame_id)
 
         result = await self._client.send_raw(
-            method="Network.getSecurityIsolationStatus",
+            method=NetworkCommand.GET_SECURITY_ISOLATION_STATUS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -697,11 +701,41 @@ class NetworkClient:
         params = EnableReportingApiParams(enable=enable)
 
         result = await self._client.send_raw(
-            method="Network.enableReportingApi",
+            method=NetworkCommand.ENABLE_REPORTING_API,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
         return result
+
+    async def enable_device_bound_sessions(
+        self,
+        *,
+        enable: bool,
+        session_id: str | None = None,
+    ) -> dict[str, Any]:
+        params = EnableDeviceBoundSessionsParams(enable=enable)
+
+        result = await self._client.send_raw(
+            method=NetworkCommand.ENABLE_DEVICE_BOUND_SESSIONS,
+            params=params.to_cdp_params(),
+            session_id=session_id,
+        )
+        return result
+
+    async def fetch_schemeful_site(
+        self,
+        *,
+        origin: str,
+        session_id: str | None = None,
+    ) -> FetchSchemefulSiteResult:
+        params = FetchSchemefulSiteParams(origin=origin)
+
+        result = await self._client.send_raw(
+            method=NetworkCommand.FETCH_SCHEMEFUL_SITE,
+            params=params.to_cdp_params(),
+            session_id=session_id,
+        )
+        return FetchSchemefulSiteResult.model_validate(result)
 
     async def load_network_resource(
         self,
@@ -714,7 +748,7 @@ class NetworkClient:
         params = LoadNetworkResourceParams(frameId=frame_id, url=url, options=options)
 
         result = await self._client.send_raw(
-            method="Network.loadNetworkResource",
+            method=NetworkCommand.LOAD_NETWORK_RESOURCE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -735,7 +769,7 @@ class NetworkClient:
         )
 
         result = await self._client.send_raw(
-            method="Network.setCookieControls",
+            method=NetworkCommand.SET_COOKIE_CONTROLS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )

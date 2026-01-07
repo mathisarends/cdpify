@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from cdpify.client import CDPClient
 
 from .commands import (
+    ServiceWorkerCommand,
     DeliverPushMessageParams,
     DispatchPeriodicSyncEventParams,
     DispatchSyncEventParams,
@@ -43,7 +44,7 @@ class ServiceWorkerClient:
         )
 
         result = await self._client.send_raw(
-            method="ServiceWorker.deliverPushMessage",
+            method=ServiceWorkerCommand.DELIVER_PUSH_MESSAGE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -54,7 +55,7 @@ class ServiceWorkerClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="ServiceWorker.disable",
+            method=ServiceWorkerCommand.DISABLE,
             params=None,
             session_id=session_id,
         )
@@ -77,7 +78,7 @@ class ServiceWorkerClient:
         )
 
         result = await self._client.send_raw(
-            method="ServiceWorker.dispatchSyncEvent",
+            method=ServiceWorkerCommand.DISPATCH_SYNC_EVENT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -96,7 +97,7 @@ class ServiceWorkerClient:
         )
 
         result = await self._client.send_raw(
-            method="ServiceWorker.dispatchPeriodicSyncEvent",
+            method=ServiceWorkerCommand.DISPATCH_PERIODIC_SYNC_EVENT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -107,7 +108,7 @@ class ServiceWorkerClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="ServiceWorker.enable",
+            method=ServiceWorkerCommand.ENABLE,
             params=None,
             session_id=session_id,
         )
@@ -124,7 +125,7 @@ class ServiceWorkerClient:
         )
 
         result = await self._client.send_raw(
-            method="ServiceWorker.setForceUpdateOnPageLoad",
+            method=ServiceWorkerCommand.SET_FORCE_UPDATE_ON_PAGE_LOAD,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -139,7 +140,7 @@ class ServiceWorkerClient:
         params = SkipWaitingParams(scopeURL=scope_u_r_l)
 
         result = await self._client.send_raw(
-            method="ServiceWorker.skipWaiting",
+            method=ServiceWorkerCommand.SKIP_WAITING,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -154,7 +155,7 @@ class ServiceWorkerClient:
         params = StartWorkerParams(scopeURL=scope_u_r_l)
 
         result = await self._client.send_raw(
-            method="ServiceWorker.startWorker",
+            method=ServiceWorkerCommand.START_WORKER,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -165,7 +166,7 @@ class ServiceWorkerClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="ServiceWorker.stopAllWorkers",
+            method=ServiceWorkerCommand.STOP_ALL_WORKERS,
             params=None,
             session_id=session_id,
         )
@@ -180,7 +181,7 @@ class ServiceWorkerClient:
         params = StopWorkerParams(versionId=version_id)
 
         result = await self._client.send_raw(
-            method="ServiceWorker.stopWorker",
+            method=ServiceWorkerCommand.STOP_WORKER,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -195,7 +196,7 @@ class ServiceWorkerClient:
         params = UnregisterParams(scopeURL=scope_u_r_l)
 
         result = await self._client.send_raw(
-            method="ServiceWorker.unregister",
+            method=ServiceWorkerCommand.UNREGISTER,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -210,7 +211,7 @@ class ServiceWorkerClient:
         params = UpdateRegistrationParams(scopeURL=scope_u_r_l)
 
         result = await self._client.send_raw(
-            method="ServiceWorker.updateRegistration",
+            method=ServiceWorkerCommand.UPDATE_REGISTRATION,
             params=params.to_cdp_params(),
             session_id=session_id,
         )

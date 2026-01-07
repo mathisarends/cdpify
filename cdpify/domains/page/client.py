@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from cdpify.client import CDPClient
 
 from .commands import (
+    PageCommand,
     AddCompilationCacheParams,
     AddScriptToEvaluateOnLoadParams,
     AddScriptToEvaluateOnLoadResult,
@@ -101,7 +102,7 @@ class PageClient:
         params = AddScriptToEvaluateOnLoadParams(scriptSource=script_source)
 
         result = await self._client.send_raw(
-            method="Page.addScriptToEvaluateOnLoad",
+            method=PageCommand.ADD_SCRIPT_TO_EVALUATE_ON_LOAD,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -124,7 +125,7 @@ class PageClient:
         )
 
         result = await self._client.send_raw(
-            method="Page.addScriptToEvaluateOnNewDocument",
+            method=PageCommand.ADD_SCRIPT_TO_EVALUATE_ON_NEW_DOCUMENT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -135,7 +136,7 @@ class PageClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Page.bringToFront",
+            method=PageCommand.BRING_TO_FRONT,
             params=None,
             session_id=session_id,
         )
@@ -162,7 +163,7 @@ class PageClient:
         )
 
         result = await self._client.send_raw(
-            method="Page.captureScreenshot",
+            method=PageCommand.CAPTURE_SCREENSHOT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -177,7 +178,7 @@ class PageClient:
         params = CaptureSnapshotParams(format=format)
 
         result = await self._client.send_raw(
-            method="Page.captureSnapshot",
+            method=PageCommand.CAPTURE_SNAPSHOT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -188,7 +189,7 @@ class PageClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Page.clearDeviceMetricsOverride",
+            method=PageCommand.CLEAR_DEVICE_METRICS_OVERRIDE,
             params=None,
             session_id=session_id,
         )
@@ -199,7 +200,7 @@ class PageClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Page.clearDeviceOrientationOverride",
+            method=PageCommand.CLEAR_DEVICE_ORIENTATION_OVERRIDE,
             params=None,
             session_id=session_id,
         )
@@ -210,7 +211,7 @@ class PageClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Page.clearGeolocationOverride",
+            method=PageCommand.CLEAR_GEOLOCATION_OVERRIDE,
             params=None,
             session_id=session_id,
         )
@@ -231,7 +232,7 @@ class PageClient:
         )
 
         result = await self._client.send_raw(
-            method="Page.createIsolatedWorld",
+            method=PageCommand.CREATE_ISOLATED_WORLD,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -247,7 +248,7 @@ class PageClient:
         params = DeleteCookieParams(cookieName=cookie_name, url=url)
 
         result = await self._client.send_raw(
-            method="Page.deleteCookie",
+            method=PageCommand.DELETE_COOKIE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -258,7 +259,7 @@ class PageClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Page.disable",
+            method=PageCommand.DISABLE,
             params=None,
             session_id=session_id,
         )
@@ -275,7 +276,7 @@ class PageClient:
         )
 
         result = await self._client.send_raw(
-            method="Page.enable",
+            method=PageCommand.ENABLE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -290,7 +291,7 @@ class PageClient:
         params = GetAppManifestParams(manifestId=manifest_id)
 
         result = await self._client.send_raw(
-            method="Page.getAppManifest",
+            method=PageCommand.GET_APP_MANIFEST,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -301,7 +302,7 @@ class PageClient:
         session_id: str | None = None,
     ) -> GetInstallabilityErrorsResult:
         result = await self._client.send_raw(
-            method="Page.getInstallabilityErrors",
+            method=PageCommand.GET_INSTALLABILITY_ERRORS,
             params=None,
             session_id=session_id,
         )
@@ -312,7 +313,7 @@ class PageClient:
         session_id: str | None = None,
     ) -> GetManifestIconsResult:
         result = await self._client.send_raw(
-            method="Page.getManifestIcons",
+            method=PageCommand.GET_MANIFEST_ICONS,
             params=None,
             session_id=session_id,
         )
@@ -323,7 +324,7 @@ class PageClient:
         session_id: str | None = None,
     ) -> GetAppIdResult:
         result = await self._client.send_raw(
-            method="Page.getAppId",
+            method=PageCommand.GET_APP_ID,
             params=None,
             session_id=session_id,
         )
@@ -338,7 +339,7 @@ class PageClient:
         params = GetAdScriptAncestryParams(frameId=frame_id)
 
         result = await self._client.send_raw(
-            method="Page.getAdScriptAncestry",
+            method=PageCommand.GET_AD_SCRIPT_ANCESTRY,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -349,7 +350,7 @@ class PageClient:
         session_id: str | None = None,
     ) -> GetFrameTreeResult:
         result = await self._client.send_raw(
-            method="Page.getFrameTree",
+            method=PageCommand.GET_FRAME_TREE,
             params=None,
             session_id=session_id,
         )
@@ -360,7 +361,7 @@ class PageClient:
         session_id: str | None = None,
     ) -> GetLayoutMetricsResult:
         result = await self._client.send_raw(
-            method="Page.getLayoutMetrics",
+            method=PageCommand.GET_LAYOUT_METRICS,
             params=None,
             session_id=session_id,
         )
@@ -371,7 +372,7 @@ class PageClient:
         session_id: str | None = None,
     ) -> GetNavigationHistoryResult:
         result = await self._client.send_raw(
-            method="Page.getNavigationHistory",
+            method=PageCommand.GET_NAVIGATION_HISTORY,
             params=None,
             session_id=session_id,
         )
@@ -382,7 +383,7 @@ class PageClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Page.resetNavigationHistory",
+            method=PageCommand.RESET_NAVIGATION_HISTORY,
             params=None,
             session_id=session_id,
         )
@@ -398,7 +399,7 @@ class PageClient:
         params = GetResourceContentParams(frameId=frame_id, url=url)
 
         result = await self._client.send_raw(
-            method="Page.getResourceContent",
+            method=PageCommand.GET_RESOURCE_CONTENT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -409,7 +410,7 @@ class PageClient:
         session_id: str | None = None,
     ) -> GetResourceTreeResult:
         result = await self._client.send_raw(
-            method="Page.getResourceTree",
+            method=PageCommand.GET_RESOURCE_TREE,
             params=None,
             session_id=session_id,
         )
@@ -425,7 +426,7 @@ class PageClient:
         params = HandleJavaScriptDialogParams(accept=accept, promptText=prompt_text)
 
         result = await self._client.send_raw(
-            method="Page.handleJavaScriptDialog",
+            method=PageCommand.HANDLE_JAVA_SCRIPT_DIALOG,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -450,7 +451,7 @@ class PageClient:
         )
 
         result = await self._client.send_raw(
-            method="Page.navigate",
+            method=PageCommand.NAVIGATE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -465,7 +466,7 @@ class PageClient:
         params = NavigateToHistoryEntryParams(entryId=entry_id)
 
         result = await self._client.send_raw(
-            method="Page.navigateToHistoryEntry",
+            method=PageCommand.NAVIGATE_TO_HISTORY_ENTRY,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -514,7 +515,7 @@ class PageClient:
         )
 
         result = await self._client.send_raw(
-            method="Page.printToPDF",
+            method=PageCommand.PRINT_TO_P_D_F,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -535,7 +536,7 @@ class PageClient:
         )
 
         result = await self._client.send_raw(
-            method="Page.reload",
+            method=PageCommand.RELOAD,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -550,7 +551,7 @@ class PageClient:
         params = RemoveScriptToEvaluateOnLoadParams(identifier=identifier)
 
         result = await self._client.send_raw(
-            method="Page.removeScriptToEvaluateOnLoad",
+            method=PageCommand.REMOVE_SCRIPT_TO_EVALUATE_ON_LOAD,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -565,7 +566,7 @@ class PageClient:
         params = RemoveScriptToEvaluateOnNewDocumentParams(identifier=identifier)
 
         result = await self._client.send_raw(
-            method="Page.removeScriptToEvaluateOnNewDocument",
+            method=PageCommand.REMOVE_SCRIPT_TO_EVALUATE_ON_NEW_DOCUMENT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -580,7 +581,7 @@ class PageClient:
         params = ScreencastFrameAckParams(sessionId=screencast_frame_ack_session_id)
 
         result = await self._client.send_raw(
-            method="Page.screencastFrameAck",
+            method=PageCommand.SCREENCAST_FRAME_ACK,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -605,7 +606,7 @@ class PageClient:
         )
 
         result = await self._client.send_raw(
-            method="Page.searchInResource",
+            method=PageCommand.SEARCH_IN_RESOURCE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -620,7 +621,7 @@ class PageClient:
         params = SetAdBlockingEnabledParams(enabled=enabled)
 
         result = await self._client.send_raw(
-            method="Page.setAdBlockingEnabled",
+            method=PageCommand.SET_AD_BLOCKING_ENABLED,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -635,7 +636,7 @@ class PageClient:
         params = SetBypassCSPParams(enabled=enabled)
 
         result = await self._client.send_raw(
-            method="Page.setBypassCSP",
+            method=PageCommand.SET_BYPASS_C_S_P,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -650,7 +651,7 @@ class PageClient:
         params = GetPermissionsPolicyStateParams(frameId=frame_id)
 
         result = await self._client.send_raw(
-            method="Page.getPermissionsPolicyState",
+            method=PageCommand.GET_PERMISSIONS_POLICY_STATE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -665,7 +666,7 @@ class PageClient:
         params = GetOriginTrialsParams(frameId=frame_id)
 
         result = await self._client.send_raw(
-            method="Page.getOriginTrials",
+            method=PageCommand.GET_ORIGIN_TRIALS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -704,7 +705,7 @@ class PageClient:
         )
 
         result = await self._client.send_raw(
-            method="Page.setDeviceMetricsOverride",
+            method=PageCommand.SET_DEVICE_METRICS_OVERRIDE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -721,7 +722,7 @@ class PageClient:
         params = SetDeviceOrientationOverrideParams(alpha=alpha, beta=beta, gamma=gamma)
 
         result = await self._client.send_raw(
-            method="Page.setDeviceOrientationOverride",
+            method=PageCommand.SET_DEVICE_ORIENTATION_OVERRIDE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -739,7 +740,7 @@ class PageClient:
         )
 
         result = await self._client.send_raw(
-            method="Page.setFontFamilies",
+            method=PageCommand.SET_FONT_FAMILIES,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -754,7 +755,7 @@ class PageClient:
         params = SetFontSizesParams(fontSizes=font_sizes)
 
         result = await self._client.send_raw(
-            method="Page.setFontSizes",
+            method=PageCommand.SET_FONT_SIZES,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -770,7 +771,7 @@ class PageClient:
         params = SetDocumentContentParams(frameId=frame_id, html=html)
 
         result = await self._client.send_raw(
-            method="Page.setDocumentContent",
+            method=PageCommand.SET_DOCUMENT_CONTENT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -788,7 +789,7 @@ class PageClient:
         )
 
         result = await self._client.send_raw(
-            method="Page.setDownloadBehavior",
+            method=PageCommand.SET_DOWNLOAD_BEHAVIOR,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -807,7 +808,7 @@ class PageClient:
         )
 
         result = await self._client.send_raw(
-            method="Page.setGeolocationOverride",
+            method=PageCommand.SET_GEOLOCATION_OVERRIDE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -822,7 +823,7 @@ class PageClient:
         params = SetLifecycleEventsEnabledParams(enabled=enabled)
 
         result = await self._client.send_raw(
-            method="Page.setLifecycleEventsEnabled",
+            method=PageCommand.SET_LIFECYCLE_EVENTS_ENABLED,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -840,7 +841,7 @@ class PageClient:
         )
 
         result = await self._client.send_raw(
-            method="Page.setTouchEmulationEnabled",
+            method=PageCommand.SET_TOUCH_EMULATION_ENABLED,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -865,7 +866,7 @@ class PageClient:
         )
 
         result = await self._client.send_raw(
-            method="Page.startScreencast",
+            method=PageCommand.START_SCREENCAST,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -876,7 +877,7 @@ class PageClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Page.stopLoading",
+            method=PageCommand.STOP_LOADING,
             params=None,
             session_id=session_id,
         )
@@ -887,7 +888,7 @@ class PageClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Page.crash",
+            method=PageCommand.CRASH,
             params=None,
             session_id=session_id,
         )
@@ -898,7 +899,7 @@ class PageClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Page.close",
+            method=PageCommand.CLOSE,
             params=None,
             session_id=session_id,
         )
@@ -913,7 +914,7 @@ class PageClient:
         params = SetWebLifecycleStateParams(state=state)
 
         result = await self._client.send_raw(
-            method="Page.setWebLifecycleState",
+            method=PageCommand.SET_WEB_LIFECYCLE_STATE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -924,7 +925,7 @@ class PageClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Page.stopScreencast",
+            method=PageCommand.STOP_SCREENCAST,
             params=None,
             session_id=session_id,
         )
@@ -939,7 +940,7 @@ class PageClient:
         params = ProduceCompilationCacheParams(scripts=scripts)
 
         result = await self._client.send_raw(
-            method="Page.produceCompilationCache",
+            method=PageCommand.PRODUCE_COMPILATION_CACHE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -955,7 +956,7 @@ class PageClient:
         params = AddCompilationCacheParams(url=url, data=data)
 
         result = await self._client.send_raw(
-            method="Page.addCompilationCache",
+            method=PageCommand.ADD_COMPILATION_CACHE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -966,7 +967,7 @@ class PageClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Page.clearCompilationCache",
+            method=PageCommand.CLEAR_COMPILATION_CACHE,
             params=None,
             session_id=session_id,
         )
@@ -987,7 +988,7 @@ class PageClient:
         params = SetSPCTransactionModeParams(mode=mode)
 
         result = await self._client.send_raw(
-            method="Page.setSPCTransactionMode",
+            method=PageCommand.SET_S_P_C_TRANSACTION_MODE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -1002,7 +1003,7 @@ class PageClient:
         params = SetRPHRegistrationModeParams(mode=mode)
 
         result = await self._client.send_raw(
-            method="Page.setRPHRegistrationMode",
+            method=PageCommand.SET_R_P_H_REGISTRATION_MODE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -1018,7 +1019,7 @@ class PageClient:
         params = GenerateTestReportParams(message=message, group=group)
 
         result = await self._client.send_raw(
-            method="Page.generateTestReport",
+            method=PageCommand.GENERATE_TEST_REPORT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -1029,7 +1030,7 @@ class PageClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Page.waitForDebugger",
+            method=PageCommand.WAIT_FOR_DEBUGGER,
             params=None,
             session_id=session_id,
         )
@@ -1045,7 +1046,7 @@ class PageClient:
         params = SetInterceptFileChooserDialogParams(enabled=enabled, cancel=cancel)
 
         result = await self._client.send_raw(
-            method="Page.setInterceptFileChooserDialog",
+            method=PageCommand.SET_INTERCEPT_FILE_CHOOSER_DIALOG,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -1060,7 +1061,7 @@ class PageClient:
         params = SetPrerenderingAllowedParams(isAllowed=is_allowed)
 
         result = await self._client.send_raw(
-            method="Page.setPrerenderingAllowed",
+            method=PageCommand.SET_PRERENDERING_ALLOWED,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -1077,7 +1078,7 @@ class PageClient:
         )
 
         result = await self._client.send_raw(
-            method="Page.getAnnotatedPageContent",
+            method=PageCommand.GET_ANNOTATED_PAGE_CONTENT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )

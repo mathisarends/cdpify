@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from cdpify.client import CDPClient
 
 from .commands import (
+    DOMStorageCommand,
     ClearParams,
     GetDOMStorageItemsParams,
     GetDOMStorageItemsResult,
@@ -35,7 +36,7 @@ class DOMStorageClient:
         params = ClearParams(storageId=storage_id)
 
         result = await self._client.send_raw(
-            method="DOMStorage.clear",
+            method=DOMStorageCommand.CLEAR,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -46,7 +47,7 @@ class DOMStorageClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="DOMStorage.disable",
+            method=DOMStorageCommand.DISABLE,
             params=None,
             session_id=session_id,
         )
@@ -57,7 +58,7 @@ class DOMStorageClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="DOMStorage.enable",
+            method=DOMStorageCommand.ENABLE,
             params=None,
             session_id=session_id,
         )
@@ -72,7 +73,7 @@ class DOMStorageClient:
         params = GetDOMStorageItemsParams(storageId=storage_id)
 
         result = await self._client.send_raw(
-            method="DOMStorage.getDOMStorageItems",
+            method=DOMStorageCommand.GET_D_O_M_STORAGE_ITEMS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -88,7 +89,7 @@ class DOMStorageClient:
         params = RemoveDOMStorageItemParams(storageId=storage_id, key=key)
 
         result = await self._client.send_raw(
-            method="DOMStorage.removeDOMStorageItem",
+            method=DOMStorageCommand.REMOVE_D_O_M_STORAGE_ITEM,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -105,7 +106,7 @@ class DOMStorageClient:
         params = SetDOMStorageItemParams(storageId=storage_id, key=key, value=value)
 
         result = await self._client.send_raw(
-            method="DOMStorage.setDOMStorageItem",
+            method=DOMStorageCommand.SET_D_O_M_STORAGE_ITEM,
             params=params.to_cdp_params(),
             session_id=session_id,
         )

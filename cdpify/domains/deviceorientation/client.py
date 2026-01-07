@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from cdpify.client import CDPClient
 
 from .commands import (
+    DeviceOrientationCommand,
     SetDeviceOrientationOverrideParams,
 )
 
@@ -23,7 +24,7 @@ class DeviceOrientationClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="DeviceOrientation.clearDeviceOrientationOverride",
+            method=DeviceOrientationCommand.CLEAR_DEVICE_ORIENTATION_OVERRIDE,
             params=None,
             session_id=session_id,
         )
@@ -40,7 +41,7 @@ class DeviceOrientationClient:
         params = SetDeviceOrientationOverrideParams(alpha=alpha, beta=beta, gamma=gamma)
 
         result = await self._client.send_raw(
-            method="DeviceOrientation.setDeviceOrientationOverride",
+            method=DeviceOrientationCommand.SET_DEVICE_ORIENTATION_OVERRIDE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )

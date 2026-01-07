@@ -3,6 +3,7 @@
 # Generated from Chrome DevTools Protocol specifications.
 
 from typing import Literal, TYPE_CHECKING
+from enum import StrEnum
 from cdpify.domains.base import CDPModel
 
 from .types import *
@@ -10,6 +11,59 @@ from .types import *
 from cdpify.domains import dom
 from cdpify.domains import network
 from cdpify.domains import page
+
+
+class EmulationCommand(StrEnum):
+    CAN_EMULATE = "Emulation.canEmulate"
+    CLEAR_DEVICE_METRICS_OVERRIDE = "Emulation.clearDeviceMetricsOverride"
+    CLEAR_GEOLOCATION_OVERRIDE = "Emulation.clearGeolocationOverride"
+    RESET_PAGE_SCALE_FACTOR = "Emulation.resetPageScaleFactor"
+    SET_FOCUS_EMULATION_ENABLED = "Emulation.setFocusEmulationEnabled"
+    SET_AUTO_DARK_MODE_OVERRIDE = "Emulation.setAutoDarkModeOverride"
+    SET_C_P_U_THROTTLING_RATE = "Emulation.setCPUThrottlingRate"
+    SET_DEFAULT_BACKGROUND_COLOR_OVERRIDE = (
+        "Emulation.setDefaultBackgroundColorOverride"
+    )
+    SET_SAFE_AREA_INSETS_OVERRIDE = "Emulation.setSafeAreaInsetsOverride"
+    SET_DEVICE_METRICS_OVERRIDE = "Emulation.setDeviceMetricsOverride"
+    SET_DEVICE_POSTURE_OVERRIDE = "Emulation.setDevicePostureOverride"
+    CLEAR_DEVICE_POSTURE_OVERRIDE = "Emulation.clearDevicePostureOverride"
+    SET_DISPLAY_FEATURES_OVERRIDE = "Emulation.setDisplayFeaturesOverride"
+    CLEAR_DISPLAY_FEATURES_OVERRIDE = "Emulation.clearDisplayFeaturesOverride"
+    SET_SCROLLBARS_HIDDEN = "Emulation.setScrollbarsHidden"
+    SET_DOCUMENT_COOKIE_DISABLED = "Emulation.setDocumentCookieDisabled"
+    SET_EMIT_TOUCH_EVENTS_FOR_MOUSE = "Emulation.setEmitTouchEventsForMouse"
+    SET_EMULATED_MEDIA = "Emulation.setEmulatedMedia"
+    SET_EMULATED_VISION_DEFICIENCY = "Emulation.setEmulatedVisionDeficiency"
+    SET_EMULATED_O_S_TEXT_SCALE = "Emulation.setEmulatedOSTextScale"
+    SET_GEOLOCATION_OVERRIDE = "Emulation.setGeolocationOverride"
+    GET_OVERRIDDEN_SENSOR_INFORMATION = "Emulation.getOverriddenSensorInformation"
+    SET_SENSOR_OVERRIDE_ENABLED = "Emulation.setSensorOverrideEnabled"
+    SET_SENSOR_OVERRIDE_READINGS = "Emulation.setSensorOverrideReadings"
+    SET_PRESSURE_SOURCE_OVERRIDE_ENABLED = "Emulation.setPressureSourceOverrideEnabled"
+    SET_PRESSURE_STATE_OVERRIDE = "Emulation.setPressureStateOverride"
+    SET_PRESSURE_DATA_OVERRIDE = "Emulation.setPressureDataOverride"
+    SET_IDLE_OVERRIDE = "Emulation.setIdleOverride"
+    CLEAR_IDLE_OVERRIDE = "Emulation.clearIdleOverride"
+    SET_NAVIGATOR_OVERRIDES = "Emulation.setNavigatorOverrides"
+    SET_PAGE_SCALE_FACTOR = "Emulation.setPageScaleFactor"
+    SET_SCRIPT_EXECUTION_DISABLED = "Emulation.setScriptExecutionDisabled"
+    SET_TOUCH_EMULATION_ENABLED = "Emulation.setTouchEmulationEnabled"
+    SET_VIRTUAL_TIME_POLICY = "Emulation.setVirtualTimePolicy"
+    SET_LOCALE_OVERRIDE = "Emulation.setLocaleOverride"
+    SET_TIMEZONE_OVERRIDE = "Emulation.setTimezoneOverride"
+    SET_VISIBLE_SIZE = "Emulation.setVisibleSize"
+    SET_DISABLED_IMAGE_TYPES = "Emulation.setDisabledImageTypes"
+    SET_DATA_SAVER_OVERRIDE = "Emulation.setDataSaverOverride"
+    SET_HARDWARE_CONCURRENCY_OVERRIDE = "Emulation.setHardwareConcurrencyOverride"
+    SET_USER_AGENT_OVERRIDE = "Emulation.setUserAgentOverride"
+    SET_AUTOMATION_OVERRIDE = "Emulation.setAutomationOverride"
+    SET_SMALL_VIEWPORT_HEIGHT_DIFFERENCE_OVERRIDE = (
+        "Emulation.setSmallViewportHeightDifferenceOverride"
+    )
+    GET_SCREEN_INFOS = "Emulation.getScreenInfos"
+    ADD_SCREEN = "Emulation.addScreen"
+    REMOVE_SCREEN = "Emulation.removeScreen"
 
 
 class CanEmulateResult(CDPModel):

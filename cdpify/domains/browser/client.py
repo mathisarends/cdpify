@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from cdpify.client import CDPClient
 
 from .commands import (
+    BrowserCommand,
     AddPrivacySandboxCoordinatorKeyConfigParams,
     AddPrivacySandboxEnrollmentOverrideParams,
     CancelDownloadParams,
@@ -68,7 +69,7 @@ class BrowserClient:
         )
 
         result = await self._client.send_raw(
-            method="Browser.setPermission",
+            method=BrowserCommand.SET_PERMISSION,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -87,7 +88,7 @@ class BrowserClient:
         )
 
         result = await self._client.send_raw(
-            method="Browser.grantPermissions",
+            method=BrowserCommand.GRANT_PERMISSIONS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -102,7 +103,7 @@ class BrowserClient:
         params = ResetPermissionsParams(browserContextId=browser_context_id)
 
         result = await self._client.send_raw(
-            method="Browser.resetPermissions",
+            method=BrowserCommand.RESET_PERMISSIONS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -125,7 +126,7 @@ class BrowserClient:
         )
 
         result = await self._client.send_raw(
-            method="Browser.setDownloadBehavior",
+            method=BrowserCommand.SET_DOWNLOAD_BEHAVIOR,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -141,7 +142,7 @@ class BrowserClient:
         params = CancelDownloadParams(guid=guid, browserContextId=browser_context_id)
 
         result = await self._client.send_raw(
-            method="Browser.cancelDownload",
+            method=BrowserCommand.CANCEL_DOWNLOAD,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -152,7 +153,7 @@ class BrowserClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Browser.close",
+            method=BrowserCommand.CLOSE,
             params=None,
             session_id=session_id,
         )
@@ -163,7 +164,7 @@ class BrowserClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Browser.crash",
+            method=BrowserCommand.CRASH,
             params=None,
             session_id=session_id,
         )
@@ -174,7 +175,7 @@ class BrowserClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Browser.crashGpuProcess",
+            method=BrowserCommand.CRASH_GPU_PROCESS,
             params=None,
             session_id=session_id,
         )
@@ -185,7 +186,7 @@ class BrowserClient:
         session_id: str | None = None,
     ) -> GetVersionResult:
         result = await self._client.send_raw(
-            method="Browser.getVersion",
+            method=BrowserCommand.GET_VERSION,
             params=None,
             session_id=session_id,
         )
@@ -196,7 +197,7 @@ class BrowserClient:
         session_id: str | None = None,
     ) -> GetBrowserCommandLineResult:
         result = await self._client.send_raw(
-            method="Browser.getBrowserCommandLine",
+            method=BrowserCommand.GET_BROWSER_COMMAND_LINE,
             params=None,
             session_id=session_id,
         )
@@ -212,7 +213,7 @@ class BrowserClient:
         params = GetHistogramsParams(query=query, delta=delta)
 
         result = await self._client.send_raw(
-            method="Browser.getHistograms",
+            method=BrowserCommand.GET_HISTOGRAMS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -228,7 +229,7 @@ class BrowserClient:
         params = GetHistogramParams(name=name, delta=delta)
 
         result = await self._client.send_raw(
-            method="Browser.getHistogram",
+            method=BrowserCommand.GET_HISTOGRAM,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -243,7 +244,7 @@ class BrowserClient:
         params = GetWindowBoundsParams(windowId=window_id)
 
         result = await self._client.send_raw(
-            method="Browser.getWindowBounds",
+            method=BrowserCommand.GET_WINDOW_BOUNDS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -258,7 +259,7 @@ class BrowserClient:
         params = GetWindowForTargetParams(targetId=target_id)
 
         result = await self._client.send_raw(
-            method="Browser.getWindowForTarget",
+            method=BrowserCommand.GET_WINDOW_FOR_TARGET,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -274,7 +275,7 @@ class BrowserClient:
         params = SetWindowBoundsParams(windowId=window_id, bounds=bounds)
 
         result = await self._client.send_raw(
-            method="Browser.setWindowBounds",
+            method=BrowserCommand.SET_WINDOW_BOUNDS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -291,7 +292,7 @@ class BrowserClient:
         params = SetContentsSizeParams(windowId=window_id, width=width, height=height)
 
         result = await self._client.send_raw(
-            method="Browser.setContentsSize",
+            method=BrowserCommand.SET_CONTENTS_SIZE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -307,7 +308,7 @@ class BrowserClient:
         params = SetDockTileParams(badgeLabel=badge_label, image=image)
 
         result = await self._client.send_raw(
-            method="Browser.setDockTile",
+            method=BrowserCommand.SET_DOCK_TILE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -322,7 +323,7 @@ class BrowserClient:
         params = ExecuteBrowserCommandParams(commandId=command_id)
 
         result = await self._client.send_raw(
-            method="Browser.executeBrowserCommand",
+            method=BrowserCommand.EXECUTE_BROWSER_COMMAND,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -337,7 +338,7 @@ class BrowserClient:
         params = AddPrivacySandboxEnrollmentOverrideParams(url=url)
 
         result = await self._client.send_raw(
-            method="Browser.addPrivacySandboxEnrollmentOverride",
+            method=BrowserCommand.ADD_PRIVACY_SANDBOX_ENROLLMENT_OVERRIDE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -360,7 +361,7 @@ class BrowserClient:
         )
 
         result = await self._client.send_raw(
-            method="Browser.addPrivacySandboxCoordinatorKeyConfig",
+            method=BrowserCommand.ADD_PRIVACY_SANDBOX_COORDINATOR_KEY_CONFIG,
             params=params.to_cdp_params(),
             session_id=session_id,
         )

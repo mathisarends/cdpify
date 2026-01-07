@@ -3,9 +3,26 @@
 # Generated from Chrome DevTools Protocol specifications.
 
 from typing import Literal
+from enum import StrEnum
 from cdpify.domains.base import CDPModel
 
 from .types import *
+
+
+class InputCommand(StrEnum):
+    DISPATCH_DRAG_EVENT = "Input.dispatchDragEvent"
+    DISPATCH_KEY_EVENT = "Input.dispatchKeyEvent"
+    INSERT_TEXT = "Input.insertText"
+    IME_SET_COMPOSITION = "Input.imeSetComposition"
+    DISPATCH_MOUSE_EVENT = "Input.dispatchMouseEvent"
+    DISPATCH_TOUCH_EVENT = "Input.dispatchTouchEvent"
+    CANCEL_DRAGGING = "Input.cancelDragging"
+    EMULATE_TOUCH_FROM_MOUSE_EVENT = "Input.emulateTouchFromMouseEvent"
+    SET_IGNORE_INPUT_EVENTS = "Input.setIgnoreInputEvents"
+    SET_INTERCEPT_DRAGS = "Input.setInterceptDrags"
+    SYNTHESIZE_PINCH_GESTURE = "Input.synthesizePinchGesture"
+    SYNTHESIZE_SCROLL_GESTURE = "Input.synthesizeScrollGesture"
+    SYNTHESIZE_TAP_GESTURE = "Input.synthesizeTapGesture"
 
 
 class DispatchDragEventParams(CDPModel):

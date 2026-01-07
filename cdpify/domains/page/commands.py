@@ -3,6 +3,7 @@
 # Generated from Chrome DevTools Protocol specifications.
 
 from typing import Literal, TYPE_CHECKING
+from enum import StrEnum
 from cdpify.domains.base import CDPModel
 
 from .types import *
@@ -13,6 +14,72 @@ from cdpify.domains import emulation
 from cdpify.domains import io
 from cdpify.domains import network
 from cdpify.domains import runtime
+
+
+class PageCommand(StrEnum):
+    ADD_SCRIPT_TO_EVALUATE_ON_LOAD = "Page.addScriptToEvaluateOnLoad"
+    ADD_SCRIPT_TO_EVALUATE_ON_NEW_DOCUMENT = "Page.addScriptToEvaluateOnNewDocument"
+    BRING_TO_FRONT = "Page.bringToFront"
+    CAPTURE_SCREENSHOT = "Page.captureScreenshot"
+    CAPTURE_SNAPSHOT = "Page.captureSnapshot"
+    CLEAR_DEVICE_METRICS_OVERRIDE = "Page.clearDeviceMetricsOverride"
+    CLEAR_DEVICE_ORIENTATION_OVERRIDE = "Page.clearDeviceOrientationOverride"
+    CLEAR_GEOLOCATION_OVERRIDE = "Page.clearGeolocationOverride"
+    CREATE_ISOLATED_WORLD = "Page.createIsolatedWorld"
+    DELETE_COOKIE = "Page.deleteCookie"
+    DISABLE = "Page.disable"
+    ENABLE = "Page.enable"
+    GET_APP_MANIFEST = "Page.getAppManifest"
+    GET_INSTALLABILITY_ERRORS = "Page.getInstallabilityErrors"
+    GET_MANIFEST_ICONS = "Page.getManifestIcons"
+    GET_APP_ID = "Page.getAppId"
+    GET_AD_SCRIPT_ANCESTRY = "Page.getAdScriptAncestry"
+    GET_FRAME_TREE = "Page.getFrameTree"
+    GET_LAYOUT_METRICS = "Page.getLayoutMetrics"
+    GET_NAVIGATION_HISTORY = "Page.getNavigationHistory"
+    RESET_NAVIGATION_HISTORY = "Page.resetNavigationHistory"
+    GET_RESOURCE_CONTENT = "Page.getResourceContent"
+    GET_RESOURCE_TREE = "Page.getResourceTree"
+    HANDLE_JAVA_SCRIPT_DIALOG = "Page.handleJavaScriptDialog"
+    NAVIGATE = "Page.navigate"
+    NAVIGATE_TO_HISTORY_ENTRY = "Page.navigateToHistoryEntry"
+    PRINT_TO_P_D_F = "Page.printToPDF"
+    RELOAD = "Page.reload"
+    REMOVE_SCRIPT_TO_EVALUATE_ON_LOAD = "Page.removeScriptToEvaluateOnLoad"
+    REMOVE_SCRIPT_TO_EVALUATE_ON_NEW_DOCUMENT = (
+        "Page.removeScriptToEvaluateOnNewDocument"
+    )
+    SCREENCAST_FRAME_ACK = "Page.screencastFrameAck"
+    SEARCH_IN_RESOURCE = "Page.searchInResource"
+    SET_AD_BLOCKING_ENABLED = "Page.setAdBlockingEnabled"
+    SET_BYPASS_C_S_P = "Page.setBypassCSP"
+    GET_PERMISSIONS_POLICY_STATE = "Page.getPermissionsPolicyState"
+    GET_ORIGIN_TRIALS = "Page.getOriginTrials"
+    SET_DEVICE_METRICS_OVERRIDE = "Page.setDeviceMetricsOverride"
+    SET_DEVICE_ORIENTATION_OVERRIDE = "Page.setDeviceOrientationOverride"
+    SET_FONT_FAMILIES = "Page.setFontFamilies"
+    SET_FONT_SIZES = "Page.setFontSizes"
+    SET_DOCUMENT_CONTENT = "Page.setDocumentContent"
+    SET_DOWNLOAD_BEHAVIOR = "Page.setDownloadBehavior"
+    SET_GEOLOCATION_OVERRIDE = "Page.setGeolocationOverride"
+    SET_LIFECYCLE_EVENTS_ENABLED = "Page.setLifecycleEventsEnabled"
+    SET_TOUCH_EMULATION_ENABLED = "Page.setTouchEmulationEnabled"
+    START_SCREENCAST = "Page.startScreencast"
+    STOP_LOADING = "Page.stopLoading"
+    CRASH = "Page.crash"
+    CLOSE = "Page.close"
+    SET_WEB_LIFECYCLE_STATE = "Page.setWebLifecycleState"
+    STOP_SCREENCAST = "Page.stopScreencast"
+    PRODUCE_COMPILATION_CACHE = "Page.produceCompilationCache"
+    ADD_COMPILATION_CACHE = "Page.addCompilationCache"
+    CLEAR_COMPILATION_CACHE = "Page.clearCompilationCache"
+    SET_S_P_C_TRANSACTION_MODE = "Page.setSPCTransactionMode"
+    SET_R_P_H_REGISTRATION_MODE = "Page.setRPHRegistrationMode"
+    GENERATE_TEST_REPORT = "Page.generateTestReport"
+    WAIT_FOR_DEBUGGER = "Page.waitForDebugger"
+    SET_INTERCEPT_FILE_CHOOSER_DIALOG = "Page.setInterceptFileChooserDialog"
+    SET_PRERENDERING_ALLOWED = "Page.setPrerenderingAllowed"
+    GET_ANNOTATED_PAGE_CONTENT = "Page.getAnnotatedPageContent"
 
 
 class AddScriptToEvaluateOnLoadParams(CDPModel):

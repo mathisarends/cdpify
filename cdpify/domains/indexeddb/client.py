@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from cdpify.client import CDPClient
 
 from .commands import (
+    IndexedDBCommand,
     ClearObjectStoreParams,
     DeleteDatabaseParams,
     DeleteObjectStoreEntriesParams,
@@ -51,7 +52,7 @@ class IndexedDBClient:
         )
 
         result = await self._client.send_raw(
-            method="IndexedDB.clearObjectStore",
+            method=IndexedDBCommand.CLEAR_OBJECT_STORE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -74,7 +75,7 @@ class IndexedDBClient:
         )
 
         result = await self._client.send_raw(
-            method="IndexedDB.deleteDatabase",
+            method=IndexedDBCommand.DELETE_DATABASE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -101,7 +102,7 @@ class IndexedDBClient:
         )
 
         result = await self._client.send_raw(
-            method="IndexedDB.deleteObjectStoreEntries",
+            method=IndexedDBCommand.DELETE_OBJECT_STORE_ENTRIES,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -112,7 +113,7 @@ class IndexedDBClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="IndexedDB.disable",
+            method=IndexedDBCommand.DISABLE,
             params=None,
             session_id=session_id,
         )
@@ -123,7 +124,7 @@ class IndexedDBClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="IndexedDB.enable",
+            method=IndexedDBCommand.ENABLE,
             params=None,
             session_id=session_id,
         )
@@ -156,7 +157,7 @@ class IndexedDBClient:
         )
 
         result = await self._client.send_raw(
-            method="IndexedDB.requestData",
+            method=IndexedDBCommand.REQUEST_DATA,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -181,7 +182,7 @@ class IndexedDBClient:
         )
 
         result = await self._client.send_raw(
-            method="IndexedDB.getMetadata",
+            method=IndexedDBCommand.GET_METADATA,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -204,7 +205,7 @@ class IndexedDBClient:
         )
 
         result = await self._client.send_raw(
-            method="IndexedDB.requestDatabase",
+            method=IndexedDBCommand.REQUEST_DATABASE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -225,7 +226,7 @@ class IndexedDBClient:
         )
 
         result = await self._client.send_raw(
-            method="IndexedDB.requestDatabaseNames",
+            method=IndexedDBCommand.REQUEST_DATABASE_NAMES,
             params=params.to_cdp_params(),
             session_id=session_id,
         )

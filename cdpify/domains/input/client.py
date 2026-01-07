@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from cdpify.client import CDPClient
 
 from .commands import (
+    InputCommand,
     DispatchDragEventParams,
     DispatchKeyEventParams,
     DispatchMouseEventParams,
@@ -52,7 +53,7 @@ class InputClient:
         )
 
         result = await self._client.send_raw(
-            method="Input.dispatchDragEvent",
+            method=InputCommand.DISPATCH_DRAG_EVENT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -97,7 +98,7 @@ class InputClient:
         )
 
         result = await self._client.send_raw(
-            method="Input.dispatchKeyEvent",
+            method=InputCommand.DISPATCH_KEY_EVENT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -112,7 +113,7 @@ class InputClient:
         params = InsertTextParams(text=text)
 
         result = await self._client.send_raw(
-            method="Input.insertText",
+            method=InputCommand.INSERT_TEXT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -137,7 +138,7 @@ class InputClient:
         )
 
         result = await self._client.send_raw(
-            method="Input.imeSetComposition",
+            method=InputCommand.IME_SET_COMPOSITION,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -184,7 +185,7 @@ class InputClient:
         )
 
         result = await self._client.send_raw(
-            method="Input.dispatchMouseEvent",
+            method=InputCommand.DISPATCH_MOUSE_EVENT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -207,7 +208,7 @@ class InputClient:
         )
 
         result = await self._client.send_raw(
-            method="Input.dispatchTouchEvent",
+            method=InputCommand.DISPATCH_TOUCH_EVENT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -218,7 +219,7 @@ class InputClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Input.cancelDragging",
+            method=InputCommand.CANCEL_DRAGGING,
             params=None,
             session_id=session_id,
         )
@@ -251,7 +252,7 @@ class InputClient:
         )
 
         result = await self._client.send_raw(
-            method="Input.emulateTouchFromMouseEvent",
+            method=InputCommand.EMULATE_TOUCH_FROM_MOUSE_EVENT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -266,7 +267,7 @@ class InputClient:
         params = SetIgnoreInputEventsParams(ignore=ignore)
 
         result = await self._client.send_raw(
-            method="Input.setIgnoreInputEvents",
+            method=InputCommand.SET_IGNORE_INPUT_EVENTS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -281,7 +282,7 @@ class InputClient:
         params = SetInterceptDragsParams(enabled=enabled)
 
         result = await self._client.send_raw(
-            method="Input.setInterceptDrags",
+            method=InputCommand.SET_INTERCEPT_DRAGS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -306,7 +307,7 @@ class InputClient:
         )
 
         result = await self._client.send_raw(
-            method="Input.synthesizePinchGesture",
+            method=InputCommand.SYNTHESIZE_PINCH_GESTURE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -345,7 +346,7 @@ class InputClient:
         )
 
         result = await self._client.send_raw(
-            method="Input.synthesizeScrollGesture",
+            method=InputCommand.SYNTHESIZE_SCROLL_GESTURE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -370,7 +371,7 @@ class InputClient:
         )
 
         result = await self._client.send_raw(
-            method="Input.synthesizeTapGesture",
+            method=InputCommand.SYNTHESIZE_TAP_GESTURE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )

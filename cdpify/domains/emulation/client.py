@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from cdpify.client import CDPClient
 
 from .commands import (
+    EmulationCommand,
     AddScreenParams,
     AddScreenResult,
     CanEmulateResult,
@@ -84,7 +85,7 @@ class EmulationClient:
         session_id: str | None = None,
     ) -> CanEmulateResult:
         result = await self._client.send_raw(
-            method="Emulation.canEmulate",
+            method=EmulationCommand.CAN_EMULATE,
             params=None,
             session_id=session_id,
         )
@@ -95,7 +96,7 @@ class EmulationClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Emulation.clearDeviceMetricsOverride",
+            method=EmulationCommand.CLEAR_DEVICE_METRICS_OVERRIDE,
             params=None,
             session_id=session_id,
         )
@@ -106,7 +107,7 @@ class EmulationClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Emulation.clearGeolocationOverride",
+            method=EmulationCommand.CLEAR_GEOLOCATION_OVERRIDE,
             params=None,
             session_id=session_id,
         )
@@ -117,7 +118,7 @@ class EmulationClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Emulation.resetPageScaleFactor",
+            method=EmulationCommand.RESET_PAGE_SCALE_FACTOR,
             params=None,
             session_id=session_id,
         )
@@ -132,7 +133,7 @@ class EmulationClient:
         params = SetFocusEmulationEnabledParams(enabled=enabled)
 
         result = await self._client.send_raw(
-            method="Emulation.setFocusEmulationEnabled",
+            method=EmulationCommand.SET_FOCUS_EMULATION_ENABLED,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -147,7 +148,7 @@ class EmulationClient:
         params = SetAutoDarkModeOverrideParams(enabled=enabled)
 
         result = await self._client.send_raw(
-            method="Emulation.setAutoDarkModeOverride",
+            method=EmulationCommand.SET_AUTO_DARK_MODE_OVERRIDE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -162,7 +163,7 @@ class EmulationClient:
         params = SetCPUThrottlingRateParams(rate=rate)
 
         result = await self._client.send_raw(
-            method="Emulation.setCPUThrottlingRate",
+            method=EmulationCommand.SET_C_P_U_THROTTLING_RATE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -177,7 +178,7 @@ class EmulationClient:
         params = SetDefaultBackgroundColorOverrideParams(color=color)
 
         result = await self._client.send_raw(
-            method="Emulation.setDefaultBackgroundColorOverride",
+            method=EmulationCommand.SET_DEFAULT_BACKGROUND_COLOR_OVERRIDE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -192,7 +193,7 @@ class EmulationClient:
         params = SetSafeAreaInsetsOverrideParams(insets=insets)
 
         result = await self._client.send_raw(
-            method="Emulation.setSafeAreaInsetsOverride",
+            method=EmulationCommand.SET_SAFE_AREA_INSETS_OVERRIDE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -235,7 +236,7 @@ class EmulationClient:
         )
 
         result = await self._client.send_raw(
-            method="Emulation.setDeviceMetricsOverride",
+            method=EmulationCommand.SET_DEVICE_METRICS_OVERRIDE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -250,7 +251,7 @@ class EmulationClient:
         params = SetDevicePostureOverrideParams(posture=posture)
 
         result = await self._client.send_raw(
-            method="Emulation.setDevicePostureOverride",
+            method=EmulationCommand.SET_DEVICE_POSTURE_OVERRIDE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -261,7 +262,7 @@ class EmulationClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Emulation.clearDevicePostureOverride",
+            method=EmulationCommand.CLEAR_DEVICE_POSTURE_OVERRIDE,
             params=None,
             session_id=session_id,
         )
@@ -276,7 +277,7 @@ class EmulationClient:
         params = SetDisplayFeaturesOverrideParams(features=features)
 
         result = await self._client.send_raw(
-            method="Emulation.setDisplayFeaturesOverride",
+            method=EmulationCommand.SET_DISPLAY_FEATURES_OVERRIDE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -287,7 +288,7 @@ class EmulationClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Emulation.clearDisplayFeaturesOverride",
+            method=EmulationCommand.CLEAR_DISPLAY_FEATURES_OVERRIDE,
             params=None,
             session_id=session_id,
         )
@@ -302,7 +303,7 @@ class EmulationClient:
         params = SetScrollbarsHiddenParams(hidden=hidden)
 
         result = await self._client.send_raw(
-            method="Emulation.setScrollbarsHidden",
+            method=EmulationCommand.SET_SCROLLBARS_HIDDEN,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -317,7 +318,7 @@ class EmulationClient:
         params = SetDocumentCookieDisabledParams(disabled=disabled)
 
         result = await self._client.send_raw(
-            method="Emulation.setDocumentCookieDisabled",
+            method=EmulationCommand.SET_DOCUMENT_COOKIE_DISABLED,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -335,7 +336,7 @@ class EmulationClient:
         )
 
         result = await self._client.send_raw(
-            method="Emulation.setEmitTouchEventsForMouse",
+            method=EmulationCommand.SET_EMIT_TOUCH_EVENTS_FOR_MOUSE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -351,7 +352,7 @@ class EmulationClient:
         params = SetEmulatedMediaParams(media=media, features=features)
 
         result = await self._client.send_raw(
-            method="Emulation.setEmulatedMedia",
+            method=EmulationCommand.SET_EMULATED_MEDIA,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -374,7 +375,7 @@ class EmulationClient:
         params = SetEmulatedVisionDeficiencyParams(type=type)
 
         result = await self._client.send_raw(
-            method="Emulation.setEmulatedVisionDeficiency",
+            method=EmulationCommand.SET_EMULATED_VISION_DEFICIENCY,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -389,7 +390,7 @@ class EmulationClient:
         params = SetEmulatedOSTextScaleParams(scale=scale)
 
         result = await self._client.send_raw(
-            method="Emulation.setEmulatedOSTextScale",
+            method=EmulationCommand.SET_EMULATED_O_S_TEXT_SCALE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -418,7 +419,7 @@ class EmulationClient:
         )
 
         result = await self._client.send_raw(
-            method="Emulation.setGeolocationOverride",
+            method=EmulationCommand.SET_GEOLOCATION_OVERRIDE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -433,7 +434,7 @@ class EmulationClient:
         params = GetOverriddenSensorInformationParams(type=type)
 
         result = await self._client.send_raw(
-            method="Emulation.getOverriddenSensorInformation",
+            method=EmulationCommand.GET_OVERRIDDEN_SENSOR_INFORMATION,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -452,7 +453,7 @@ class EmulationClient:
         )
 
         result = await self._client.send_raw(
-            method="Emulation.setSensorOverrideEnabled",
+            method=EmulationCommand.SET_SENSOR_OVERRIDE_ENABLED,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -468,7 +469,7 @@ class EmulationClient:
         params = SetSensorOverrideReadingsParams(type=type, reading=reading)
 
         result = await self._client.send_raw(
-            method="Emulation.setSensorOverrideReadings",
+            method=EmulationCommand.SET_SENSOR_OVERRIDE_READINGS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -487,7 +488,7 @@ class EmulationClient:
         )
 
         result = await self._client.send_raw(
-            method="Emulation.setPressureSourceOverrideEnabled",
+            method=EmulationCommand.SET_PRESSURE_SOURCE_OVERRIDE_ENABLED,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -503,7 +504,7 @@ class EmulationClient:
         params = SetPressureStateOverrideParams(source=source, state=state)
 
         result = await self._client.send_raw(
-            method="Emulation.setPressureStateOverride",
+            method=EmulationCommand.SET_PRESSURE_STATE_OVERRIDE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -524,7 +525,7 @@ class EmulationClient:
         )
 
         result = await self._client.send_raw(
-            method="Emulation.setPressureDataOverride",
+            method=EmulationCommand.SET_PRESSURE_DATA_OVERRIDE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -542,7 +543,7 @@ class EmulationClient:
         )
 
         result = await self._client.send_raw(
-            method="Emulation.setIdleOverride",
+            method=EmulationCommand.SET_IDLE_OVERRIDE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -553,7 +554,7 @@ class EmulationClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Emulation.clearIdleOverride",
+            method=EmulationCommand.CLEAR_IDLE_OVERRIDE,
             params=None,
             session_id=session_id,
         )
@@ -568,7 +569,7 @@ class EmulationClient:
         params = SetNavigatorOverridesParams(platform=platform)
 
         result = await self._client.send_raw(
-            method="Emulation.setNavigatorOverrides",
+            method=EmulationCommand.SET_NAVIGATOR_OVERRIDES,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -583,7 +584,7 @@ class EmulationClient:
         params = SetPageScaleFactorParams(pageScaleFactor=page_scale_factor)
 
         result = await self._client.send_raw(
-            method="Emulation.setPageScaleFactor",
+            method=EmulationCommand.SET_PAGE_SCALE_FACTOR,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -598,7 +599,7 @@ class EmulationClient:
         params = SetScriptExecutionDisabledParams(value=value)
 
         result = await self._client.send_raw(
-            method="Emulation.setScriptExecutionDisabled",
+            method=EmulationCommand.SET_SCRIPT_EXECUTION_DISABLED,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -616,7 +617,7 @@ class EmulationClient:
         )
 
         result = await self._client.send_raw(
-            method="Emulation.setTouchEmulationEnabled",
+            method=EmulationCommand.SET_TOUCH_EMULATION_ENABLED,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -639,7 +640,7 @@ class EmulationClient:
         )
 
         result = await self._client.send_raw(
-            method="Emulation.setVirtualTimePolicy",
+            method=EmulationCommand.SET_VIRTUAL_TIME_POLICY,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -654,7 +655,7 @@ class EmulationClient:
         params = SetLocaleOverrideParams(locale=locale)
 
         result = await self._client.send_raw(
-            method="Emulation.setLocaleOverride",
+            method=EmulationCommand.SET_LOCALE_OVERRIDE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -669,7 +670,7 @@ class EmulationClient:
         params = SetTimezoneOverrideParams(timezoneId=timezone_id)
 
         result = await self._client.send_raw(
-            method="Emulation.setTimezoneOverride",
+            method=EmulationCommand.SET_TIMEZONE_OVERRIDE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -685,7 +686,7 @@ class EmulationClient:
         params = SetVisibleSizeParams(width=width, height=height)
 
         result = await self._client.send_raw(
-            method="Emulation.setVisibleSize",
+            method=EmulationCommand.SET_VISIBLE_SIZE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -700,7 +701,7 @@ class EmulationClient:
         params = SetDisabledImageTypesParams(imageTypes=image_types)
 
         result = await self._client.send_raw(
-            method="Emulation.setDisabledImageTypes",
+            method=EmulationCommand.SET_DISABLED_IMAGE_TYPES,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -715,7 +716,7 @@ class EmulationClient:
         params = SetDataSaverOverrideParams(dataSaverEnabled=data_saver_enabled)
 
         result = await self._client.send_raw(
-            method="Emulation.setDataSaverOverride",
+            method=EmulationCommand.SET_DATA_SAVER_OVERRIDE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -732,7 +733,7 @@ class EmulationClient:
         )
 
         result = await self._client.send_raw(
-            method="Emulation.setHardwareConcurrencyOverride",
+            method=EmulationCommand.SET_HARDWARE_CONCURRENCY_OVERRIDE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -755,7 +756,7 @@ class EmulationClient:
         )
 
         result = await self._client.send_raw(
-            method="Emulation.setUserAgentOverride",
+            method=EmulationCommand.SET_USER_AGENT_OVERRIDE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -770,7 +771,7 @@ class EmulationClient:
         params = SetAutomationOverrideParams(enabled=enabled)
 
         result = await self._client.send_raw(
-            method="Emulation.setAutomationOverride",
+            method=EmulationCommand.SET_AUTOMATION_OVERRIDE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -785,7 +786,7 @@ class EmulationClient:
         params = SetSmallViewportHeightDifferenceOverrideParams(difference=difference)
 
         result = await self._client.send_raw(
-            method="Emulation.setSmallViewportHeightDifferenceOverride",
+            method=EmulationCommand.SET_SMALL_VIEWPORT_HEIGHT_DIFFERENCE_OVERRIDE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -796,7 +797,7 @@ class EmulationClient:
         session_id: str | None = None,
     ) -> GetScreenInfosResult:
         result = await self._client.send_raw(
-            method="Emulation.getScreenInfos",
+            method=EmulationCommand.GET_SCREEN_INFOS,
             params=None,
             session_id=session_id,
         )
@@ -831,7 +832,7 @@ class EmulationClient:
         )
 
         result = await self._client.send_raw(
-            method="Emulation.addScreen",
+            method=EmulationCommand.ADD_SCREEN,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -846,7 +847,7 @@ class EmulationClient:
         params = RemoveScreenParams(screenId=screen_id)
 
         result = await self._client.send_raw(
-            method="Emulation.removeScreen",
+            method=EmulationCommand.REMOVE_SCREEN,
             params=params.to_cdp_params(),
             session_id=session_id,
         )

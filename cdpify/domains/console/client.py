@@ -9,6 +9,10 @@ from typing import TYPE_CHECKING, Any, Literal
 if TYPE_CHECKING:
     from cdpify.client import CDPClient
 
+from .commands import (
+    ConsoleCommand,
+)
+
 
 class ConsoleClient:
     def __init__(self, client: CDPClient) -> None:
@@ -19,7 +23,7 @@ class ConsoleClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Console.clearMessages",
+            method=ConsoleCommand.CLEAR_MESSAGES,
             params=None,
             session_id=session_id,
         )
@@ -30,7 +34,7 @@ class ConsoleClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Console.disable",
+            method=ConsoleCommand.DISABLE,
             params=None,
             session_id=session_id,
         )
@@ -41,7 +45,7 @@ class ConsoleClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Console.enable",
+            method=ConsoleCommand.ENABLE,
             params=None,
             session_id=session_id,
         )

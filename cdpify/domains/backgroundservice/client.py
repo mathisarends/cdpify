@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from cdpify.client import CDPClient
 
 from .commands import (
+    BackgroundServiceCommand,
     ClearEventsParams,
     SetRecordingParams,
     StartObservingParams,
@@ -34,7 +35,7 @@ class BackgroundServiceClient:
         params = StartObservingParams(service=service)
 
         result = await self._client.send_raw(
-            method="BackgroundService.startObserving",
+            method=BackgroundServiceCommand.START_OBSERVING,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -49,7 +50,7 @@ class BackgroundServiceClient:
         params = StopObservingParams(service=service)
 
         result = await self._client.send_raw(
-            method="BackgroundService.stopObserving",
+            method=BackgroundServiceCommand.STOP_OBSERVING,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -65,7 +66,7 @@ class BackgroundServiceClient:
         params = SetRecordingParams(shouldRecord=should_record, service=service)
 
         result = await self._client.send_raw(
-            method="BackgroundService.setRecording",
+            method=BackgroundServiceCommand.SET_RECORDING,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -80,7 +81,7 @@ class BackgroundServiceClient:
         params = ClearEventsParams(service=service)
 
         result = await self._client.send_raw(
-            method="BackgroundService.clearEvents",
+            method=BackgroundServiceCommand.CLEAR_EVENTS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )

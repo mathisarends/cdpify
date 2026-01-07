@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from cdpify.client import CDPClient
 
 from .commands import (
+    DebuggerCommand,
     ContinueToLocationParams,
     DisassembleWasmModuleParams,
     DisassembleWasmModuleResult,
@@ -82,7 +83,7 @@ class DebuggerClient:
         )
 
         result = await self._client.send_raw(
-            method="Debugger.continueToLocation",
+            method=DebuggerCommand.CONTINUE_TO_LOCATION,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -93,7 +94,7 @@ class DebuggerClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Debugger.disable",
+            method=DebuggerCommand.DISABLE,
             params=None,
             session_id=session_id,
         )
@@ -108,7 +109,7 @@ class DebuggerClient:
         params = EnableParams(maxScriptsCacheSize=max_scripts_cache_size)
 
         result = await self._client.send_raw(
-            method="Debugger.enable",
+            method=DebuggerCommand.ENABLE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -141,7 +142,7 @@ class DebuggerClient:
         )
 
         result = await self._client.send_raw(
-            method="Debugger.evaluateOnCallFrame",
+            method=DebuggerCommand.EVALUATE_ON_CALL_FRAME,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -160,7 +161,7 @@ class DebuggerClient:
         )
 
         result = await self._client.send_raw(
-            method="Debugger.getPossibleBreakpoints",
+            method=DebuggerCommand.GET_POSSIBLE_BREAKPOINTS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -175,7 +176,7 @@ class DebuggerClient:
         params = GetScriptSourceParams(scriptId=script_id)
 
         result = await self._client.send_raw(
-            method="Debugger.getScriptSource",
+            method=DebuggerCommand.GET_SCRIPT_SOURCE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -190,7 +191,7 @@ class DebuggerClient:
         params = DisassembleWasmModuleParams(scriptId=script_id)
 
         result = await self._client.send_raw(
-            method="Debugger.disassembleWasmModule",
+            method=DebuggerCommand.DISASSEMBLE_WASM_MODULE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -205,7 +206,7 @@ class DebuggerClient:
         params = NextWasmDisassemblyChunkParams(streamId=stream_id)
 
         result = await self._client.send_raw(
-            method="Debugger.nextWasmDisassemblyChunk",
+            method=DebuggerCommand.NEXT_WASM_DISASSEMBLY_CHUNK,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -220,7 +221,7 @@ class DebuggerClient:
         params = GetWasmBytecodeParams(scriptId=script_id)
 
         result = await self._client.send_raw(
-            method="Debugger.getWasmBytecode",
+            method=DebuggerCommand.GET_WASM_BYTECODE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -235,7 +236,7 @@ class DebuggerClient:
         params = GetStackTraceParams(stackTraceId=stack_trace_id)
 
         result = await self._client.send_raw(
-            method="Debugger.getStackTrace",
+            method=DebuggerCommand.GET_STACK_TRACE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -246,7 +247,7 @@ class DebuggerClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Debugger.pause",
+            method=DebuggerCommand.PAUSE,
             params=None,
             session_id=session_id,
         )
@@ -261,7 +262,7 @@ class DebuggerClient:
         params = PauseOnAsyncCallParams(parentStackTraceId=parent_stack_trace_id)
 
         result = await self._client.send_raw(
-            method="Debugger.pauseOnAsyncCall",
+            method=DebuggerCommand.PAUSE_ON_ASYNC_CALL,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -276,7 +277,7 @@ class DebuggerClient:
         params = RemoveBreakpointParams(breakpointId=breakpoint_id)
 
         result = await self._client.send_raw(
-            method="Debugger.removeBreakpoint",
+            method=DebuggerCommand.REMOVE_BREAKPOINT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -292,7 +293,7 @@ class DebuggerClient:
         params = RestartFrameParams(callFrameId=call_frame_id, mode=mode)
 
         result = await self._client.send_raw(
-            method="Debugger.restartFrame",
+            method=DebuggerCommand.RESTART_FRAME,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -307,7 +308,7 @@ class DebuggerClient:
         params = ResumeParams(terminateOnResume=terminate_on_resume)
 
         result = await self._client.send_raw(
-            method="Debugger.resume",
+            method=DebuggerCommand.RESUME,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -330,7 +331,7 @@ class DebuggerClient:
         )
 
         result = await self._client.send_raw(
-            method="Debugger.searchInContent",
+            method=DebuggerCommand.SEARCH_IN_CONTENT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -345,7 +346,7 @@ class DebuggerClient:
         params = SetAsyncCallStackDepthParams(maxDepth=max_depth)
 
         result = await self._client.send_raw(
-            method="Debugger.setAsyncCallStackDepth",
+            method=DebuggerCommand.SET_ASYNC_CALL_STACK_DEPTH,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -360,7 +361,7 @@ class DebuggerClient:
         params = SetBlackboxExecutionContextsParams(uniqueIds=unique_ids)
 
         result = await self._client.send_raw(
-            method="Debugger.setBlackboxExecutionContexts",
+            method=DebuggerCommand.SET_BLACKBOX_EXECUTION_CONTEXTS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -378,7 +379,7 @@ class DebuggerClient:
         )
 
         result = await self._client.send_raw(
-            method="Debugger.setBlackboxPatterns",
+            method=DebuggerCommand.SET_BLACKBOX_PATTERNS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -394,7 +395,7 @@ class DebuggerClient:
         params = SetBlackboxedRangesParams(scriptId=script_id, positions=positions)
 
         result = await self._client.send_raw(
-            method="Debugger.setBlackboxedRanges",
+            method=DebuggerCommand.SET_BLACKBOXED_RANGES,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -410,7 +411,7 @@ class DebuggerClient:
         params = SetBreakpointParams(location=location, condition=condition)
 
         result = await self._client.send_raw(
-            method="Debugger.setBreakpoint",
+            method=DebuggerCommand.SET_BREAKPOINT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -427,7 +428,7 @@ class DebuggerClient:
         params = SetInstrumentationBreakpointParams(instrumentation=instrumentation)
 
         result = await self._client.send_raw(
-            method="Debugger.setInstrumentationBreakpoint",
+            method=DebuggerCommand.SET_INSTRUMENTATION_BREAKPOINT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -454,7 +455,7 @@ class DebuggerClient:
         )
 
         result = await self._client.send_raw(
-            method="Debugger.setBreakpointByUrl",
+            method=DebuggerCommand.SET_BREAKPOINT_BY_URL,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -472,7 +473,7 @@ class DebuggerClient:
         )
 
         result = await self._client.send_raw(
-            method="Debugger.setBreakpointOnFunctionCall",
+            method=DebuggerCommand.SET_BREAKPOINT_ON_FUNCTION_CALL,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -487,7 +488,7 @@ class DebuggerClient:
         params = SetBreakpointsActiveParams(active=active)
 
         result = await self._client.send_raw(
-            method="Debugger.setBreakpointsActive",
+            method=DebuggerCommand.SET_BREAKPOINTS_ACTIVE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -502,7 +503,7 @@ class DebuggerClient:
         params = SetPauseOnExceptionsParams(state=state)
 
         result = await self._client.send_raw(
-            method="Debugger.setPauseOnExceptions",
+            method=DebuggerCommand.SET_PAUSE_ON_EXCEPTIONS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -517,7 +518,7 @@ class DebuggerClient:
         params = SetReturnValueParams(newValue=new_value)
 
         result = await self._client.send_raw(
-            method="Debugger.setReturnValue",
+            method=DebuggerCommand.SET_RETURN_VALUE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -540,7 +541,7 @@ class DebuggerClient:
         )
 
         result = await self._client.send_raw(
-            method="Debugger.setScriptSource",
+            method=DebuggerCommand.SET_SCRIPT_SOURCE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -555,7 +556,7 @@ class DebuggerClient:
         params = SetSkipAllPausesParams(skip=skip)
 
         result = await self._client.send_raw(
-            method="Debugger.setSkipAllPauses",
+            method=DebuggerCommand.SET_SKIP_ALL_PAUSES,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -578,7 +579,7 @@ class DebuggerClient:
         )
 
         result = await self._client.send_raw(
-            method="Debugger.setVariableValue",
+            method=DebuggerCommand.SET_VARIABLE_VALUE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -596,7 +597,7 @@ class DebuggerClient:
         )
 
         result = await self._client.send_raw(
-            method="Debugger.stepInto",
+            method=DebuggerCommand.STEP_INTO,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -607,7 +608,7 @@ class DebuggerClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Debugger.stepOut",
+            method=DebuggerCommand.STEP_OUT,
             params=None,
             session_id=session_id,
         )
@@ -622,7 +623,7 @@ class DebuggerClient:
         params = StepOverParams(skipList=skip_list)
 
         result = await self._client.send_raw(
-            method="Debugger.stepOver",
+            method=DebuggerCommand.STEP_OVER,
             params=params.to_cdp_params(),
             session_id=session_id,
         )

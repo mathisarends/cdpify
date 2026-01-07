@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from cdpify.client import CDPClient
 
 from .commands import (
+    IOCommand,
     CloseParams,
     ReadParams,
     ReadResult,
@@ -35,7 +36,7 @@ class IOClient:
         params = CloseParams(handle=handle)
 
         result = await self._client.send_raw(
-            method="IO.close",
+            method=IOCommand.CLOSE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -52,7 +53,7 @@ class IOClient:
         params = ReadParams(handle=handle, offset=offset, size=size)
 
         result = await self._client.send_raw(
-            method="IO.read",
+            method=IOCommand.READ,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -67,7 +68,7 @@ class IOClient:
         params = ResolveBlobParams(objectId=object_id)
 
         result = await self._client.send_raw(
-            method="IO.resolveBlob",
+            method=IOCommand.RESOLVE_BLOB,
             params=params.to_cdp_params(),
             session_id=session_id,
         )

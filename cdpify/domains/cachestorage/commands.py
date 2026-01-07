@@ -3,11 +3,20 @@
 # Generated from Chrome DevTools Protocol specifications.
 
 from typing import TYPE_CHECKING
+from enum import StrEnum
 from cdpify.domains.base import CDPModel
 
 from .types import *
 
 from cdpify.domains import storage
+
+
+class CacheStorageCommand(StrEnum):
+    DELETE_CACHE = "CacheStorage.deleteCache"
+    DELETE_ENTRY = "CacheStorage.deleteEntry"
+    REQUEST_CACHE_NAMES = "CacheStorage.requestCacheNames"
+    REQUEST_CACHED_RESPONSE = "CacheStorage.requestCachedResponse"
+    REQUEST_ENTRIES = "CacheStorage.requestEntries"
 
 
 class DeleteCacheParams(CDPModel):

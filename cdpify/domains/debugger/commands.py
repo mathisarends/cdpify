@@ -3,11 +3,48 @@
 # Generated from Chrome DevTools Protocol specifications.
 
 from typing import Literal, TYPE_CHECKING
+from enum import StrEnum
 from cdpify.domains.base import CDPModel
 
 from .types import *
 
 from cdpify.domains import runtime
+
+
+class DebuggerCommand(StrEnum):
+    CONTINUE_TO_LOCATION = "Debugger.continueToLocation"
+    DISABLE = "Debugger.disable"
+    ENABLE = "Debugger.enable"
+    EVALUATE_ON_CALL_FRAME = "Debugger.evaluateOnCallFrame"
+    GET_POSSIBLE_BREAKPOINTS = "Debugger.getPossibleBreakpoints"
+    GET_SCRIPT_SOURCE = "Debugger.getScriptSource"
+    DISASSEMBLE_WASM_MODULE = "Debugger.disassembleWasmModule"
+    NEXT_WASM_DISASSEMBLY_CHUNK = "Debugger.nextWasmDisassemblyChunk"
+    GET_WASM_BYTECODE = "Debugger.getWasmBytecode"
+    GET_STACK_TRACE = "Debugger.getStackTrace"
+    PAUSE = "Debugger.pause"
+    PAUSE_ON_ASYNC_CALL = "Debugger.pauseOnAsyncCall"
+    REMOVE_BREAKPOINT = "Debugger.removeBreakpoint"
+    RESTART_FRAME = "Debugger.restartFrame"
+    RESUME = "Debugger.resume"
+    SEARCH_IN_CONTENT = "Debugger.searchInContent"
+    SET_ASYNC_CALL_STACK_DEPTH = "Debugger.setAsyncCallStackDepth"
+    SET_BLACKBOX_EXECUTION_CONTEXTS = "Debugger.setBlackboxExecutionContexts"
+    SET_BLACKBOX_PATTERNS = "Debugger.setBlackboxPatterns"
+    SET_BLACKBOXED_RANGES = "Debugger.setBlackboxedRanges"
+    SET_BREAKPOINT = "Debugger.setBreakpoint"
+    SET_INSTRUMENTATION_BREAKPOINT = "Debugger.setInstrumentationBreakpoint"
+    SET_BREAKPOINT_BY_URL = "Debugger.setBreakpointByUrl"
+    SET_BREAKPOINT_ON_FUNCTION_CALL = "Debugger.setBreakpointOnFunctionCall"
+    SET_BREAKPOINTS_ACTIVE = "Debugger.setBreakpointsActive"
+    SET_PAUSE_ON_EXCEPTIONS = "Debugger.setPauseOnExceptions"
+    SET_RETURN_VALUE = "Debugger.setReturnValue"
+    SET_SCRIPT_SOURCE = "Debugger.setScriptSource"
+    SET_SKIP_ALL_PAUSES = "Debugger.setSkipAllPauses"
+    SET_VARIABLE_VALUE = "Debugger.setVariableValue"
+    STEP_INTO = "Debugger.stepInto"
+    STEP_OUT = "Debugger.stepOut"
+    STEP_OVER = "Debugger.stepOver"
 
 
 class ContinueToLocationParams(CDPModel):

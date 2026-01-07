@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from cdpify.client import CDPClient
 
 from .commands import (
+    MemoryCommand,
     GetAllTimeSamplingProfileResult,
     GetBrowserSamplingProfileResult,
     GetDOMCountersForLeakDetectionResult,
@@ -34,7 +35,7 @@ class MemoryClient:
         session_id: str | None = None,
     ) -> GetDOMCountersResult:
         result = await self._client.send_raw(
-            method="Memory.getDOMCounters",
+            method=MemoryCommand.GET_D_O_M_COUNTERS,
             params=None,
             session_id=session_id,
         )
@@ -45,7 +46,7 @@ class MemoryClient:
         session_id: str | None = None,
     ) -> GetDOMCountersForLeakDetectionResult:
         result = await self._client.send_raw(
-            method="Memory.getDOMCountersForLeakDetection",
+            method=MemoryCommand.GET_D_O_M_COUNTERS_FOR_LEAK_DETECTION,
             params=None,
             session_id=session_id,
         )
@@ -56,7 +57,7 @@ class MemoryClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Memory.prepareForLeakDetection",
+            method=MemoryCommand.PREPARE_FOR_LEAK_DETECTION,
             params=None,
             session_id=session_id,
         )
@@ -67,7 +68,7 @@ class MemoryClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Memory.forciblyPurgeJavaScriptMemory",
+            method=MemoryCommand.FORCIBLY_PURGE_JAVA_SCRIPT_MEMORY,
             params=None,
             session_id=session_id,
         )
@@ -82,7 +83,7 @@ class MemoryClient:
         params = SetPressureNotificationsSuppressedParams(suppressed=suppressed)
 
         result = await self._client.send_raw(
-            method="Memory.setPressureNotificationsSuppressed",
+            method=MemoryCommand.SET_PRESSURE_NOTIFICATIONS_SUPPRESSED,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -97,7 +98,7 @@ class MemoryClient:
         params = SimulatePressureNotificationParams(level=level)
 
         result = await self._client.send_raw(
-            method="Memory.simulatePressureNotification",
+            method=MemoryCommand.SIMULATE_PRESSURE_NOTIFICATION,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -115,7 +116,7 @@ class MemoryClient:
         )
 
         result = await self._client.send_raw(
-            method="Memory.startSampling",
+            method=MemoryCommand.START_SAMPLING,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -126,7 +127,7 @@ class MemoryClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Memory.stopSampling",
+            method=MemoryCommand.STOP_SAMPLING,
             params=None,
             session_id=session_id,
         )
@@ -137,7 +138,7 @@ class MemoryClient:
         session_id: str | None = None,
     ) -> GetAllTimeSamplingProfileResult:
         result = await self._client.send_raw(
-            method="Memory.getAllTimeSamplingProfile",
+            method=MemoryCommand.GET_ALL_TIME_SAMPLING_PROFILE,
             params=None,
             session_id=session_id,
         )
@@ -148,7 +149,7 @@ class MemoryClient:
         session_id: str | None = None,
     ) -> GetBrowserSamplingProfileResult:
         result = await self._client.send_raw(
-            method="Memory.getBrowserSamplingProfile",
+            method=MemoryCommand.GET_BROWSER_SAMPLING_PROFILE,
             params=None,
             session_id=session_id,
         )
@@ -159,7 +160,7 @@ class MemoryClient:
         session_id: str | None = None,
     ) -> GetSamplingProfileResult:
         result = await self._client.send_raw(
-            method="Memory.getSamplingProfile",
+            method=MemoryCommand.GET_SAMPLING_PROFILE,
             params=None,
             session_id=session_id,
         )

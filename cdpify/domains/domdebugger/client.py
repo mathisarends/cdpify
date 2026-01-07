@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from cdpify.client import CDPClient
 
 from .commands import (
+    DOMDebuggerCommand,
     GetEventListenersParams,
     GetEventListenersResult,
     RemoveDOMBreakpointParams,
@@ -44,7 +45,7 @@ class DOMDebuggerClient:
         params = GetEventListenersParams(objectId=object_id, depth=depth, pierce=pierce)
 
         result = await self._client.send_raw(
-            method="DOMDebugger.getEventListeners",
+            method=DOMDebuggerCommand.GET_EVENT_LISTENERS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -60,7 +61,7 @@ class DOMDebuggerClient:
         params = RemoveDOMBreakpointParams(nodeId=node_id, type=type)
 
         result = await self._client.send_raw(
-            method="DOMDebugger.removeDOMBreakpoint",
+            method=DOMDebuggerCommand.REMOVE_D_O_M_BREAKPOINT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -78,7 +79,7 @@ class DOMDebuggerClient:
         )
 
         result = await self._client.send_raw(
-            method="DOMDebugger.removeEventListenerBreakpoint",
+            method=DOMDebuggerCommand.REMOVE_EVENT_LISTENER_BREAKPOINT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -93,7 +94,7 @@ class DOMDebuggerClient:
         params = RemoveInstrumentationBreakpointParams(eventName=event_name)
 
         result = await self._client.send_raw(
-            method="DOMDebugger.removeInstrumentationBreakpoint",
+            method=DOMDebuggerCommand.REMOVE_INSTRUMENTATION_BREAKPOINT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -108,7 +109,7 @@ class DOMDebuggerClient:
         params = RemoveXHRBreakpointParams(url=url)
 
         result = await self._client.send_raw(
-            method="DOMDebugger.removeXHRBreakpoint",
+            method=DOMDebuggerCommand.REMOVE_X_H_R_BREAKPOINT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -123,7 +124,7 @@ class DOMDebuggerClient:
         params = SetBreakOnCSPViolationParams(violationTypes=violation_types)
 
         result = await self._client.send_raw(
-            method="DOMDebugger.setBreakOnCSPViolation",
+            method=DOMDebuggerCommand.SET_BREAK_ON_C_S_P_VIOLATION,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -139,7 +140,7 @@ class DOMDebuggerClient:
         params = SetDOMBreakpointParams(nodeId=node_id, type=type)
 
         result = await self._client.send_raw(
-            method="DOMDebugger.setDOMBreakpoint",
+            method=DOMDebuggerCommand.SET_D_O_M_BREAKPOINT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -157,7 +158,7 @@ class DOMDebuggerClient:
         )
 
         result = await self._client.send_raw(
-            method="DOMDebugger.setEventListenerBreakpoint",
+            method=DOMDebuggerCommand.SET_EVENT_LISTENER_BREAKPOINT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -172,7 +173,7 @@ class DOMDebuggerClient:
         params = SetInstrumentationBreakpointParams(eventName=event_name)
 
         result = await self._client.send_raw(
-            method="DOMDebugger.setInstrumentationBreakpoint",
+            method=DOMDebuggerCommand.SET_INSTRUMENTATION_BREAKPOINT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -187,7 +188,7 @@ class DOMDebuggerClient:
         params = SetXHRBreakpointParams(url=url)
 
         result = await self._client.send_raw(
-            method="DOMDebugger.setXHRBreakpoint",
+            method=DOMDebuggerCommand.SET_X_H_R_BREAKPOINT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )

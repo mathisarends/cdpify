@@ -3,11 +3,25 @@
 # Generated from Chrome DevTools Protocol specifications.
 
 from typing import TYPE_CHECKING
+from enum import StrEnum
 from cdpify.domains.base import CDPModel
 
 from .types import *
 
 from cdpify.domains import runtime
+
+
+class AnimationCommand(StrEnum):
+    DISABLE = "Animation.disable"
+    ENABLE = "Animation.enable"
+    GET_CURRENT_TIME = "Animation.getCurrentTime"
+    GET_PLAYBACK_RATE = "Animation.getPlaybackRate"
+    RELEASE_ANIMATIONS = "Animation.releaseAnimations"
+    RESOLVE_ANIMATION = "Animation.resolveAnimation"
+    SEEK_ANIMATIONS = "Animation.seekAnimations"
+    SET_PAUSED = "Animation.setPaused"
+    SET_PLAYBACK_RATE = "Animation.setPlaybackRate"
+    SET_TIMING = "Animation.setTiming"
 
 
 class GetCurrentTimeParams(CDPModel):

@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from cdpify.client import CDPClient
 
 from .commands import (
+    FetchCommand,
     ContinueRequestParams,
     ContinueResponseParams,
     ContinueWithAuthParams,
@@ -39,7 +40,7 @@ class FetchClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Fetch.disable",
+            method=FetchCommand.DISABLE,
             params=None,
             session_id=session_id,
         )
@@ -57,7 +58,7 @@ class FetchClient:
         )
 
         result = await self._client.send_raw(
-            method="Fetch.enable",
+            method=FetchCommand.ENABLE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -73,7 +74,7 @@ class FetchClient:
         params = FailRequestParams(requestId=request_id, errorReason=error_reason)
 
         result = await self._client.send_raw(
-            method="Fetch.failRequest",
+            method=FetchCommand.FAIL_REQUEST,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -100,7 +101,7 @@ class FetchClient:
         )
 
         result = await self._client.send_raw(
-            method="Fetch.fulfillRequest",
+            method=FetchCommand.FULFILL_REQUEST,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -127,7 +128,7 @@ class FetchClient:
         )
 
         result = await self._client.send_raw(
-            method="Fetch.continueRequest",
+            method=FetchCommand.CONTINUE_REQUEST,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -145,7 +146,7 @@ class FetchClient:
         )
 
         result = await self._client.send_raw(
-            method="Fetch.continueWithAuth",
+            method=FetchCommand.CONTINUE_WITH_AUTH,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -170,7 +171,7 @@ class FetchClient:
         )
 
         result = await self._client.send_raw(
-            method="Fetch.continueResponse",
+            method=FetchCommand.CONTINUE_RESPONSE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -185,7 +186,7 @@ class FetchClient:
         params = GetResponseBodyParams(requestId=request_id)
 
         result = await self._client.send_raw(
-            method="Fetch.getResponseBody",
+            method=FetchCommand.GET_RESPONSE_BODY,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -200,7 +201,7 @@ class FetchClient:
         params = TakeResponseBodyAsStreamParams(requestId=request_id)
 
         result = await self._client.send_raw(
-            method="Fetch.takeResponseBodyAsStream",
+            method=FetchCommand.TAKE_RESPONSE_BODY_AS_STREAM,
             params=params.to_cdp_params(),
             session_id=session_id,
         )

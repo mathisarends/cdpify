@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from cdpify.client import CDPClient
 
 from .commands import (
+    HeapProfilerCommand,
     AddInspectedHeapObjectParams,
     GetHeapObjectIdParams,
     GetHeapObjectIdResult,
@@ -41,7 +42,7 @@ class HeapProfilerClient:
         params = AddInspectedHeapObjectParams(heapObjectId=heap_object_id)
 
         result = await self._client.send_raw(
-            method="HeapProfiler.addInspectedHeapObject",
+            method=HeapProfilerCommand.ADD_INSPECTED_HEAP_OBJECT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -52,7 +53,7 @@ class HeapProfilerClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="HeapProfiler.collectGarbage",
+            method=HeapProfilerCommand.COLLECT_GARBAGE,
             params=None,
             session_id=session_id,
         )
@@ -63,7 +64,7 @@ class HeapProfilerClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="HeapProfiler.disable",
+            method=HeapProfilerCommand.DISABLE,
             params=None,
             session_id=session_id,
         )
@@ -74,7 +75,7 @@ class HeapProfilerClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="HeapProfiler.enable",
+            method=HeapProfilerCommand.ENABLE,
             params=None,
             session_id=session_id,
         )
@@ -89,7 +90,7 @@ class HeapProfilerClient:
         params = GetHeapObjectIdParams(objectId=object_id)
 
         result = await self._client.send_raw(
-            method="HeapProfiler.getHeapObjectId",
+            method=HeapProfilerCommand.GET_HEAP_OBJECT_ID,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -107,7 +108,7 @@ class HeapProfilerClient:
         )
 
         result = await self._client.send_raw(
-            method="HeapProfiler.getObjectByHeapObjectId",
+            method=HeapProfilerCommand.GET_OBJECT_BY_HEAP_OBJECT_ID,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -118,7 +119,7 @@ class HeapProfilerClient:
         session_id: str | None = None,
     ) -> GetSamplingProfileResult:
         result = await self._client.send_raw(
-            method="HeapProfiler.getSamplingProfile",
+            method=HeapProfilerCommand.GET_SAMPLING_PROFILE,
             params=None,
             session_id=session_id,
         )
@@ -141,7 +142,7 @@ class HeapProfilerClient:
         )
 
         result = await self._client.send_raw(
-            method="HeapProfiler.startSampling",
+            method=HeapProfilerCommand.START_SAMPLING,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -156,7 +157,7 @@ class HeapProfilerClient:
         params = StartTrackingHeapObjectsParams(trackAllocations=track_allocations)
 
         result = await self._client.send_raw(
-            method="HeapProfiler.startTrackingHeapObjects",
+            method=HeapProfilerCommand.START_TRACKING_HEAP_OBJECTS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -167,7 +168,7 @@ class HeapProfilerClient:
         session_id: str | None = None,
     ) -> StopSamplingResult:
         result = await self._client.send_raw(
-            method="HeapProfiler.stopSampling",
+            method=HeapProfilerCommand.STOP_SAMPLING,
             params=None,
             session_id=session_id,
         )
@@ -190,7 +191,7 @@ class HeapProfilerClient:
         )
 
         result = await self._client.send_raw(
-            method="HeapProfiler.stopTrackingHeapObjects",
+            method=HeapProfilerCommand.STOP_TRACKING_HEAP_OBJECTS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -213,7 +214,7 @@ class HeapProfilerClient:
         )
 
         result = await self._client.send_raw(
-            method="HeapProfiler.takeHeapSnapshot",
+            method=HeapProfilerCommand.TAKE_HEAP_SNAPSHOT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )

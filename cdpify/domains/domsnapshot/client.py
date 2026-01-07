@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from cdpify.client import CDPClient
 
 from .commands import (
+    DOMSnapshotCommand,
     CaptureSnapshotParams,
     CaptureSnapshotResult,
     GetSnapshotParams,
@@ -26,7 +27,7 @@ class DOMSnapshotClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="DOMSnapshot.disable",
+            method=DOMSnapshotCommand.DISABLE,
             params=None,
             session_id=session_id,
         )
@@ -37,7 +38,7 @@ class DOMSnapshotClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="DOMSnapshot.enable",
+            method=DOMSnapshotCommand.ENABLE,
             params=None,
             session_id=session_id,
         )
@@ -60,7 +61,7 @@ class DOMSnapshotClient:
         )
 
         result = await self._client.send_raw(
-            method="DOMSnapshot.getSnapshot",
+            method=DOMSnapshotCommand.GET_SNAPSHOT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -85,7 +86,7 @@ class DOMSnapshotClient:
         )
 
         result = await self._client.send_raw(
-            method="DOMSnapshot.captureSnapshot",
+            method=DOMSnapshotCommand.CAPTURE_SNAPSHOT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )

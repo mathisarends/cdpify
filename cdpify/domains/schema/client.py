@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from cdpify.client import CDPClient
 
 from .commands import (
+    SchemaCommand,
     GetDomainsResult,
 )
 
@@ -23,7 +24,7 @@ class SchemaClient:
         session_id: str | None = None,
     ) -> GetDomainsResult:
         result = await self._client.send_raw(
-            method="Schema.getDomains",
+            method=SchemaCommand.GET_DOMAINS,
             params=None,
             session_id=session_id,
         )

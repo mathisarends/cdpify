@@ -3,11 +3,27 @@
 # Generated from Chrome DevTools Protocol specifications.
 
 from typing import TYPE_CHECKING
+from enum import StrEnum
 from cdpify.domains.base import CDPModel
 
 from .types import *
 
 from cdpify.domains import runtime
+
+
+class HeapProfilerCommand(StrEnum):
+    ADD_INSPECTED_HEAP_OBJECT = "HeapProfiler.addInspectedHeapObject"
+    COLLECT_GARBAGE = "HeapProfiler.collectGarbage"
+    DISABLE = "HeapProfiler.disable"
+    ENABLE = "HeapProfiler.enable"
+    GET_HEAP_OBJECT_ID = "HeapProfiler.getHeapObjectId"
+    GET_OBJECT_BY_HEAP_OBJECT_ID = "HeapProfiler.getObjectByHeapObjectId"
+    GET_SAMPLING_PROFILE = "HeapProfiler.getSamplingProfile"
+    START_SAMPLING = "HeapProfiler.startSampling"
+    START_TRACKING_HEAP_OBJECTS = "HeapProfiler.startTrackingHeapObjects"
+    STOP_SAMPLING = "HeapProfiler.stopSampling"
+    STOP_TRACKING_HEAP_OBJECTS = "HeapProfiler.stopTrackingHeapObjects"
+    TAKE_HEAP_SNAPSHOT = "HeapProfiler.takeHeapSnapshot"
 
 
 class AddInspectedHeapObjectParams(CDPModel):

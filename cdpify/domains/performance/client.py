@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from cdpify.client import CDPClient
 
 from .commands import (
+    PerformanceCommand,
     EnableParams,
     GetMetricsResult,
     SetTimeDomainParams,
@@ -25,7 +26,7 @@ class PerformanceClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Performance.disable",
+            method=PerformanceCommand.DISABLE,
             params=None,
             session_id=session_id,
         )
@@ -40,7 +41,7 @@ class PerformanceClient:
         params = EnableParams(timeDomain=time_domain)
 
         result = await self._client.send_raw(
-            method="Performance.enable",
+            method=PerformanceCommand.ENABLE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -55,7 +56,7 @@ class PerformanceClient:
         params = SetTimeDomainParams(timeDomain=time_domain)
 
         result = await self._client.send_raw(
-            method="Performance.setTimeDomain",
+            method=PerformanceCommand.SET_TIME_DOMAIN,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -66,7 +67,7 @@ class PerformanceClient:
         session_id: str | None = None,
     ) -> GetMetricsResult:
         result = await self._client.send_raw(
-            method="Performance.getMetrics",
+            method=PerformanceCommand.GET_METRICS,
             params=None,
             session_id=session_id,
         )

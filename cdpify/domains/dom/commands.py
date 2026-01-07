@@ -3,6 +3,7 @@
 # Generated from Chrome DevTools Protocol specifications.
 
 from typing import Literal, TYPE_CHECKING
+from enum import StrEnum
 from cdpify.domains.base import CDPModel
 
 from .types import *
@@ -10,6 +11,62 @@ from .types import *
 from cdpify.domains import dom
 from cdpify.domains import page
 from cdpify.domains import runtime
+
+
+class DOMCommand(StrEnum):
+    COLLECT_CLASS_NAMES_FROM_SUBTREE = "DOM.collectClassNamesFromSubtree"
+    COPY_TO = "DOM.copyTo"
+    DESCRIBE_NODE = "DOM.describeNode"
+    SCROLL_INTO_VIEW_IF_NEEDED = "DOM.scrollIntoViewIfNeeded"
+    DISABLE = "DOM.disable"
+    DISCARD_SEARCH_RESULTS = "DOM.discardSearchResults"
+    ENABLE = "DOM.enable"
+    FOCUS = "DOM.focus"
+    GET_ATTRIBUTES = "DOM.getAttributes"
+    GET_BOX_MODEL = "DOM.getBoxModel"
+    GET_CONTENT_QUADS = "DOM.getContentQuads"
+    GET_DOCUMENT = "DOM.getDocument"
+    GET_FLATTENED_DOCUMENT = "DOM.getFlattenedDocument"
+    GET_NODES_FOR_SUBTREE_BY_STYLE = "DOM.getNodesForSubtreeByStyle"
+    GET_NODE_FOR_LOCATION = "DOM.getNodeForLocation"
+    GET_OUTER_H_T_M_L = "DOM.getOuterHTML"
+    GET_RELAYOUT_BOUNDARY = "DOM.getRelayoutBoundary"
+    GET_SEARCH_RESULTS = "DOM.getSearchResults"
+    HIDE_HIGHLIGHT = "DOM.hideHighlight"
+    HIGHLIGHT_NODE = "DOM.highlightNode"
+    HIGHLIGHT_RECT = "DOM.highlightRect"
+    MARK_UNDOABLE_STATE = "DOM.markUndoableState"
+    MOVE_TO = "DOM.moveTo"
+    PERFORM_SEARCH = "DOM.performSearch"
+    PUSH_NODE_BY_PATH_TO_FRONTEND = "DOM.pushNodeByPathToFrontend"
+    PUSH_NODES_BY_BACKEND_IDS_TO_FRONTEND = "DOM.pushNodesByBackendIdsToFrontend"
+    QUERY_SELECTOR = "DOM.querySelector"
+    QUERY_SELECTOR_ALL = "DOM.querySelectorAll"
+    GET_TOP_LAYER_ELEMENTS = "DOM.getTopLayerElements"
+    GET_ELEMENT_BY_RELATION = "DOM.getElementByRelation"
+    REDO = "DOM.redo"
+    REMOVE_ATTRIBUTE = "DOM.removeAttribute"
+    REMOVE_NODE = "DOM.removeNode"
+    REQUEST_CHILD_NODES = "DOM.requestChildNodes"
+    REQUEST_NODE = "DOM.requestNode"
+    RESOLVE_NODE = "DOM.resolveNode"
+    SET_ATTRIBUTE_VALUE = "DOM.setAttributeValue"
+    SET_ATTRIBUTES_AS_TEXT = "DOM.setAttributesAsText"
+    SET_FILE_INPUT_FILES = "DOM.setFileInputFiles"
+    SET_NODE_STACK_TRACES_ENABLED = "DOM.setNodeStackTracesEnabled"
+    GET_NODE_STACK_TRACES = "DOM.getNodeStackTraces"
+    GET_FILE_INFO = "DOM.getFileInfo"
+    GET_DETACHED_DOM_NODES = "DOM.getDetachedDomNodes"
+    SET_INSPECTED_NODE = "DOM.setInspectedNode"
+    SET_NODE_NAME = "DOM.setNodeName"
+    SET_NODE_VALUE = "DOM.setNodeValue"
+    SET_OUTER_H_T_M_L = "DOM.setOuterHTML"
+    UNDO = "DOM.undo"
+    GET_FRAME_OWNER = "DOM.getFrameOwner"
+    GET_CONTAINER_FOR_NODE = "DOM.getContainerForNode"
+    GET_QUERYING_DESCENDANTS_FOR_CONTAINER = "DOM.getQueryingDescendantsForContainer"
+    GET_ANCHOR_ELEMENT = "DOM.getAnchorElement"
+    FORCE_SHOW_POPOVER = "DOM.forceShowPopover"
 
 
 class CollectClassNamesFromSubtreeParams(CDPModel):

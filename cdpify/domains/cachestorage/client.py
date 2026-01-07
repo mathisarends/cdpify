@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from cdpify.client import CDPClient
 
 from .commands import (
+    CacheStorageCommand,
     DeleteCacheParams,
     DeleteEntryParams,
     RequestCacheNamesParams,
@@ -39,7 +40,7 @@ class CacheStorageClient:
         params = DeleteCacheParams(cacheId=cache_id)
 
         result = await self._client.send_raw(
-            method="CacheStorage.deleteCache",
+            method=CacheStorageCommand.DELETE_CACHE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -55,7 +56,7 @@ class CacheStorageClient:
         params = DeleteEntryParams(cacheId=cache_id, request=request)
 
         result = await self._client.send_raw(
-            method="CacheStorage.deleteEntry",
+            method=CacheStorageCommand.DELETE_ENTRY,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -76,7 +77,7 @@ class CacheStorageClient:
         )
 
         result = await self._client.send_raw(
-            method="CacheStorage.requestCacheNames",
+            method=CacheStorageCommand.REQUEST_CACHE_NAMES,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -95,7 +96,7 @@ class CacheStorageClient:
         )
 
         result = await self._client.send_raw(
-            method="CacheStorage.requestCachedResponse",
+            method=CacheStorageCommand.REQUEST_CACHED_RESPONSE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -118,7 +119,7 @@ class CacheStorageClient:
         )
 
         result = await self._client.send_raw(
-            method="CacheStorage.requestEntries",
+            method=CacheStorageCommand.REQUEST_ENTRIES,
             params=params.to_cdp_params(),
             session_id=session_id,
         )

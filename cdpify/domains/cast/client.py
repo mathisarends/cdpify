@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from cdpify.client import CDPClient
 
 from .commands import (
+    CastCommand,
     EnableParams,
     SetSinkToUseParams,
     StartDesktopMirroringParams,
@@ -31,7 +32,7 @@ class CastClient:
         params = EnableParams(presentationUrl=presentation_url)
 
         result = await self._client.send_raw(
-            method="Cast.enable",
+            method=CastCommand.ENABLE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -42,7 +43,7 @@ class CastClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Cast.disable",
+            method=CastCommand.DISABLE,
             params=None,
             session_id=session_id,
         )
@@ -57,7 +58,7 @@ class CastClient:
         params = SetSinkToUseParams(sinkName=sink_name)
 
         result = await self._client.send_raw(
-            method="Cast.setSinkToUse",
+            method=CastCommand.SET_SINK_TO_USE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -72,7 +73,7 @@ class CastClient:
         params = StartDesktopMirroringParams(sinkName=sink_name)
 
         result = await self._client.send_raw(
-            method="Cast.startDesktopMirroring",
+            method=CastCommand.START_DESKTOP_MIRRORING,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -87,7 +88,7 @@ class CastClient:
         params = StartTabMirroringParams(sinkName=sink_name)
 
         result = await self._client.send_raw(
-            method="Cast.startTabMirroring",
+            method=CastCommand.START_TAB_MIRRORING,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -102,7 +103,7 @@ class CastClient:
         params = StopCastingParams(sinkName=sink_name)
 
         result = await self._client.send_raw(
-            method="Cast.stopCasting",
+            method=CastCommand.STOP_CASTING,
             params=params.to_cdp_params(),
             session_id=session_id,
         )

@@ -3,11 +3,34 @@
 # Generated from Chrome DevTools Protocol specifications.
 
 from typing import TYPE_CHECKING
+from enum import StrEnum
 from cdpify.domains.base import CDPModel
 
 from .types import *
 
 from cdpify.domains import browser
+
+
+class TargetCommand(StrEnum):
+    ACTIVATE_TARGET = "Target.activateTarget"
+    ATTACH_TO_TARGET = "Target.attachToTarget"
+    ATTACH_TO_BROWSER_TARGET = "Target.attachToBrowserTarget"
+    CLOSE_TARGET = "Target.closeTarget"
+    EXPOSE_DEV_TOOLS_PROTOCOL = "Target.exposeDevToolsProtocol"
+    CREATE_BROWSER_CONTEXT = "Target.createBrowserContext"
+    GET_BROWSER_CONTEXTS = "Target.getBrowserContexts"
+    CREATE_TARGET = "Target.createTarget"
+    DETACH_FROM_TARGET = "Target.detachFromTarget"
+    DISPOSE_BROWSER_CONTEXT = "Target.disposeBrowserContext"
+    GET_TARGET_INFO = "Target.getTargetInfo"
+    GET_TARGETS = "Target.getTargets"
+    SEND_MESSAGE_TO_TARGET = "Target.sendMessageToTarget"
+    SET_AUTO_ATTACH = "Target.setAutoAttach"
+    AUTO_ATTACH_RELATED = "Target.autoAttachRelated"
+    SET_DISCOVER_TARGETS = "Target.setDiscoverTargets"
+    SET_REMOTE_LOCATIONS = "Target.setRemoteLocations"
+    GET_DEV_TOOLS_TARGET = "Target.getDevToolsTarget"
+    OPEN_DEV_TOOLS = "Target.openDevTools"
 
 
 class ActivateTargetParams(CDPModel):

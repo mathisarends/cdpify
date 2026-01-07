@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from cdpify.client import CDPClient
 
 from .commands import (
+    SystemInfoCommand,
     GetFeatureStateParams,
     GetFeatureStateResult,
     GetInfoResult,
@@ -26,7 +27,7 @@ class SystemInfoClient:
         session_id: str | None = None,
     ) -> GetInfoResult:
         result = await self._client.send_raw(
-            method="SystemInfo.getInfo",
+            method=SystemInfoCommand.GET_INFO,
             params=None,
             session_id=session_id,
         )
@@ -41,7 +42,7 @@ class SystemInfoClient:
         params = GetFeatureStateParams(featureState=feature_state)
 
         result = await self._client.send_raw(
-            method="SystemInfo.getFeatureState",
+            method=SystemInfoCommand.GET_FEATURE_STATE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -52,7 +53,7 @@ class SystemInfoClient:
         session_id: str | None = None,
     ) -> GetProcessInfoResult:
         result = await self._client.send_raw(
-            method="SystemInfo.getProcessInfo",
+            method=SystemInfoCommand.GET_PROCESS_INFO,
             params=None,
             session_id=session_id,
         )

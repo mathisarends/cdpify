@@ -53,8 +53,10 @@ class ClientGenerator(BaseGenerator):
         }
 
         all_classes = sorted(param_classes | return_classes)
-        if not all_classes:
-            return []
+
+        # Add the command enum
+        command_enum = f"{domain.domain}Command"
+        all_classes.insert(0, command_enum)
 
         lines = ["from .commands import ("]
         for cls in all_classes:
@@ -134,11 +136,10 @@ class ClientGenerator(BaseGenerator):
 
     def _generate_method(self, command: Command, domain_name: str) -> str:
         method_name = to_snake_case(command.name)
-        cdp_method = f"{domain_name}.{command.name}"
 
         params = self._build_params(command)
         return_type = self._get_return_type(command)
-        method_body = self._build_method_body(command, cdp_method)
+        method_body = self._build_method_body(command, domain_name)
 
         lines = [f"    async def {method_name}("]
 
@@ -187,15 +188,15 @@ class ClientGenerator(BaseGenerator):
         self._track_type_usage(param_type)
         return param_type.removesuffix(" | None")
 
-    def _build_method_body(self, command: Command, cdp_method: str) -> list[str]:
+    def _build_method_body(self, command: Command, domain_name: str) -> list[str]:
         lines = []
 
         if command.parameters:
             lines.extend(self._build_params_construction(command))
             lines.append("")
-            lines.extend(self._build_send_with_params(cdp_method))
+            lines.extend(self._build_send_with_params(command, domain_name))
         else:
-            lines.extend(self._build_send_without_params(cdp_method))
+            lines.extend(self._build_send_without_params(command, domain_name))
 
         lines.extend(self._build_return_statement(command))
         return lines
@@ -216,19 +217,27 @@ class ClientGenerator(BaseGenerator):
             for param in command.parameters
         }
 
-    def _build_send_with_params(self, cdp_method: str) -> list[str]:
+    def _to_enum_name(self, name: str) -> str:
+        snake = to_snake_case(name)
+        return snake.upper()
+
+    def _build_send_with_params(self, command: Command, domain_name: str) -> list[str]:
+        enum_ref = f"{domain_name}Command.{self._to_enum_name(command.name)}"
         return [
             "result = await self._client.send_raw(",
-            f'    method="{cdp_method}",',
+            f"    method={enum_ref},",
             "    params=params.to_cdp_params(),",
             "    session_id=session_id,",
             ")",
         ]
 
-    def _build_send_without_params(self, cdp_method: str) -> list[str]:
+    def _build_send_without_params(
+        self, command: Command, domain_name: str
+    ) -> list[str]:
+        enum_ref = f"{domain_name}Command.{self._to_enum_name(command.name)}"
         return [
             "result = await self._client.send_raw(",
-            f'    method="{cdp_method}",',
+            f"    method={enum_ref},",
             "    params=None,",
             "    session_id=session_id,",
             ")",

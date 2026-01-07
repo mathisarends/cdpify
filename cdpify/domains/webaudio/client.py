@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from cdpify.client import CDPClient
 
 from .commands import (
+    WebAudioCommand,
     GetRealtimeDataParams,
     GetRealtimeDataResult,
 )
@@ -28,7 +29,7 @@ class WebAudioClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="WebAudio.enable",
+            method=WebAudioCommand.ENABLE,
             params=None,
             session_id=session_id,
         )
@@ -39,7 +40,7 @@ class WebAudioClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="WebAudio.disable",
+            method=WebAudioCommand.DISABLE,
             params=None,
             session_id=session_id,
         )
@@ -54,7 +55,7 @@ class WebAudioClient:
         params = GetRealtimeDataParams(contextId=context_id)
 
         result = await self._client.send_raw(
-            method="WebAudio.getRealtimeData",
+            method=WebAudioCommand.GET_REALTIME_DATA,
             params=params.to_cdp_params(),
             session_id=session_id,
         )

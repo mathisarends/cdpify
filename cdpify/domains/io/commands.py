@@ -3,11 +3,18 @@
 # Generated from Chrome DevTools Protocol specifications.
 
 from typing import TYPE_CHECKING
+from enum import StrEnum
 from cdpify.domains.base import CDPModel
 
 from .types import *
 
 from cdpify.domains import runtime
+
+
+class IOCommand(StrEnum):
+    CLOSE = "IO.close"
+    READ = "IO.read"
+    RESOLVE_BLOB = "IO.resolveBlob"
 
 
 class CloseParams(CDPModel):

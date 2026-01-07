@@ -3,9 +3,17 @@
 # Generated from Chrome DevTools Protocol specifications.
 
 from typing import Literal
+from enum import StrEnum
 from cdpify.domains.base import CDPModel
 
 from .types import *
+
+
+class PerformanceCommand(StrEnum):
+    DISABLE = "Performance.disable"
+    ENABLE = "Performance.enable"
+    SET_TIME_DOMAIN = "Performance.setTimeDomain"
+    GET_METRICS = "Performance.getMetrics"
 
 
 class EnableParams(CDPModel):

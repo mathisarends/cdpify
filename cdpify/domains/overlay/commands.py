@@ -3,6 +3,7 @@
 # Generated from Chrome DevTools Protocol specifications.
 
 from typing import Any, TYPE_CHECKING
+from enum import StrEnum
 from cdpify.domains.base import CDPModel
 
 from .types import *
@@ -10,6 +11,40 @@ from .types import *
 from cdpify.domains import dom
 from cdpify.domains import page
 from cdpify.domains import runtime
+
+
+class OverlayCommand(StrEnum):
+    DISABLE = "Overlay.disable"
+    ENABLE = "Overlay.enable"
+    GET_HIGHLIGHT_OBJECT_FOR_TEST = "Overlay.getHighlightObjectForTest"
+    GET_GRID_HIGHLIGHT_OBJECTS_FOR_TEST = "Overlay.getGridHighlightObjectsForTest"
+    GET_SOURCE_ORDER_HIGHLIGHT_OBJECT_FOR_TEST = (
+        "Overlay.getSourceOrderHighlightObjectForTest"
+    )
+    HIDE_HIGHLIGHT = "Overlay.hideHighlight"
+    HIGHLIGHT_FRAME = "Overlay.highlightFrame"
+    HIGHLIGHT_NODE = "Overlay.highlightNode"
+    HIGHLIGHT_QUAD = "Overlay.highlightQuad"
+    HIGHLIGHT_RECT = "Overlay.highlightRect"
+    HIGHLIGHT_SOURCE_ORDER = "Overlay.highlightSourceOrder"
+    SET_INSPECT_MODE = "Overlay.setInspectMode"
+    SET_SHOW_AD_HIGHLIGHTS = "Overlay.setShowAdHighlights"
+    SET_PAUSED_IN_DEBUGGER_MESSAGE = "Overlay.setPausedInDebuggerMessage"
+    SET_SHOW_DEBUG_BORDERS = "Overlay.setShowDebugBorders"
+    SET_SHOW_F_P_S_COUNTER = "Overlay.setShowFPSCounter"
+    SET_SHOW_GRID_OVERLAYS = "Overlay.setShowGridOverlays"
+    SET_SHOW_FLEX_OVERLAYS = "Overlay.setShowFlexOverlays"
+    SET_SHOW_SCROLL_SNAP_OVERLAYS = "Overlay.setShowScrollSnapOverlays"
+    SET_SHOW_CONTAINER_QUERY_OVERLAYS = "Overlay.setShowContainerQueryOverlays"
+    SET_SHOW_PAINT_RECTS = "Overlay.setShowPaintRects"
+    SET_SHOW_LAYOUT_SHIFT_REGIONS = "Overlay.setShowLayoutShiftRegions"
+    SET_SHOW_SCROLL_BOTTLENECK_RECTS = "Overlay.setShowScrollBottleneckRects"
+    SET_SHOW_HIT_TEST_BORDERS = "Overlay.setShowHitTestBorders"
+    SET_SHOW_WEB_VITALS = "Overlay.setShowWebVitals"
+    SET_SHOW_VIEWPORT_SIZE_ON_RESIZE = "Overlay.setShowViewportSizeOnResize"
+    SET_SHOW_HINGE = "Overlay.setShowHinge"
+    SET_SHOW_ISOLATED_ELEMENTS = "Overlay.setShowIsolatedElements"
+    SET_SHOW_WINDOW_CONTROLS_OVERLAY = "Overlay.setShowWindowControlsOverlay"
 
 
 class GetHighlightObjectForTestParams(CDPModel):

@@ -63,6 +63,7 @@ class NetworkEvent(StrEnum):
     REPORTING_API_ENDPOINTS_CHANGED_FOR_ORIGIN = (
         "Network.reportingApiEndpointsChangedForOrigin"
     )
+    DEVICE_BOUND_SESSIONS_ADDED = "Network.deviceBoundSessionsAdded"
 
 
 class DataReceivedEvent(CDPModel):
@@ -532,3 +533,11 @@ class ReportingApiReportUpdatedEvent(CDPModel):
 class ReportingApiEndpointsChangedForOriginEvent(CDPModel):
     origin: str
     endpoints: list[ReportingApiEndpoint]
+
+
+class DeviceBoundSessionsAddedEvent(CDPModel):
+    """
+    Triggered when the initial set of device bound sessions is added.
+    """
+
+    sessions: list[DeviceBoundSession]

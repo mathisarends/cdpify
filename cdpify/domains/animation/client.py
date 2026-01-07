@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from cdpify.client import CDPClient
 
 from .commands import (
+    AnimationCommand,
     GetCurrentTimeParams,
     GetCurrentTimeResult,
     GetPlaybackRateResult,
@@ -32,7 +33,7 @@ class AnimationClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Animation.disable",
+            method=AnimationCommand.DISABLE,
             params=None,
             session_id=session_id,
         )
@@ -43,7 +44,7 @@ class AnimationClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Animation.enable",
+            method=AnimationCommand.ENABLE,
             params=None,
             session_id=session_id,
         )
@@ -58,7 +59,7 @@ class AnimationClient:
         params = GetCurrentTimeParams(id=id)
 
         result = await self._client.send_raw(
-            method="Animation.getCurrentTime",
+            method=AnimationCommand.GET_CURRENT_TIME,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -69,7 +70,7 @@ class AnimationClient:
         session_id: str | None = None,
     ) -> GetPlaybackRateResult:
         result = await self._client.send_raw(
-            method="Animation.getPlaybackRate",
+            method=AnimationCommand.GET_PLAYBACK_RATE,
             params=None,
             session_id=session_id,
         )
@@ -84,7 +85,7 @@ class AnimationClient:
         params = ReleaseAnimationsParams(animations=animations)
 
         result = await self._client.send_raw(
-            method="Animation.releaseAnimations",
+            method=AnimationCommand.RELEASE_ANIMATIONS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -99,7 +100,7 @@ class AnimationClient:
         params = ResolveAnimationParams(animationId=animation_id)
 
         result = await self._client.send_raw(
-            method="Animation.resolveAnimation",
+            method=AnimationCommand.RESOLVE_ANIMATION,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -115,7 +116,7 @@ class AnimationClient:
         params = SeekAnimationsParams(animations=animations, currentTime=current_time)
 
         result = await self._client.send_raw(
-            method="Animation.seekAnimations",
+            method=AnimationCommand.SEEK_ANIMATIONS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -131,7 +132,7 @@ class AnimationClient:
         params = SetPausedParams(animations=animations, paused=paused)
 
         result = await self._client.send_raw(
-            method="Animation.setPaused",
+            method=AnimationCommand.SET_PAUSED,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -146,7 +147,7 @@ class AnimationClient:
         params = SetPlaybackRateParams(playbackRate=playback_rate)
 
         result = await self._client.send_raw(
-            method="Animation.setPlaybackRate",
+            method=AnimationCommand.SET_PLAYBACK_RATE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -165,7 +166,7 @@ class AnimationClient:
         )
 
         result = await self._client.send_raw(
-            method="Animation.setTiming",
+            method=AnimationCommand.SET_TIMING,
             params=params.to_cdp_params(),
             session_id=session_id,
         )

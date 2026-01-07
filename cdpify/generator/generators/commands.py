@@ -12,6 +12,7 @@ class CommandsGenerator(BaseGenerator):
     def generate(self, domain: Domain) -> str:
         self._reset_tracking()
 
+        command_enum = self._generate_command_enum(domain)
         command_models = self._generate_command_models(domain)
 
         sections = [
@@ -21,6 +22,9 @@ class CommandsGenerator(BaseGenerator):
 
         if self._cross_domain_refs:
             sections.append(self._cross_domain_imports())
+
+        if command_enum:
+            sections.append(command_enum)
 
         sections.append(command_models if command_models else "# No commands defined")
 
@@ -33,6 +37,7 @@ class CommandsGenerator(BaseGenerator):
         if typing_imports:
             lines.append(typing_imports)
 
+        lines.append("from enum import StrEnum")
         lines.append("from cdpify.domains.base import CDPModel")
 
         if has_models:
@@ -43,6 +48,24 @@ class CommandsGenerator(BaseGenerator):
 
     def _cross_domain_imports(self) -> str:
         return self._build_cross_domain_imports(use_type_checking=False)
+
+    def _generate_command_enum(self, domain: Domain) -> str:
+        if not domain.commands:
+            return ""
+
+        class_name = f"{domain.domain}Command"
+        lines = [f"class {class_name}(StrEnum):"]
+
+        for command in domain.commands:
+            enum_name = self._to_enum_name(command.name)
+            command_value = f"{domain.domain}.{command.name}"
+            lines.append(f'    {enum_name} = "{command_value}"')
+
+        return "\n".join(lines)
+
+    def _to_enum_name(self, name: str) -> str:
+        snake = to_snake_case(name)
+        return snake.upper()
 
     def _generate_command_models(self, domain: Domain) -> str:
         if not domain.commands:

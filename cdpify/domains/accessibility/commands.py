@@ -3,6 +3,7 @@
 # Generated from Chrome DevTools Protocol specifications.
 
 from typing import TYPE_CHECKING
+from enum import StrEnum
 from cdpify.domains.base import CDPModel
 
 from .types import *
@@ -10,6 +11,17 @@ from .types import *
 from cdpify.domains import dom
 from cdpify.domains import page
 from cdpify.domains import runtime
+
+
+class AccessibilityCommand(StrEnum):
+    DISABLE = "Accessibility.disable"
+    ENABLE = "Accessibility.enable"
+    GET_PARTIAL_A_X_TREE = "Accessibility.getPartialAXTree"
+    GET_FULL_A_X_TREE = "Accessibility.getFullAXTree"
+    GET_ROOT_A_X_NODE = "Accessibility.getRootAXNode"
+    GET_A_X_NODE_AND_ANCESTORS = "Accessibility.getAXNodeAndAncestors"
+    GET_CHILD_A_X_NODES = "Accessibility.getChildAXNodes"
+    QUERY_A_X_TREE = "Accessibility.queryAXTree"
 
 
 class GetPartialAXTreeParams(CDPModel):

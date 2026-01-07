@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from cdpify.client import CDPClient
 
 from .commands import (
+    DOMCommand,
     CollectClassNamesFromSubtreeParams,
     CollectClassNamesFromSubtreeResult,
     CopyToParams,
@@ -111,7 +112,7 @@ class DOMClient:
         params = CollectClassNamesFromSubtreeParams(nodeId=node_id)
 
         result = await self._client.send_raw(
-            method="DOM.collectClassNamesFromSubtree",
+            method=DOMCommand.COLLECT_CLASS_NAMES_FROM_SUBTREE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -132,7 +133,7 @@ class DOMClient:
         )
 
         result = await self._client.send_raw(
-            method="DOM.copyTo",
+            method=DOMCommand.COPY_TO,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -157,7 +158,7 @@ class DOMClient:
         )
 
         result = await self._client.send_raw(
-            method="DOM.describeNode",
+            method=DOMCommand.DESCRIBE_NODE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -177,7 +178,7 @@ class DOMClient:
         )
 
         result = await self._client.send_raw(
-            method="DOM.scrollIntoViewIfNeeded",
+            method=DOMCommand.SCROLL_INTO_VIEW_IF_NEEDED,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -188,7 +189,7 @@ class DOMClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="DOM.disable",
+            method=DOMCommand.DISABLE,
             params=None,
             session_id=session_id,
         )
@@ -203,7 +204,7 @@ class DOMClient:
         params = DiscardSearchResultsParams(searchId=search_id)
 
         result = await self._client.send_raw(
-            method="DOM.discardSearchResults",
+            method=DOMCommand.DISCARD_SEARCH_RESULTS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -218,7 +219,7 @@ class DOMClient:
         params = EnableParams(includeWhitespace=include_whitespace)
 
         result = await self._client.send_raw(
-            method="DOM.enable",
+            method=DOMCommand.ENABLE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -237,7 +238,7 @@ class DOMClient:
         )
 
         result = await self._client.send_raw(
-            method="DOM.focus",
+            method=DOMCommand.FOCUS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -252,7 +253,7 @@ class DOMClient:
         params = GetAttributesParams(nodeId=node_id)
 
         result = await self._client.send_raw(
-            method="DOM.getAttributes",
+            method=DOMCommand.GET_ATTRIBUTES,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -271,7 +272,7 @@ class DOMClient:
         )
 
         result = await self._client.send_raw(
-            method="DOM.getBoxModel",
+            method=DOMCommand.GET_BOX_MODEL,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -290,7 +291,7 @@ class DOMClient:
         )
 
         result = await self._client.send_raw(
-            method="DOM.getContentQuads",
+            method=DOMCommand.GET_CONTENT_QUADS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -306,7 +307,7 @@ class DOMClient:
         params = GetDocumentParams(depth=depth, pierce=pierce)
 
         result = await self._client.send_raw(
-            method="DOM.getDocument",
+            method=DOMCommand.GET_DOCUMENT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -322,7 +323,7 @@ class DOMClient:
         params = GetFlattenedDocumentParams(depth=depth, pierce=pierce)
 
         result = await self._client.send_raw(
-            method="DOM.getFlattenedDocument",
+            method=DOMCommand.GET_FLATTENED_DOCUMENT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -341,7 +342,7 @@ class DOMClient:
         )
 
         result = await self._client.send_raw(
-            method="DOM.getNodesForSubtreeByStyle",
+            method=DOMCommand.GET_NODES_FOR_SUBTREE_BY_STYLE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -364,7 +365,7 @@ class DOMClient:
         )
 
         result = await self._client.send_raw(
-            method="DOM.getNodeForLocation",
+            method=DOMCommand.GET_NODE_FOR_LOCATION,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -387,7 +388,7 @@ class DOMClient:
         )
 
         result = await self._client.send_raw(
-            method="DOM.getOuterHTML",
+            method=DOMCommand.GET_OUTER_H_T_M_L,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -402,7 +403,7 @@ class DOMClient:
         params = GetRelayoutBoundaryParams(nodeId=node_id)
 
         result = await self._client.send_raw(
-            method="DOM.getRelayoutBoundary",
+            method=DOMCommand.GET_RELAYOUT_BOUNDARY,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -421,7 +422,7 @@ class DOMClient:
         )
 
         result = await self._client.send_raw(
-            method="DOM.getSearchResults",
+            method=DOMCommand.GET_SEARCH_RESULTS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -432,7 +433,7 @@ class DOMClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="DOM.hideHighlight",
+            method=DOMCommand.HIDE_HIGHLIGHT,
             params=None,
             session_id=session_id,
         )
@@ -443,7 +444,7 @@ class DOMClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="DOM.highlightNode",
+            method=DOMCommand.HIGHLIGHT_NODE,
             params=None,
             session_id=session_id,
         )
@@ -454,7 +455,7 @@ class DOMClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="DOM.highlightRect",
+            method=DOMCommand.HIGHLIGHT_RECT,
             params=None,
             session_id=session_id,
         )
@@ -465,7 +466,7 @@ class DOMClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="DOM.markUndoableState",
+            method=DOMCommand.MARK_UNDOABLE_STATE,
             params=None,
             session_id=session_id,
         )
@@ -486,7 +487,7 @@ class DOMClient:
         )
 
         result = await self._client.send_raw(
-            method="DOM.moveTo",
+            method=DOMCommand.MOVE_TO,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -504,7 +505,7 @@ class DOMClient:
         )
 
         result = await self._client.send_raw(
-            method="DOM.performSearch",
+            method=DOMCommand.PERFORM_SEARCH,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -519,7 +520,7 @@ class DOMClient:
         params = PushNodeByPathToFrontendParams(path=path)
 
         result = await self._client.send_raw(
-            method="DOM.pushNodeByPathToFrontend",
+            method=DOMCommand.PUSH_NODE_BY_PATH_TO_FRONTEND,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -534,7 +535,7 @@ class DOMClient:
         params = PushNodesByBackendIdsToFrontendParams(backendNodeIds=backend_node_ids)
 
         result = await self._client.send_raw(
-            method="DOM.pushNodesByBackendIdsToFrontend",
+            method=DOMCommand.PUSH_NODES_BY_BACKEND_IDS_TO_FRONTEND,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -550,7 +551,7 @@ class DOMClient:
         params = QuerySelectorParams(nodeId=node_id, selector=selector)
 
         result = await self._client.send_raw(
-            method="DOM.querySelector",
+            method=DOMCommand.QUERY_SELECTOR,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -566,7 +567,7 @@ class DOMClient:
         params = QuerySelectorAllParams(nodeId=node_id, selector=selector)
 
         result = await self._client.send_raw(
-            method="DOM.querySelectorAll",
+            method=DOMCommand.QUERY_SELECTOR_ALL,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -577,7 +578,7 @@ class DOMClient:
         session_id: str | None = None,
     ) -> GetTopLayerElementsResult:
         result = await self._client.send_raw(
-            method="DOM.getTopLayerElements",
+            method=DOMCommand.GET_TOP_LAYER_ELEMENTS,
             params=None,
             session_id=session_id,
         )
@@ -593,7 +594,7 @@ class DOMClient:
         params = GetElementByRelationParams(nodeId=node_id, relation=relation)
 
         result = await self._client.send_raw(
-            method="DOM.getElementByRelation",
+            method=DOMCommand.GET_ELEMENT_BY_RELATION,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -604,7 +605,7 @@ class DOMClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="DOM.redo",
+            method=DOMCommand.REDO,
             params=None,
             session_id=session_id,
         )
@@ -620,7 +621,7 @@ class DOMClient:
         params = RemoveAttributeParams(nodeId=node_id, name=name)
 
         result = await self._client.send_raw(
-            method="DOM.removeAttribute",
+            method=DOMCommand.REMOVE_ATTRIBUTE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -635,7 +636,7 @@ class DOMClient:
         params = RemoveNodeParams(nodeId=node_id)
 
         result = await self._client.send_raw(
-            method="DOM.removeNode",
+            method=DOMCommand.REMOVE_NODE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -652,7 +653,7 @@ class DOMClient:
         params = RequestChildNodesParams(nodeId=node_id, depth=depth, pierce=pierce)
 
         result = await self._client.send_raw(
-            method="DOM.requestChildNodes",
+            method=DOMCommand.REQUEST_CHILD_NODES,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -667,7 +668,7 @@ class DOMClient:
         params = RequestNodeParams(objectId=object_id)
 
         result = await self._client.send_raw(
-            method="DOM.requestNode",
+            method=DOMCommand.REQUEST_NODE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -690,7 +691,7 @@ class DOMClient:
         )
 
         result = await self._client.send_raw(
-            method="DOM.resolveNode",
+            method=DOMCommand.RESOLVE_NODE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -707,7 +708,7 @@ class DOMClient:
         params = SetAttributeValueParams(nodeId=node_id, name=name, value=value)
 
         result = await self._client.send_raw(
-            method="DOM.setAttributeValue",
+            method=DOMCommand.SET_ATTRIBUTE_VALUE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -724,7 +725,7 @@ class DOMClient:
         params = SetAttributesAsTextParams(nodeId=node_id, text=text, name=name)
 
         result = await self._client.send_raw(
-            method="DOM.setAttributesAsText",
+            method=DOMCommand.SET_ATTRIBUTES_AS_TEXT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -747,7 +748,7 @@ class DOMClient:
         )
 
         result = await self._client.send_raw(
-            method="DOM.setFileInputFiles",
+            method=DOMCommand.SET_FILE_INPUT_FILES,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -762,7 +763,7 @@ class DOMClient:
         params = SetNodeStackTracesEnabledParams(enable=enable)
 
         result = await self._client.send_raw(
-            method="DOM.setNodeStackTracesEnabled",
+            method=DOMCommand.SET_NODE_STACK_TRACES_ENABLED,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -777,7 +778,7 @@ class DOMClient:
         params = GetNodeStackTracesParams(nodeId=node_id)
 
         result = await self._client.send_raw(
-            method="DOM.getNodeStackTraces",
+            method=DOMCommand.GET_NODE_STACK_TRACES,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -792,7 +793,7 @@ class DOMClient:
         params = GetFileInfoParams(objectId=object_id)
 
         result = await self._client.send_raw(
-            method="DOM.getFileInfo",
+            method=DOMCommand.GET_FILE_INFO,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -803,7 +804,7 @@ class DOMClient:
         session_id: str | None = None,
     ) -> GetDetachedDomNodesResult:
         result = await self._client.send_raw(
-            method="DOM.getDetachedDomNodes",
+            method=DOMCommand.GET_DETACHED_DOM_NODES,
             params=None,
             session_id=session_id,
         )
@@ -818,7 +819,7 @@ class DOMClient:
         params = SetInspectedNodeParams(nodeId=node_id)
 
         result = await self._client.send_raw(
-            method="DOM.setInspectedNode",
+            method=DOMCommand.SET_INSPECTED_NODE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -834,7 +835,7 @@ class DOMClient:
         params = SetNodeNameParams(nodeId=node_id, name=name)
 
         result = await self._client.send_raw(
-            method="DOM.setNodeName",
+            method=DOMCommand.SET_NODE_NAME,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -850,7 +851,7 @@ class DOMClient:
         params = SetNodeValueParams(nodeId=node_id, value=value)
 
         result = await self._client.send_raw(
-            method="DOM.setNodeValue",
+            method=DOMCommand.SET_NODE_VALUE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -866,7 +867,7 @@ class DOMClient:
         params = SetOuterHTMLParams(nodeId=node_id, outerHTML=outer_h_t_m_l)
 
         result = await self._client.send_raw(
-            method="DOM.setOuterHTML",
+            method=DOMCommand.SET_OUTER_H_T_M_L,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -877,7 +878,7 @@ class DOMClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="DOM.undo",
+            method=DOMCommand.UNDO,
             params=None,
             session_id=session_id,
         )
@@ -892,7 +893,7 @@ class DOMClient:
         params = GetFrameOwnerParams(frameId=frame_id)
 
         result = await self._client.send_raw(
-            method="DOM.getFrameOwner",
+            method=DOMCommand.GET_FRAME_OWNER,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -919,7 +920,7 @@ class DOMClient:
         )
 
         result = await self._client.send_raw(
-            method="DOM.getContainerForNode",
+            method=DOMCommand.GET_CONTAINER_FOR_NODE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -934,7 +935,7 @@ class DOMClient:
         params = GetQueryingDescendantsForContainerParams(nodeId=node_id)
 
         result = await self._client.send_raw(
-            method="DOM.getQueryingDescendantsForContainer",
+            method=DOMCommand.GET_QUERYING_DESCENDANTS_FOR_CONTAINER,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -952,7 +953,7 @@ class DOMClient:
         )
 
         result = await self._client.send_raw(
-            method="DOM.getAnchorElement",
+            method=DOMCommand.GET_ANCHOR_ELEMENT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -968,7 +969,7 @@ class DOMClient:
         params = ForceShowPopoverParams(nodeId=node_id, enable=enable)
 
         result = await self._client.send_raw(
-            method="DOM.forceShowPopover",
+            method=DOMCommand.FORCE_SHOW_POPOVER,
             params=params.to_cdp_params(),
             session_id=session_id,
         )

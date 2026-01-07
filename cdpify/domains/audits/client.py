@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from cdpify.client import CDPClient
 
 from .commands import (
+    AuditsCommand,
     CheckContrastParams,
     CheckFormsIssuesResult,
     GetEncodedResponseParams,
@@ -35,7 +36,7 @@ class AuditsClient:
         )
 
         result = await self._client.send_raw(
-            method="Audits.getEncodedResponse",
+            method=AuditsCommand.GET_ENCODED_RESPONSE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -46,7 +47,7 @@ class AuditsClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Audits.disable",
+            method=AuditsCommand.DISABLE,
             params=None,
             session_id=session_id,
         )
@@ -57,7 +58,7 @@ class AuditsClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Audits.enable",
+            method=AuditsCommand.ENABLE,
             params=None,
             session_id=session_id,
         )
@@ -72,7 +73,7 @@ class AuditsClient:
         params = CheckContrastParams(reportAAA=report_a_a_a)
 
         result = await self._client.send_raw(
-            method="Audits.checkContrast",
+            method=AuditsCommand.CHECK_CONTRAST,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -83,7 +84,7 @@ class AuditsClient:
         session_id: str | None = None,
     ) -> CheckFormsIssuesResult:
         result = await self._client.send_raw(
-            method="Audits.checkFormsIssues",
+            method=AuditsCommand.CHECK_FORMS_ISSUES,
             params=None,
             session_id=session_id,
         )

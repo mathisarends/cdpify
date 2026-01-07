@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from cdpify.client import CDPClient
 
 from .commands import (
+    EventBreakpointsCommand,
     RemoveInstrumentationBreakpointParams,
     SetInstrumentationBreakpointParams,
 )
@@ -28,7 +29,7 @@ class EventBreakpointsClient:
         params = SetInstrumentationBreakpointParams(eventName=event_name)
 
         result = await self._client.send_raw(
-            method="EventBreakpoints.setInstrumentationBreakpoint",
+            method=EventBreakpointsCommand.SET_INSTRUMENTATION_BREAKPOINT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -43,7 +44,7 @@ class EventBreakpointsClient:
         params = RemoveInstrumentationBreakpointParams(eventName=event_name)
 
         result = await self._client.send_raw(
-            method="EventBreakpoints.removeInstrumentationBreakpoint",
+            method=EventBreakpointsCommand.REMOVE_INSTRUMENTATION_BREAKPOINT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -54,7 +55,7 @@ class EventBreakpointsClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="EventBreakpoints.disable",
+            method=EventBreakpointsCommand.DISABLE,
             params=None,
             session_id=session_id,
         )

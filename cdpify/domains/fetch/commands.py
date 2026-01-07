@@ -3,12 +3,25 @@
 # Generated from Chrome DevTools Protocol specifications.
 
 from typing import TYPE_CHECKING
+from enum import StrEnum
 from cdpify.domains.base import CDPModel
 
 from .types import *
 
 from cdpify.domains import io
 from cdpify.domains import network
+
+
+class FetchCommand(StrEnum):
+    DISABLE = "Fetch.disable"
+    ENABLE = "Fetch.enable"
+    FAIL_REQUEST = "Fetch.failRequest"
+    FULFILL_REQUEST = "Fetch.fulfillRequest"
+    CONTINUE_REQUEST = "Fetch.continueRequest"
+    CONTINUE_WITH_AUTH = "Fetch.continueWithAuth"
+    CONTINUE_RESPONSE = "Fetch.continueResponse"
+    GET_RESPONSE_BODY = "Fetch.getResponseBody"
+    TAKE_RESPONSE_BODY_AS_STREAM = "Fetch.takeResponseBodyAsStream"
 
 
 class EnableParams(CDPModel):

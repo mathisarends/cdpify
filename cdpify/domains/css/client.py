@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from cdpify.client import CDPClient
 
 from .commands import (
+    CSSCommand,
     AddRuleParams,
     AddRuleResult,
     CollectClassNamesParams,
@@ -97,7 +98,7 @@ class CSSClient:
         )
 
         result = await self._client.send_raw(
-            method="CSS.addRule",
+            method=CSSCommand.ADD_RULE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -112,7 +113,7 @@ class CSSClient:
         params = CollectClassNamesParams(styleSheetId=style_sheet_id)
 
         result = await self._client.send_raw(
-            method="CSS.collectClassNames",
+            method=CSSCommand.COLLECT_CLASS_NAMES,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -128,7 +129,7 @@ class CSSClient:
         params = CreateStyleSheetParams(frameId=frame_id, force=force)
 
         result = await self._client.send_raw(
-            method="CSS.createStyleSheet",
+            method=CSSCommand.CREATE_STYLE_SHEET,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -139,7 +140,7 @@ class CSSClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="CSS.disable",
+            method=CSSCommand.DISABLE,
             params=None,
             session_id=session_id,
         )
@@ -150,7 +151,7 @@ class CSSClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="CSS.enable",
+            method=CSSCommand.ENABLE,
             params=None,
             session_id=session_id,
         )
@@ -168,7 +169,7 @@ class CSSClient:
         )
 
         result = await self._client.send_raw(
-            method="CSS.forcePseudoState",
+            method=CSSCommand.FORCE_PSEUDO_STATE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -184,7 +185,7 @@ class CSSClient:
         params = ForceStartingStyleParams(nodeId=node_id, forced=forced)
 
         result = await self._client.send_raw(
-            method="CSS.forceStartingStyle",
+            method=CSSCommand.FORCE_STARTING_STYLE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -199,7 +200,7 @@ class CSSClient:
         params = GetBackgroundColorsParams(nodeId=node_id)
 
         result = await self._client.send_raw(
-            method="CSS.getBackgroundColors",
+            method=CSSCommand.GET_BACKGROUND_COLORS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -214,7 +215,7 @@ class CSSClient:
         params = GetComputedStyleForNodeParams(nodeId=node_id)
 
         result = await self._client.send_raw(
-            method="CSS.getComputedStyleForNode",
+            method=CSSCommand.GET_COMPUTED_STYLE_FOR_NODE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -239,7 +240,7 @@ class CSSClient:
         )
 
         result = await self._client.send_raw(
-            method="CSS.resolveValues",
+            method=CSSCommand.RESOLVE_VALUES,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -255,7 +256,7 @@ class CSSClient:
         params = GetLonghandPropertiesParams(shorthandName=shorthand_name, value=value)
 
         result = await self._client.send_raw(
-            method="CSS.getLonghandProperties",
+            method=CSSCommand.GET_LONGHAND_PROPERTIES,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -270,7 +271,7 @@ class CSSClient:
         params = GetInlineStylesForNodeParams(nodeId=node_id)
 
         result = await self._client.send_raw(
-            method="CSS.getInlineStylesForNode",
+            method=CSSCommand.GET_INLINE_STYLES_FOR_NODE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -285,7 +286,7 @@ class CSSClient:
         params = GetAnimatedStylesForNodeParams(nodeId=node_id)
 
         result = await self._client.send_raw(
-            method="CSS.getAnimatedStylesForNode",
+            method=CSSCommand.GET_ANIMATED_STYLES_FOR_NODE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -300,7 +301,7 @@ class CSSClient:
         params = GetMatchedStylesForNodeParams(nodeId=node_id)
 
         result = await self._client.send_raw(
-            method="CSS.getMatchedStylesForNode",
+            method=CSSCommand.GET_MATCHED_STYLES_FOR_NODE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -311,7 +312,7 @@ class CSSClient:
         session_id: str | None = None,
     ) -> GetEnvironmentVariablesResult:
         result = await self._client.send_raw(
-            method="CSS.getEnvironmentVariables",
+            method=CSSCommand.GET_ENVIRONMENT_VARIABLES,
             params=None,
             session_id=session_id,
         )
@@ -322,7 +323,7 @@ class CSSClient:
         session_id: str | None = None,
     ) -> GetMediaQueriesResult:
         result = await self._client.send_raw(
-            method="CSS.getMediaQueries",
+            method=CSSCommand.GET_MEDIA_QUERIES,
             params=None,
             session_id=session_id,
         )
@@ -337,7 +338,7 @@ class CSSClient:
         params = GetPlatformFontsForNodeParams(nodeId=node_id)
 
         result = await self._client.send_raw(
-            method="CSS.getPlatformFontsForNode",
+            method=CSSCommand.GET_PLATFORM_FONTS_FOR_NODE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -352,7 +353,7 @@ class CSSClient:
         params = GetStyleSheetTextParams(styleSheetId=style_sheet_id)
 
         result = await self._client.send_raw(
-            method="CSS.getStyleSheetText",
+            method=CSSCommand.GET_STYLE_SHEET_TEXT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -367,7 +368,7 @@ class CSSClient:
         params = GetLayersForNodeParams(nodeId=node_id)
 
         result = await self._client.send_raw(
-            method="CSS.getLayersForNode",
+            method=CSSCommand.GET_LAYERS_FOR_NODE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -385,7 +386,7 @@ class CSSClient:
         )
 
         result = await self._client.send_raw(
-            method="CSS.getLocationForSelector",
+            method=CSSCommand.GET_LOCATION_FOR_SELECTOR,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -400,7 +401,7 @@ class CSSClient:
         params = TrackComputedStyleUpdatesForNodeParams(nodeId=node_id)
 
         result = await self._client.send_raw(
-            method="CSS.trackComputedStyleUpdatesForNode",
+            method=CSSCommand.TRACK_COMPUTED_STYLE_UPDATES_FOR_NODE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -415,7 +416,7 @@ class CSSClient:
         params = TrackComputedStyleUpdatesParams(propertiesToTrack=properties_to_track)
 
         result = await self._client.send_raw(
-            method="CSS.trackComputedStyleUpdates",
+            method=CSSCommand.TRACK_COMPUTED_STYLE_UPDATES,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -426,7 +427,7 @@ class CSSClient:
         session_id: str | None = None,
     ) -> TakeComputedStyleUpdatesResult:
         result = await self._client.send_raw(
-            method="CSS.takeComputedStyleUpdates",
+            method=CSSCommand.TAKE_COMPUTED_STYLE_UPDATES,
             params=None,
             session_id=session_id,
         )
@@ -445,7 +446,7 @@ class CSSClient:
         )
 
         result = await self._client.send_raw(
-            method="CSS.setEffectivePropertyValueForNode",
+            method=CSSCommand.SET_EFFECTIVE_PROPERTY_VALUE_FOR_NODE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -464,7 +465,7 @@ class CSSClient:
         )
 
         result = await self._client.send_raw(
-            method="CSS.setPropertyRulePropertyName",
+            method=CSSCommand.SET_PROPERTY_RULE_PROPERTY_NAME,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -483,7 +484,7 @@ class CSSClient:
         )
 
         result = await self._client.send_raw(
-            method="CSS.setKeyframeKey",
+            method=CSSCommand.SET_KEYFRAME_KEY,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -500,7 +501,7 @@ class CSSClient:
         params = SetMediaTextParams(styleSheetId=style_sheet_id, range=range, text=text)
 
         result = await self._client.send_raw(
-            method="CSS.setMediaText",
+            method=CSSCommand.SET_MEDIA_TEXT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -519,7 +520,7 @@ class CSSClient:
         )
 
         result = await self._client.send_raw(
-            method="CSS.setContainerQueryText",
+            method=CSSCommand.SET_CONTAINER_QUERY_TEXT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -538,7 +539,7 @@ class CSSClient:
         )
 
         result = await self._client.send_raw(
-            method="CSS.setSupportsText",
+            method=CSSCommand.SET_SUPPORTS_TEXT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -555,7 +556,7 @@ class CSSClient:
         params = SetScopeTextParams(styleSheetId=style_sheet_id, range=range, text=text)
 
         result = await self._client.send_raw(
-            method="CSS.setScopeText",
+            method=CSSCommand.SET_SCOPE_TEXT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -574,7 +575,7 @@ class CSSClient:
         )
 
         result = await self._client.send_raw(
-            method="CSS.setRuleSelector",
+            method=CSSCommand.SET_RULE_SELECTOR,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -590,7 +591,7 @@ class CSSClient:
         params = SetStyleSheetTextParams(styleSheetId=style_sheet_id, text=text)
 
         result = await self._client.send_raw(
-            method="CSS.setStyleSheetText",
+            method=CSSCommand.SET_STYLE_SHEET_TEXT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -609,7 +610,7 @@ class CSSClient:
         )
 
         result = await self._client.send_raw(
-            method="CSS.setStyleTexts",
+            method=CSSCommand.SET_STYLE_TEXTS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -620,7 +621,7 @@ class CSSClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="CSS.startRuleUsageTracking",
+            method=CSSCommand.START_RULE_USAGE_TRACKING,
             params=None,
             session_id=session_id,
         )
@@ -631,7 +632,7 @@ class CSSClient:
         session_id: str | None = None,
     ) -> StopRuleUsageTrackingResult:
         result = await self._client.send_raw(
-            method="CSS.stopRuleUsageTracking",
+            method=CSSCommand.STOP_RULE_USAGE_TRACKING,
             params=None,
             session_id=session_id,
         )
@@ -642,7 +643,7 @@ class CSSClient:
         session_id: str | None = None,
     ) -> TakeCoverageDeltaResult:
         result = await self._client.send_raw(
-            method="CSS.takeCoverageDelta",
+            method=CSSCommand.TAKE_COVERAGE_DELTA,
             params=None,
             session_id=session_id,
         )
@@ -657,7 +658,7 @@ class CSSClient:
         params = SetLocalFontsEnabledParams(enabled=enabled)
 
         result = await self._client.send_raw(
-            method="CSS.setLocalFontsEnabled",
+            method=CSSCommand.SET_LOCAL_FONTS_ENABLED,
             params=params.to_cdp_params(),
             session_id=session_id,
         )

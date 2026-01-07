@@ -3,11 +3,39 @@
 # Generated from Chrome DevTools Protocol specifications.
 
 from typing import Literal, TYPE_CHECKING
+from enum import StrEnum
 from cdpify.domains.base import CDPModel
 
 from .types import *
 
 from cdpify.domains import target
+
+
+class BrowserCommand(StrEnum):
+    SET_PERMISSION = "Browser.setPermission"
+    GRANT_PERMISSIONS = "Browser.grantPermissions"
+    RESET_PERMISSIONS = "Browser.resetPermissions"
+    SET_DOWNLOAD_BEHAVIOR = "Browser.setDownloadBehavior"
+    CANCEL_DOWNLOAD = "Browser.cancelDownload"
+    CLOSE = "Browser.close"
+    CRASH = "Browser.crash"
+    CRASH_GPU_PROCESS = "Browser.crashGpuProcess"
+    GET_VERSION = "Browser.getVersion"
+    GET_BROWSER_COMMAND_LINE = "Browser.getBrowserCommandLine"
+    GET_HISTOGRAMS = "Browser.getHistograms"
+    GET_HISTOGRAM = "Browser.getHistogram"
+    GET_WINDOW_BOUNDS = "Browser.getWindowBounds"
+    GET_WINDOW_FOR_TARGET = "Browser.getWindowForTarget"
+    SET_WINDOW_BOUNDS = "Browser.setWindowBounds"
+    SET_CONTENTS_SIZE = "Browser.setContentsSize"
+    SET_DOCK_TILE = "Browser.setDockTile"
+    EXECUTE_BROWSER_COMMAND = "Browser.executeBrowserCommand"
+    ADD_PRIVACY_SANDBOX_ENROLLMENT_OVERRIDE = (
+        "Browser.addPrivacySandboxEnrollmentOverride"
+    )
+    ADD_PRIVACY_SANDBOX_COORDINATOR_KEY_CONFIG = (
+        "Browser.addPrivacySandboxCoordinatorKeyConfig"
+    )
 
 
 class SetPermissionParams(CDPModel):

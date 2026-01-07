@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from cdpify.client import CDPClient
 
 from .commands import (
+    LogCommand,
     StartViolationsReportParams,
 )
 
@@ -27,7 +28,7 @@ class LogClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Log.clear",
+            method=LogCommand.CLEAR,
             params=None,
             session_id=session_id,
         )
@@ -38,7 +39,7 @@ class LogClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Log.disable",
+            method=LogCommand.DISABLE,
             params=None,
             session_id=session_id,
         )
@@ -49,7 +50,7 @@ class LogClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Log.enable",
+            method=LogCommand.ENABLE,
             params=None,
             session_id=session_id,
         )
@@ -64,7 +65,7 @@ class LogClient:
         params = StartViolationsReportParams(config=config)
 
         result = await self._client.send_raw(
-            method="Log.startViolationsReport",
+            method=LogCommand.START_VIOLATIONS_REPORT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -75,7 +76,7 @@ class LogClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Log.stopViolationsReport",
+            method=LogCommand.STOP_VIOLATIONS_REPORT,
             params=None,
             session_id=session_id,
         )

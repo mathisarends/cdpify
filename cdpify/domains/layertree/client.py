@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from cdpify.client import CDPClient
 
 from .commands import (
+    LayerTreeCommand,
     CompositingReasonsParams,
     CompositingReasonsResult,
     LoadSnapshotParams,
@@ -45,7 +46,7 @@ class LayerTreeClient:
         params = CompositingReasonsParams(layerId=layer_id)
 
         result = await self._client.send_raw(
-            method="LayerTree.compositingReasons",
+            method=LayerTreeCommand.COMPOSITING_REASONS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -56,7 +57,7 @@ class LayerTreeClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="LayerTree.disable",
+            method=LayerTreeCommand.DISABLE,
             params=None,
             session_id=session_id,
         )
@@ -67,7 +68,7 @@ class LayerTreeClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="LayerTree.enable",
+            method=LayerTreeCommand.ENABLE,
             params=None,
             session_id=session_id,
         )
@@ -82,7 +83,7 @@ class LayerTreeClient:
         params = LoadSnapshotParams(tiles=tiles)
 
         result = await self._client.send_raw(
-            method="LayerTree.loadSnapshot",
+            method=LayerTreeCommand.LOAD_SNAPSHOT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -97,7 +98,7 @@ class LayerTreeClient:
         params = MakeSnapshotParams(layerId=layer_id)
 
         result = await self._client.send_raw(
-            method="LayerTree.makeSnapshot",
+            method=LayerTreeCommand.MAKE_SNAPSHOT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -120,7 +121,7 @@ class LayerTreeClient:
         )
 
         result = await self._client.send_raw(
-            method="LayerTree.profileSnapshot",
+            method=LayerTreeCommand.PROFILE_SNAPSHOT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -135,7 +136,7 @@ class LayerTreeClient:
         params = ReleaseSnapshotParams(snapshotId=snapshot_id)
 
         result = await self._client.send_raw(
-            method="LayerTree.releaseSnapshot",
+            method=LayerTreeCommand.RELEASE_SNAPSHOT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -155,7 +156,7 @@ class LayerTreeClient:
         )
 
         result = await self._client.send_raw(
-            method="LayerTree.replaySnapshot",
+            method=LayerTreeCommand.REPLAY_SNAPSHOT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -170,7 +171,7 @@ class LayerTreeClient:
         params = SnapshotCommandLogParams(snapshotId=snapshot_id)
 
         result = await self._client.send_raw(
-            method="LayerTree.snapshotCommandLog",
+            method=LayerTreeCommand.SNAPSHOT_COMMAND_LOG,
             params=params.to_cdp_params(),
             session_id=session_id,
         )

@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from cdpify.client import CDPClient
 
 from .commands import (
+    TargetCommand,
     ActivateTargetParams,
     AttachToBrowserTargetResult,
     AttachToTargetParams,
@@ -61,7 +62,7 @@ class TargetClient:
         params = ActivateTargetParams(targetId=target_id)
 
         result = await self._client.send_raw(
-            method="Target.activateTarget",
+            method=TargetCommand.ACTIVATE_TARGET,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -77,7 +78,7 @@ class TargetClient:
         params = AttachToTargetParams(targetId=target_id, flatten=flatten)
 
         result = await self._client.send_raw(
-            method="Target.attachToTarget",
+            method=TargetCommand.ATTACH_TO_TARGET,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -88,7 +89,7 @@ class TargetClient:
         session_id: str | None = None,
     ) -> AttachToBrowserTargetResult:
         result = await self._client.send_raw(
-            method="Target.attachToBrowserTarget",
+            method=TargetCommand.ATTACH_TO_BROWSER_TARGET,
             params=None,
             session_id=session_id,
         )
@@ -103,7 +104,7 @@ class TargetClient:
         params = CloseTargetParams(targetId=target_id)
 
         result = await self._client.send_raw(
-            method="Target.closeTarget",
+            method=TargetCommand.CLOSE_TARGET,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -124,7 +125,7 @@ class TargetClient:
         )
 
         result = await self._client.send_raw(
-            method="Target.exposeDevToolsProtocol",
+            method=TargetCommand.EXPOSE_DEV_TOOLS_PROTOCOL,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -147,7 +148,7 @@ class TargetClient:
         )
 
         result = await self._client.send_raw(
-            method="Target.createBrowserContext",
+            method=TargetCommand.CREATE_BROWSER_CONTEXT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -158,7 +159,7 @@ class TargetClient:
         session_id: str | None = None,
     ) -> GetBrowserContextsResult:
         result = await self._client.send_raw(
-            method="Target.getBrowserContexts",
+            method=TargetCommand.GET_BROWSER_CONTEXTS,
             params=None,
             session_id=session_id,
         )
@@ -197,7 +198,7 @@ class TargetClient:
         )
 
         result = await self._client.send_raw(
-            method="Target.createTarget",
+            method=TargetCommand.CREATE_TARGET,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -215,7 +216,7 @@ class TargetClient:
         )
 
         result = await self._client.send_raw(
-            method="Target.detachFromTarget",
+            method=TargetCommand.DETACH_FROM_TARGET,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -230,7 +231,7 @@ class TargetClient:
         params = DisposeBrowserContextParams(browserContextId=browser_context_id)
 
         result = await self._client.send_raw(
-            method="Target.disposeBrowserContext",
+            method=TargetCommand.DISPOSE_BROWSER_CONTEXT,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -245,7 +246,7 @@ class TargetClient:
         params = GetTargetInfoParams(targetId=target_id)
 
         result = await self._client.send_raw(
-            method="Target.getTargetInfo",
+            method=TargetCommand.GET_TARGET_INFO,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -260,7 +261,7 @@ class TargetClient:
         params = GetTargetsParams(filter=filter)
 
         result = await self._client.send_raw(
-            method="Target.getTargets",
+            method=TargetCommand.GET_TARGETS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -281,7 +282,7 @@ class TargetClient:
         )
 
         result = await self._client.send_raw(
-            method="Target.sendMessageToTarget",
+            method=TargetCommand.SEND_MESSAGE_TO_TARGET,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -304,7 +305,7 @@ class TargetClient:
         )
 
         result = await self._client.send_raw(
-            method="Target.setAutoAttach",
+            method=TargetCommand.SET_AUTO_ATTACH,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -325,7 +326,7 @@ class TargetClient:
         )
 
         result = await self._client.send_raw(
-            method="Target.autoAttachRelated",
+            method=TargetCommand.AUTO_ATTACH_RELATED,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -341,7 +342,7 @@ class TargetClient:
         params = SetDiscoverTargetsParams(discover=discover, filter=filter)
 
         result = await self._client.send_raw(
-            method="Target.setDiscoverTargets",
+            method=TargetCommand.SET_DISCOVER_TARGETS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -356,7 +357,7 @@ class TargetClient:
         params = SetRemoteLocationsParams(locations=locations)
 
         result = await self._client.send_raw(
-            method="Target.setRemoteLocations",
+            method=TargetCommand.SET_REMOTE_LOCATIONS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -371,7 +372,7 @@ class TargetClient:
         params = GetDevToolsTargetParams(targetId=target_id)
 
         result = await self._client.send_raw(
-            method="Target.getDevToolsTarget",
+            method=TargetCommand.GET_DEV_TOOLS_TARGET,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -387,7 +388,7 @@ class TargetClient:
         params = OpenDevToolsParams(targetId=target_id, panelId=panel_id)
 
         result = await self._client.send_raw(
-            method="Target.openDevTools",
+            method=TargetCommand.OPEN_DEV_TOOLS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )

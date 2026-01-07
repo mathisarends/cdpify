@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from cdpify.client import CDPClient
 
 from .commands import (
+    WebAuthnCommand,
     AddCredentialParams,
     AddVirtualAuthenticatorParams,
     AddVirtualAuthenticatorResult,
@@ -47,7 +48,7 @@ class WebAuthnClient:
         params = EnableParams(enableUI=enable_u_i)
 
         result = await self._client.send_raw(
-            method="WebAuthn.enable",
+            method=WebAuthnCommand.ENABLE,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -58,7 +59,7 @@ class WebAuthnClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="WebAuthn.disable",
+            method=WebAuthnCommand.DISABLE,
             params=None,
             session_id=session_id,
         )
@@ -73,7 +74,7 @@ class WebAuthnClient:
         params = AddVirtualAuthenticatorParams(options=options)
 
         result = await self._client.send_raw(
-            method="WebAuthn.addVirtualAuthenticator",
+            method=WebAuthnCommand.ADD_VIRTUAL_AUTHENTICATOR,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -96,7 +97,7 @@ class WebAuthnClient:
         )
 
         result = await self._client.send_raw(
-            method="WebAuthn.setResponseOverrideBits",
+            method=WebAuthnCommand.SET_RESPONSE_OVERRIDE_BITS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -111,7 +112,7 @@ class WebAuthnClient:
         params = RemoveVirtualAuthenticatorParams(authenticatorId=authenticator_id)
 
         result = await self._client.send_raw(
-            method="WebAuthn.removeVirtualAuthenticator",
+            method=WebAuthnCommand.REMOVE_VIRTUAL_AUTHENTICATOR,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -129,7 +130,7 @@ class WebAuthnClient:
         )
 
         result = await self._client.send_raw(
-            method="WebAuthn.addCredential",
+            method=WebAuthnCommand.ADD_CREDENTIAL,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -147,7 +148,7 @@ class WebAuthnClient:
         )
 
         result = await self._client.send_raw(
-            method="WebAuthn.getCredential",
+            method=WebAuthnCommand.GET_CREDENTIAL,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -162,7 +163,7 @@ class WebAuthnClient:
         params = GetCredentialsParams(authenticatorId=authenticator_id)
 
         result = await self._client.send_raw(
-            method="WebAuthn.getCredentials",
+            method=WebAuthnCommand.GET_CREDENTIALS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -180,7 +181,7 @@ class WebAuthnClient:
         )
 
         result = await self._client.send_raw(
-            method="WebAuthn.removeCredential",
+            method=WebAuthnCommand.REMOVE_CREDENTIAL,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -195,7 +196,7 @@ class WebAuthnClient:
         params = ClearCredentialsParams(authenticatorId=authenticator_id)
 
         result = await self._client.send_raw(
-            method="WebAuthn.clearCredentials",
+            method=WebAuthnCommand.CLEAR_CREDENTIALS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -213,7 +214,7 @@ class WebAuthnClient:
         )
 
         result = await self._client.send_raw(
-            method="WebAuthn.setUserVerified",
+            method=WebAuthnCommand.SET_USER_VERIFIED,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -231,7 +232,7 @@ class WebAuthnClient:
         )
 
         result = await self._client.send_raw(
-            method="WebAuthn.setAutomaticPresenceSimulation",
+            method=WebAuthnCommand.SET_AUTOMATIC_PRESENCE_SIMULATION,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -254,7 +255,7 @@ class WebAuthnClient:
         )
 
         result = await self._client.send_raw(
-            method="WebAuthn.setCredentialProperties",
+            method=WebAuthnCommand.SET_CREDENTIAL_PROPERTIES,
             params=params.to_cdp_params(),
             session_id=session_id,
         )

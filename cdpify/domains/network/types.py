@@ -867,6 +867,62 @@ class ReportingApiEndpoint(CDPModel):
     group_name: str
 
 
+class DeviceBoundSessionKey(CDPModel):
+    """
+    Unique identifier for a device bound session.
+    """
+
+    site: str
+    id: str
+
+
+class DeviceBoundSessionCookieCraving(CDPModel):
+    """
+    A device bound session's cookie craving.
+    """
+
+    name: str
+    domain: str
+    path: str
+    secure: bool
+    http_only: bool
+    same_site: CookieSameSite | None = None
+
+
+class DeviceBoundSessionUrlRule(CDPModel):
+    """
+    A device bound session's inclusion URL rule.
+    """
+
+    rule_type: Literal["Exclude", "Include"]
+    host_pattern: str
+    path_prefix: str
+
+
+class DeviceBoundSessionInclusionRules(CDPModel):
+    """
+    A device bound session's inclusion rules.
+    """
+
+    origin: str
+    include_site: bool
+    url_rules: list[DeviceBoundSessionUrlRule]
+
+
+class DeviceBoundSession(CDPModel):
+    """
+    A device bound session.
+    """
+
+    key: DeviceBoundSessionKey
+    refresh_url: str
+    inclusion_rules: DeviceBoundSessionInclusionRules
+    cookie_cravings: list[DeviceBoundSessionCookieCraving]
+    expiry_date: network.TimeSinceEpoch
+    cached_challenge: str | None = None
+    allowed_refresh_initiators: list[str]
+
+
 class LoadNetworkResourcePageResult(CDPModel):
     """
     An object providing the result of a network resource load.

@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from cdpify.client import CDPClient
 
 from .commands import (
+    SecurityCommand,
     HandleCertificateErrorParams,
     SetIgnoreCertificateErrorsParams,
     SetOverrideCertificateErrorsParams,
@@ -29,7 +30,7 @@ class SecurityClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Security.disable",
+            method=SecurityCommand.DISABLE,
             params=None,
             session_id=session_id,
         )
@@ -40,7 +41,7 @@ class SecurityClient:
         session_id: str | None = None,
     ) -> dict[str, Any]:
         result = await self._client.send_raw(
-            method="Security.enable",
+            method=SecurityCommand.ENABLE,
             params=None,
             session_id=session_id,
         )
@@ -55,7 +56,7 @@ class SecurityClient:
         params = SetIgnoreCertificateErrorsParams(ignore=ignore)
 
         result = await self._client.send_raw(
-            method="Security.setIgnoreCertificateErrors",
+            method=SecurityCommand.SET_IGNORE_CERTIFICATE_ERRORS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -71,7 +72,7 @@ class SecurityClient:
         params = HandleCertificateErrorParams(eventId=event_id, action=action)
 
         result = await self._client.send_raw(
-            method="Security.handleCertificateError",
+            method=SecurityCommand.HANDLE_CERTIFICATE_ERROR,
             params=params.to_cdp_params(),
             session_id=session_id,
         )
@@ -86,7 +87,7 @@ class SecurityClient:
         params = SetOverrideCertificateErrorsParams(override=override)
 
         result = await self._client.send_raw(
-            method="Security.setOverrideCertificateErrors",
+            method=SecurityCommand.SET_OVERRIDE_CERTIFICATE_ERRORS,
             params=params.to_cdp_params(),
             session_id=session_id,
         )

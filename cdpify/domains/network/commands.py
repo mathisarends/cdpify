@@ -3,6 +3,7 @@
 # Generated from Chrome DevTools Protocol specifications.
 
 from typing import TYPE_CHECKING
+from enum import StrEnum
 from cdpify.domains.base import CDPModel
 
 from .types import *
@@ -11,6 +12,51 @@ from cdpify.domains import debugger
 from cdpify.domains import emulation
 from cdpify.domains import io
 from cdpify.domains import page
+
+
+class NetworkCommand(StrEnum):
+    SET_ACCEPTED_ENCODINGS = "Network.setAcceptedEncodings"
+    CLEAR_ACCEPTED_ENCODINGS_OVERRIDE = "Network.clearAcceptedEncodingsOverride"
+    CAN_CLEAR_BROWSER_CACHE = "Network.canClearBrowserCache"
+    CAN_CLEAR_BROWSER_COOKIES = "Network.canClearBrowserCookies"
+    CAN_EMULATE_NETWORK_CONDITIONS = "Network.canEmulateNetworkConditions"
+    CLEAR_BROWSER_CACHE = "Network.clearBrowserCache"
+    CLEAR_BROWSER_COOKIES = "Network.clearBrowserCookies"
+    CONTINUE_INTERCEPTED_REQUEST = "Network.continueInterceptedRequest"
+    DELETE_COOKIES = "Network.deleteCookies"
+    DISABLE = "Network.disable"
+    EMULATE_NETWORK_CONDITIONS = "Network.emulateNetworkConditions"
+    EMULATE_NETWORK_CONDITIONS_BY_RULE = "Network.emulateNetworkConditionsByRule"
+    OVERRIDE_NETWORK_STATE = "Network.overrideNetworkState"
+    ENABLE = "Network.enable"
+    CONFIGURE_DURABLE_MESSAGES = "Network.configureDurableMessages"
+    GET_ALL_COOKIES = "Network.getAllCookies"
+    GET_CERTIFICATE = "Network.getCertificate"
+    GET_COOKIES = "Network.getCookies"
+    GET_RESPONSE_BODY = "Network.getResponseBody"
+    GET_REQUEST_POST_DATA = "Network.getRequestPostData"
+    GET_RESPONSE_BODY_FOR_INTERCEPTION = "Network.getResponseBodyForInterception"
+    TAKE_RESPONSE_BODY_FOR_INTERCEPTION_AS_STREAM = (
+        "Network.takeResponseBodyForInterceptionAsStream"
+    )
+    REPLAY_X_H_R = "Network.replayXHR"
+    SEARCH_IN_RESPONSE_BODY = "Network.searchInResponseBody"
+    SET_BLOCKED_U_R_LS = "Network.setBlockedURLs"
+    SET_BYPASS_SERVICE_WORKER = "Network.setBypassServiceWorker"
+    SET_CACHE_DISABLED = "Network.setCacheDisabled"
+    SET_COOKIE = "Network.setCookie"
+    SET_COOKIES = "Network.setCookies"
+    SET_EXTRA_H_T_T_P_HEADERS = "Network.setExtraHTTPHeaders"
+    SET_ATTACH_DEBUG_STACK = "Network.setAttachDebugStack"
+    SET_REQUEST_INTERCEPTION = "Network.setRequestInterception"
+    SET_USER_AGENT_OVERRIDE = "Network.setUserAgentOverride"
+    STREAM_RESOURCE_CONTENT = "Network.streamResourceContent"
+    GET_SECURITY_ISOLATION_STATUS = "Network.getSecurityIsolationStatus"
+    ENABLE_REPORTING_API = "Network.enableReportingApi"
+    ENABLE_DEVICE_BOUND_SESSIONS = "Network.enableDeviceBoundSessions"
+    FETCH_SCHEMEFUL_SITE = "Network.fetchSchemefulSite"
+    LOAD_NETWORK_RESOURCE = "Network.loadNetworkResource"
+    SET_COOKIE_CONTROLS = "Network.setCookieControls"
 
 
 class SetAcceptedEncodingsParams(CDPModel):
@@ -372,6 +418,26 @@ class EnableReportingApiParams(CDPModel):
     """
 
     enable: bool
+
+
+class EnableDeviceBoundSessionsParams(CDPModel):
+    """
+    Sets up tracking device bound sessions and fetching of initial set of sessions.
+    """
+
+    enable: bool
+
+
+class FetchSchemefulSiteParams(CDPModel):
+    """
+    Fetches the schemeful site for a specific origin.
+    """
+
+    origin: str
+
+
+class FetchSchemefulSiteResult(CDPModel):
+    schemeful_site: str
 
 
 class LoadNetworkResourceParams(CDPModel):

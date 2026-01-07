@@ -3,12 +3,53 @@
 # Generated from Chrome DevTools Protocol specifications.
 
 from typing import Any, TYPE_CHECKING
+from enum import StrEnum
 from cdpify.domains.base import CDPModel
 
 from .types import *
 
 from cdpify.domains import dom
 from cdpify.domains import page
+
+
+class CSSCommand(StrEnum):
+    ADD_RULE = "CSS.addRule"
+    COLLECT_CLASS_NAMES = "CSS.collectClassNames"
+    CREATE_STYLE_SHEET = "CSS.createStyleSheet"
+    DISABLE = "CSS.disable"
+    ENABLE = "CSS.enable"
+    FORCE_PSEUDO_STATE = "CSS.forcePseudoState"
+    FORCE_STARTING_STYLE = "CSS.forceStartingStyle"
+    GET_BACKGROUND_COLORS = "CSS.getBackgroundColors"
+    GET_COMPUTED_STYLE_FOR_NODE = "CSS.getComputedStyleForNode"
+    RESOLVE_VALUES = "CSS.resolveValues"
+    GET_LONGHAND_PROPERTIES = "CSS.getLonghandProperties"
+    GET_INLINE_STYLES_FOR_NODE = "CSS.getInlineStylesForNode"
+    GET_ANIMATED_STYLES_FOR_NODE = "CSS.getAnimatedStylesForNode"
+    GET_MATCHED_STYLES_FOR_NODE = "CSS.getMatchedStylesForNode"
+    GET_ENVIRONMENT_VARIABLES = "CSS.getEnvironmentVariables"
+    GET_MEDIA_QUERIES = "CSS.getMediaQueries"
+    GET_PLATFORM_FONTS_FOR_NODE = "CSS.getPlatformFontsForNode"
+    GET_STYLE_SHEET_TEXT = "CSS.getStyleSheetText"
+    GET_LAYERS_FOR_NODE = "CSS.getLayersForNode"
+    GET_LOCATION_FOR_SELECTOR = "CSS.getLocationForSelector"
+    TRACK_COMPUTED_STYLE_UPDATES_FOR_NODE = "CSS.trackComputedStyleUpdatesForNode"
+    TRACK_COMPUTED_STYLE_UPDATES = "CSS.trackComputedStyleUpdates"
+    TAKE_COMPUTED_STYLE_UPDATES = "CSS.takeComputedStyleUpdates"
+    SET_EFFECTIVE_PROPERTY_VALUE_FOR_NODE = "CSS.setEffectivePropertyValueForNode"
+    SET_PROPERTY_RULE_PROPERTY_NAME = "CSS.setPropertyRulePropertyName"
+    SET_KEYFRAME_KEY = "CSS.setKeyframeKey"
+    SET_MEDIA_TEXT = "CSS.setMediaText"
+    SET_CONTAINER_QUERY_TEXT = "CSS.setContainerQueryText"
+    SET_SUPPORTS_TEXT = "CSS.setSupportsText"
+    SET_SCOPE_TEXT = "CSS.setScopeText"
+    SET_RULE_SELECTOR = "CSS.setRuleSelector"
+    SET_STYLE_SHEET_TEXT = "CSS.setStyleSheetText"
+    SET_STYLE_TEXTS = "CSS.setStyleTexts"
+    START_RULE_USAGE_TRACKING = "CSS.startRuleUsageTracking"
+    STOP_RULE_USAGE_TRACKING = "CSS.stopRuleUsageTracking"
+    TAKE_COVERAGE_DELTA = "CSS.takeCoverageDelta"
+    SET_LOCAL_FONTS_ENABLED = "CSS.setLocalFontsEnabled"
 
 
 class AddRuleParams(CDPModel):
