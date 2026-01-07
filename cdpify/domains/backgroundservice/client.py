@@ -32,6 +32,9 @@ class BackgroundServiceClient:
         service: ServiceName,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Enables event updates for the service.
+        """
         params = StartObservingParams(service=service)
 
         result = await self._client.send_raw(
@@ -47,6 +50,9 @@ class BackgroundServiceClient:
         service: ServiceName,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Disables event updates for the service.
+        """
         params = StopObservingParams(service=service)
 
         result = await self._client.send_raw(
@@ -63,6 +69,9 @@ class BackgroundServiceClient:
         service: ServiceName,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Set the recording state for the service.
+        """
         params = SetRecordingParams(should_record=should_record, service=service)
 
         result = await self._client.send_raw(
@@ -78,6 +87,9 @@ class BackgroundServiceClient:
         service: ServiceName,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Clears all stored data for the service.
+        """
         params = ClearEventsParams(service=service)
 
         result = await self._client.send_raw(

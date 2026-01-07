@@ -7,7 +7,12 @@ from dataclasses import dataclass
 from enum import StrEnum
 from cdpify.domains.shared import CDPModel
 
-from .types import *
+from .types import (
+    AuthChallengeResponse,
+    HeaderEntry,
+    RequestId,
+    RequestPattern,
+)
 
 from cdpify.domains import io
 from cdpify.domains import network

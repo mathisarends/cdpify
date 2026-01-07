@@ -25,6 +25,9 @@ class PerformanceClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Disable collecting and reporting metrics.
+        """
         result = await self._client.send_raw(
             method=PerformanceCommand.DISABLE,
             params=None,
@@ -38,6 +41,9 @@ class PerformanceClient:
         time_domain: Literal["timeTicks", "threadTicks"] | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Enable collecting and reporting metrics.
+        """
         params = EnableParams(time_domain=time_domain)
 
         result = await self._client.send_raw(
@@ -53,6 +59,11 @@ class PerformanceClient:
         time_domain: Literal["timeTicks", "threadTicks"],
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Sets time domain to use for collecting and reporting duration metrics. Note
+        that this must be called before enabling metrics collection. Calling this method
+        while metrics collection is enabled returns an error.
+        """
         params = SetTimeDomainParams(time_domain=time_domain)
 
         result = await self._client.send_raw(
@@ -66,6 +77,9 @@ class PerformanceClient:
         self,
         session_id: str | None = None,
     ) -> GetMetricsResult:
+        """
+        Retrieve current values of run-time metrics.
+        """
         result = await self._client.send_raw(
             method=PerformanceCommand.GET_METRICS,
             params=None,

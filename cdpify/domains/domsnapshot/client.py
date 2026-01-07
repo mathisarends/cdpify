@@ -26,6 +26,9 @@ class DOMSnapshotClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Disables DOM snapshot agent for the given page.
+        """
         result = await self._client.send_raw(
             method=DOMSnapshotCommand.DISABLE,
             params=None,
@@ -37,6 +40,9 @@ class DOMSnapshotClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Enables DOM snapshot agent for the given page.
+        """
         result = await self._client.send_raw(
             method=DOMSnapshotCommand.ENABLE,
             params=None,
@@ -53,6 +59,12 @@ class DOMSnapshotClient:
         include_user_agent_shadow_tree: bool | None = None,
         session_id: str | None = None,
     ) -> GetSnapshotResult:
+        """
+        Returns a document snapshot, including the full DOM tree of the root node
+        (including iframes, template contents, and imported documents) in a flattened
+        array, as well as layout and white-listed computed style information for the
+        nodes. Shadow DOM in the returned DOM tree is flattened.
+        """
         params = GetSnapshotParams(
             computed_style_whitelist=computed_style_whitelist,
             include_event_listeners=include_event_listeners,
@@ -77,6 +89,12 @@ class DOMSnapshotClient:
         include_text_color_opacities: bool | None = None,
         session_id: str | None = None,
     ) -> CaptureSnapshotResult:
+        """
+        Returns a document snapshot, including the full DOM tree of the root node
+        (including iframes, template contents, and imported documents) in a flattened
+        array, as well as layout and white-listed computed style information for the
+        nodes. Shadow DOM in the returned DOM tree is flattened.
+        """
         params = CaptureSnapshotParams(
             computed_styles=computed_styles,
             include_paint_order=include_paint_order,

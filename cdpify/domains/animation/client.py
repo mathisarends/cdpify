@@ -32,6 +32,9 @@ class AnimationClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Disables animation domain notifications.
+        """
         result = await self._client.send_raw(
             method=AnimationCommand.DISABLE,
             params=None,
@@ -43,6 +46,9 @@ class AnimationClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Enables animation domain notifications.
+        """
         result = await self._client.send_raw(
             method=AnimationCommand.ENABLE,
             params=None,
@@ -56,6 +62,9 @@ class AnimationClient:
         id: str,
         session_id: str | None = None,
     ) -> GetCurrentTimeResult:
+        """
+        Returns the current time of the an animation.
+        """
         params = GetCurrentTimeParams(id=id)
 
         result = await self._client.send_raw(
@@ -69,6 +78,9 @@ class AnimationClient:
         self,
         session_id: str | None = None,
     ) -> GetPlaybackRateResult:
+        """
+        Gets the playback rate of the document timeline.
+        """
         result = await self._client.send_raw(
             method=AnimationCommand.GET_PLAYBACK_RATE,
             params=None,
@@ -82,6 +94,9 @@ class AnimationClient:
         animations: list[str],
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Releases a set of animations to no longer be manipulated.
+        """
         params = ReleaseAnimationsParams(animations=animations)
 
         result = await self._client.send_raw(
@@ -97,6 +112,9 @@ class AnimationClient:
         animation_id: str,
         session_id: str | None = None,
     ) -> ResolveAnimationResult:
+        """
+        Gets the remote object of the Animation.
+        """
         params = ResolveAnimationParams(animation_id=animation_id)
 
         result = await self._client.send_raw(
@@ -113,6 +131,9 @@ class AnimationClient:
         current_time: float,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Seek a set of animations to a particular time within each animation.
+        """
         params = SeekAnimationsParams(animations=animations, current_time=current_time)
 
         result = await self._client.send_raw(
@@ -129,6 +150,9 @@ class AnimationClient:
         paused: bool,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Sets the paused state of a set of animations.
+        """
         params = SetPausedParams(animations=animations, paused=paused)
 
         result = await self._client.send_raw(
@@ -144,6 +168,9 @@ class AnimationClient:
         playback_rate: float,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Sets the playback rate of the document timeline.
+        """
         params = SetPlaybackRateParams(playback_rate=playback_rate)
 
         result = await self._client.send_raw(
@@ -161,6 +188,9 @@ class AnimationClient:
         delay: float,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Sets the timing of an animation node.
+        """
         params = SetTimingParams(
             animation_id=animation_id, duration=duration, delay=delay
         )

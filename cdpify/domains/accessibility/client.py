@@ -29,6 +29,10 @@ from .types import (
     AXNodeId,
 )
 
+from cdpify.domains import dom
+from cdpify.domains import page
+from cdpify.domains import runtime
+
 
 class AccessibilityClient:
     def __init__(self, client: CDPClient) -> None:
@@ -38,6 +42,9 @@ class AccessibilityClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Disables the accessibility domain.
+        """
         result = await self._client.send_raw(
             method=AccessibilityCommand.DISABLE,
             params=None,
@@ -49,6 +56,11 @@ class AccessibilityClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Enables the accessibility domain which causes `AXNodeId`s to remain consistent
+        between method calls. This turns on accessibility for the page, which can impact
+        performance until accessibility is disabled.
+        """
         result = await self._client.send_raw(
             method=AccessibilityCommand.ENABLE,
             params=None,
@@ -65,6 +77,10 @@ class AccessibilityClient:
         fetch_relatives: bool | None = None,
         session_id: str | None = None,
     ) -> GetPartialAXTreeResult:
+        """
+        Fetches the accessibility node and partial accessibility tree for this DOM
+        node, if it exists.
+        """
         params = GetPartialAXTreeParams(
             node_id=node_id,
             backend_node_id=backend_node_id,
@@ -86,6 +102,9 @@ class AccessibilityClient:
         frame_id: Page.FrameId | None = None,
         session_id: str | None = None,
     ) -> GetFullAXTreeResult:
+        """
+        Fetches the entire accessibility tree for the root Document
+        """
         params = GetFullAXTreeParams(depth=depth, frame_id=frame_id)
 
         result = await self._client.send_raw(
@@ -101,6 +120,9 @@ class AccessibilityClient:
         frame_id: Page.FrameId | None = None,
         session_id: str | None = None,
     ) -> GetRootAXNodeResult:
+        """
+        Fetches the root node. Requires `enable()` to have been called previously.
+        """
         params = GetRootAXNodeParams(frame_id=frame_id)
 
         result = await self._client.send_raw(
@@ -118,6 +140,10 @@ class AccessibilityClient:
         object_id: Runtime.RemoteObjectId | None = None,
         session_id: str | None = None,
     ) -> GetAXNodeAndAncestorsResult:
+        """
+        Fetches a node and all ancestors up to and including the root. Requires
+        `enable()` to have been called previously.
+        """
         params = GetAXNodeAndAncestorsParams(
             node_id=node_id, backend_node_id=backend_node_id, object_id=object_id
         )
@@ -136,6 +162,10 @@ class AccessibilityClient:
         frame_id: Page.FrameId | None = None,
         session_id: str | None = None,
     ) -> GetChildAXNodesResult:
+        """
+        Fetches a particular accessibility node by AXNodeId. Requires `enable()` to
+        have been called previously.
+        """
         params = GetChildAXNodesParams(id=id, frame_id=frame_id)
 
         result = await self._client.send_raw(
@@ -155,6 +185,14 @@ class AccessibilityClient:
         role: str | None = None,
         session_id: str | None = None,
     ) -> QueryAXTreeResult:
+        """
+        Query a DOM node's accessibility subtree for accessible name and role. This
+        command computes the name and role for all nodes in the subtree, including those
+        that are ignored for accessibility, and returns those that match the specified
+        name and role. If no DOM node is specified, or the DOM node does not exist, the
+        command returns an error. If neither `accessibleName` or `role` is specified, it
+        returns all the accessibility nodes in the subtree.
+        """
         params = QueryAXTreeParams(
             node_id=node_id,
             backend_node_id=backend_node_id,

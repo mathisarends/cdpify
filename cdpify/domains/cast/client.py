@@ -29,6 +29,12 @@ class CastClient:
         presentation_url: str | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Starts observing for sinks that can be used for tab mirroring, and if set,
+        sinks compatible with |presentationUrl| as well. When sinks are found, a
+        |sinksUpdated| event is fired. Also starts observing for issue messages. When an
+        issue is added or removed, an |issueUpdated| event is fired.
+        """
         params = EnableParams(presentation_url=presentation_url)
 
         result = await self._client.send_raw(
@@ -42,6 +48,9 @@ class CastClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Stops observing for sinks and issues.
+        """
         result = await self._client.send_raw(
             method=CastCommand.DISABLE,
             params=None,
@@ -55,6 +64,10 @@ class CastClient:
         sink_name: str,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Sets a sink to be used when the web page requests the browser to choose a sink
+        via Presentation API, Remote Playback API, or Cast SDK.
+        """
         params = SetSinkToUseParams(sink_name=sink_name)
 
         result = await self._client.send_raw(
@@ -70,6 +83,9 @@ class CastClient:
         sink_name: str,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Starts mirroring the desktop to the sink.
+        """
         params = StartDesktopMirroringParams(sink_name=sink_name)
 
         result = await self._client.send_raw(
@@ -85,6 +101,9 @@ class CastClient:
         sink_name: str,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Starts mirroring the tab to the sink.
+        """
         params = StartTabMirroringParams(sink_name=sink_name)
 
         result = await self._client.send_raw(
@@ -100,6 +119,9 @@ class CastClient:
         sink_name: str,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Stops the active Cast session on the sink.
+        """
         params = StopCastingParams(sink_name=sink_name)
 
         result = await self._client.send_raw(

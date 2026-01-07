@@ -66,6 +66,8 @@ from .types import (
     ScriptPosition,
 )
 
+from cdpify.domains import runtime
+
 
 class DebuggerClient:
     def __init__(self, client: CDPClient) -> None:
@@ -78,6 +80,9 @@ class DebuggerClient:
         target_call_frames: Literal["any", "current"] | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Continues execution until specific location is reached.
+        """
         params = ContinueToLocationParams(
             location=location, target_call_frames=target_call_frames
         )
@@ -93,6 +98,9 @@ class DebuggerClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Disables debugger for given page.
+        """
         result = await self._client.send_raw(
             method=DebuggerCommand.DISABLE,
             params=None,
@@ -106,6 +114,10 @@ class DebuggerClient:
         max_scripts_cache_size: float | None = None,
         session_id: str | None = None,
     ) -> EnableResult:
+        """
+        Enables debugger for the given page. Clients should not assume that the
+        debugging has been enabled until the result for this command is received.
+        """
         params = EnableParams(max_scripts_cache_size=max_scripts_cache_size)
 
         result = await self._client.send_raw(
@@ -129,6 +141,9 @@ class DebuggerClient:
         timeout: Runtime.TimeDelta | None = None,
         session_id: str | None = None,
     ) -> EvaluateOnCallFrameResult:
+        """
+        Evaluates expression on a given call frame.
+        """
         params = EvaluateOnCallFrameParams(
             call_frame_id=call_frame_id,
             expression=expression,
@@ -156,6 +171,10 @@ class DebuggerClient:
         restrict_to_function: bool | None = None,
         session_id: str | None = None,
     ) -> GetPossibleBreakpointsResult:
+        """
+        Returns possible locations for breakpoint. scriptId in start and end range
+        locations should be the same.
+        """
         params = GetPossibleBreakpointsParams(
             start=start, end=end, restrict_to_function=restrict_to_function
         )
@@ -173,6 +192,9 @@ class DebuggerClient:
         script_id: Runtime.ScriptId,
         session_id: str | None = None,
     ) -> GetScriptSourceResult:
+        """
+        Returns source for the script with given id.
+        """
         params = GetScriptSourceParams(script_id=script_id)
 
         result = await self._client.send_raw(
@@ -203,6 +225,11 @@ class DebuggerClient:
         stream_id: str,
         session_id: str | None = None,
     ) -> NextWasmDisassemblyChunkResult:
+        """
+        Disassemble the next chunk of lines for the module corresponding to the stream.
+        If disassembly is complete, this API will invalidate the streamId and return an
+        empty chunk. Any subsequent calls for the now invalid stream will return errors.
+        """
         params = NextWasmDisassemblyChunkParams(stream_id=stream_id)
 
         result = await self._client.send_raw(
@@ -218,6 +245,9 @@ class DebuggerClient:
         script_id: Runtime.ScriptId,
         session_id: str | None = None,
     ) -> GetWasmBytecodeResult:
+        """
+        This command is deprecated. Use getScriptSource instead.
+        """
         params = GetWasmBytecodeParams(script_id=script_id)
 
         result = await self._client.send_raw(
@@ -233,6 +263,9 @@ class DebuggerClient:
         stack_trace_id: Runtime.StackTraceId,
         session_id: str | None = None,
     ) -> GetStackTraceResult:
+        """
+        Returns stack trace with given `stackTraceId`.
+        """
         params = GetStackTraceParams(stack_trace_id=stack_trace_id)
 
         result = await self._client.send_raw(
@@ -246,6 +279,9 @@ class DebuggerClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Stops on the next JavaScript statement.
+        """
         result = await self._client.send_raw(
             method=DebuggerCommand.PAUSE,
             params=None,
@@ -274,6 +310,9 @@ class DebuggerClient:
         breakpoint_id: BreakpointId,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Removes JavaScript breakpoint.
+        """
         params = RemoveBreakpointParams(breakpoint_id=breakpoint_id)
 
         result = await self._client.send_raw(
@@ -290,6 +329,18 @@ class DebuggerClient:
         mode: Literal["StepInto"] | None = None,
         session_id: str | None = None,
     ) -> RestartFrameResult:
+        """
+        Restarts particular call frame from the beginning. The old, deprecated behavior
+        of `restartFrame` is to stay paused and allow further CDP commands after a
+        restart was scheduled. This can cause problems with restarting, so we now
+        continue execution immediatly after it has been scheduled until we reach the
+        beginning of the restarted frame. To stay back-wards compatible, `restartFrame`
+        now expects a `mode` parameter to be present. If the `mode` parameter is
+        missing, `restartFrame` errors out. The various return values are deprecated and
+        `callFrames` is always empty. Use the call frames from the `Debugger#paused`
+        events instead, that fires once V8 pauses at the beginning of the restarted
+        function.
+        """
         params = RestartFrameParams(call_frame_id=call_frame_id, mode=mode)
 
         result = await self._client.send_raw(
@@ -305,6 +356,9 @@ class DebuggerClient:
         terminate_on_resume: bool | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Resumes JavaScript execution.
+        """
         params = ResumeParams(terminate_on_resume=terminate_on_resume)
 
         result = await self._client.send_raw(
@@ -323,6 +377,9 @@ class DebuggerClient:
         is_regex: bool | None = None,
         session_id: str | None = None,
     ) -> SearchInContentResult:
+        """
+        Searches for given string in script content.
+        """
         params = SearchInContentParams(
             script_id=script_id,
             query=query,
@@ -343,6 +400,9 @@ class DebuggerClient:
         max_depth: int,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Enables or disables async call stacks tracking.
+        """
         params = SetAsyncCallStackDepthParams(max_depth=max_depth)
 
         result = await self._client.send_raw(
@@ -358,6 +418,12 @@ class DebuggerClient:
         unique_ids: list[str],
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Replace previous blackbox execution contexts with passed ones. Forces backend
+        to skip stepping/pausing in scripts in these execution contexts. VM will try to
+        leave blackboxed script by performing 'step in' several times, finally resorting
+        to 'step out' if unsuccessful.
+        """
         params = SetBlackboxExecutionContextsParams(unique_ids=unique_ids)
 
         result = await self._client.send_raw(
@@ -374,6 +440,12 @@ class DebuggerClient:
         skip_anonymous: bool | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Replace previous blackbox patterns with passed ones. Forces backend to skip
+        stepping/pausing in scripts with url matching one of the patterns. VM will try
+        to leave blackboxed script by performing 'step in' several times, finally
+        resorting to 'step out' if unsuccessful.
+        """
         params = SetBlackboxPatternsParams(
             patterns=patterns, skip_anonymous=skip_anonymous
         )
@@ -392,6 +464,12 @@ class DebuggerClient:
         positions: list[ScriptPosition],
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Makes backend skip steps in the script in blackboxed ranges. VM will try leave
+        blacklisted scripts by performing 'step in' several times, finally resorting to
+        'step out' if unsuccessful. Positions array contains positions where blackbox
+        state is changed. First interval isn't blackboxed. Array should be sorted.
+        """
         params = SetBlackboxedRangesParams(script_id=script_id, positions=positions)
 
         result = await self._client.send_raw(
@@ -408,6 +486,9 @@ class DebuggerClient:
         condition: str | None = None,
         session_id: str | None = None,
     ) -> SetBreakpointResult:
+        """
+        Sets JavaScript breakpoint at a given location.
+        """
         params = SetBreakpointParams(location=location, condition=condition)
 
         result = await self._client.send_raw(
@@ -425,6 +506,9 @@ class DebuggerClient:
         ],
         session_id: str | None = None,
     ) -> SetInstrumentationBreakpointResult:
+        """
+        Sets instrumentation breakpoint.
+        """
         params = SetInstrumentationBreakpointParams(instrumentation=instrumentation)
 
         result = await self._client.send_raw(
@@ -445,6 +529,13 @@ class DebuggerClient:
         condition: str | None = None,
         session_id: str | None = None,
     ) -> SetBreakpointByUrlResult:
+        """
+        Sets JavaScript breakpoint at given location specified either by URL or URL
+        regex. Once this command is issued, all existing parsed scripts will have
+        breakpoints resolved and returned in `locations` property. Further matching
+        script parsing will result in subsequent `breakpointResolved` events issued.
+        This logical breakpoint will survive page reloads.
+        """
         params = SetBreakpointByUrlParams(
             line_number=line_number,
             url=url,
@@ -468,6 +559,11 @@ class DebuggerClient:
         condition: str | None = None,
         session_id: str | None = None,
     ) -> SetBreakpointOnFunctionCallResult:
+        """
+        Sets JavaScript breakpoint before each call to the given function. If another
+        function was created from the same source as a given one, calling it will also
+        trigger the breakpoint.
+        """
         params = SetBreakpointOnFunctionCallParams(
             object_id=object_id, condition=condition
         )
@@ -485,6 +581,9 @@ class DebuggerClient:
         active: bool,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Activates / deactivates all breakpoints on the page.
+        """
         params = SetBreakpointsActiveParams(active=active)
 
         result = await self._client.send_raw(
@@ -500,6 +599,11 @@ class DebuggerClient:
         state: Literal["none", "caught", "uncaught", "all"],
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Defines pause on exceptions state. Can be set to stop on all exceptions,
+        uncaught exceptions, or caught exceptions, no exceptions. Initial pause on
+        exceptions state is `none`.
+        """
         params = SetPauseOnExceptionsParams(state=state)
 
         result = await self._client.send_raw(
@@ -515,6 +619,9 @@ class DebuggerClient:
         new_value: Runtime.CallArgument,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Changes return value in top frame. Available only at return break position.
+        """
         params = SetReturnValueParams(new_value=new_value)
 
         result = await self._client.send_raw(
@@ -533,6 +640,13 @@ class DebuggerClient:
         allow_top_frame_editing: bool | None = None,
         session_id: str | None = None,
     ) -> SetScriptSourceResult:
+        """
+        Edits JavaScript source live. In general, functions that are currently on the
+        stack can not be edited with a single exception: If the edited function is the
+        top-most stack frame and that is the only activation of that function on the
+        stack. In this case the live edit will be successful and a
+        `Debugger.restartFrame` for the top-most function is automatically triggered.
+        """
         params = SetScriptSourceParams(
             script_id=script_id,
             script_source=script_source,
@@ -553,6 +667,10 @@ class DebuggerClient:
         skip: bool,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Makes page not interrupt on any pauses (breakpoint, exception, dom exception
+        etc).
+        """
         params = SetSkipAllPausesParams(skip=skip)
 
         result = await self._client.send_raw(
@@ -571,6 +689,10 @@ class DebuggerClient:
         call_frame_id: CallFrameId,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Changes value of variable in a callframe. Object-based scopes are not supported
+        and must be mutated manually.
+        """
         params = SetVariableValueParams(
             scope_number=scope_number,
             variable_name=variable_name,
@@ -592,6 +714,9 @@ class DebuggerClient:
         skip_list: list[LocationRange] | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Steps into the function call.
+        """
         params = StepIntoParams(
             break_on_async_call=break_on_async_call, skip_list=skip_list
         )
@@ -607,6 +732,9 @@ class DebuggerClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Steps out of the function call.
+        """
         result = await self._client.send_raw(
             method=DebuggerCommand.STEP_OUT,
             params=None,
@@ -620,6 +748,9 @@ class DebuggerClient:
         skip_list: list[LocationRange] | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Steps over the statement.
+        """
         params = StepOverParams(skip_list=skip_list)
 
         result = await self._client.send_raw(

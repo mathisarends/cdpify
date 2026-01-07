@@ -45,6 +45,8 @@ from .types import (
     WindowID,
 )
 
+from cdpify.domains import target
+
 
 class BrowserClient:
     def __init__(self, client: CDPClient) -> None:
@@ -60,6 +62,9 @@ class BrowserClient:
         browser_context_id: BrowserContextID | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Set permission settings for given embedding and embedded origins.
+        """
         params = SetPermissionParams(
             permission=permission,
             setting=setting,
@@ -83,6 +88,10 @@ class BrowserClient:
         browser_context_id: BrowserContextID | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Grant specific permissions to the given origin and reject all others.
+        Deprecated. Use setPermission instead.
+        """
         params = GrantPermissionsParams(
             permissions=permissions,
             origin=origin,
@@ -102,6 +111,9 @@ class BrowserClient:
         browser_context_id: BrowserContextID | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Reset all permission management for all origins.
+        """
         params = ResetPermissionsParams(browser_context_id=browser_context_id)
 
         result = await self._client.send_raw(
@@ -120,6 +132,9 @@ class BrowserClient:
         events_enabled: bool | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Set the behavior when downloading a file.
+        """
         params = SetDownloadBehaviorParams(
             behavior=behavior,
             browser_context_id=browser_context_id,
@@ -141,6 +156,9 @@ class BrowserClient:
         browser_context_id: BrowserContextID | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Cancel a download if in progress
+        """
         params = CancelDownloadParams(guid=guid, browser_context_id=browser_context_id)
 
         result = await self._client.send_raw(
@@ -154,6 +172,9 @@ class BrowserClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Close browser gracefully.
+        """
         result = await self._client.send_raw(
             method=BrowserCommand.CLOSE,
             params=None,
@@ -165,6 +186,9 @@ class BrowserClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Crashes browser on the main thread.
+        """
         result = await self._client.send_raw(
             method=BrowserCommand.CRASH,
             params=None,
@@ -176,6 +200,9 @@ class BrowserClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Crashes GPU process.
+        """
         result = await self._client.send_raw(
             method=BrowserCommand.CRASH_GPU_PROCESS,
             params=None,
@@ -187,6 +214,9 @@ class BrowserClient:
         self,
         session_id: str | None = None,
     ) -> GetVersionResult:
+        """
+        Returns version information.
+        """
         result = await self._client.send_raw(
             method=BrowserCommand.GET_VERSION,
             params=None,
@@ -198,6 +228,10 @@ class BrowserClient:
         self,
         session_id: str | None = None,
     ) -> GetBrowserCommandLineResult:
+        """
+        Returns the command line switches for the browser process if, and only if
+        --enable-automation is on the commandline.
+        """
         result = await self._client.send_raw(
             method=BrowserCommand.GET_BROWSER_COMMAND_LINE,
             params=None,
@@ -212,6 +246,9 @@ class BrowserClient:
         delta: bool | None = None,
         session_id: str | None = None,
     ) -> GetHistogramsResult:
+        """
+        Get Chrome histograms.
+        """
         params = GetHistogramsParams(query=query, delta=delta)
 
         result = await self._client.send_raw(
@@ -228,6 +265,9 @@ class BrowserClient:
         delta: bool | None = None,
         session_id: str | None = None,
     ) -> GetHistogramResult:
+        """
+        Get a Chrome histogram by name.
+        """
         params = GetHistogramParams(name=name, delta=delta)
 
         result = await self._client.send_raw(
@@ -243,6 +283,9 @@ class BrowserClient:
         window_id: WindowID,
         session_id: str | None = None,
     ) -> GetWindowBoundsResult:
+        """
+        Get position and size of the browser window.
+        """
         params = GetWindowBoundsParams(window_id=window_id)
 
         result = await self._client.send_raw(
@@ -258,6 +301,9 @@ class BrowserClient:
         target_id: Target.TargetID | None = None,
         session_id: str | None = None,
     ) -> GetWindowForTargetResult:
+        """
+        Get the browser window that contains the devtools target.
+        """
         params = GetWindowForTargetParams(target_id=target_id)
 
         result = await self._client.send_raw(
@@ -274,6 +320,9 @@ class BrowserClient:
         bounds: Bounds,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Set position and/or size of the browser window.
+        """
         params = SetWindowBoundsParams(window_id=window_id, bounds=bounds)
 
         result = await self._client.send_raw(
@@ -291,6 +340,9 @@ class BrowserClient:
         height: int | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Set size of the browser contents resizing browser window as necessary.
+        """
         params = SetContentsSizeParams(window_id=window_id, width=width, height=height)
 
         result = await self._client.send_raw(
@@ -307,6 +359,9 @@ class BrowserClient:
         image: str | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Set dock tile details, platform-specific.
+        """
         params = SetDockTileParams(badge_label=badge_label, image=image)
 
         result = await self._client.send_raw(
@@ -322,6 +377,9 @@ class BrowserClient:
         command_id: BrowserCommandId,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Invoke custom browser commands used by telemetry.
+        """
         params = ExecuteBrowserCommandParams(command_id=command_id)
 
         result = await self._client.send_raw(
@@ -337,6 +395,10 @@ class BrowserClient:
         url: str,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Allows a site to use privacy sandbox features that require enrollment without
+        the site actually being enrolled. Only supported on page targets.
+        """
         params = AddPrivacySandboxEnrollmentOverrideParams(url=url)
 
         result = await self._client.send_raw(
@@ -355,6 +417,12 @@ class BrowserClient:
         browser_context_id: BrowserContextID | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Configures encryption keys used with a given privacy sandbox API to talk to a
+        trusted coordinator. Since this is intended for test automation only,
+        coordinatorOrigin must be a .test domain. No existing coordinator configuration
+        for the origin may exist.
+        """
         params = AddPrivacySandboxCoordinatorKeyConfigParams(
             api=api,
             coordinator_origin=coordinator_origin,

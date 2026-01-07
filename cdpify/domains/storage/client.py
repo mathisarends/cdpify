@@ -64,7 +64,9 @@ from .types import (
     StorageBucket,
 )
 
+from cdpify.domains import browser
 from cdpify.domains import network
+from cdpify.domains import page
 
 
 class StorageClient:
@@ -77,6 +79,10 @@ class StorageClient:
         frame_id: Page.FrameId,
         session_id: str | None = None,
     ) -> GetStorageKeyForFrameResult:
+        """
+        Returns a storage key given a frame id. Deprecated. Please use
+        Storage.getStorageKey instead.
+        """
         params = GetStorageKeyForFrameParams(frame_id=frame_id)
 
         result = await self._client.send_raw(
@@ -92,6 +98,10 @@ class StorageClient:
         frame_id: Page.FrameId | None = None,
         session_id: str | None = None,
     ) -> GetStorageKeyResult:
+        """
+        Returns storage key for the given frame. If no frame ID is provided, the
+        storage key of the target executing this command is returned.
+        """
         params = GetStorageKeyParams(frame_id=frame_id)
 
         result = await self._client.send_raw(
@@ -108,6 +118,9 @@ class StorageClient:
         storage_types: str,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Clears storage for origin.
+        """
         params = ClearDataForOriginParams(origin=origin, storage_types=storage_types)
 
         result = await self._client.send_raw(
@@ -124,6 +137,9 @@ class StorageClient:
         storage_types: str,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Clears storage for storage key.
+        """
         params = ClearDataForStorageKeyParams(
             storage_key=storage_key, storage_types=storage_types
         )
@@ -141,6 +157,9 @@ class StorageClient:
         browser_context_id: Browser.BrowserContextID | None = None,
         session_id: str | None = None,
     ) -> GetCookiesResult:
+        """
+        Returns all browser cookies.
+        """
         params = GetCookiesParams(browser_context_id=browser_context_id)
 
         result = await self._client.send_raw(
@@ -157,6 +176,9 @@ class StorageClient:
         browser_context_id: Browser.BrowserContextID | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Sets given cookies.
+        """
         params = SetCookiesParams(
             cookies=cookies, browser_context_id=browser_context_id
         )
@@ -174,6 +196,9 @@ class StorageClient:
         browser_context_id: Browser.BrowserContextID | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Clears cookies.
+        """
         params = ClearCookiesParams(browser_context_id=browser_context_id)
 
         result = await self._client.send_raw(
@@ -189,6 +214,9 @@ class StorageClient:
         origin: str,
         session_id: str | None = None,
     ) -> GetUsageAndQuotaResult:
+        """
+        Returns usage and quota in bytes.
+        """
         params = GetUsageAndQuotaParams(origin=origin)
 
         result = await self._client.send_raw(
@@ -205,6 +233,9 @@ class StorageClient:
         quota_size: float | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Override quota for the specified origin
+        """
         params = OverrideQuotaForOriginParams(origin=origin, quota_size=quota_size)
 
         result = await self._client.send_raw(
@@ -220,6 +251,10 @@ class StorageClient:
         origin: str,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Registers origin to be notified when an update occurs to its cache storage
+        list.
+        """
         params = TrackCacheStorageForOriginParams(origin=origin)
 
         result = await self._client.send_raw(
@@ -235,6 +270,10 @@ class StorageClient:
         storage_key: str,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Registers storage key to be notified when an update occurs to its cache storage
+        list.
+        """
         params = TrackCacheStorageForStorageKeyParams(storage_key=storage_key)
 
         result = await self._client.send_raw(
@@ -250,6 +289,9 @@ class StorageClient:
         origin: str,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Registers origin to be notified when an update occurs to its IndexedDB.
+        """
         params = TrackIndexedDBForOriginParams(origin=origin)
 
         result = await self._client.send_raw(
@@ -265,6 +307,9 @@ class StorageClient:
         storage_key: str,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Registers storage key to be notified when an update occurs to its IndexedDB.
+        """
         params = TrackIndexedDBForStorageKeyParams(storage_key=storage_key)
 
         result = await self._client.send_raw(
@@ -280,6 +325,9 @@ class StorageClient:
         origin: str,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Unregisters origin from receiving notifications for cache storage.
+        """
         params = UntrackCacheStorageForOriginParams(origin=origin)
 
         result = await self._client.send_raw(
@@ -295,6 +343,9 @@ class StorageClient:
         storage_key: str,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Unregisters storage key from receiving notifications for cache storage.
+        """
         params = UntrackCacheStorageForStorageKeyParams(storage_key=storage_key)
 
         result = await self._client.send_raw(
@@ -310,6 +361,9 @@ class StorageClient:
         origin: str,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Unregisters origin from receiving notifications for IndexedDB.
+        """
         params = UntrackIndexedDBForOriginParams(origin=origin)
 
         result = await self._client.send_raw(
@@ -325,6 +379,9 @@ class StorageClient:
         storage_key: str,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Unregisters storage key from receiving notifications for IndexedDB.
+        """
         params = UntrackIndexedDBForStorageKeyParams(storage_key=storage_key)
 
         result = await self._client.send_raw(
@@ -338,6 +395,10 @@ class StorageClient:
         self,
         session_id: str | None = None,
     ) -> GetTrustTokensResult:
+        """
+        Returns the number of stored Trust Tokens per issuer for the current browsing
+        context.
+        """
         result = await self._client.send_raw(
             method=StorageCommand.GET_TRUST_TOKENS,
             params=None,
@@ -351,6 +412,10 @@ class StorageClient:
         issuer_origin: str,
         session_id: str | None = None,
     ) -> ClearTrustTokensResult:
+        """
+        Removes all Trust Tokens issued by the provided issuerOrigin. Leaves other
+        stored data, including the issuer's Redemption Records, intact.
+        """
         params = ClearTrustTokensParams(issuer_origin=issuer_origin)
 
         result = await self._client.send_raw(
@@ -367,6 +432,9 @@ class StorageClient:
         name: str,
         session_id: str | None = None,
     ) -> GetInterestGroupDetailsResult:
+        """
+        Gets details for a named interest group.
+        """
         params = GetInterestGroupDetailsParams(owner_origin=owner_origin, name=name)
 
         result = await self._client.send_raw(
@@ -382,6 +450,9 @@ class StorageClient:
         enable: bool,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Enables/Disables issuing of interestGroupAccessed events.
+        """
         params = SetInterestGroupTrackingParams(enable=enable)
 
         result = await self._client.send_raw(
@@ -397,6 +468,10 @@ class StorageClient:
         enable: bool,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Enables/Disables issuing of interestGroupAuctionEventOccurred and
+        interestGroupAuctionNetworkRequestCreated.
+        """
         params = SetInterestGroupAuctionTrackingParams(enable=enable)
 
         result = await self._client.send_raw(
@@ -412,6 +487,9 @@ class StorageClient:
         owner_origin: str,
         session_id: str | None = None,
     ) -> GetSharedStorageMetadataResult:
+        """
+        Gets metadata for an origin's shared storage.
+        """
         params = GetSharedStorageMetadataParams(owner_origin=owner_origin)
 
         result = await self._client.send_raw(
@@ -427,6 +505,9 @@ class StorageClient:
         owner_origin: str,
         session_id: str | None = None,
     ) -> GetSharedStorageEntriesResult:
+        """
+        Gets the entries in an given origin's shared storage.
+        """
         params = GetSharedStorageEntriesParams(owner_origin=owner_origin)
 
         result = await self._client.send_raw(
@@ -445,6 +526,9 @@ class StorageClient:
         ignore_if_present: bool | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Sets entry with `key` and `value` for a given origin's shared storage.
+        """
         params = SetSharedStorageEntryParams(
             owner_origin=owner_origin,
             key=key,
@@ -466,6 +550,9 @@ class StorageClient:
         key: str,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Deletes entry for `key` (if it exists) for a given origin's shared storage.
+        """
         params = DeleteSharedStorageEntryParams(owner_origin=owner_origin, key=key)
 
         result = await self._client.send_raw(
@@ -481,6 +568,9 @@ class StorageClient:
         owner_origin: str,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Clears all entries for a given origin's shared storage.
+        """
         params = ClearSharedStorageEntriesParams(owner_origin=owner_origin)
 
         result = await self._client.send_raw(
@@ -496,6 +586,9 @@ class StorageClient:
         owner_origin: str,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Resets the budget for `ownerOrigin` by clearing all budget withdrawals.
+        """
         params = ResetSharedStorageBudgetParams(owner_origin=owner_origin)
 
         result = await self._client.send_raw(
@@ -511,6 +604,9 @@ class StorageClient:
         enable: bool,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Enables/disables issuing of sharedStorageAccessed events.
+        """
         params = SetSharedStorageTrackingParams(enable=enable)
 
         result = await self._client.send_raw(
@@ -527,6 +623,9 @@ class StorageClient:
         enable: bool,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Set tracking for a storage key's buckets.
+        """
         params = SetStorageBucketTrackingParams(storage_key=storage_key, enable=enable)
 
         result = await self._client.send_raw(
@@ -542,6 +641,9 @@ class StorageClient:
         bucket: StorageBucket,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Deletes the Storage Bucket with the given storage key and bucket name.
+        """
         params = DeleteStorageBucketParams(bucket=bucket)
 
         result = await self._client.send_raw(
@@ -555,6 +657,9 @@ class StorageClient:
         self,
         session_id: str | None = None,
     ) -> RunBounceTrackingMitigationsResult:
+        """
+        Deletes state for sites identified as potential bounce trackers, immediately.
+        """
         result = await self._client.send_raw(
             method=StorageCommand.RUN_BOUNCE_TRACKING_MITIGATIONS,
             params=None,
@@ -568,6 +673,9 @@ class StorageClient:
         enabled: bool,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        https://wicg.github.io/attribution-reporting-api/
+        """
         params = SetAttributionReportingLocalTestingModeParams(enabled=enabled)
 
         result = await self._client.send_raw(
@@ -583,6 +691,9 @@ class StorageClient:
         enable: bool,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Enables/disables issuing of Attribution Reporting events.
+        """
         params = SetAttributionReportingTrackingParams(enable=enable)
 
         result = await self._client.send_raw(
@@ -596,6 +707,10 @@ class StorageClient:
         self,
         session_id: str | None = None,
     ) -> SendPendingAttributionReportsResult:
+        """
+        Sends all pending Attribution Reports immediately, regardless of their
+        scheduled report time.
+        """
         result = await self._client.send_raw(
             method=StorageCommand.SEND_PENDING_ATTRIBUTION_REPORTS,
             params=None,
@@ -607,6 +722,11 @@ class StorageClient:
         self,
         session_id: str | None = None,
     ) -> GetRelatedWebsiteSetsResult:
+        """
+        Returns the effective Related Website Sets in use by this profile for the
+        browser session. The effective Related Website Sets will not change during a
+        browser session.
+        """
         result = await self._client.send_raw(
             method=StorageCommand.GET_RELATED_WEBSITE_SETS,
             params=None,
@@ -621,6 +741,11 @@ class StorageClient:
         third_party_urls: list[str],
         session_id: str | None = None,
     ) -> GetAffectedUrlsForThirdPartyCookieMetadataResult:
+        """
+        Returns the list of URLs from a page and its embedded resources that match
+        existing grace period URL pattern rules.
+        https://developers.google.com/privacy-sandbox/cookies/temporary-exceptions/grace-period
+        """
         params = GetAffectedUrlsForThirdPartyCookieMetadataParams(
             first_party_url=first_party_url, third_party_urls=third_party_urls
         )

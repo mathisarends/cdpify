@@ -46,6 +46,10 @@ class DOMStorageClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Disables storage tracking, prevents storage events from being sent to the
+        client.
+        """
         result = await self._client.send_raw(
             method=DOMStorageCommand.DISABLE,
             params=None,
@@ -57,6 +61,9 @@ class DOMStorageClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Enables storage tracking, storage events will now be delivered to the client.
+        """
         result = await self._client.send_raw(
             method=DOMStorageCommand.ENABLE,
             params=None,

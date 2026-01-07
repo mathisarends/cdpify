@@ -22,6 +22,8 @@ from .types import (
     StreamHandle,
 )
 
+from cdpify.domains import runtime
+
 
 class IOClient:
     def __init__(self, client: CDPClient) -> None:
@@ -33,6 +35,9 @@ class IOClient:
         handle: StreamHandle,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Close the stream, discard any temporary backing storage.
+        """
         params = CloseParams(handle=handle)
 
         result = await self._client.send_raw(
@@ -50,6 +55,9 @@ class IOClient:
         size: int | None = None,
         session_id: str | None = None,
     ) -> ReadResult:
+        """
+        Read a chunk of the stream
+        """
         params = ReadParams(handle=handle, offset=offset, size=size)
 
         result = await self._client.send_raw(
@@ -65,6 +73,9 @@ class IOClient:
         object_id: Runtime.RemoteObjectId,
         session_id: str | None = None,
     ) -> ResolveBlobResult:
+        """
+        Return UUID of Blob object specified by a remote object id.
+        """
         params = ResolveBlobParams(object_id=object_id)
 
         result = await self._client.send_raw(

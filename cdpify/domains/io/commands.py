@@ -7,7 +7,9 @@ from dataclasses import dataclass
 from enum import StrEnum
 from cdpify.domains.shared import CDPModel
 
-from .types import *
+from .types import (
+    StreamHandle,
+)
 
 from cdpify.domains import runtime
 

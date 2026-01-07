@@ -1,5 +1,7 @@
 import re
 
+from cdpify.generator.models import Parameter
+
 
 class BaseGenerator:
     def __init__(self) -> None:
@@ -60,4 +62,51 @@ class BaseGenerator:
         lines = [
             f"from cdpify.domains import {domain}" for domain in sorted(unique_domains)
         ]
+        return "\n".join(lines)
+
+
+class TypeAwareGenerator(BaseGenerator):
+    def __init__(self):
+        super().__init__()
+        self._local_type_refs: set[str] = set()
+
+    def _reset_tracking(self):
+        super()._reset_tracking()
+        self._local_type_refs = set()
+
+    def _scan_parameter(self, param: Parameter) -> None:
+        self._scan_direct_ref(param)
+        self._scan_array_items(param)
+
+    def _scan_direct_ref(self, param: Parameter) -> None:
+        if not param.ref:
+            return
+
+        if "." in param.ref:
+            self._cross_domain_refs.add(param.ref)
+        else:
+            self._local_type_refs.add(param.ref)
+
+    def _scan_array_items(self, param: Parameter) -> None:
+        if param.type != "array" or not param.items:
+            return
+
+        ref = param.items.get("$ref")
+        if not ref:
+            return
+
+        if "." in ref:
+            self._cross_domain_refs.add(ref)
+        else:
+            self._local_type_refs.add(ref)
+
+    def _build_type_imports(self) -> str:
+        if not self._local_type_refs:
+            return ""
+
+        lines = ["from .types import ("]
+        for type_name in sorted(self._local_type_refs):
+            lines.append(f"    {type_name},")
+        lines.append(")")
+
         return "\n".join(lines)

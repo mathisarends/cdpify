@@ -7,7 +7,11 @@ from dataclasses import dataclass
 from enum import StrEnum
 from cdpify.domains.shared import CDPModel
 
-from .types import *
+from .types import (
+    CSPViolationType,
+    DOMBreakpointType,
+    EventListener,
+)
 
 from cdpify.domains import dom
 from cdpify.domains import runtime

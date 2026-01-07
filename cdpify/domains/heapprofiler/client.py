@@ -28,6 +28,8 @@ from .types import (
     HeapSnapshotObjectId,
 )
 
+from cdpify.domains import runtime
+
 
 class HeapProfilerClient:
     def __init__(self, client: CDPClient) -> None:
@@ -39,6 +41,10 @@ class HeapProfilerClient:
         heap_object_id: HeapSnapshotObjectId,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Enables console to refer to the node with given id via $x (see Command Line API
+        for more details $x functions).
+        """
         params = AddInspectedHeapObjectParams(heap_object_id=heap_object_id)
 
         result = await self._client.send_raw(

@@ -1,5 +1,7 @@
-from cdpify.generator.generators.base import BaseGenerator
+# cdpify/generator/generators/client.py
+from cdpify.generator.generators.base import TypeAwareGenerator
 from cdpify.generator.generators.utils import (
+    format_docstring,
     map_cdp_type,
     to_pascal_case,
     to_snake_case,
@@ -7,9 +9,10 @@ from cdpify.generator.generators.utils import (
 from cdpify.generator.models import Command, Domain, Parameter
 
 
-class ClientGenerator(BaseGenerator):
+class ClientGenerator(TypeAwareGenerator):
     def generate(self, domain: Domain) -> str:
         self._reset_tracking()
+        self._scan_commands(domain)
 
         sections = [
             self._header(),
@@ -18,6 +21,16 @@ class ClientGenerator(BaseGenerator):
         ]
 
         return "\n\n".join(sections)
+
+    def _scan_commands(self, domain: Domain) -> None:
+        for command in domain.commands:
+            if not command.parameters:
+                continue
+
+            for param in command.parameters:
+                param_type = map_cdp_type(param)
+                self._track_type_usage(param_type)
+                self._scan_parameter(param)
 
     def _imports(self, domain: Domain) -> str:
         lines = [
@@ -32,8 +45,11 @@ class ClientGenerator(BaseGenerator):
 
         if domain.commands:
             lines.extend(self._build_command_imports(domain))
-            self._pre_scan_for_types(domain)
-            lines.extend(self._build_type_imports(domain))
+
+            type_imports = self._build_type_imports()
+            if type_imports:
+                lines.append(type_imports)
+                lines.append("")
 
             if self._cross_domain_refs:
                 lines.append(self._cross_domain_imports())
@@ -54,7 +70,6 @@ class ClientGenerator(BaseGenerator):
 
         all_classes = sorted(param_classes | return_classes)
 
-        # Add the command enum
         command_enum = f"{domain.domain}Command"
         all_classes.insert(0, command_enum)
 
@@ -66,60 +81,8 @@ class ClientGenerator(BaseGenerator):
 
         return lines
 
-    def _build_type_imports(self, domain: Domain) -> list[str]:
-        type_imports = self._collect_type_imports(domain)
-        if not type_imports:
-            return []
-
-        lines = ["from .types import ("]
-        for type_name in sorted(type_imports):
-            lines.append(f"    {type_name},")
-        lines.append(")")
-        lines.append("")
-
-        return lines
-
-    def _pre_scan_for_types(self, domain: Domain) -> None:
-        for command in domain.commands:
-            if not command.parameters:
-                continue
-
-            for param in command.parameters:
-                param_type = map_cdp_type(param)
-                self._track_type_usage(param_type)
-
     def _cross_domain_imports(self) -> str:
         return self._build_cross_domain_imports(use_type_checking=False)
-
-    def _collect_type_imports(self, domain: Domain) -> set[str]:
-        type_imports = set()
-
-        for command in domain.commands:
-            if not command.parameters:
-                continue
-
-            for param in command.parameters:
-                self._add_direct_type_reference(param, type_imports)
-                self._add_array_item_reference(param, type_imports)
-
-        return type_imports
-
-    def _add_direct_type_reference(
-        self, param: Parameter, type_imports: set[str]
-    ) -> None:
-        if not param.ref or "." in param.ref:
-            return
-        type_imports.add(param.ref)
-
-    def _add_array_item_reference(
-        self, param: Parameter, type_imports: set[str]
-    ) -> None:
-        if param.type != "array" or not param.items:
-            return
-
-        ref = param.items.get("$ref")
-        if ref and "." not in ref:
-            type_imports.add(ref)
 
     def _client_class(self, domain: Domain) -> str:
         class_name = f"{domain.domain}Client"
@@ -147,6 +110,11 @@ class ClientGenerator(BaseGenerator):
             lines.append(f"        {param},")
 
         lines.append(f"    ) -> {return_type}:")
+
+        if command.description:
+            doc = format_docstring(command.description, indent=8)
+            lines.extend(doc.rstrip().splitlines())
+
         lines.extend(f"        {line}" for line in method_body)
 
         return "\n".join(lines)
@@ -167,7 +135,7 @@ class ClientGenerator(BaseGenerator):
         params.append("session_id: str | None = None")
         return params
 
-    def _build_param_signature(self, command: Command, param) -> str:
+    def _build_param_signature(self, command: Command, param: Parameter) -> str:
         param_name = self._resolve_param_name(command, param)
         base_type = self._resolve_base_param_type(param)
 
@@ -183,7 +151,7 @@ class ClientGenerator(BaseGenerator):
 
         return param_name
 
-    def _resolve_base_param_type(self, param) -> str:
+    def _resolve_base_param_type(self, param: Parameter) -> str:
         param_type = map_cdp_type(param)
         self._track_type_usage(param_type)
         return param_type.removesuffix(" | None")
@@ -210,12 +178,6 @@ class ClientGenerator(BaseGenerator):
         )
 
         return [f"params = {param_class}({constructor_args})"]
-
-    def _build_param_name_mapping(self, command: Command) -> dict[str, str]:
-        return {
-            param.name: self._resolve_param_name(command, param)
-            for param in command.parameters
-        }
 
     def _to_enum_name(self, name: str) -> str:
         snake = to_snake_case(name)

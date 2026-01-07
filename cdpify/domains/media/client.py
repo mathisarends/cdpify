@@ -22,6 +22,9 @@ class MediaClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Enables the Media domain
+        """
         result = await self._client.send_raw(
             method=MediaCommand.ENABLE,
             params=None,
@@ -33,6 +36,9 @@ class MediaClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Disables the Media domain.
+        """
         result = await self._client.send_raw(
             method=MediaCommand.DISABLE,
             params=None,

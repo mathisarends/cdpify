@@ -17,6 +17,8 @@ from .commands import (
     GetEncodedResponseResult,
 )
 
+from cdpify.domains import network
+
 
 class AuditsClient:
     def __init__(self, client: CDPClient) -> None:
@@ -31,6 +33,10 @@ class AuditsClient:
         size_only: bool | None = None,
         session_id: str | None = None,
     ) -> GetEncodedResponseResult:
+        """
+        Returns the response body and size if it were re-encoded with the specified
+        settings. Only applies to images.
+        """
         params = GetEncodedResponseParams(
             request_id=request_id,
             encoding=encoding,
@@ -49,6 +55,10 @@ class AuditsClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Disables issues domain, prevents further issues from being reported to the
+        client.
+        """
         result = await self._client.send_raw(
             method=AuditsCommand.DISABLE,
             params=None,
@@ -60,6 +70,10 @@ class AuditsClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Enables issues domain, sends the issues collected so far to the client by means
+        of the `issueAdded` event.
+        """
         result = await self._client.send_raw(
             method=AuditsCommand.ENABLE,
             params=None,
@@ -73,6 +87,10 @@ class AuditsClient:
         report_a_a_a: bool | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Runs the contrast check for the target page. Found issues are reported using
+        Audits.issueAdded event.
+        """
         params = CheckContrastParams(report_a_a_a=report_a_a_a)
 
         result = await self._client.send_raw(
@@ -86,6 +104,10 @@ class AuditsClient:
         self,
         session_id: str | None = None,
     ) -> CheckFormsIssuesResult:
+        """
+        Runs the form issues check for the target page. Found issues are reported using
+        Audits.issueAdded event.
+        """
         result = await self._client.send_raw(
             method=AuditsCommand.CHECK_FORMS_ISSUES,
             params=None,

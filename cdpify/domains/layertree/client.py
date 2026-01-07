@@ -32,6 +32,8 @@ from .types import (
     SnapshotId,
 )
 
+from cdpify.domains import dom
+
 
 class LayerTreeClient:
     def __init__(self, client: CDPClient) -> None:
@@ -43,6 +45,9 @@ class LayerTreeClient:
         layer_id: LayerId,
         session_id: str | None = None,
     ) -> CompositingReasonsResult:
+        """
+        Provides the reasons why the given layer was composited.
+        """
         params = CompositingReasonsParams(layer_id=layer_id)
 
         result = await self._client.send_raw(
@@ -56,6 +61,9 @@ class LayerTreeClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Disables compositing tree inspection.
+        """
         result = await self._client.send_raw(
             method=LayerTreeCommand.DISABLE,
             params=None,
@@ -67,6 +75,9 @@ class LayerTreeClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Enables compositing tree inspection.
+        """
         result = await self._client.send_raw(
             method=LayerTreeCommand.ENABLE,
             params=None,
@@ -80,6 +91,9 @@ class LayerTreeClient:
         tiles: list[PictureTile],
         session_id: str | None = None,
     ) -> LoadSnapshotResult:
+        """
+        Returns the snapshot identifier.
+        """
         params = LoadSnapshotParams(tiles=tiles)
 
         result = await self._client.send_raw(
@@ -95,6 +109,9 @@ class LayerTreeClient:
         layer_id: LayerId,
         session_id: str | None = None,
     ) -> MakeSnapshotResult:
+        """
+        Returns the layer snapshot identifier.
+        """
         params = MakeSnapshotParams(layer_id=layer_id)
 
         result = await self._client.send_raw(
@@ -133,6 +150,9 @@ class LayerTreeClient:
         snapshot_id: SnapshotId,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Releases layer snapshot captured by the back-end.
+        """
         params = ReleaseSnapshotParams(snapshot_id=snapshot_id)
 
         result = await self._client.send_raw(
@@ -151,6 +171,9 @@ class LayerTreeClient:
         scale: float | None = None,
         session_id: str | None = None,
     ) -> ReplaySnapshotResult:
+        """
+        Replays the layer snapshot and returns the resulting bitmap.
+        """
         params = ReplaySnapshotParams(
             snapshot_id=snapshot_id, from_step=from_step, to_step=to_step, scale=scale
         )
@@ -168,6 +191,9 @@ class LayerTreeClient:
         snapshot_id: SnapshotId,
         session_id: str | None = None,
     ) -> SnapshotCommandLogResult:
+        """
+        Replays the layer snapshot and returns canvas log.
+        """
         params = SnapshotCommandLogParams(snapshot_id=snapshot_id)
 
         result = await self._client.send_raw(

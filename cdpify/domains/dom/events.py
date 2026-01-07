@@ -7,7 +7,12 @@ from dataclasses import dataclass
 from enum import StrEnum
 from cdpify.domains.shared import CDPModel
 
-from .types import *
+from .types import (
+    BackendNode,
+    Node,
+    NodeId,
+    StyleSheetId,
+)
 
 if TYPE_CHECKING:
     from cdpify.domains import dom

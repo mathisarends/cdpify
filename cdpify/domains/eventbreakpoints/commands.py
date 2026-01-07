@@ -6,8 +6,6 @@ from dataclasses import dataclass
 from enum import StrEnum
 from cdpify.domains.shared import CDPModel
 
-from .types import *
-
 
 class EventBreakpointsCommand(StrEnum):
     SET_INSTRUMENTATION_BREAKPOINT = "EventBreakpoints.setInstrumentationBreakpoint"

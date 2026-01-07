@@ -28,6 +28,9 @@ class WebAudioClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Enables the WebAudio domain and starts sending context lifetime events.
+        """
         result = await self._client.send_raw(
             method=WebAudioCommand.ENABLE,
             params=None,
@@ -39,6 +42,9 @@ class WebAudioClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Disables the WebAudio domain.
+        """
         result = await self._client.send_raw(
             method=WebAudioCommand.DISABLE,
             params=None,
@@ -52,6 +58,9 @@ class WebAudioClient:
         context_id: GraphObjectId,
         session_id: str | None = None,
     ) -> GetRealtimeDataResult:
+        """
+        Fetch the realtime data from the registered contexts.
+        """
         params = GetRealtimeDataParams(context_id=context_id)
 
         result = await self._client.send_raw(

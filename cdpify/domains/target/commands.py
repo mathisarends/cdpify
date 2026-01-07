@@ -7,7 +7,14 @@ from dataclasses import dataclass
 from enum import StrEnum
 from cdpify.domains.shared import CDPModel
 
-from .types import *
+from .types import (
+    RemoteLocation,
+    SessionID,
+    TargetFilter,
+    TargetID,
+    TargetInfo,
+    WindowState,
+)
 
 from cdpify.domains import browser
 

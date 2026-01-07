@@ -26,6 +26,9 @@ class EventBreakpointsClient:
         event_name: str,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Sets breakpoint on particular native event.
+        """
         params = SetInstrumentationBreakpointParams(event_name=event_name)
 
         result = await self._client.send_raw(
@@ -41,6 +44,9 @@ class EventBreakpointsClient:
         event_name: str,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Removes breakpoint on particular native event.
+        """
         params = RemoveInstrumentationBreakpointParams(event_name=event_name)
 
         result = await self._client.send_raw(
@@ -54,6 +60,9 @@ class EventBreakpointsClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Removes all breakpoints
+        """
         result = await self._client.send_raw(
             method=EventBreakpointsCommand.DISABLE,
             params=None,

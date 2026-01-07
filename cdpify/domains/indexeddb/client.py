@@ -28,6 +28,8 @@ from .types import (
     KeyRange,
 )
 
+from cdpify.domains import storage
+
 
 class IndexedDBClient:
     def __init__(self, client: CDPClient) -> None:
@@ -43,6 +45,9 @@ class IndexedDBClient:
         object_store_name: str,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Clears all entries from an object store.
+        """
         params = ClearObjectStoreParams(
             security_origin=security_origin,
             storage_key=storage_key,
@@ -67,6 +72,9 @@ class IndexedDBClient:
         database_name: str,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Deletes a database.
+        """
         params = DeleteDatabaseParams(
             security_origin=security_origin,
             storage_key=storage_key,
@@ -92,6 +100,9 @@ class IndexedDBClient:
         key_range: KeyRange,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Delete a range of entries from an object store
+        """
         params = DeleteObjectStoreEntriesParams(
             security_origin=security_origin,
             storage_key=storage_key,
@@ -112,6 +123,9 @@ class IndexedDBClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Disables events from backend.
+        """
         result = await self._client.send_raw(
             method=IndexedDBCommand.DISABLE,
             params=None,
@@ -123,6 +137,9 @@ class IndexedDBClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Enables events from backend.
+        """
         result = await self._client.send_raw(
             method=IndexedDBCommand.ENABLE,
             params=None,
@@ -144,6 +161,9 @@ class IndexedDBClient:
         key_range: KeyRange | None = None,
         session_id: str | None = None,
     ) -> RequestDataResult:
+        """
+        Requests data from object store or index.
+        """
         params = RequestDataParams(
             security_origin=security_origin,
             storage_key=storage_key,
@@ -173,6 +193,9 @@ class IndexedDBClient:
         object_store_name: str,
         session_id: str | None = None,
     ) -> GetMetadataResult:
+        """
+        Gets metadata of an object store.
+        """
         params = GetMetadataParams(
             security_origin=security_origin,
             storage_key=storage_key,
@@ -197,6 +220,9 @@ class IndexedDBClient:
         database_name: str,
         session_id: str | None = None,
     ) -> RequestDatabaseResult:
+        """
+        Requests database with given name in given frame.
+        """
         params = RequestDatabaseParams(
             security_origin=security_origin,
             storage_key=storage_key,
@@ -219,6 +245,9 @@ class IndexedDBClient:
         storage_bucket: Storage.StorageBucket | None = None,
         session_id: str | None = None,
     ) -> RequestDatabaseNamesResult:
+        """
+        Requests database names for given security origin.
+        """
         params = RequestDatabaseNamesParams(
             security_origin=security_origin,
             storage_key=storage_key,

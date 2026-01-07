@@ -27,6 +27,9 @@ class LogClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Clears the log.
+        """
         result = await self._client.send_raw(
             method=LogCommand.CLEAR,
             params=None,
@@ -38,6 +41,10 @@ class LogClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Disables log domain, prevents further log entries from being reported to the
+        client.
+        """
         result = await self._client.send_raw(
             method=LogCommand.DISABLE,
             params=None,
@@ -49,6 +56,10 @@ class LogClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Enables log domain, sends the entries collected so far to the client by means
+        of the `entryAdded` notification.
+        """
         result = await self._client.send_raw(
             method=LogCommand.ENABLE,
             params=None,
@@ -62,6 +73,9 @@ class LogClient:
         config: list[ViolationSetting],
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        start violation reporting.
+        """
         params = StartViolationsReportParams(config=config)
 
         result = await self._client.send_raw(
@@ -75,6 +89,9 @@ class LogClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Stop violation reporting.
+        """
         result = await self._client.send_raw(
             method=LogCommand.STOP_VIOLATIONS_REPORT,
             params=None,

@@ -45,6 +45,10 @@ class WebAuthnClient:
         enable_u_i: bool | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Enable the WebAuthn domain and start intercepting credential storage and
+        retrieval with a virtual authenticator.
+        """
         params = EnableParams(enable_u_i=enable_u_i)
 
         result = await self._client.send_raw(
@@ -58,6 +62,9 @@ class WebAuthnClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Disable the WebAuthn domain.
+        """
         result = await self._client.send_raw(
             method=WebAuthnCommand.DISABLE,
             params=None,
@@ -71,6 +78,9 @@ class WebAuthnClient:
         options: VirtualAuthenticatorOptions,
         session_id: str | None = None,
     ) -> AddVirtualAuthenticatorResult:
+        """
+        Creates and adds a virtual authenticator.
+        """
         params = AddVirtualAuthenticatorParams(options=options)
 
         result = await self._client.send_raw(
@@ -89,6 +99,10 @@ class WebAuthnClient:
         is_bad_u_p: bool | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Resets parameters isBogusSignature, isBadUV, isBadUP to false if they are not
+        present.
+        """
         params = SetResponseOverrideBitsParams(
             authenticator_id=authenticator_id,
             is_bogus_signature=is_bogus_signature,
@@ -109,6 +123,9 @@ class WebAuthnClient:
         authenticator_id: AuthenticatorId,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Removes the given authenticator.
+        """
         params = RemoveVirtualAuthenticatorParams(authenticator_id=authenticator_id)
 
         result = await self._client.send_raw(
@@ -125,6 +142,9 @@ class WebAuthnClient:
         credential: Credential,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Adds the credential to the specified authenticator.
+        """
         params = AddCredentialParams(
             authenticator_id=authenticator_id, credential=credential
         )
@@ -143,6 +163,10 @@ class WebAuthnClient:
         credential_id: str,
         session_id: str | None = None,
     ) -> GetCredentialResult:
+        """
+        Returns a single credential stored in the given virtual authenticator that
+        matches the credential ID.
+        """
         params = GetCredentialParams(
             authenticator_id=authenticator_id, credential_id=credential_id
         )
@@ -160,6 +184,9 @@ class WebAuthnClient:
         authenticator_id: AuthenticatorId,
         session_id: str | None = None,
     ) -> GetCredentialsResult:
+        """
+        Returns all the credentials stored in the given virtual authenticator.
+        """
         params = GetCredentialsParams(authenticator_id=authenticator_id)
 
         result = await self._client.send_raw(
@@ -176,6 +203,9 @@ class WebAuthnClient:
         credential_id: str,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Removes a credential from the authenticator.
+        """
         params = RemoveCredentialParams(
             authenticator_id=authenticator_id, credential_id=credential_id
         )
@@ -193,6 +223,9 @@ class WebAuthnClient:
         authenticator_id: AuthenticatorId,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Clears all the credentials from the specified device.
+        """
         params = ClearCredentialsParams(authenticator_id=authenticator_id)
 
         result = await self._client.send_raw(
@@ -209,6 +242,10 @@ class WebAuthnClient:
         is_user_verified: bool,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Sets whether User Verification succeeds or fails for an authenticator. The
+        default is true.
+        """
         params = SetUserVerifiedParams(
             authenticator_id=authenticator_id, is_user_verified=is_user_verified
         )
@@ -227,6 +264,10 @@ class WebAuthnClient:
         enabled: bool,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Sets whether tests of user presence will succeed immediately (if true) or fail
+        to resolve (if false) for an authenticator. The default is true.
+        """
         params = SetAutomaticPresenceSimulationParams(
             authenticator_id=authenticator_id, enabled=enabled
         )
@@ -247,6 +288,10 @@ class WebAuthnClient:
         backup_state: bool | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Allows setting credential properties.
+        https://w3c.github.io/webauthn/#sctn-automation-set-credential-properties
+        """
         params = SetCredentialPropertiesParams(
             authenticator_id=authenticator_id,
             credential_id=credential_id,

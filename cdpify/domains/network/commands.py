@@ -7,7 +7,28 @@ from dataclasses import dataclass
 from enum import StrEnum
 from cdpify.domains.shared import CDPModel
 
-from .types import *
+from .types import (
+    AuthChallengeResponse,
+    BlockPattern,
+    ConnectionType,
+    ContentEncoding,
+    Cookie,
+    CookieParam,
+    CookiePartitionKey,
+    CookiePriority,
+    CookieSameSite,
+    CookieSourceScheme,
+    ErrorReason,
+    Headers,
+    InterceptionId,
+    LoadNetworkResourceOptions,
+    LoadNetworkResourcePageResult,
+    NetworkConditions,
+    RequestId,
+    RequestPattern,
+    SecurityIsolationStatus,
+    TimeSinceEpoch,
+)
 
 from cdpify.domains import debugger
 from cdpify.domains import emulation

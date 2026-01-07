@@ -82,6 +82,9 @@ from .types import (
     TimeSinceEpoch,
 )
 
+from cdpify.domains import emulation
+from cdpify.domains import page
+
 
 class NetworkClient:
     def __init__(self, client: CDPClient) -> None:
@@ -93,6 +96,10 @@ class NetworkClient:
         encodings: list[ContentEncoding],
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Sets a list of content encodings that will be accepted. Empty list means no
+        encoding is accepted.
+        """
         params = SetAcceptedEncodingsParams(encodings=encodings)
 
         result = await self._client.send_raw(
@@ -106,6 +113,9 @@ class NetworkClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Clears accepted encodings set by setAcceptedEncodings
+        """
         result = await self._client.send_raw(
             method=NetworkCommand.CLEAR_ACCEPTED_ENCODINGS_OVERRIDE,
             params=None,
@@ -117,6 +127,9 @@ class NetworkClient:
         self,
         session_id: str | None = None,
     ) -> CanClearBrowserCacheResult:
+        """
+        Tells whether clearing browser cache is supported.
+        """
         result = await self._client.send_raw(
             method=NetworkCommand.CAN_CLEAR_BROWSER_CACHE,
             params=None,
@@ -128,6 +141,9 @@ class NetworkClient:
         self,
         session_id: str | None = None,
     ) -> CanClearBrowserCookiesResult:
+        """
+        Tells whether clearing browser cookies is supported.
+        """
         result = await self._client.send_raw(
             method=NetworkCommand.CAN_CLEAR_BROWSER_COOKIES,
             params=None,
@@ -139,6 +155,9 @@ class NetworkClient:
         self,
         session_id: str | None = None,
     ) -> CanEmulateNetworkConditionsResult:
+        """
+        Tells whether emulation of network conditions is supported.
+        """
         result = await self._client.send_raw(
             method=NetworkCommand.CAN_EMULATE_NETWORK_CONDITIONS,
             params=None,
@@ -150,6 +169,9 @@ class NetworkClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Clears browser cache.
+        """
         result = await self._client.send_raw(
             method=NetworkCommand.CLEAR_BROWSER_CACHE,
             params=None,
@@ -161,6 +183,9 @@ class NetworkClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Clears browser cookies.
+        """
         result = await self._client.send_raw(
             method=NetworkCommand.CLEAR_BROWSER_COOKIES,
             params=None,
@@ -181,6 +206,14 @@ class NetworkClient:
         auth_challenge_response: AuthChallengeResponse | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Response to Network.requestIntercepted which either modifies the request to
+        continue with any modifications, or blocks it, or completes it with the provided
+        response bytes. If a network fetch occurs as a result which encounters a
+        redirect an additional Network.requestIntercepted event will be sent with the
+        same InterceptionId. Deprecated, use Fetch.continueRequest, Fetch.fulfillRequest
+        and Fetch.failRequest instead.
+        """
         params = ContinueInterceptedRequestParams(
             interception_id=interception_id,
             error_reason=error_reason,
@@ -209,6 +242,10 @@ class NetworkClient:
         partition_key: CookiePartitionKey | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Deletes browser cookies with matching name and url or domain/path/partitionKey
+        pair.
+        """
         params = DeleteCookiesParams(
             name=name, url=url, domain=domain, path=path, partition_key=partition_key
         )
@@ -224,6 +261,10 @@ class NetworkClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Disables network tracking, prevents network events from being sent to the
+        client.
+        """
         result = await self._client.send_raw(
             method=NetworkCommand.DISABLE,
             params=None,
@@ -244,6 +285,11 @@ class NetworkClient:
         packet_reordering: bool | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Activates emulation of network conditions. This command is deprecated in favor
+        of the emulateNetworkConditionsByRule and overrideNetworkState commands, which
+        can be used together to the same effect.
+        """
         params = EmulateNetworkConditionsParams(
             offline=offline,
             latency=latency,
@@ -269,6 +315,12 @@ class NetworkClient:
         matched_network_conditions: list[NetworkConditions],
         session_id: str | None = None,
     ) -> EmulateNetworkConditionsByRuleResult:
+        """
+        Activates emulation of network conditions for individual requests using URL
+        match patterns. Unlike the deprecated Network.emulateNetworkConditions this
+        method does not affect `navigator` state. Use Network.overrideNetworkState to
+        explicitly modify `navigator` behavior.
+        """
         params = EmulateNetworkConditionsByRuleParams(
             offline=offline, matched_network_conditions=matched_network_conditions
         )
@@ -290,6 +342,9 @@ class NetworkClient:
         connection_type: ConnectionType | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Override the state of navigator.onLine and navigator.connection.
+        """
         params = OverrideNetworkStateParams(
             offline=offline,
             latency=latency,
@@ -315,6 +370,9 @@ class NetworkClient:
         enable_durable_messages: bool | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Enables network tracking, network events will now be delivered to the client.
+        """
         params = EnableParams(
             max_total_buffer_size=max_total_buffer_size,
             max_resource_buffer_size=max_resource_buffer_size,
@@ -337,6 +395,11 @@ class NetworkClient:
         max_resource_buffer_size: int | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Configures storing response bodies outside of renderer, so that these survive a
+        cross-process navigation. If maxTotalBufferSize is not set, durable messages are
+        disabled.
+        """
         params = ConfigureDurableMessagesParams(
             max_total_buffer_size=max_total_buffer_size,
             max_resource_buffer_size=max_resource_buffer_size,
@@ -353,6 +416,11 @@ class NetworkClient:
         self,
         session_id: str | None = None,
     ) -> GetAllCookiesResult:
+        """
+        Returns all browser cookies. Depending on the backend support, will return
+        detailed cookie information in the `cookies` field. Deprecated. Use
+        Storage.getCookies instead.
+        """
         result = await self._client.send_raw(
             method=NetworkCommand.GET_ALL_COOKIES,
             params=None,
@@ -366,6 +434,9 @@ class NetworkClient:
         origin: str,
         session_id: str | None = None,
     ) -> GetCertificateResult:
+        """
+        Returns the DER-encoded certificate.
+        """
         params = GetCertificateParams(origin=origin)
 
         result = await self._client.send_raw(
@@ -381,6 +452,10 @@ class NetworkClient:
         urls: list[str] | None = None,
         session_id: str | None = None,
     ) -> GetCookiesResult:
+        """
+        Returns all browser cookies for the current URL. Depending on the backend
+        support, will return detailed cookie information in the `cookies` field.
+        """
         params = GetCookiesParams(urls=urls)
 
         result = await self._client.send_raw(
@@ -396,6 +471,9 @@ class NetworkClient:
         request_id: RequestId,
         session_id: str | None = None,
     ) -> GetResponseBodyResult:
+        """
+        Returns content served for the given request.
+        """
         params = GetResponseBodyParams(request_id=request_id)
 
         result = await self._client.send_raw(
@@ -411,6 +489,10 @@ class NetworkClient:
         request_id: RequestId,
         session_id: str | None = None,
     ) -> GetRequestPostDataResult:
+        """
+        Returns post data sent with the request. Returns an error when no data was sent
+        with the request.
+        """
         params = GetRequestPostDataParams(request_id=request_id)
 
         result = await self._client.send_raw(
@@ -426,6 +508,9 @@ class NetworkClient:
         interception_id: InterceptionId,
         session_id: str | None = None,
     ) -> GetResponseBodyForInterceptionResult:
+        """
+        Returns content served for the given currently intercepted request.
+        """
         params = GetResponseBodyForInterceptionParams(interception_id=interception_id)
 
         result = await self._client.send_raw(
@@ -441,6 +526,12 @@ class NetworkClient:
         interception_id: InterceptionId,
         session_id: str | None = None,
     ) -> TakeResponseBodyForInterceptionAsStreamResult:
+        """
+        Returns a handle to the stream representing the response body. Note that after
+        this command, the intercepted request can't be continued as is -- you either
+        need to cancel it or to provide the response body. The stream only supports
+        sequential read, IO.read will fail if the position is specified.
+        """
         params = TakeResponseBodyForInterceptionAsStreamParams(
             interception_id=interception_id
         )
@@ -458,6 +549,11 @@ class NetworkClient:
         request_id: RequestId,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        This method sends a new XMLHttpRequest which is identical to the original one.
+        The following parameters should be identical: method, url, async, request body,
+        extra headers, withCredentials attribute, user, password.
+        """
         params = ReplayXHRParams(request_id=request_id)
 
         result = await self._client.send_raw(
@@ -476,6 +572,9 @@ class NetworkClient:
         is_regex: bool | None = None,
         session_id: str | None = None,
     ) -> SearchInResponseBodyResult:
+        """
+        Searches for given string in response content.
+        """
         params = SearchInResponseBodyParams(
             request_id=request_id,
             query=query,
@@ -497,6 +596,9 @@ class NetworkClient:
         urls: list[str] | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Blocks URLs from loading.
+        """
         params = SetBlockedURLsParams(url_patterns=url_patterns, urls=urls)
 
         result = await self._client.send_raw(
@@ -512,6 +614,9 @@ class NetworkClient:
         bypass: bool,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Toggles ignoring of service worker for each request.
+        """
         params = SetBypassServiceWorkerParams(bypass=bypass)
 
         result = await self._client.send_raw(
@@ -527,6 +632,9 @@ class NetworkClient:
         cache_disabled: bool,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Toggles ignoring cache for each request. If `true`, cache will not be used.
+        """
         params = SetCacheDisabledParams(cache_disabled=cache_disabled)
 
         result = await self._client.send_raw(
@@ -555,6 +663,10 @@ class NetworkClient:
         partition_key: CookiePartitionKey | None = None,
         session_id: str | None = None,
     ) -> SetCookieResult:
+        """
+        Sets a cookie with the given cookie data; may overwrite equivalent cookies if
+        they exist.
+        """
         params = SetCookieParams(
             name=name,
             value=value,
@@ -585,6 +697,9 @@ class NetworkClient:
         cookies: list[CookieParam],
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Sets given cookies.
+        """
         params = SetCookiesParams(cookies=cookies)
 
         result = await self._client.send_raw(
@@ -600,6 +715,10 @@ class NetworkClient:
         headers: Headers,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Specifies whether to always send extra HTTP headers with the requests from this
+        page.
+        """
         params = SetExtraHTTPHeadersParams(headers=headers)
 
         result = await self._client.send_raw(
@@ -615,6 +734,9 @@ class NetworkClient:
         enabled: bool,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Specifies whether to attach a page script stack id in requests
+        """
         params = SetAttachDebugStackParams(enabled=enabled)
 
         result = await self._client.send_raw(
@@ -630,6 +752,10 @@ class NetworkClient:
         patterns: list[RequestPattern],
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Sets the requests to intercept that match the provided patterns and optionally
+        resource types. Deprecated, please use Fetch.enable instead.
+        """
         params = SetRequestInterceptionParams(patterns=patterns)
 
         result = await self._client.send_raw(
@@ -648,6 +774,9 @@ class NetworkClient:
         user_agent_metadata: Emulation.UserAgentMetadata | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Allows overriding user agent with the given string.
+        """
         params = SetUserAgentOverrideParams(
             user_agent=user_agent,
             accept_language=accept_language,
@@ -668,6 +797,10 @@ class NetworkClient:
         request_id: RequestId,
         session_id: str | None = None,
     ) -> StreamResourceContentResult:
+        """
+        Enables streaming of the response for the given requestId. If enabled, the
+        dataReceived event contains the data that was received during streaming.
+        """
         params = StreamResourceContentParams(request_id=request_id)
 
         result = await self._client.send_raw(
@@ -683,6 +816,9 @@ class NetworkClient:
         frame_id: Page.FrameId | None = None,
         session_id: str | None = None,
     ) -> GetSecurityIsolationStatusResult:
+        """
+        Returns information about the COEP/COOP isolation status.
+        """
         params = GetSecurityIsolationStatusParams(frame_id=frame_id)
 
         result = await self._client.send_raw(
@@ -698,6 +834,11 @@ class NetworkClient:
         enable: bool,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Enables tracking for the Reporting API, events generated by the Reporting API
+        will now be delivered to the client. Enabling triggers 'reportingApiReportAdded'
+        for all existing reports.
+        """
         params = EnableReportingApiParams(enable=enable)
 
         result = await self._client.send_raw(
@@ -713,6 +854,9 @@ class NetworkClient:
         enable: bool,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Sets up tracking device bound sessions and fetching of initial set of sessions.
+        """
         params = EnableDeviceBoundSessionsParams(enable=enable)
 
         result = await self._client.send_raw(
@@ -728,6 +872,9 @@ class NetworkClient:
         origin: str,
         session_id: str | None = None,
     ) -> FetchSchemefulSiteResult:
+        """
+        Fetches the schemeful site for a specific origin.
+        """
         params = FetchSchemefulSiteParams(origin=origin)
 
         result = await self._client.send_raw(
@@ -745,6 +892,9 @@ class NetworkClient:
         options: LoadNetworkResourceOptions,
         session_id: str | None = None,
     ) -> LoadNetworkResourceResult:
+        """
+        Fetches the resource and returns the content.
+        """
         params = LoadNetworkResourceParams(frame_id=frame_id, url=url, options=options)
 
         result = await self._client.send_raw(
@@ -762,6 +912,10 @@ class NetworkClient:
         disable_third_party_cookie_heuristics: bool,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Sets Controls for third-party cookie access Page reload is required before the
+        new cookie behavior will be observed
+        """
         params = SetCookieControlsParams(
             enable_third_party_cookie_restriction=enable_third_party_cookie_restriction,
             disable_third_party_cookie_metadata=disable_third_party_cookie_metadata,

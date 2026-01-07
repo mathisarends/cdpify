@@ -23,6 +23,9 @@ class SchemaClient:
         self,
         session_id: str | None = None,
     ) -> GetDomainsResult:
+        """
+        Returns supported domains.
+        """
         result = await self._client.send_raw(
             method=SchemaCommand.GET_DOMAINS,
             params=None,

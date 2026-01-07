@@ -98,6 +98,10 @@ from .types import (
     Rect,
 )
 
+from cdpify.domains import dom
+from cdpify.domains import page
+from cdpify.domains import runtime
+
 
 class DOMClient:
     def __init__(self, client: CDPClient) -> None:
@@ -109,6 +113,9 @@ class DOMClient:
         node_id: NodeId,
         session_id: str | None = None,
     ) -> CollectClassNamesFromSubtreeResult:
+        """
+        Collects class names for the node with given id and all of it's child nodes.
+        """
         params = CollectClassNamesFromSubtreeParams(node_id=node_id)
 
         result = await self._client.send_raw(
@@ -126,6 +133,10 @@ class DOMClient:
         insert_before_node_id: NodeId | None = None,
         session_id: str | None = None,
     ) -> CopyToResult:
+        """
+        Creates a deep copy of the specified node and places it into the target
+        container before the given anchor.
+        """
         params = CopyToParams(
             node_id=node_id,
             target_node_id=target_node_id,
@@ -149,6 +160,10 @@ class DOMClient:
         pierce: bool | None = None,
         session_id: str | None = None,
     ) -> DescribeNodeResult:
+        """
+        Describes node given its id, does not require domain to be enabled. Does not
+        start tracking any objects, can be used for automation.
+        """
         params = DescribeNodeParams(
             node_id=node_id,
             backend_node_id=backend_node_id,
@@ -173,6 +188,11 @@ class DOMClient:
         rect: Rect | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Scrolls the specified rect of the given node into view if not already visible.
+        Note: exactly one between nodeId, backendNodeId and objectId should be passed to
+        identify the node.
+        """
         params = ScrollIntoViewIfNeededParams(
             node_id=node_id,
             backend_node_id=backend_node_id,
@@ -191,6 +211,9 @@ class DOMClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Disables DOM agent for the given page.
+        """
         result = await self._client.send_raw(
             method=DOMCommand.DISABLE,
             params=None,
@@ -204,6 +227,10 @@ class DOMClient:
         search_id: str,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Discards search results from the session with the given id. `getSearchResults`
+        should no longer be called for that search.
+        """
         params = DiscardSearchResultsParams(search_id=search_id)
 
         result = await self._client.send_raw(
@@ -219,6 +246,9 @@ class DOMClient:
         include_whitespace: Literal["none", "all"] | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Enables DOM agent for the given page.
+        """
         params = EnableParams(include_whitespace=include_whitespace)
 
         result = await self._client.send_raw(
@@ -236,6 +266,9 @@ class DOMClient:
         object_id: Runtime.RemoteObjectId | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Focuses the given element.
+        """
         params = FocusParams(
             node_id=node_id, backend_node_id=backend_node_id, object_id=object_id
         )
@@ -253,6 +286,9 @@ class DOMClient:
         node_id: NodeId,
         session_id: str | None = None,
     ) -> GetAttributesResult:
+        """
+        Returns attributes for the specified node.
+        """
         params = GetAttributesParams(node_id=node_id)
 
         result = await self._client.send_raw(
@@ -270,6 +306,9 @@ class DOMClient:
         object_id: Runtime.RemoteObjectId | None = None,
         session_id: str | None = None,
     ) -> GetBoxModelResult:
+        """
+        Returns boxes for the given node.
+        """
         params = GetBoxModelParams(
             node_id=node_id, backend_node_id=backend_node_id, object_id=object_id
         )
@@ -289,6 +328,10 @@ class DOMClient:
         object_id: Runtime.RemoteObjectId | None = None,
         session_id: str | None = None,
     ) -> GetContentQuadsResult:
+        """
+        Returns quads that describe node position on the page. This method might return
+        multiple quads for inline nodes.
+        """
         params = GetContentQuadsParams(
             node_id=node_id, backend_node_id=backend_node_id, object_id=object_id
         )
@@ -307,6 +350,10 @@ class DOMClient:
         pierce: bool | None = None,
         session_id: str | None = None,
     ) -> GetDocumentResult:
+        """
+        Returns the root DOM node (and optionally the subtree) to the caller.
+        Implicitly enables the DOM domain events for the current target.
+        """
         params = GetDocumentParams(depth=depth, pierce=pierce)
 
         result = await self._client.send_raw(
@@ -323,6 +370,11 @@ class DOMClient:
         pierce: bool | None = None,
         session_id: str | None = None,
     ) -> GetFlattenedDocumentResult:
+        """
+        Returns the root DOM node (and optionally the subtree) to the caller.
+        Deprecated, as it is not designed to work well with the rest of the DOM agent.
+        Use DOMSnapshot.captureSnapshot instead.
+        """
         params = GetFlattenedDocumentParams(depth=depth, pierce=pierce)
 
         result = await self._client.send_raw(
@@ -340,6 +392,9 @@ class DOMClient:
         pierce: bool | None = None,
         session_id: str | None = None,
     ) -> GetNodesForSubtreeByStyleResult:
+        """
+        Finds nodes with a given computed style in a subtree.
+        """
         params = GetNodesForSubtreeByStyleParams(
             node_id=node_id, computed_styles=computed_styles, pierce=pierce
         )
@@ -360,6 +415,10 @@ class DOMClient:
         ignore_pointer_events_none: bool | None = None,
         session_id: str | None = None,
     ) -> GetNodeForLocationResult:
+        """
+        Returns node id at given location. Depending on whether DOM domain is enabled,
+        nodeId is either returned or not.
+        """
         params = GetNodeForLocationParams(
             x=x,
             y=y,
@@ -383,6 +442,9 @@ class DOMClient:
         include_shadow_d_o_m: bool | None = None,
         session_id: str | None = None,
     ) -> GetOuterHTMLResult:
+        """
+        Returns node's HTML markup.
+        """
         params = GetOuterHTMLParams(
             node_id=node_id,
             backend_node_id=backend_node_id,
@@ -403,6 +465,9 @@ class DOMClient:
         node_id: NodeId,
         session_id: str | None = None,
     ) -> GetRelayoutBoundaryResult:
+        """
+        Returns the id of the nearest ancestor that is a relayout boundary.
+        """
         params = GetRelayoutBoundaryParams(node_id=node_id)
 
         result = await self._client.send_raw(
@@ -420,6 +485,10 @@ class DOMClient:
         to_index: int,
         session_id: str | None = None,
     ) -> GetSearchResultsResult:
+        """
+        Returns search results from given `fromIndex` to given `toIndex` from the
+        search with the given identifier.
+        """
         params = GetSearchResultsParams(
             search_id=search_id, from_index=from_index, to_index=to_index
         )
@@ -435,6 +504,9 @@ class DOMClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Hides any highlight.
+        """
         result = await self._client.send_raw(
             method=DOMCommand.HIDE_HIGHLIGHT,
             params=None,
@@ -446,6 +518,9 @@ class DOMClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Highlights DOM node.
+        """
         result = await self._client.send_raw(
             method=DOMCommand.HIGHLIGHT_NODE,
             params=None,
@@ -457,6 +532,9 @@ class DOMClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Highlights given rectangle.
+        """
         result = await self._client.send_raw(
             method=DOMCommand.HIGHLIGHT_RECT,
             params=None,
@@ -468,6 +546,9 @@ class DOMClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Marks last undoable state.
+        """
         result = await self._client.send_raw(
             method=DOMCommand.MARK_UNDOABLE_STATE,
             params=None,
@@ -483,6 +564,9 @@ class DOMClient:
         insert_before_node_id: NodeId | None = None,
         session_id: str | None = None,
     ) -> MoveToResult:
+        """
+        Moves node into the new container, places it before the given anchor.
+        """
         params = MoveToParams(
             node_id=node_id,
             target_node_id=target_node_id,
@@ -503,6 +587,10 @@ class DOMClient:
         include_user_agent_shadow_d_o_m: bool | None = None,
         session_id: str | None = None,
     ) -> PerformSearchResult:
+        """
+        Searches for a given string in the DOM tree. Use `getSearchResults` to access
+        search results or `cancelSearch` to end this search session.
+        """
         params = PerformSearchParams(
             query=query, include_user_agent_shadow_d_o_m=include_user_agent_shadow_d_o_m
         )
@@ -520,6 +608,10 @@ class DOMClient:
         path: str,
         session_id: str | None = None,
     ) -> PushNodeByPathToFrontendResult:
+        """
+        Requests that the node is sent to the caller given its path. // FIXME, use
+        XPath
+        """
         params = PushNodeByPathToFrontendParams(path=path)
 
         result = await self._client.send_raw(
@@ -535,6 +627,10 @@ class DOMClient:
         backend_node_ids: list[BackendNodeId],
         session_id: str | None = None,
     ) -> PushNodesByBackendIdsToFrontendResult:
+        """
+        Requests that a batch of nodes is sent to the caller given their backend node
+        ids.
+        """
         params = PushNodesByBackendIdsToFrontendParams(
             backend_node_ids=backend_node_ids
         )
@@ -553,6 +649,9 @@ class DOMClient:
         selector: str,
         session_id: str | None = None,
     ) -> QuerySelectorResult:
+        """
+        Executes `querySelector` on a given node.
+        """
         params = QuerySelectorParams(node_id=node_id, selector=selector)
 
         result = await self._client.send_raw(
@@ -569,6 +668,9 @@ class DOMClient:
         selector: str,
         session_id: str | None = None,
     ) -> QuerySelectorAllResult:
+        """
+        Executes `querySelectorAll` on a given node.
+        """
         params = QuerySelectorAllParams(node_id=node_id, selector=selector)
 
         result = await self._client.send_raw(
@@ -582,6 +684,11 @@ class DOMClient:
         self,
         session_id: str | None = None,
     ) -> GetTopLayerElementsResult:
+        """
+        Returns NodeIds of current top layer elements. Top layer is rendered closest to
+        the user within a viewport, therefore its elements always appear on top of all
+        other content.
+        """
         result = await self._client.send_raw(
             method=DOMCommand.GET_TOP_LAYER_ELEMENTS,
             params=None,
@@ -596,6 +703,9 @@ class DOMClient:
         relation: Literal["PopoverTarget", "InterestTarget", "CommandFor"],
         session_id: str | None = None,
     ) -> GetElementByRelationResult:
+        """
+        Returns the NodeId of the matched element according to certain relations.
+        """
         params = GetElementByRelationParams(node_id=node_id, relation=relation)
 
         result = await self._client.send_raw(
@@ -609,6 +719,9 @@ class DOMClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Re-does the last undone action.
+        """
         result = await self._client.send_raw(
             method=DOMCommand.REDO,
             params=None,
@@ -623,6 +736,9 @@ class DOMClient:
         name: str,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Removes attribute with given name from an element with given id.
+        """
         params = RemoveAttributeParams(node_id=node_id, name=name)
 
         result = await self._client.send_raw(
@@ -638,6 +754,9 @@ class DOMClient:
         node_id: NodeId,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Removes node with given id.
+        """
         params = RemoveNodeParams(node_id=node_id)
 
         result = await self._client.send_raw(
@@ -655,6 +774,11 @@ class DOMClient:
         pierce: bool | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Requests that children of the node with given id are returned to the caller in
+        form of `setChildNodes` events where not only immediate children are retrieved,
+        but all children down to the specified depth.
+        """
         params = RequestChildNodesParams(node_id=node_id, depth=depth, pierce=pierce)
 
         result = await self._client.send_raw(
@@ -670,6 +794,11 @@ class DOMClient:
         object_id: Runtime.RemoteObjectId,
         session_id: str | None = None,
     ) -> RequestNodeResult:
+        """
+        Requests that the node is sent to the caller given the JavaScript node object
+        reference. All nodes that form the path from the node to the root are also sent
+        to the client as a series of `setChildNodes` notifications.
+        """
         params = RequestNodeParams(object_id=object_id)
 
         result = await self._client.send_raw(
@@ -688,6 +817,9 @@ class DOMClient:
         execution_context_id: Runtime.ExecutionContextId | None = None,
         session_id: str | None = None,
     ) -> ResolveNodeResult:
+        """
+        Resolves the JavaScript node object for a given NodeId or BackendNodeId.
+        """
         params = ResolveNodeParams(
             node_id=node_id,
             backend_node_id=backend_node_id,
@@ -710,6 +842,9 @@ class DOMClient:
         value: str,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Sets attribute for an element with given id.
+        """
         params = SetAttributeValueParams(node_id=node_id, name=name, value=value)
 
         result = await self._client.send_raw(
@@ -727,6 +862,10 @@ class DOMClient:
         name: str | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Sets attributes on element with given id. This method is useful when user edits
+        some existing attribute value and types in several attribute name/value pairs.
+        """
         params = SetAttributesAsTextParams(node_id=node_id, text=text, name=name)
 
         result = await self._client.send_raw(
@@ -745,6 +884,9 @@ class DOMClient:
         object_id: Runtime.RemoteObjectId | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Sets files for the given file input element.
+        """
         params = SetFileInputFilesParams(
             files=files,
             node_id=node_id,
@@ -765,6 +907,10 @@ class DOMClient:
         enable: bool,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Sets if stack traces should be captured for Nodes. See
+        `Node.getNodeStackTraces`. Default is disabled.
+        """
         params = SetNodeStackTracesEnabledParams(enable=enable)
 
         result = await self._client.send_raw(
@@ -780,6 +926,10 @@ class DOMClient:
         node_id: NodeId,
         session_id: str | None = None,
     ) -> GetNodeStackTracesResult:
+        """
+        Gets stack traces associated with a Node. As of now, only provides stack trace
+        for Node creation.
+        """
         params = GetNodeStackTracesParams(node_id=node_id)
 
         result = await self._client.send_raw(
@@ -795,6 +945,9 @@ class DOMClient:
         object_id: Runtime.RemoteObjectId,
         session_id: str | None = None,
     ) -> GetFileInfoResult:
+        """
+        Returns file information for the given File wrapper.
+        """
         params = GetFileInfoParams(object_id=object_id)
 
         result = await self._client.send_raw(
@@ -808,6 +961,9 @@ class DOMClient:
         self,
         session_id: str | None = None,
     ) -> GetDetachedDomNodesResult:
+        """
+        Returns list of detached nodes
+        """
         result = await self._client.send_raw(
             method=DOMCommand.GET_DETACHED_DOM_NODES,
             params=None,
@@ -821,6 +977,10 @@ class DOMClient:
         node_id: NodeId,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Enables console to refer to the node with given id via $x (see Command Line API
+        for more details $x functions).
+        """
         params = SetInspectedNodeParams(node_id=node_id)
 
         result = await self._client.send_raw(
@@ -837,6 +997,9 @@ class DOMClient:
         name: str,
         session_id: str | None = None,
     ) -> SetNodeNameResult:
+        """
+        Sets node name for a node with given id.
+        """
         params = SetNodeNameParams(node_id=node_id, name=name)
 
         result = await self._client.send_raw(
@@ -853,6 +1016,9 @@ class DOMClient:
         value: str,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Sets node value for a node with given id.
+        """
         params = SetNodeValueParams(node_id=node_id, value=value)
 
         result = await self._client.send_raw(
@@ -869,6 +1035,9 @@ class DOMClient:
         outer_h_t_m_l: str,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Sets node HTML markup, returns new node id.
+        """
         params = SetOuterHTMLParams(node_id=node_id, outer_h_t_m_l=outer_h_t_m_l)
 
         result = await self._client.send_raw(
@@ -882,6 +1051,9 @@ class DOMClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Undoes the last performed action.
+        """
         result = await self._client.send_raw(
             method=DOMCommand.UNDO,
             params=None,
@@ -895,6 +1067,9 @@ class DOMClient:
         frame_id: Page.FrameId,
         session_id: str | None = None,
     ) -> GetFrameOwnerResult:
+        """
+        Returns iframe node that owns iframe with the given domain.
+        """
         params = GetFrameOwnerParams(frame_id=frame_id)
 
         result = await self._client.send_raw(
@@ -915,6 +1090,13 @@ class DOMClient:
         queries_anchored: bool | None = None,
         session_id: str | None = None,
     ) -> GetContainerForNodeResult:
+        """
+        Returns the query container of the given node based on container query
+        conditions: containerName, physical and logical axes, and whether it queries
+        scroll-state or anchored elements. If no axes are provided and
+        queriesScrollState is false, the style container is returned, which is the
+        direct parent or the closest element with a matching container-name.
+        """
         params = GetContainerForNodeParams(
             node_id=node_id,
             container_name=container_name,
@@ -937,6 +1119,10 @@ class DOMClient:
         node_id: NodeId,
         session_id: str | None = None,
     ) -> GetQueryingDescendantsForContainerResult:
+        """
+        Returns the descendants of a container query container that have container
+        queries against this container.
+        """
         params = GetQueryingDescendantsForContainerParams(node_id=node_id)
 
         result = await self._client.send_raw(
@@ -953,6 +1139,10 @@ class DOMClient:
         anchor_specifier: str | None = None,
         session_id: str | None = None,
     ) -> GetAnchorElementResult:
+        """
+        Returns the target anchor element of the given anchor query according to
+        https://www.w3.org/TR/css-anchor-position-1/#target.
+        """
         params = GetAnchorElementParams(
             node_id=node_id, anchor_specifier=anchor_specifier
         )
@@ -971,6 +1161,10 @@ class DOMClient:
         enable: bool,
         session_id: str | None = None,
     ) -> ForceShowPopoverResult:
+        """
+        When enabling, this API force-opens the popover identified by nodeId and keeps
+        it open until disabled.
+        """
         params = ForceShowPopoverParams(node_id=node_id, enable=enable)
 
         result = await self._client.send_raw(

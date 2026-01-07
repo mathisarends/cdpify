@@ -22,6 +22,9 @@ class ConsoleClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Does nothing.
+        """
         result = await self._client.send_raw(
             method=ConsoleCommand.CLEAR_MESSAGES,
             params=None,
@@ -33,6 +36,10 @@ class ConsoleClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Disables console domain, prevents further console messages from being reported
+        to the client.
+        """
         result = await self._client.send_raw(
             method=ConsoleCommand.DISABLE,
             params=None,
@@ -44,6 +51,10 @@ class ConsoleClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Enables console domain, sends the messages collected so far to the client by
+        means of the `messageAdded` notification.
+        """
         result = await self._client.send_raw(
             method=ConsoleCommand.ENABLE,
             params=None,

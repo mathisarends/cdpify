@@ -26,6 +26,8 @@ from .types import (
     Header,
 )
 
+from cdpify.domains import storage
+
 
 class CacheStorageClient:
     def __init__(self, client: CDPClient) -> None:
@@ -37,6 +39,9 @@ class CacheStorageClient:
         cache_id: CacheId,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Deletes a cache.
+        """
         params = DeleteCacheParams(cache_id=cache_id)
 
         result = await self._client.send_raw(
@@ -53,6 +58,9 @@ class CacheStorageClient:
         request: str,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Deletes a cache entry.
+        """
         params = DeleteEntryParams(cache_id=cache_id, request=request)
 
         result = await self._client.send_raw(
@@ -70,6 +78,9 @@ class CacheStorageClient:
         storage_bucket: Storage.StorageBucket | None = None,
         session_id: str | None = None,
     ) -> RequestCacheNamesResult:
+        """
+        Requests cache names.
+        """
         params = RequestCacheNamesParams(
             security_origin=security_origin,
             storage_key=storage_key,
@@ -91,6 +102,9 @@ class CacheStorageClient:
         request_headers: list[Header],
         session_id: str | None = None,
     ) -> RequestCachedResponseResult:
+        """
+        Fetches cache entry.
+        """
         params = RequestCachedResponseParams(
             cache_id=cache_id,
             request_u_r_l=request_u_r_l,
@@ -113,6 +127,9 @@ class CacheStorageClient:
         path_filter: str | None = None,
         session_id: str | None = None,
     ) -> RequestEntriesResult:
+        """
+        Requests data from cache.
+        """
         params = RequestEntriesParams(
             cache_id=cache_id,
             skip_count=skip_count,

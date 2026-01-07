@@ -48,6 +48,8 @@ from .types import (
     WindowState,
 )
 
+from cdpify.domains import browser
+
 
 class TargetClient:
     def __init__(self, client: CDPClient) -> None:
@@ -59,6 +61,9 @@ class TargetClient:
         target_id: TargetID,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Activates (focuses) the target.
+        """
         params = ActivateTargetParams(target_id=target_id)
 
         result = await self._client.send_raw(
@@ -75,6 +80,9 @@ class TargetClient:
         flatten: bool | None = None,
         session_id: str | None = None,
     ) -> AttachToTargetResult:
+        """
+        Attaches to the target with given id.
+        """
         params = AttachToTargetParams(target_id=target_id, flatten=flatten)
 
         result = await self._client.send_raw(
@@ -88,6 +96,9 @@ class TargetClient:
         self,
         session_id: str | None = None,
     ) -> AttachToBrowserTargetResult:
+        """
+        Attaches to the browser target, only uses flat sessionId mode.
+        """
         result = await self._client.send_raw(
             method=TargetCommand.ATTACH_TO_BROWSER_TARGET,
             params=None,
@@ -101,6 +112,9 @@ class TargetClient:
         target_id: TargetID,
         session_id: str | None = None,
     ) -> CloseTargetResult:
+        """
+        Closes the target. If the target is a page that gets closed too.
+        """
         params = CloseTargetParams(target_id=target_id)
 
         result = await self._client.send_raw(
@@ -118,6 +132,14 @@ class TargetClient:
         inherit_permissions: bool | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Inject object to the target's main frame that provides a communication channel
+        with browser target. Injected object will be available as `window[bindingName]`.
+        The object has the following API: - `binding.send(json)` - a method to send
+        messages over the remote debugging protocol - `binding.onmessage = json =>
+        handleMessage(json)` - a callback that will be called for the protocol
+        notifications and command responses.
+        """
         params = ExposeDevToolsProtocolParams(
             target_id=target_id,
             binding_name=binding_name,
@@ -140,6 +162,10 @@ class TargetClient:
         origins_with_universal_network_access: list[str] | None = None,
         session_id: str | None = None,
     ) -> CreateBrowserContextResult:
+        """
+        Creates a new empty BrowserContext. Similar to an incognito profile but you can
+        have more than one.
+        """
         params = CreateBrowserContextParams(
             dispose_on_detach=dispose_on_detach,
             proxy_server=proxy_server,
@@ -158,6 +184,9 @@ class TargetClient:
         self,
         session_id: str | None = None,
     ) -> GetBrowserContextsResult:
+        """
+        Returns all browser contexts created with `Target.createBrowserContext` method.
+        """
         result = await self._client.send_raw(
             method=TargetCommand.GET_BROWSER_CONTEXTS,
             params=None,
@@ -182,6 +211,9 @@ class TargetClient:
         hidden: bool | None = None,
         session_id: str | None = None,
     ) -> CreateTargetResult:
+        """
+        Creates a new page.
+        """
         params = CreateTargetParams(
             url=url,
             left=left,
@@ -211,6 +243,9 @@ class TargetClient:
         target_id: TargetID | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Detaches session with given id.
+        """
         params = DetachFromTargetParams(
             session_id=detach_from_target_session_id, target_id=target_id
         )
@@ -228,6 +263,10 @@ class TargetClient:
         browser_context_id: Browser.BrowserContextID,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Deletes a BrowserContext. All the belonging pages will be closed without
+        calling their beforeunload hooks.
+        """
         params = DisposeBrowserContextParams(browser_context_id=browser_context_id)
 
         result = await self._client.send_raw(
@@ -243,6 +282,9 @@ class TargetClient:
         target_id: TargetID | None = None,
         session_id: str | None = None,
     ) -> GetTargetInfoResult:
+        """
+        Returns information about a target.
+        """
         params = GetTargetInfoParams(target_id=target_id)
 
         result = await self._client.send_raw(
@@ -258,6 +300,9 @@ class TargetClient:
         filter: TargetFilter | None = None,
         session_id: str | None = None,
     ) -> GetTargetsResult:
+        """
+        Retrieves a list of available targets.
+        """
         params = GetTargetsParams(filter=filter)
 
         result = await self._client.send_raw(
@@ -275,6 +320,10 @@ class TargetClient:
         target_id: TargetID | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Sends protocol message over session with given id. Consider using flat mode
+        instead; see commands attachToTarget, setAutoAttach, and crbug.com/991325.
+        """
         params = SendMessageToTargetParams(
             message=message,
             session_id=send_message_to_target_session_id,
@@ -297,6 +346,15 @@ class TargetClient:
         filter: TargetFilter | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Controls whether to automatically attach to new targets which are considered to
+        be directly related to this one (for example, iframes or workers). When turned
+        on, attaches to all existing related targets as well. When turned off,
+        automatically detaches from all currently attached targets. This also clears all
+        targets added by `autoAttachRelated` from the list of targets to watch for
+        creation of related targets. You might want to call this recursively for
+        auto-attached targets to attach to all available targets.
+        """
         params = SetAutoAttachParams(
             auto_attach=auto_attach,
             wait_for_debugger_on_start=wait_for_debugger_on_start,
@@ -319,6 +377,14 @@ class TargetClient:
         filter: TargetFilter | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Adds the specified target to the list of targets that will be monitored for any
+        related target creation (such as child frames, child workers and new versions of
+        service worker) and reported through `attachedToTarget`. The specified target is
+        also auto-attached. This cancels the effect of any previous `setAutoAttach` and
+        is also cancelled by subsequent `setAutoAttach`. Only available at the Browser
+        target.
+        """
         params = AutoAttachRelatedParams(
             target_id=target_id,
             wait_for_debugger_on_start=wait_for_debugger_on_start,
@@ -339,6 +405,10 @@ class TargetClient:
         filter: TargetFilter | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Controls whether to discover available targets and notify via
+        `targetCreated/targetInfoChanged/targetDestroyed` events.
+        """
         params = SetDiscoverTargetsParams(discover=discover, filter=filter)
 
         result = await self._client.send_raw(
@@ -354,6 +424,10 @@ class TargetClient:
         locations: list[RemoteLocation],
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Enables target discovery for the specified locations, when `setDiscoverTargets`
+        was set to `true`.
+        """
         params = SetRemoteLocationsParams(locations=locations)
 
         result = await self._client.send_raw(
@@ -369,6 +443,10 @@ class TargetClient:
         target_id: TargetID,
         session_id: str | None = None,
     ) -> GetDevToolsTargetResult:
+        """
+        Gets the targetId of the DevTools page target opened for the given target (if
+        any).
+        """
         params = GetDevToolsTargetParams(target_id=target_id)
 
         result = await self._client.send_raw(
@@ -385,6 +463,9 @@ class TargetClient:
         panel_id: str | None = None,
         session_id: str | None = None,
     ) -> OpenDevToolsResult:
+        """
+        Opens a DevTools window for the target.
+        """
         params = OpenDevToolsParams(target_id=target_id, panel_id=panel_id)
 
         result = await self._client.send_raw(

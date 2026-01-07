@@ -7,8 +7,6 @@ from dataclasses import dataclass
 from enum import StrEnum
 from cdpify.domains.shared import CDPModel
 
-from .types import *
-
 if TYPE_CHECKING:
     from cdpify.domains import dom, page
 

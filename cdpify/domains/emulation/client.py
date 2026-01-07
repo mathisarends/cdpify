@@ -75,6 +75,10 @@ from .types import (
     WorkAreaInsets,
 )
 
+from cdpify.domains import dom
+from cdpify.domains import network
+from cdpify.domains import page
+
 
 class EmulationClient:
     def __init__(self, client: CDPClient) -> None:
@@ -84,6 +88,9 @@ class EmulationClient:
         self,
         session_id: str | None = None,
     ) -> CanEmulateResult:
+        """
+        Tells whether emulation is supported.
+        """
         result = await self._client.send_raw(
             method=EmulationCommand.CAN_EMULATE,
             params=None,
@@ -95,6 +102,9 @@ class EmulationClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Clears the overridden device metrics.
+        """
         result = await self._client.send_raw(
             method=EmulationCommand.CLEAR_DEVICE_METRICS_OVERRIDE,
             params=None,
@@ -106,6 +116,9 @@ class EmulationClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Clears the overridden Geolocation Position and Error.
+        """
         result = await self._client.send_raw(
             method=EmulationCommand.CLEAR_GEOLOCATION_OVERRIDE,
             params=None,
@@ -117,6 +130,9 @@ class EmulationClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Requests that page scale factor is reset to initial values.
+        """
         result = await self._client.send_raw(
             method=EmulationCommand.RESET_PAGE_SCALE_FACTOR,
             params=None,
@@ -130,6 +146,9 @@ class EmulationClient:
         enabled: bool,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Enables or disables simulating a focused and active page.
+        """
         params = SetFocusEmulationEnabledParams(enabled=enabled)
 
         result = await self._client.send_raw(
@@ -145,6 +164,9 @@ class EmulationClient:
         enabled: bool | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Automatically render all web contents using a dark theme.
+        """
         params = SetAutoDarkModeOverrideParams(enabled=enabled)
 
         result = await self._client.send_raw(
@@ -160,6 +182,9 @@ class EmulationClient:
         rate: float,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Enables CPU throttling to emulate slow CPUs.
+        """
         params = SetCPUThrottlingRateParams(rate=rate)
 
         result = await self._client.send_raw(
@@ -175,6 +200,10 @@ class EmulationClient:
         color: DOM.RGBA | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Sets or clears an override of the default background color of the frame. This
+        override is used if the content does not specify one.
+        """
         params = SetDefaultBackgroundColorOverrideParams(color=color)
 
         result = await self._client.send_raw(
@@ -190,6 +219,11 @@ class EmulationClient:
         insets: SafeAreaInsets,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Overrides the values for env(safe-area-inset-*) and env(safe-area-max-inset-*).
+        Unset values will cause the respective variables to be undefined, even if
+        previously overridden.
+        """
         params = SetSafeAreaInsetsOverrideParams(insets=insets)
 
         result = await self._client.send_raw(
@@ -218,6 +252,11 @@ class EmulationClient:
         device_posture: DevicePosture | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Overrides the values of device screen dimensions (window.screen.width,
+        window.screen.height, window.innerWidth, window.innerHeight, and
+        "device-width"/"device-height"-related CSS media query results).
+        """
         params = SetDeviceMetricsOverrideParams(
             width=width,
             height=height,
@@ -248,6 +287,10 @@ class EmulationClient:
         posture: DevicePosture,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Start reporting the given posture value to the Device Posture API. This
+        override can also be set in setDeviceMetricsOverride().
+        """
         params = SetDevicePostureOverrideParams(posture=posture)
 
         result = await self._client.send_raw(
@@ -261,6 +304,11 @@ class EmulationClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Clears a device posture override set with either setDeviceMetricsOverride() or
+        setDevicePostureOverride() and starts using posture information from the
+        platform again. Does nothing if no override is set.
+        """
         result = await self._client.send_raw(
             method=EmulationCommand.CLEAR_DEVICE_POSTURE_OVERRIDE,
             params=None,
@@ -274,6 +322,10 @@ class EmulationClient:
         features: list[DisplayFeature],
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Start using the given display features to pupulate the Viewport Segments API.
+        This override can also be set in setDeviceMetricsOverride().
+        """
         params = SetDisplayFeaturesOverrideParams(features=features)
 
         result = await self._client.send_raw(
@@ -287,6 +339,11 @@ class EmulationClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Clears the display features override set with either setDeviceMetricsOverride()
+        or setDisplayFeaturesOverride() and starts using display features from the
+        platform again. Does nothing if no override is set.
+        """
         result = await self._client.send_raw(
             method=EmulationCommand.CLEAR_DISPLAY_FEATURES_OVERRIDE,
             params=None,
@@ -349,6 +406,9 @@ class EmulationClient:
         features: list[MediaFeature] | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Emulates the given media type or media feature for CSS media queries.
+        """
         params = SetEmulatedMediaParams(media=media, features=features)
 
         result = await self._client.send_raw(
@@ -372,6 +432,9 @@ class EmulationClient:
         ],
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Emulates the given vision deficiency.
+        """
         params = SetEmulatedVisionDeficiencyParams(type=type)
 
         result = await self._client.send_raw(
@@ -387,6 +450,9 @@ class EmulationClient:
         scale: float | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Emulates the given OS text scale.
+        """
         params = SetEmulatedOSTextScaleParams(scale=scale)
 
         result = await self._client.send_raw(
@@ -408,6 +474,10 @@ class EmulationClient:
         speed: float | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Overrides the Geolocation Position or Error. Omitting latitude, longitude or
+        accuracy emulates position unavailable.
+        """
         params = SetGeolocationOverrideParams(
             latitude=latitude,
             longitude=longitude,
@@ -448,6 +518,13 @@ class EmulationClient:
         metadata: SensorMetadata | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Overrides a platform sensor of a given type. If |enabled| is true, calls to
+        Sensor.start() will use a virtual sensor as backend rather than fetching data
+        from a real hardware sensor. Otherwise, existing virtual sensor-backend Sensor
+        objects will fire an error event and new calls to Sensor.start() will attempt to
+        use a real sensor instead.
+        """
         params = SetSensorOverrideEnabledParams(
             enabled=enabled, type=type, metadata=metadata
         )
@@ -466,6 +543,10 @@ class EmulationClient:
         reading: SensorReading,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Updates the sensor readings reported by a sensor type previously overridden by
+        setSensorOverrideEnabled.
+        """
         params = SetSensorOverrideReadingsParams(type=type, reading=reading)
 
         result = await self._client.send_raw(
@@ -483,6 +564,12 @@ class EmulationClient:
         metadata: PressureMetadata | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Overrides a pressure source of a given type, as used by the Compute Pressure
+        API, so that updates to PressureObserver.observe() are provided via
+        setPressureStateOverride instead of being retrieved from platform-provided
+        telemetry data.
+        """
         params = SetPressureSourceOverrideEnabledParams(
             enabled=enabled, source=source, metadata=metadata
         )
@@ -501,6 +588,12 @@ class EmulationClient:
         state: PressureState,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        TODO: OBSOLETE: To remove when setPressureDataOverride is merged. Provides a
+        given pressure state that will be processed and eventually be delivered to
+        PressureObserver users. |source| must have been previously overridden by
+        setPressureSourceOverrideEnabled.
+        """
         params = SetPressureStateOverrideParams(source=source, state=state)
 
         result = await self._client.send_raw(
@@ -518,6 +611,11 @@ class EmulationClient:
         own_contribution_estimate: float | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Provides a given pressure data set that will be processed and eventually be
+        delivered to PressureObserver users. |source| must have been previously
+        overridden by setPressureSourceOverrideEnabled.
+        """
         params = SetPressureDataOverrideParams(
             source=source,
             state=state,
@@ -538,6 +636,9 @@ class EmulationClient:
         is_screen_unlocked: bool,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Overrides the Idle state.
+        """
         params = SetIdleOverrideParams(
             is_user_active=is_user_active, is_screen_unlocked=is_screen_unlocked
         )
@@ -553,6 +654,9 @@ class EmulationClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Clears Idle state overrides.
+        """
         result = await self._client.send_raw(
             method=EmulationCommand.CLEAR_IDLE_OVERRIDE,
             params=None,
@@ -566,6 +670,9 @@ class EmulationClient:
         platform: str,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Overrides value returned by the javascript navigator object.
+        """
         params = SetNavigatorOverridesParams(platform=platform)
 
         result = await self._client.send_raw(
@@ -581,6 +688,9 @@ class EmulationClient:
         page_scale_factor: float,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Sets a specified page scale factor.
+        """
         params = SetPageScaleFactorParams(page_scale_factor=page_scale_factor)
 
         result = await self._client.send_raw(
@@ -596,6 +706,9 @@ class EmulationClient:
         value: bool,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Switches script execution in the page.
+        """
         params = SetScriptExecutionDisabledParams(value=value)
 
         result = await self._client.send_raw(
@@ -612,6 +725,9 @@ class EmulationClient:
         max_touch_points: int | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Enables touch on platforms which do not support them.
+        """
         params = SetTouchEmulationEnabledParams(
             enabled=enabled, max_touch_points=max_touch_points
         )
@@ -632,6 +748,11 @@ class EmulationClient:
         initial_virtual_time: Network.TimeSinceEpoch | None = None,
         session_id: str | None = None,
     ) -> SetVirtualTimePolicyResult:
+        """
+        Turns on virtual time for all frames (replacing real-time with a synthetic time
+        source) and sets the current virtual time policy. Note this supersedes any
+        previous time budget.
+        """
         params = SetVirtualTimePolicyParams(
             policy=policy,
             budget=budget,
@@ -652,6 +773,9 @@ class EmulationClient:
         locale: str | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Overrides default host system locale with the specified one.
+        """
         params = SetLocaleOverrideParams(locale=locale)
 
         result = await self._client.send_raw(
@@ -667,6 +791,9 @@ class EmulationClient:
         timezone_id: str,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Overrides default host system timezone with the specified one.
+        """
         params = SetTimezoneOverrideParams(timezone_id=timezone_id)
 
         result = await self._client.send_raw(
@@ -683,6 +810,11 @@ class EmulationClient:
         height: int,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Resizes the frame/viewport of the page. Note that this does not affect the
+        frame's container (e.g. browser window). Can be used to produce screenshots of
+        the specified size. Not supported on Android.
+        """
         params = SetVisibleSizeParams(width=width, height=height)
 
         result = await self._client.send_raw(
@@ -713,6 +845,9 @@ class EmulationClient:
         data_saver_enabled: bool | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Override the value of navigator.connection.saveData
+        """
         params = SetDataSaverOverrideParams(data_saver_enabled=data_saver_enabled)
 
         result = await self._client.send_raw(
@@ -748,6 +883,10 @@ class EmulationClient:
         user_agent_metadata: UserAgentMetadata | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Allows overriding user agent with the given string. `userAgentMetadata` must be
+        set for Client Hint headers to be sent.
+        """
         params = SetUserAgentOverrideParams(
             user_agent=user_agent,
             accept_language=accept_language,
@@ -768,6 +907,9 @@ class EmulationClient:
         enabled: bool,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Allows overriding the automation flag.
+        """
         params = SetAutomationOverrideParams(enabled=enabled)
 
         result = await self._client.send_raw(
@@ -783,6 +925,11 @@ class EmulationClient:
         difference: int,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Allows overriding the difference between the small and large viewport sizes,
+        which determine the value of the `svh` and `lvh` unit, respectively. Only
+        supported for top-level frames.
+        """
         params = SetSmallViewportHeightDifferenceOverrideParams(difference=difference)
 
         result = await self._client.send_raw(
@@ -796,6 +943,9 @@ class EmulationClient:
         self,
         session_id: str | None = None,
     ) -> GetScreenInfosResult:
+        """
+        Returns device's screen configuration.
+        """
         result = await self._client.send_raw(
             method=EmulationCommand.GET_SCREEN_INFOS,
             params=None,
@@ -818,6 +968,9 @@ class EmulationClient:
         is_internal: bool | None = None,
         session_id: str | None = None,
     ) -> AddScreenResult:
+        """
+        Add a new screen to the device. Only supported in headless mode.
+        """
         params = AddScreenParams(
             left=left,
             top=top,
@@ -844,6 +997,9 @@ class EmulationClient:
         screen_id: ScreenId,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Remove screen from the device. Only supported in headless mode.
+        """
         params = RemoveScreenParams(screen_id=screen_id)
 
         result = await self._client.send_raw(

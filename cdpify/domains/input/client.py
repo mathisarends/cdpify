@@ -48,6 +48,9 @@ class InputClient:
         modifiers: int | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Dispatches a drag event into the page.
+        """
         params = DispatchDragEventParams(
             type=type, x=x, y=y, data=data, modifiers=modifiers
         )
@@ -79,6 +82,9 @@ class InputClient:
         commands: list[str] | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Dispatches a key event to the page.
+        """
         params = DispatchKeyEventParams(
             type=type,
             modifiers=modifiers,
@@ -110,6 +116,10 @@ class InputClient:
         text: str,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        This method emulates inserting text that doesn't come from a key press, for
+        example an emoji keyboard or an IME.
+        """
         params = InsertTextParams(text=text)
 
         result = await self._client.send_raw(
@@ -129,6 +139,11 @@ class InputClient:
         replacement_end: int | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        This method sets the current candidate text for IME. Use imeCommitComposition
+        to commit the final text. Use imeSetComposition with empty string as text to
+        cancel composition.
+        """
         params = ImeSetCompositionParams(
             text=text,
             selection_start=selection_start,
@@ -165,6 +180,9 @@ class InputClient:
         pointer_type: Literal["mouse", "pen"] | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Dispatches a mouse event to the page.
+        """
         params = DispatchMouseEventParams(
             type=type,
             x=x,
@@ -200,6 +218,9 @@ class InputClient:
         timestamp: TimeSinceEpoch | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Dispatches a touch event to the page.
+        """
         params = DispatchTouchEventParams(
             type=type,
             touch_points=touch_points,
@@ -218,6 +239,9 @@ class InputClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Cancels any active dragging in the page.
+        """
         result = await self._client.send_raw(
             method=InputCommand.CANCEL_DRAGGING,
             params=None,
@@ -239,6 +263,9 @@ class InputClient:
         click_count: int | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Emulates touch event from the mouse event parameters.
+        """
         params = EmulateTouchFromMouseEventParams(
             type=type,
             x=x,
@@ -264,6 +291,9 @@ class InputClient:
         ignore: bool,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Ignores input events (useful while auditing page).
+        """
         params = SetIgnoreInputEventsParams(ignore=ignore)
 
         result = await self._client.send_raw(
@@ -279,6 +309,11 @@ class InputClient:
         enabled: bool,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Prevents default drag and drop behavior and instead emits
+        `Input.dragIntercepted` events. Drag and drop behavior can be directly
+        controlled via `Input.dispatchDragEvent`.
+        """
         params = SetInterceptDragsParams(enabled=enabled)
 
         result = await self._client.send_raw(
@@ -298,6 +333,10 @@ class InputClient:
         gesture_source_type: GestureSourceType | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Synthesizes a pinch gesture over a time period by issuing appropriate touch
+        events.
+        """
         params = SynthesizePinchGestureParams(
             x=x,
             y=y,
@@ -330,6 +369,10 @@ class InputClient:
         interaction_marker_name: str | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Synthesizes a scroll gesture over a time period by issuing appropriate touch
+        events.
+        """
         params = SynthesizeScrollGestureParams(
             x=x,
             y=y,
@@ -362,6 +405,10 @@ class InputClient:
         gesture_source_type: GestureSourceType | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Synthesizes a tap gesture over a time period by issuing appropriate touch
+        events.
+        """
         params = SynthesizeTapGestureParams(
             x=x,
             y=y,

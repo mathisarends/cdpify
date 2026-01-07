@@ -26,6 +26,9 @@ class SystemInfoClient:
         self,
         session_id: str | None = None,
     ) -> GetInfoResult:
+        """
+        Returns information about the system.
+        """
         result = await self._client.send_raw(
             method=SystemInfoCommand.GET_INFO,
             params=None,
@@ -39,6 +42,9 @@ class SystemInfoClient:
         feature_state: str,
         session_id: str | None = None,
     ) -> GetFeatureStateResult:
+        """
+        Returns information about the feature state.
+        """
         params = GetFeatureStateParams(feature_state=feature_state)
 
         result = await self._client.send_raw(
@@ -52,6 +58,9 @@ class SystemInfoClient:
         self,
         session_id: str | None = None,
     ) -> GetProcessInfoResult:
+        """
+        Returns information about all running processes.
+        """
         result = await self._client.send_raw(
             method=SystemInfoCommand.GET_PROCESS_INFO,
             params=None,

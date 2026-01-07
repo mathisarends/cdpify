@@ -23,6 +23,9 @@ class DeviceOrientationClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Clears the overridden Device Orientation.
+        """
         result = await self._client.send_raw(
             method=DeviceOrientationCommand.CLEAR_DEVICE_ORIENTATION_OVERRIDE,
             params=None,
@@ -38,6 +41,9 @@ class DeviceOrientationClient:
         gamma: float,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Overrides the Device Orientation.
+        """
         params = SetDeviceOrientationOverrideParams(alpha=alpha, beta=beta, gamma=gamma)
 
         result = await self._client.send_raw(

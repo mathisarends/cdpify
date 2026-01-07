@@ -88,6 +88,9 @@ from .types import (
     Viewport,
 )
 
+from cdpify.domains import emulation
+from cdpify.domains import network
+
 
 class PageClient:
     def __init__(self, client: CDPClient) -> None:
@@ -99,6 +102,9 @@ class PageClient:
         script_source: str,
         session_id: str | None = None,
     ) -> AddScriptToEvaluateOnLoadResult:
+        """
+        Deprecated, please use addScriptToEvaluateOnNewDocument instead.
+        """
         params = AddScriptToEvaluateOnLoadParams(script_source=script_source)
 
         result = await self._client.send_raw(
@@ -117,6 +123,10 @@ class PageClient:
         run_immediately: bool | None = None,
         session_id: str | None = None,
     ) -> AddScriptToEvaluateOnNewDocumentResult:
+        """
+        Evaluates given script in every frame upon creation (before loading frame's
+        scripts).
+        """
         params = AddScriptToEvaluateOnNewDocumentParams(
             source=source,
             world_name=world_name,
@@ -135,6 +145,9 @@ class PageClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Brings page to front (activates tab).
+        """
         result = await self._client.send_raw(
             method=PageCommand.BRING_TO_FRONT,
             params=None,
@@ -153,6 +166,9 @@ class PageClient:
         optimize_for_speed: bool | None = None,
         session_id: str | None = None,
     ) -> CaptureScreenshotResult:
+        """
+        Capture page screenshot.
+        """
         params = CaptureScreenshotParams(
             format=format,
             quality=quality,
@@ -175,6 +191,10 @@ class PageClient:
         format: Literal["mhtml"] | None = None,
         session_id: str | None = None,
     ) -> CaptureSnapshotResult:
+        """
+        Returns a snapshot of the page as a string. For MHTML format, the serialization
+        includes iframes, shadow DOM, external resources, and element-inline styles.
+        """
         params = CaptureSnapshotParams(format=format)
 
         result = await self._client.send_raw(
@@ -188,6 +208,9 @@ class PageClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Clears the overridden device metrics.
+        """
         result = await self._client.send_raw(
             method=PageCommand.CLEAR_DEVICE_METRICS_OVERRIDE,
             params=None,
@@ -199,6 +222,9 @@ class PageClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Clears the overridden Device Orientation.
+        """
         result = await self._client.send_raw(
             method=PageCommand.CLEAR_DEVICE_ORIENTATION_OVERRIDE,
             params=None,
@@ -210,6 +236,9 @@ class PageClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Clears the overridden Geolocation Position and Error.
+        """
         result = await self._client.send_raw(
             method=PageCommand.CLEAR_GEOLOCATION_OVERRIDE,
             params=None,
@@ -225,6 +254,9 @@ class PageClient:
         grant_univeral_access: bool | None = None,
         session_id: str | None = None,
     ) -> CreateIsolatedWorldResult:
+        """
+        Creates an isolated world for the given frame.
+        """
         params = CreateIsolatedWorldParams(
             frame_id=frame_id,
             world_name=world_name,
@@ -245,6 +277,9 @@ class PageClient:
         url: str,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Deletes browser cookie with given name, domain and path.
+        """
         params = DeleteCookieParams(cookie_name=cookie_name, url=url)
 
         result = await self._client.send_raw(
@@ -258,6 +293,9 @@ class PageClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Disables page domain notifications.
+        """
         result = await self._client.send_raw(
             method=PageCommand.DISABLE,
             params=None,
@@ -271,6 +309,9 @@ class PageClient:
         enable_file_chooser_opened_event: bool | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Enables page domain notifications.
+        """
         params = EnableParams(
             enable_file_chooser_opened_event=enable_file_chooser_opened_event
         )
@@ -288,6 +329,12 @@ class PageClient:
         manifest_id: str | None = None,
         session_id: str | None = None,
     ) -> GetAppManifestResult:
+        """
+        Gets the processed manifest for this current document. This API always waits
+        for the manifest to be loaded. If manifestId is provided, and it does not match
+        the manifest of the current document, this API errors out. If there is not a
+        loaded page, this API errors out immediately.
+        """
         params = GetAppManifestParams(manifest_id=manifest_id)
 
         result = await self._client.send_raw(
@@ -312,6 +359,10 @@ class PageClient:
         self,
         session_id: str | None = None,
     ) -> GetManifestIconsResult:
+        """
+        Deprecated because it's not guaranteed that the returned icon is in fact the
+        one used for PWA installation.
+        """
         result = await self._client.send_raw(
             method=PageCommand.GET_MANIFEST_ICONS,
             params=None,
@@ -323,6 +374,10 @@ class PageClient:
         self,
         session_id: str | None = None,
     ) -> GetAppIdResult:
+        """
+        Returns the unique (PWA) app id. Only returns values if the feature flag
+        'WebAppEnableManifestId' is enabled
+        """
         result = await self._client.send_raw(
             method=PageCommand.GET_APP_ID,
             params=None,
@@ -349,6 +404,9 @@ class PageClient:
         self,
         session_id: str | None = None,
     ) -> GetFrameTreeResult:
+        """
+        Returns present frame tree structure.
+        """
         result = await self._client.send_raw(
             method=PageCommand.GET_FRAME_TREE,
             params=None,
@@ -360,6 +418,10 @@ class PageClient:
         self,
         session_id: str | None = None,
     ) -> GetLayoutMetricsResult:
+        """
+        Returns metrics relating to the layouting of the page, such as viewport
+        bounds/scale.
+        """
         result = await self._client.send_raw(
             method=PageCommand.GET_LAYOUT_METRICS,
             params=None,
@@ -371,6 +433,9 @@ class PageClient:
         self,
         session_id: str | None = None,
     ) -> GetNavigationHistoryResult:
+        """
+        Returns navigation history for the current page.
+        """
         result = await self._client.send_raw(
             method=PageCommand.GET_NAVIGATION_HISTORY,
             params=None,
@@ -382,6 +447,9 @@ class PageClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Resets navigation history for the current page.
+        """
         result = await self._client.send_raw(
             method=PageCommand.RESET_NAVIGATION_HISTORY,
             params=None,
@@ -396,6 +464,9 @@ class PageClient:
         url: str,
         session_id: str | None = None,
     ) -> GetResourceContentResult:
+        """
+        Returns content of the given resource.
+        """
         params = GetResourceContentParams(frame_id=frame_id, url=url)
 
         result = await self._client.send_raw(
@@ -409,6 +480,9 @@ class PageClient:
         self,
         session_id: str | None = None,
     ) -> GetResourceTreeResult:
+        """
+        Returns present frame / resource tree structure.
+        """
         result = await self._client.send_raw(
             method=PageCommand.GET_RESOURCE_TREE,
             params=None,
@@ -423,6 +497,10 @@ class PageClient:
         prompt_text: str | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Accepts or dismisses a JavaScript initiated dialog (alert, confirm, prompt, or
+        onbeforeunload).
+        """
         params = HandleJavaScriptDialogParams(accept=accept, prompt_text=prompt_text)
 
         result = await self._client.send_raw(
@@ -442,6 +520,9 @@ class PageClient:
         referrer_policy: ReferrerPolicy | None = None,
         session_id: str | None = None,
     ) -> NavigateResult:
+        """
+        Navigates current page to the given URL.
+        """
         params = NavigateParams(
             url=url,
             referrer=referrer,
@@ -463,6 +544,9 @@ class PageClient:
         entry_id: int,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Navigates current page to the given history entry.
+        """
         params = NavigateToHistoryEntryParams(entry_id=entry_id)
 
         result = await self._client.send_raw(
@@ -494,6 +578,9 @@ class PageClient:
         generate_document_outline: bool | None = None,
         session_id: str | None = None,
     ) -> PrintToPDFResult:
+        """
+        Print page as PDF.
+        """
         params = PrintToPDFParams(
             landscape=landscape,
             display_header_footer=display_header_footer,
@@ -529,6 +616,9 @@ class PageClient:
         loader_id: Network.LoaderId | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Reloads given page optionally ignoring the cache.
+        """
         params = ReloadParams(
             ignore_cache=ignore_cache,
             script_to_evaluate_on_load=script_to_evaluate_on_load,
@@ -548,6 +638,9 @@ class PageClient:
         identifier: ScriptIdentifier,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Deprecated, please use removeScriptToEvaluateOnNewDocument instead.
+        """
         params = RemoveScriptToEvaluateOnLoadParams(identifier=identifier)
 
         result = await self._client.send_raw(
@@ -563,6 +656,9 @@ class PageClient:
         identifier: ScriptIdentifier,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Removes given script from the list.
+        """
         params = RemoveScriptToEvaluateOnNewDocumentParams(identifier=identifier)
 
         result = await self._client.send_raw(
@@ -578,6 +674,9 @@ class PageClient:
         screencast_frame_ack_session_id: int,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Acknowledges that a screencast frame has been received by the frontend.
+        """
         params = ScreencastFrameAckParams(session_id=screencast_frame_ack_session_id)
 
         result = await self._client.send_raw(
@@ -597,6 +696,9 @@ class PageClient:
         is_regex: bool | None = None,
         session_id: str | None = None,
     ) -> SearchInResourceResult:
+        """
+        Searches for given string in resource content.
+        """
         params = SearchInResourceParams(
             frame_id=frame_id,
             url=url,
@@ -618,6 +720,9 @@ class PageClient:
         enabled: bool,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Enable Chrome's experimental ad filter on all sites.
+        """
         params = SetAdBlockingEnabledParams(enabled=enabled)
 
         result = await self._client.send_raw(
@@ -633,6 +738,9 @@ class PageClient:
         enabled: bool,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Enable page Content Security Policy by-passing.
+        """
         params = SetBypassCSPParams(enabled=enabled)
 
         result = await self._client.send_raw(
@@ -648,6 +756,9 @@ class PageClient:
         frame_id: FrameId,
         session_id: str | None = None,
     ) -> GetPermissionsPolicyStateResult:
+        """
+        Get Permissions Policy state on given frame.
+        """
         params = GetPermissionsPolicyStateParams(frame_id=frame_id)
 
         result = await self._client.send_raw(
@@ -663,6 +774,9 @@ class PageClient:
         frame_id: FrameId,
         session_id: str | None = None,
     ) -> GetOriginTrialsResult:
+        """
+        Get Origin Trials on given frame.
+        """
         params = GetOriginTrialsParams(frame_id=frame_id)
 
         result = await self._client.send_raw(
@@ -689,6 +803,11 @@ class PageClient:
         viewport: Viewport | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Overrides the values of device screen dimensions (window.screen.width,
+        window.screen.height, window.innerWidth, window.innerHeight, and
+        "device-width"/"device-height"-related CSS media query results).
+        """
         params = SetDeviceMetricsOverrideParams(
             width=width,
             height=height,
@@ -719,6 +838,9 @@ class PageClient:
         gamma: float,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Overrides the Device Orientation.
+        """
         params = SetDeviceOrientationOverrideParams(alpha=alpha, beta=beta, gamma=gamma)
 
         result = await self._client.send_raw(
@@ -735,6 +857,9 @@ class PageClient:
         for_scripts: list[ScriptFontFamilies] | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Set generic font families.
+        """
         params = SetFontFamiliesParams(
             font_families=font_families, for_scripts=for_scripts
         )
@@ -752,6 +877,9 @@ class PageClient:
         font_sizes: FontSizes,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Set default font sizes.
+        """
         params = SetFontSizesParams(font_sizes=font_sizes)
 
         result = await self._client.send_raw(
@@ -768,6 +896,9 @@ class PageClient:
         html: str,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Sets given markup as the document's HTML.
+        """
         params = SetDocumentContentParams(frame_id=frame_id, html=html)
 
         result = await self._client.send_raw(
@@ -784,6 +915,9 @@ class PageClient:
         download_path: str | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Set the behavior when downloading a file.
+        """
         params = SetDownloadBehaviorParams(
             behavior=behavior, download_path=download_path
         )
@@ -803,6 +937,10 @@ class PageClient:
         accuracy: float | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Overrides the Geolocation Position or Error. Omitting any of the parameters
+        emulates position unavailable.
+        """
         params = SetGeolocationOverrideParams(
             latitude=latitude, longitude=longitude, accuracy=accuracy
         )
@@ -820,6 +958,9 @@ class PageClient:
         enabled: bool,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Controls whether page will emit lifecycle events.
+        """
         params = SetLifecycleEventsEnabledParams(enabled=enabled)
 
         result = await self._client.send_raw(
@@ -836,6 +977,9 @@ class PageClient:
         configuration: Literal["mobile", "desktop"] | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Toggles mouse event-based touch event emulation.
+        """
         params = SetTouchEmulationEnabledParams(
             enabled=enabled, configuration=configuration
         )
@@ -857,6 +1001,9 @@ class PageClient:
         every_nth_frame: int | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Starts sending each frame using the `screencastFrame` event.
+        """
         params = StartScreencastParams(
             format=format,
             quality=quality,
@@ -876,6 +1023,9 @@ class PageClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Force the page stop all navigations and pending resource fetches.
+        """
         result = await self._client.send_raw(
             method=PageCommand.STOP_LOADING,
             params=None,
@@ -887,6 +1037,9 @@ class PageClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Crashes renderer on the IO thread, generates minidumps.
+        """
         result = await self._client.send_raw(
             method=PageCommand.CRASH,
             params=None,
@@ -898,6 +1051,9 @@ class PageClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Tries to close page, running its beforeunload hooks, if any.
+        """
         result = await self._client.send_raw(
             method=PageCommand.CLOSE,
             params=None,
@@ -911,6 +1067,10 @@ class PageClient:
         state: Literal["frozen", "active"],
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Tries to update the web lifecycle state of the page. It will transition the
+        page to the given state according to: https://github.com/WICG/web-lifecycle/
+        """
         params = SetWebLifecycleStateParams(state=state)
 
         result = await self._client.send_raw(
@@ -924,6 +1084,9 @@ class PageClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Stops sending each frame in the `screencastFrame`.
+        """
         result = await self._client.send_raw(
             method=PageCommand.STOP_SCREENCAST,
             params=None,
@@ -937,6 +1100,14 @@ class PageClient:
         scripts: list[CompilationCacheParams],
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Requests backend to produce compilation cache for the specified scripts.
+        `scripts` are appended to the list of scripts for which the cache would be
+        produced. The list may be reset during page navigation. When script with a
+        matching URL is encountered, the cache is optionally produced upon backend
+        discretion, based on internal heuristics. See also:
+        `Page.compilationCacheProduced`.
+        """
         params = ProduceCompilationCacheParams(scripts=scripts)
 
         result = await self._client.send_raw(
@@ -953,6 +1124,10 @@ class PageClient:
         data: str,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Seeds compilation cache for given url. Compilation cache does not survive
+        cross-process navigation.
+        """
         params = AddCompilationCacheParams(url=url, data=data)
 
         result = await self._client.send_raw(
@@ -966,6 +1141,9 @@ class PageClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Clears seeded compilation cache.
+        """
         result = await self._client.send_raw(
             method=PageCommand.CLEAR_COMPILATION_CACHE,
             params=None,
@@ -985,6 +1163,10 @@ class PageClient:
         ],
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Sets the Secure Payment Confirmation transaction mode.
+        https://w3c.github.io/secure-payment-confirmation/#sctn-automation-set-spc-transaction-mode
+        """
         params = SetSPCTransactionModeParams(mode=mode)
 
         result = await self._client.send_raw(
@@ -1000,6 +1182,10 @@ class PageClient:
         mode: Literal["none", "autoAccept", "autoReject"],
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Extensions for Custom Handlers API:
+        https://html.spec.whatwg.org/multipage/system-state.html#rph-automation
+        """
         params = SetRPHRegistrationModeParams(mode=mode)
 
         result = await self._client.send_raw(
@@ -1016,6 +1202,9 @@ class PageClient:
         group: str | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Generates a report for testing.
+        """
         params = GenerateTestReportParams(message=message, group=group)
 
         result = await self._client.send_raw(
@@ -1029,6 +1218,10 @@ class PageClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Pauses page execution. Can be resumed using generic
+        Runtime.runIfWaitingForDebugger.
+        """
         result = await self._client.send_raw(
             method=PageCommand.WAIT_FOR_DEBUGGER,
             params=None,
@@ -1043,6 +1236,11 @@ class PageClient:
         cancel: bool | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Intercept file chooser requests and transfer control to protocol clients. When
+        file chooser interception is enabled, native file chooser dialog is not shown.
+        Instead, a protocol event `Page.fileChooserOpened` is emitted.
+        """
         params = SetInterceptFileChooserDialogParams(enabled=enabled, cancel=cancel)
 
         result = await self._client.send_raw(
@@ -1058,6 +1256,13 @@ class PageClient:
         is_allowed: bool,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Enable/disable prerendering manually. This command is a short-term solution for
+        https://crbug.com/1440085. See
+        https://docs.google.com/document/d/12HVmFxYj5Jc-eJr5OmWsa2bqTJsbgGLKI6ZIyx0_wpA
+        for more details. TODO(https://crbug.com/1440085): Remove this once Puppeteer
+        supports tab targets.
+        """
         params = SetPrerenderingAllowedParams(is_allowed=is_allowed)
 
         result = await self._client.send_raw(
@@ -1073,6 +1278,10 @@ class PageClient:
         include_actionable_information: bool | None = None,
         session_id: str | None = None,
     ) -> GetAnnotatedPageContentResult:
+        """
+        Get the annotated page content for the main frame. This is an experimental
+        command that is subject to change.
+        """
         params = GetAnnotatedPageContentParams(
             include_actionable_information=include_actionable_information
         )

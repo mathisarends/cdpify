@@ -29,6 +29,9 @@ class SecurityClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Disables tracking security state changes.
+        """
         result = await self._client.send_raw(
             method=SecurityCommand.DISABLE,
             params=None,
@@ -40,6 +43,9 @@ class SecurityClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Enables tracking security state changes.
+        """
         result = await self._client.send_raw(
             method=SecurityCommand.ENABLE,
             params=None,
@@ -53,6 +59,9 @@ class SecurityClient:
         ignore: bool,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Enable/disable whether all certificate errors should be ignored.
+        """
         params = SetIgnoreCertificateErrorsParams(ignore=ignore)
 
         result = await self._client.send_raw(
@@ -69,6 +78,9 @@ class SecurityClient:
         action: CertificateErrorAction,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Handles a certificate error that fired a certificateError event.
+        """
         params = HandleCertificateErrorParams(event_id=event_id, action=action)
 
         result = await self._client.send_raw(
@@ -84,6 +96,11 @@ class SecurityClient:
         override: bool,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Enable/disable overriding certificate errors. If enabled, all certificate error
+        events need to be handled by the DevTools client and should be answered with
+        `handleCertificateError` commands.
+        """
         params = SetOverrideCertificateErrorsParams(override=override)
 
         result = await self._client.send_raw(

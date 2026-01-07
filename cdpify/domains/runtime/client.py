@@ -62,6 +62,9 @@ class RuntimeClient:
         generate_preview: bool | None = None,
         session_id: str | None = None,
     ) -> AwaitPromiseResult:
+        """
+        Add handler to promise with given promise object id.
+        """
         params = AwaitPromiseParams(
             promise_object_id=promise_object_id,
             return_by_value=return_by_value,
@@ -93,6 +96,10 @@ class RuntimeClient:
         serialization_options: SerializationOptions | None = None,
         session_id: str | None = None,
     ) -> CallFunctionOnResult:
+        """
+        Calls function with given declaration on the given object. Object group of the
+        result is inherited from the target object.
+        """
         params = CallFunctionOnParams(
             function_declaration=function_declaration,
             object_id=object_id,
@@ -125,6 +132,9 @@ class RuntimeClient:
         execution_context_id: ExecutionContextId | None = None,
         session_id: str | None = None,
     ) -> CompileScriptResult:
+        """
+        Compiles expression.
+        """
         params = CompileScriptParams(
             expression=expression,
             source_u_r_l=source_u_r_l,
@@ -143,6 +153,9 @@ class RuntimeClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Disables reporting of execution contexts creation.
+        """
         result = await self._client.send_raw(
             method=RuntimeCommand.DISABLE,
             params=None,
@@ -154,6 +167,9 @@ class RuntimeClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Discards collected exceptions and console API calls.
+        """
         result = await self._client.send_raw(
             method=RuntimeCommand.DISCARD_CONSOLE_ENTRIES,
             params=None,
@@ -165,6 +181,11 @@ class RuntimeClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Enables reporting of execution contexts creation by means of
+        `executionContextCreated` event. When the reporting gets enabled the event will
+        be sent immediately for each existing execution context.
+        """
         result = await self._client.send_raw(
             method=RuntimeCommand.ENABLE,
             params=None,
@@ -193,6 +214,9 @@ class RuntimeClient:
         serialization_options: SerializationOptions | None = None,
         session_id: str | None = None,
     ) -> EvaluateResult:
+        """
+        Evaluates expression on global object.
+        """
         params = EvaluateParams(
             expression=expression,
             object_group=object_group,
@@ -223,6 +247,9 @@ class RuntimeClient:
         self,
         session_id: str | None = None,
     ) -> GetIsolateIdResult:
+        """
+        Returns the isolate id.
+        """
         result = await self._client.send_raw(
             method=RuntimeCommand.GET_ISOLATE_ID,
             params=None,
@@ -234,6 +261,10 @@ class RuntimeClient:
         self,
         session_id: str | None = None,
     ) -> GetHeapUsageResult:
+        """
+        Returns the JavaScript heap usage. It is the total usage of the corresponding
+        isolate not scoped to a particular Runtime.
+        """
         result = await self._client.send_raw(
             method=RuntimeCommand.GET_HEAP_USAGE,
             params=None,
@@ -251,6 +282,10 @@ class RuntimeClient:
         non_indexed_properties_only: bool | None = None,
         session_id: str | None = None,
     ) -> GetPropertiesResult:
+        """
+        Returns properties of a given object. Object group of the result is inherited
+        from the target object.
+        """
         params = GetPropertiesParams(
             object_id=object_id,
             own_properties=own_properties,
@@ -272,6 +307,9 @@ class RuntimeClient:
         execution_context_id: ExecutionContextId | None = None,
         session_id: str | None = None,
     ) -> GlobalLexicalScopeNamesResult:
+        """
+        Returns all let, const and class variables from global scope.
+        """
         params = GlobalLexicalScopeNamesParams(
             execution_context_id=execution_context_id
         )
@@ -307,6 +345,9 @@ class RuntimeClient:
         object_id: RemoteObjectId,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Releases remote object with given id.
+        """
         params = ReleaseObjectParams(object_id=object_id)
 
         result = await self._client.send_raw(
@@ -322,6 +363,9 @@ class RuntimeClient:
         object_group: str,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Releases all remote objects that belong to a given group.
+        """
         params = ReleaseObjectGroupParams(object_group=object_group)
 
         result = await self._client.send_raw(
@@ -335,6 +379,9 @@ class RuntimeClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Tells inspected instance to run if it was waiting for debugger to attach.
+        """
         result = await self._client.send_raw(
             method=RuntimeCommand.RUN_IF_WAITING_FOR_DEBUGGER,
             params=None,
@@ -355,6 +402,9 @@ class RuntimeClient:
         await_promise: bool | None = None,
         session_id: str | None = None,
     ) -> RunScriptResult:
+        """
+        Runs script with given id in a given context.
+        """
         params = RunScriptParams(
             script_id=script_id,
             execution_context_id=execution_context_id,
@@ -379,6 +429,9 @@ class RuntimeClient:
         max_depth: int,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Enables or disables async call stacks tracking.
+        """
         params = SetAsyncCallStackDepthParams(max_depth=max_depth)
 
         result = await self._client.send_raw(
@@ -422,6 +475,10 @@ class RuntimeClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Terminate current or next JavaScript execution. Will cancel the termination
+        when the outer-most script execution ends.
+        """
         result = await self._client.send_raw(
             method=RuntimeCommand.TERMINATE_EXECUTION,
             params=None,
@@ -437,6 +494,13 @@ class RuntimeClient:
         execution_context_name: str | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        If executionContextId is empty, adds binding with the given name on the global
+        objects of all inspected contexts, including those created later, bindings
+        survive reloads. Binding function takes exactly one argument, this argument
+        should be string, in case of any other input, function throws an exception. Each
+        binding function call produces Runtime.bindingCalled notification.
+        """
         params = AddBindingParams(
             name=name,
             execution_context_id=execution_context_id,
@@ -456,6 +520,10 @@ class RuntimeClient:
         name: str,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        This method does not remove binding function from global object but
+        unsubscribes current runtime agent from Runtime.bindingCalled notifications.
+        """
         params = RemoveBindingParams(name=name)
 
         result = await self._client.send_raw(
@@ -471,6 +539,12 @@ class RuntimeClient:
         error_object_id: RemoteObjectId,
         session_id: str | None = None,
     ) -> GetExceptionDetailsResult:
+        """
+        This method tries to lookup and populate exception details for a JavaScript
+        Error object. Note that the stackTrace portion of the resulting exceptionDetails
+        will only be populated if the Runtime domain was enabled at the time when the
+        Error was thrown.
+        """
         params = GetExceptionDetailsParams(error_object_id=error_object_id)
 
         result = await self._client.send_raw(

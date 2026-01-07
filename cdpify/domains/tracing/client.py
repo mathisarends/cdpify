@@ -36,6 +36,9 @@ class TracingClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Stop trace events collection.
+        """
         result = await self._client.send_raw(
             method=TracingCommand.END,
             params=None,
@@ -47,6 +50,9 @@ class TracingClient:
         self,
         session_id: str | None = None,
     ) -> GetCategoriesResult:
+        """
+        Gets supported tracing categories.
+        """
         result = await self._client.send_raw(
             method=TracingCommand.GET_CATEGORIES,
             params=None,
@@ -58,6 +64,9 @@ class TracingClient:
         self,
         session_id: str | None = None,
     ) -> GetTrackEventDescriptorResult:
+        """
+        Return a descriptor for all available tracing categories.
+        """
         result = await self._client.send_raw(
             method=TracingCommand.GET_TRACK_EVENT_DESCRIPTOR,
             params=None,
@@ -71,6 +80,9 @@ class TracingClient:
         sync_id: str,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Record a clock sync marker in the trace.
+        """
         params = RecordClockSyncMarkerParams(sync_id=sync_id)
 
         result = await self._client.send_raw(
@@ -87,6 +99,9 @@ class TracingClient:
         level_of_detail: MemoryDumpLevelOfDetail | None = None,
         session_id: str | None = None,
     ) -> RequestMemoryDumpResult:
+        """
+        Request a global memory dump.
+        """
         params = RequestMemoryDumpParams(
             deterministic=deterministic, level_of_detail=level_of_detail
         )
@@ -112,6 +127,9 @@ class TracingClient:
         tracing_backend: TracingBackend | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Start trace events collection.
+        """
         params = StartParams(
             categories=categories,
             options=options,

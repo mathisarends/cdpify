@@ -1,4 +1,4 @@
-from cdpify.generator.generators.base import BaseGenerator
+from cdpify.generator.generators.base import TypeAwareGenerator
 from cdpify.generator.generators.utils import (
     format_docstring,
     map_cdp_type,
@@ -8,9 +8,10 @@ from cdpify.generator.generators.utils import (
 from cdpify.generator.models import Command, Domain, Parameter
 
 
-class CommandsGenerator(BaseGenerator):
+class CommandsGenerator(TypeAwareGenerator):
     def generate(self, domain: Domain) -> str:
         self._reset_tracking()
+        self._scan_commands(domain)
 
         command_enum = self._generate_command_enum(domain)
         command_models = self._generate_command_models(domain)
@@ -30,6 +31,25 @@ class CommandsGenerator(BaseGenerator):
 
         return "\n\n".join(sections)
 
+    def _scan_commands(self, domain: Domain) -> None:
+        for command in domain.commands:
+            self._scan_command_parameters(command)
+            self._scan_command_returns(command)
+
+    def _scan_command_parameters(self, command: Command) -> None:
+        if not command.parameters:
+            return
+
+        for param in command.parameters:
+            self._scan_parameter(param)
+
+    def _scan_command_returns(self, command: Command) -> None:
+        if not command.returns:
+            return
+
+        for param in command.returns:
+            self._scan_parameter(param)
+
     def _imports(self, has_models: bool) -> str:
         lines = []
 
@@ -41,9 +61,10 @@ class CommandsGenerator(BaseGenerator):
         lines.append("from enum import StrEnum")
         lines.append("from cdpify.domains.shared import CDPModel")
 
-        if has_models:
+        type_imports = self._build_type_imports()
+        if type_imports:
             lines.append("")
-            lines.append("from .types import *")
+            lines.append(type_imports)
 
         return "\n".join(lines)
 
@@ -110,11 +131,6 @@ class CommandsGenerator(BaseGenerator):
     def _create_field(self, param: Parameter) -> str:
         field_name = to_snake_case(param.name)
         py_type = self._resolve_type(param)
-
-        if param.ref and "." in param.ref:
-            self._cross_domain_refs.add(param.ref)
-
-        self._track_type_usage(py_type)
 
         if param.optional:
             return f"{field_name}: {py_type} | None = None"

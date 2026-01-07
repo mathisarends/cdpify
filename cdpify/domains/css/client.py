@@ -76,6 +76,9 @@ from .types import (
     StyleDeclarationEdit,
 )
 
+from cdpify.domains import dom
+from cdpify.domains import page
+
 
 class CSSClient:
     def __init__(self, client: CDPClient) -> None:
@@ -90,6 +93,10 @@ class CSSClient:
         node_for_property_syntax_validation: DOM.NodeId | None = None,
         session_id: str | None = None,
     ) -> AddRuleResult:
+        """
+        Inserts a new rule with the given `ruleText` in a stylesheet with given
+        `styleSheetId`, at the position specified by `location`.
+        """
         params = AddRuleParams(
             style_sheet_id=style_sheet_id,
             rule_text=rule_text,
@@ -110,6 +117,9 @@ class CSSClient:
         style_sheet_id: DOM.StyleSheetId,
         session_id: str | None = None,
     ) -> CollectClassNamesResult:
+        """
+        Returns all class names from specified stylesheet.
+        """
         params = CollectClassNamesParams(style_sheet_id=style_sheet_id)
 
         result = await self._client.send_raw(
@@ -126,6 +136,10 @@ class CSSClient:
         force: bool | None = None,
         session_id: str | None = None,
     ) -> CreateStyleSheetResult:
+        """
+        Creates a new special "via-inspector" stylesheet in the frame with given
+        `frameId`.
+        """
         params = CreateStyleSheetParams(frame_id=frame_id, force=force)
 
         result = await self._client.send_raw(
@@ -139,6 +153,9 @@ class CSSClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Disables the CSS agent for the given page.
+        """
         result = await self._client.send_raw(
             method=CSSCommand.DISABLE,
             params=None,
@@ -150,6 +167,10 @@ class CSSClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Enables the CSS agent for the given page. Clients should not assume that the
+        CSS agent has been enabled until the result of this command is received.
+        """
         result = await self._client.send_raw(
             method=CSSCommand.ENABLE,
             params=None,
@@ -164,6 +185,10 @@ class CSSClient:
         forced_pseudo_classes: list[str],
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Ensures that the given node will have specified pseudo-classes whenever its
+        style is computed by the browser.
+        """
         params = ForcePseudoStateParams(
             node_id=node_id, forced_pseudo_classes=forced_pseudo_classes
         )
@@ -182,6 +207,9 @@ class CSSClient:
         forced: bool,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Ensures that the given node is in its starting-style state.
+        """
         params = ForceStartingStyleParams(node_id=node_id, forced=forced)
 
         result = await self._client.send_raw(
@@ -212,6 +240,9 @@ class CSSClient:
         node_id: DOM.NodeId,
         session_id: str | None = None,
     ) -> GetComputedStyleForNodeResult:
+        """
+        Returns the computed style for a DOM node identified by `nodeId`.
+        """
         params = GetComputedStyleForNodeParams(node_id=node_id)
 
         result = await self._client.send_raw(
@@ -231,6 +262,16 @@ class CSSClient:
         pseudo_identifier: str | None = None,
         session_id: str | None = None,
     ) -> ResolveValuesResult:
+        """
+        Resolve the specified values in the context of the provided element. For
+        example, a value of '1em' is evaluated according to the computed 'font-size' of
+        the element and a value 'calc(1px + 2px)' will be resolved to '3px'. If the
+        `propertyName` was specified the `values` are resolved as if they were
+        property's declaration. If a value cannot be parsed according to the provided
+        property syntax, the value is parsed using combined syntax as if null
+        `propertyName` was provided. If the value cannot be resolved even then, return
+        the provided value without any changes.
+        """
         params = ResolveValuesParams(
             values=values,
             node_id=node_id,
@@ -268,6 +309,10 @@ class CSSClient:
         node_id: DOM.NodeId,
         session_id: str | None = None,
     ) -> GetInlineStylesForNodeResult:
+        """
+        Returns the styles defined inline (explicitly in the "style" attribute and
+        implicitly, using DOM attributes) for a DOM node identified by `nodeId`.
+        """
         params = GetInlineStylesForNodeParams(node_id=node_id)
 
         result = await self._client.send_raw(
@@ -283,6 +328,10 @@ class CSSClient:
         node_id: DOM.NodeId,
         session_id: str | None = None,
     ) -> GetAnimatedStylesForNodeResult:
+        """
+        Returns the styles coming from animations & transitions including the animation
+        & transition styles coming from inheritance chain.
+        """
         params = GetAnimatedStylesForNodeParams(node_id=node_id)
 
         result = await self._client.send_raw(
@@ -298,6 +347,9 @@ class CSSClient:
         node_id: DOM.NodeId,
         session_id: str | None = None,
     ) -> GetMatchedStylesForNodeResult:
+        """
+        Returns requested styles for a DOM node identified by `nodeId`.
+        """
         params = GetMatchedStylesForNodeParams(node_id=node_id)
 
         result = await self._client.send_raw(
@@ -311,6 +363,10 @@ class CSSClient:
         self,
         session_id: str | None = None,
     ) -> GetEnvironmentVariablesResult:
+        """
+        Returns the values of the default UA-defined environment variables used in
+        env()
+        """
         result = await self._client.send_raw(
             method=CSSCommand.GET_ENVIRONMENT_VARIABLES,
             params=None,
@@ -322,6 +378,9 @@ class CSSClient:
         self,
         session_id: str | None = None,
     ) -> GetMediaQueriesResult:
+        """
+        Returns all media queries parsed by the rendering engine.
+        """
         result = await self._client.send_raw(
             method=CSSCommand.GET_MEDIA_QUERIES,
             params=None,
@@ -335,6 +394,10 @@ class CSSClient:
         node_id: DOM.NodeId,
         session_id: str | None = None,
     ) -> GetPlatformFontsForNodeResult:
+        """
+        Requests information about platform fonts which we used to render child
+        TextNodes in the given node.
+        """
         params = GetPlatformFontsForNodeParams(node_id=node_id)
 
         result = await self._client.send_raw(
@@ -350,6 +413,9 @@ class CSSClient:
         style_sheet_id: DOM.StyleSheetId,
         session_id: str | None = None,
     ) -> GetStyleSheetTextResult:
+        """
+        Returns the current textual content for a stylesheet.
+        """
         params = GetStyleSheetTextParams(style_sheet_id=style_sheet_id)
 
         result = await self._client.send_raw(
@@ -365,6 +431,12 @@ class CSSClient:
         node_id: DOM.NodeId,
         session_id: str | None = None,
     ) -> GetLayersForNodeResult:
+        """
+        Returns all layers parsed by the rendering engine for the tree scope of a node.
+        Given a DOM element identified by nodeId, getLayersForNode returns the root
+        layer for the nearest ancestor document or shadow root. The layer root contains
+        the full layer tree for the tree scope and their ordering.
+        """
         params = GetLayersForNodeParams(node_id=node_id)
 
         result = await self._client.send_raw(
@@ -381,6 +453,10 @@ class CSSClient:
         selector_text: str,
         session_id: str | None = None,
     ) -> GetLocationForSelectorResult:
+        """
+        Given a CSS selector text and a style sheet ID, getLocationForSelector returns
+        an array of locations of the CSS selector in the style sheet.
+        """
         params = GetLocationForSelectorParams(
             style_sheet_id=style_sheet_id, selector_text=selector_text
         )
@@ -398,6 +474,13 @@ class CSSClient:
         node_id: DOM.NodeId | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Starts tracking the given node for the computed style updates and whenever the
+        computed style is updated for node, it queues a `computedStyleUpdated` event
+        with throttling. There can only be 1 node tracked for computed style updates so
+        passing a new node id removes tracking from the previous node. Pass `undefined`
+        to disable tracking.
+        """
         params = TrackComputedStyleUpdatesForNodeParams(node_id=node_id)
 
         result = await self._client.send_raw(
@@ -413,6 +496,15 @@ class CSSClient:
         properties_to_track: list[CSSComputedStyleProperty],
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Starts tracking the given computed styles for updates. The specified array of
+        properties replaces the one previously specified. Pass empty array to disable
+        tracking. Use takeComputedStyleUpdates to retrieve the list of nodes that had
+        properties modified. The changes to computed style properties are only tracked
+        for nodes pushed to the front-end by the DOM agent. If no changes to the tracked
+        properties occur after the node has been pushed to the front-end, no updates
+        will be issued for the node.
+        """
         params = TrackComputedStyleUpdatesParams(
             properties_to_track=properties_to_track
         )
@@ -428,6 +520,9 @@ class CSSClient:
         self,
         session_id: str | None = None,
     ) -> TakeComputedStyleUpdatesResult:
+        """
+        Polls the next batch of computed style updates.
+        """
         result = await self._client.send_raw(
             method=CSSCommand.TAKE_COMPUTED_STYLE_UPDATES,
             params=None,
@@ -443,6 +538,10 @@ class CSSClient:
         value: str,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Find a rule with the given active property for the given node and set the new
+        value for this property
+        """
         params = SetEffectivePropertyValueForNodeParams(
             node_id=node_id, property_name=property_name, value=value
         )
@@ -462,6 +561,9 @@ class CSSClient:
         property_name: str,
         session_id: str | None = None,
     ) -> SetPropertyRulePropertyNameResult:
+        """
+        Modifies the property rule property name.
+        """
         params = SetPropertyRulePropertyNameParams(
             style_sheet_id=style_sheet_id, range=range, property_name=property_name
         )
@@ -481,6 +583,9 @@ class CSSClient:
         key_text: str,
         session_id: str | None = None,
     ) -> SetKeyframeKeyResult:
+        """
+        Modifies the keyframe rule key text.
+        """
         params = SetKeyframeKeyParams(
             style_sheet_id=style_sheet_id, range=range, key_text=key_text
         )
@@ -500,6 +605,9 @@ class CSSClient:
         text: str,
         session_id: str | None = None,
     ) -> SetMediaTextResult:
+        """
+        Modifies the rule selector.
+        """
         params = SetMediaTextParams(
             style_sheet_id=style_sheet_id, range=range, text=text
         )
@@ -519,6 +627,9 @@ class CSSClient:
         text: str,
         session_id: str | None = None,
     ) -> SetContainerQueryTextResult:
+        """
+        Modifies the expression of a container query.
+        """
         params = SetContainerQueryTextParams(
             style_sheet_id=style_sheet_id, range=range, text=text
         )
@@ -538,6 +649,9 @@ class CSSClient:
         text: str,
         session_id: str | None = None,
     ) -> SetSupportsTextResult:
+        """
+        Modifies the expression of a supports at-rule.
+        """
         params = SetSupportsTextParams(
             style_sheet_id=style_sheet_id, range=range, text=text
         )
@@ -557,6 +671,9 @@ class CSSClient:
         text: str,
         session_id: str | None = None,
     ) -> SetScopeTextResult:
+        """
+        Modifies the expression of a scope at-rule.
+        """
         params = SetScopeTextParams(
             style_sheet_id=style_sheet_id, range=range, text=text
         )
@@ -576,6 +693,9 @@ class CSSClient:
         selector: str,
         session_id: str | None = None,
     ) -> SetRuleSelectorResult:
+        """
+        Modifies the rule selector.
+        """
         params = SetRuleSelectorParams(
             style_sheet_id=style_sheet_id, range=range, selector=selector
         )
@@ -594,6 +714,9 @@ class CSSClient:
         text: str,
         session_id: str | None = None,
     ) -> SetStyleSheetTextResult:
+        """
+        Sets the new stylesheet text.
+        """
         params = SetStyleSheetTextParams(style_sheet_id=style_sheet_id, text=text)
 
         result = await self._client.send_raw(
@@ -610,6 +733,9 @@ class CSSClient:
         node_for_property_syntax_validation: DOM.NodeId | None = None,
         session_id: str | None = None,
     ) -> SetStyleTextsResult:
+        """
+        Applies specified style edits one after another in the given order.
+        """
         params = SetStyleTextsParams(
             edits=edits,
             node_for_property_syntax_validation=node_for_property_syntax_validation,
@@ -626,6 +752,9 @@ class CSSClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Enables the selector recording.
+        """
         result = await self._client.send_raw(
             method=CSSCommand.START_RULE_USAGE_TRACKING,
             params=None,
@@ -637,6 +766,10 @@ class CSSClient:
         self,
         session_id: str | None = None,
     ) -> StopRuleUsageTrackingResult:
+        """
+        Stop tracking rule usage and return the list of rules that were used since last
+        call to `takeCoverageDelta` (or since start of coverage instrumentation).
+        """
         result = await self._client.send_raw(
             method=CSSCommand.STOP_RULE_USAGE_TRACKING,
             params=None,
@@ -648,6 +781,10 @@ class CSSClient:
         self,
         session_id: str | None = None,
     ) -> TakeCoverageDeltaResult:
+        """
+        Obtain list of rules that became used since last call to this method (or since
+        start of coverage instrumentation).
+        """
         result = await self._client.send_raw(
             method=CSSCommand.TAKE_COVERAGE_DELTA,
             params=None,
@@ -661,6 +798,9 @@ class CSSClient:
         enabled: bool,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Enables/disables rendering of local CSS fonts (enabled by default).
+        """
         params = SetLocalFontsEnabledParams(enabled=enabled)
 
         result = await self._client.send_raw(

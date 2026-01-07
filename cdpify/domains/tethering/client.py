@@ -26,6 +26,9 @@ class TetheringClient:
         port: int,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Request browser port binding.
+        """
         params = BindParams(port=port)
 
         result = await self._client.send_raw(
@@ -41,6 +44,9 @@ class TetheringClient:
         port: int,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Request browser port unbinding.
+        """
         params = UnbindParams(port=port)
 
         result = await self._client.send_raw(

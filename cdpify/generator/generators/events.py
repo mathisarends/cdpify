@@ -1,4 +1,4 @@
-from cdpify.generator.generators.base import BaseGenerator
+from cdpify.generator.generators.base import TypeAwareGenerator
 from cdpify.generator.generators.utils import (
     format_docstring,
     map_cdp_type,
@@ -8,9 +8,10 @@ from cdpify.generator.generators.utils import (
 from cdpify.generator.models import Domain, Event, Parameter
 
 
-class EventsGenerator(BaseGenerator):
+class EventsGenerator(TypeAwareGenerator):
     def generate(self, domain: Domain) -> str:
         self._reset_tracking()
+        self._scan_events(domain)
 
         event_enum = self._generate_event_enum(domain)
         event_models = self._generate_event_models(domain)
@@ -30,6 +31,17 @@ class EventsGenerator(BaseGenerator):
 
         return "\n\n".join(sections)
 
+    def _scan_events(self, domain: Domain) -> None:
+        for event in domain.events:
+            self._scan_event_parameters(event)
+
+    def _scan_event_parameters(self, event: Event) -> None:
+        if not event.parameters:
+            return
+
+        for param in event.parameters:
+            self._scan_parameter(param)
+
     def _imports(self, has_models: bool) -> str:
         lines = []
 
@@ -41,9 +53,10 @@ class EventsGenerator(BaseGenerator):
         lines.append("from enum import StrEnum")
         lines.append("from cdpify.domains.shared import CDPModel")
 
-        if has_models:
+        type_imports = self._build_type_imports()
+        if type_imports:
             lines.append("")
-            lines.append("from .types import *")
+            lines.append(type_imports)
 
         return "\n".join(lines)
 
@@ -95,11 +108,6 @@ class EventsGenerator(BaseGenerator):
     def _create_field(self, param: Parameter) -> str:
         field_name = to_snake_case(param.name)
         py_type = self._resolve_type(param)
-
-        if param.ref and "." in param.ref:
-            self._cross_domain_refs.add(param.ref)
-
-        self._track_type_usage(py_type)
 
         if param.optional:
             return f"{field_name}: {py_type} | None = None"

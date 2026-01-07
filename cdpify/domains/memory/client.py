@@ -34,6 +34,9 @@ class MemoryClient:
         self,
         session_id: str | None = None,
     ) -> GetDOMCountersResult:
+        """
+        Retruns current DOM object counters.
+        """
         result = await self._client.send_raw(
             method=MemoryCommand.GET_D_O_M_COUNTERS,
             params=None,
@@ -45,6 +48,9 @@ class MemoryClient:
         self,
         session_id: str | None = None,
     ) -> GetDOMCountersForLeakDetectionResult:
+        """
+        Retruns DOM object counters after preparing renderer for leak detection.
+        """
         result = await self._client.send_raw(
             method=MemoryCommand.GET_D_O_M_COUNTERS_FOR_LEAK_DETECTION,
             params=None,
@@ -56,6 +62,10 @@ class MemoryClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Prepares for leak detection by terminating workers, stopping spellcheckers,
+        dropping non-essential internal caches, running garbage collections, etc.
+        """
         result = await self._client.send_raw(
             method=MemoryCommand.PREPARE_FOR_LEAK_DETECTION,
             params=None,
@@ -67,6 +77,9 @@ class MemoryClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Simulate OomIntervention by purging V8 memory.
+        """
         result = await self._client.send_raw(
             method=MemoryCommand.FORCIBLY_PURGE_JAVA_SCRIPT_MEMORY,
             params=None,
@@ -80,6 +93,9 @@ class MemoryClient:
         suppressed: bool,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Enable/disable suppressing memory pressure notifications in all processes.
+        """
         params = SetPressureNotificationsSuppressedParams(suppressed=suppressed)
 
         result = await self._client.send_raw(
@@ -95,6 +111,9 @@ class MemoryClient:
         level: PressureLevel,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Simulate a memory pressure notification in all processes.
+        """
         params = SimulatePressureNotificationParams(level=level)
 
         result = await self._client.send_raw(
@@ -111,6 +130,9 @@ class MemoryClient:
         suppress_randomness: bool | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Start collecting native memory profile.
+        """
         params = StartSamplingParams(
             sampling_interval=sampling_interval, suppress_randomness=suppress_randomness
         )
@@ -126,6 +148,9 @@ class MemoryClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Stop collecting native memory profile.
+        """
         result = await self._client.send_raw(
             method=MemoryCommand.STOP_SAMPLING,
             params=None,
@@ -137,6 +162,10 @@ class MemoryClient:
         self,
         session_id: str | None = None,
     ) -> GetAllTimeSamplingProfileResult:
+        """
+        Retrieve native memory allocations profile collected since renderer process
+        startup.
+        """
         result = await self._client.send_raw(
             method=MemoryCommand.GET_ALL_TIME_SAMPLING_PROFILE,
             params=None,
@@ -148,6 +177,10 @@ class MemoryClient:
         self,
         session_id: str | None = None,
     ) -> GetBrowserSamplingProfileResult:
+        """
+        Retrieve native memory allocations profile collected since browser process
+        startup.
+        """
         result = await self._client.send_raw(
             method=MemoryCommand.GET_BROWSER_SAMPLING_PROFILE,
             params=None,
@@ -159,6 +192,10 @@ class MemoryClient:
         self,
         session_id: str | None = None,
     ) -> GetSamplingProfileResult:
+        """
+        Retrieve native memory allocations profile collected since last `startSampling`
+        call.
+        """
         result = await self._client.send_raw(
             method=MemoryCommand.GET_SAMPLING_PROFILE,
             params=None,

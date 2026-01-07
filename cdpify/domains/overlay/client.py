@@ -57,6 +57,8 @@ from .types import (
 )
 
 from cdpify.domains import dom
+from cdpify.domains import page
+from cdpify.domains import runtime
 
 
 class OverlayClient:
@@ -67,6 +69,9 @@ class OverlayClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Disables domain notifications.
+        """
         result = await self._client.send_raw(
             method=OverlayCommand.DISABLE,
             params=None,
@@ -78,6 +83,9 @@ class OverlayClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Enables domain notifications.
+        """
         result = await self._client.send_raw(
             method=OverlayCommand.ENABLE,
             params=None,
@@ -95,6 +103,9 @@ class OverlayClient:
         show_accessibility_info: bool | None = None,
         session_id: str | None = None,
     ) -> GetHighlightObjectForTestResult:
+        """
+        For testing.
+        """
         params = GetHighlightObjectForTestParams(
             node_id=node_id,
             include_distance=include_distance,
@@ -116,6 +127,9 @@ class OverlayClient:
         node_ids: list[dom.NodeId],
         session_id: str | None = None,
     ) -> GetGridHighlightObjectsForTestResult:
+        """
+        For Persistent Grid testing.
+        """
         params = GetGridHighlightObjectsForTestParams(node_ids=node_ids)
 
         result = await self._client.send_raw(
@@ -131,6 +145,9 @@ class OverlayClient:
         node_id: DOM.NodeId,
         session_id: str | None = None,
     ) -> GetSourceOrderHighlightObjectForTestResult:
+        """
+        For Source Order Viewer testing.
+        """
         params = GetSourceOrderHighlightObjectForTestParams(node_id=node_id)
 
         result = await self._client.send_raw(
@@ -144,6 +161,9 @@ class OverlayClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Hides any highlight.
+        """
         result = await self._client.send_raw(
             method=OverlayCommand.HIDE_HIGHLIGHT,
             params=None,
@@ -159,6 +179,12 @@ class OverlayClient:
         content_outline_color: DOM.RGBA | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Highlights owner element of the frame with given id. Deprecated: Doesn't work
+        reliably and cannot be fixed due to process separation (the owner node might be
+        in a different process). Determine the owner node in the client and use
+        highlightNode.
+        """
         params = HighlightFrameParams(
             frame_id=frame_id,
             content_color=content_color,
@@ -182,6 +208,10 @@ class OverlayClient:
         selector: str | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Highlights DOM node with given id or with the given JavaScript object wrapper.
+        Either nodeId or objectId must be specified.
+        """
         params = HighlightNodeParams(
             highlight_config=highlight_config,
             node_id=node_id,
@@ -205,6 +235,10 @@ class OverlayClient:
         outline_color: DOM.RGBA | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Highlights given quad. Coordinates are absolute with respect to the main frame
+        viewport.
+        """
         params = HighlightQuadParams(
             quad=quad, color=color, outline_color=outline_color
         )
@@ -227,6 +261,12 @@ class OverlayClient:
         outline_color: DOM.RGBA | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Highlights given rectangle. Coordinates are absolute with respect to the main
+        frame viewport. Issue: the method does not handle device pixel ratio (DPR)
+        correctly. The coordinates currently have to be adjusted by the client if DPR is
+        not 1 (see crbug.com/437807128).
+        """
         params = HighlightRectParams(
             x=x,
             y=y,
@@ -252,6 +292,11 @@ class OverlayClient:
         object_id: Runtime.RemoteObjectId | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Highlights the source order of the children of the DOM node with given id or
+        with the given JavaScript object wrapper. Either nodeId or objectId must be
+        specified.
+        """
         params = HighlightSourceOrderParams(
             source_order_config=source_order_config,
             node_id=node_id,
@@ -273,6 +318,11 @@ class OverlayClient:
         highlight_config: HighlightConfig | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Enters the 'inspect' mode. In this mode, elements that user is hovering over
+        are highlighted. Backend then generates 'inspectNodeRequested' event upon
+        element selection.
+        """
         params = SetInspectModeParams(mode=mode, highlight_config=highlight_config)
 
         result = await self._client.send_raw(
@@ -288,6 +338,9 @@ class OverlayClient:
         show: bool,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Highlights owner element of all frames detected to be ads.
+        """
         params = SetShowAdHighlightsParams(show=show)
 
         result = await self._client.send_raw(
@@ -318,6 +371,9 @@ class OverlayClient:
         show: bool,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Requests that backend shows debug borders on layers
+        """
         params = SetShowDebugBordersParams(show=show)
 
         result = await self._client.send_raw(
@@ -333,6 +389,9 @@ class OverlayClient:
         show: bool,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Requests that backend shows the FPS counter
+        """
         params = SetShowFPSCounterParams(show=show)
 
         result = await self._client.send_raw(
@@ -348,6 +407,9 @@ class OverlayClient:
         grid_node_highlight_configs: list[GridNodeHighlightConfig],
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Highlight multiple elements with the CSS Grid overlay.
+        """
         params = SetShowGridOverlaysParams(
             grid_node_highlight_configs=grid_node_highlight_configs
         )
@@ -416,6 +478,9 @@ class OverlayClient:
         result: bool,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Requests that backend shows paint rectangles
+        """
         params = SetShowPaintRectsParams(result=result)
 
         result = await self._client.send_raw(
@@ -431,6 +496,9 @@ class OverlayClient:
         result: bool,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Requests that backend shows layout shift regions
+        """
         params = SetShowLayoutShiftRegionsParams(result=result)
 
         result = await self._client.send_raw(
@@ -446,6 +514,9 @@ class OverlayClient:
         show: bool,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Requests that backend shows scroll bottleneck rects
+        """
         params = SetShowScrollBottleneckRectsParams(show=show)
 
         result = await self._client.send_raw(
@@ -461,6 +532,9 @@ class OverlayClient:
         show: bool,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Deprecated, no longer has any effect.
+        """
         params = SetShowHitTestBordersParams(show=show)
 
         result = await self._client.send_raw(
@@ -476,6 +550,9 @@ class OverlayClient:
         show: bool,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Deprecated, no longer has any effect.
+        """
         params = SetShowWebVitalsParams(show=show)
 
         result = await self._client.send_raw(
@@ -491,6 +568,9 @@ class OverlayClient:
         show: bool,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Paints viewport size upon main frame resize.
+        """
         params = SetShowViewportSizeOnResizeParams(show=show)
 
         result = await self._client.send_raw(
@@ -506,6 +586,9 @@ class OverlayClient:
         hinge_config: HingeConfig | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Add a dual screen device hinge
+        """
         params = SetShowHingeParams(hinge_config=hinge_config)
 
         result = await self._client.send_raw(
@@ -521,6 +604,9 @@ class OverlayClient:
         isolated_element_highlight_configs: list[IsolatedElementHighlightConfig],
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Show elements in isolation mode with overlays.
+        """
         params = SetShowIsolatedElementsParams(
             isolated_element_highlight_configs=isolated_element_highlight_configs
         )
@@ -538,6 +624,9 @@ class OverlayClient:
         window_controls_overlay_config: WindowControlsOverlayConfig | None = None,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Show Window Controls Overlay for PWA
+        """
         params = SetShowWindowControlsOverlayParams(
             window_controls_overlay_config=window_controls_overlay_config
         )

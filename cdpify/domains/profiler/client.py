@@ -50,6 +50,10 @@ class ProfilerClient:
         self,
         session_id: str | None = None,
     ) -> GetBestEffortCoverageResult:
+        """
+        Collect coverage data for the current isolate. The coverage data may be
+        incomplete due to garbage collection.
+        """
         result = await self._client.send_raw(
             method=ProfilerCommand.GET_BEST_EFFORT_COVERAGE,
             params=None,
@@ -63,6 +67,10 @@ class ProfilerClient:
         interval: int,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Changes CPU profiler sampling interval. Must be called before CPU profiles
+        recording started.
+        """
         params = SetSamplingIntervalParams(interval=interval)
 
         result = await self._client.send_raw(
@@ -91,6 +99,11 @@ class ProfilerClient:
         allow_triggered_updates: bool | None = None,
         session_id: str | None = None,
     ) -> StartPreciseCoverageResult:
+        """
+        Enable precise code coverage. Coverage data for JavaScript executed before
+        enabling precise code coverage may be incomplete. Enabling prevents running
+        optimized code and resets execution counters.
+        """
         params = StartPreciseCoverageParams(
             call_count=call_count,
             detailed=detailed,
@@ -119,6 +132,10 @@ class ProfilerClient:
         self,
         session_id: str | None = None,
     ) -> dict[str, Any]:
+        """
+        Disable precise code coverage. Disabling releases unnecessary execution count
+        records and allows executing optimized code.
+        """
         result = await self._client.send_raw(
             method=ProfilerCommand.STOP_PRECISE_COVERAGE,
             params=None,
@@ -130,6 +147,10 @@ class ProfilerClient:
         self,
         session_id: str | None = None,
     ) -> TakePreciseCoverageResult:
+        """
+        Collect coverage data for the current isolate, and resets execution counters.
+        Precise code coverage needs to have started.
+        """
         result = await self._client.send_raw(
             method=ProfilerCommand.TAKE_PRECISE_COVERAGE,
             params=None,
