@@ -50,7 +50,7 @@ class TestToSnakeCase:
         self,
     ) -> None:
         result = to_snake_case("HTTPSConnection")
-        assert result == "h_t_t_p_s_connection"
+        assert result == "https_connection"
 
     def test_to_snake_case_already_snake_case_returns_lowercase(self) -> None:
         result = to_snake_case("my_variable")

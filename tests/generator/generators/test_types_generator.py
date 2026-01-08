@@ -90,7 +90,7 @@ class TestTypesGeneratorGenerate:
         self, types_generator: TypesGenerator, domain_with_simple_type: Domain
     ) -> None:
         result = types_generator.generate(domain_with_simple_type)
-        assert "from cdpify.domains.base import CDPModel" in result
+        assert "from cdpify.domains.shared import CDPModel" in result
 
     def test_generate_with_cross_domain_ref_includes_type_checking_import(
         self, types_generator: TypesGenerator, domain_with_cross_domain_ref: Domain
@@ -163,7 +163,7 @@ class TestTypesGeneratorObjectModels:
         )
         result = types_generator._create_object_model(type_def)
         assert "class EmptyObject(CDPModel):" in result
-        assert len(result.strip().split("\n")) == 1
+        assert len(result.strip().split("\n")) == 2
 
     def test_create_object_model_with_description_includes_docstring(
         self, types_generator: TypesGenerator

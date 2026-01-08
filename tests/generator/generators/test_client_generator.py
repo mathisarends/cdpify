@@ -76,7 +76,7 @@ class TestClientGeneratorGenerate:
     ) -> None:
         result = client_generator.generate(domain_with_simple_command)
         assert "if TYPE_CHECKING:" in result
-        assert "from pydantic_cpd.client import CDPClient" in result
+        assert "from cdpify.client import CDPClient" in result
 
     def test_generate_with_command_params_imports_params_model(
         self, client_generator: ClientGenerator, domain_with_simple_command: Domain
@@ -121,7 +121,7 @@ class TestClientGeneratorMethodGeneration:
         self, client_generator: ClientGenerator, domain_with_simple_command: Domain
     ) -> None:
         result = client_generator.generate(domain_with_simple_command)
-        assert 'method="TestDomain.testCommand"' in result
+        assert "method=TestDomainCommand.TEST_COMMAND" in result
 
     def test_generate_method_with_params_sends_params_dict(
         self, client_generator: ClientGenerator, domain_with_simple_command: Domain
@@ -139,7 +139,7 @@ class TestClientGeneratorMethodGeneration:
         self, client_generator: ClientGenerator, domain_with_simple_command: Domain
     ) -> None:
         result = client_generator.generate(domain_with_simple_command)
-        assert "return TestCommandResult.model_validate(result)" in result
+        assert "return TestCommandResult.from_cdp(result)" in result
 
     def test_generate_method_without_returns_returns_raw_dict(
         self, client_generator: ClientGenerator, domain_with_no_param_command: Domain

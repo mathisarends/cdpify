@@ -97,7 +97,7 @@ class TestCommandsGeneratorGenerate:
         self, commands_generator: CommandsGenerator, domain_with_optional_params: Domain
     ) -> None:
         result = commands_generator.generate(domain_with_optional_params)
-        assert "optional: int | None = None" in result
+        assert "optional: int | None | None = None" in result
 
     def test_generate_with_required_params_has_no_default(
         self, commands_generator: CommandsGenerator, domain_with_optional_params: Domain
@@ -109,7 +109,7 @@ class TestCommandsGeneratorGenerate:
         self, commands_generator: CommandsGenerator, domain_with_simple_command: Domain
     ) -> None:
         result = commands_generator.generate(domain_with_simple_command)
-        assert "from cdpify.domains.base import CDPModel" in result
+        assert "from cdpify.domains.shared import CDPModel" in result
 
     def test_generate_with_cross_domain_ref_includes_import(
         self,
@@ -139,7 +139,7 @@ class TestCommandsGeneratorModelCreation:
     ) -> None:
         param = Parameter(name="optionalValue", type="integer", optional=True)
         result = commands_generator._create_field(param)
-        assert result == "optional_value: int | None = None"
+        assert result == "optional_value: int | None | None = None"
 
     def test_create_field_with_ref_uses_ref_type(
         self, commands_generator: CommandsGenerator

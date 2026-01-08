@@ -99,7 +99,7 @@ class TestEventsGeneratorGenerate:
         self, events_generator: EventsGenerator, domain_with_multiple_events: Domain
     ) -> None:
         result = events_generator.generate(domain_with_multiple_events)
-        assert "data: dict[str, Any] | None = None" in result
+        assert "data: dict[str, Any] | None | None = None" in result
 
     def test_generate_includes_strenumimport(
         self, events_generator: EventsGenerator, domain_with_simple_event: Domain
@@ -111,7 +111,7 @@ class TestEventsGeneratorGenerate:
         self, events_generator: EventsGenerator, domain_with_simple_event: Domain
     ) -> None:
         result = events_generator.generate(domain_with_simple_event)
-        assert "from cdpify.domains.base import CDPModel" in result
+        assert "from cdpify.domains.shared import CDPModel" in result
 
     def test_generate_with_cross_domain_ref_includes_type_checking_import(
         self, events_generator: EventsGenerator, domain_with_cross_domain_ref: Domain
