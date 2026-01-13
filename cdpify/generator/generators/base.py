@@ -59,11 +59,9 @@ class BaseGenerator:
         domains_list = ", ".join(sorted(unique_domains))
 
         if use_type_checking:
-            # When using TYPE_CHECKING, mark it for inclusion in typing imports
             self._uses_type_checking = True
             return f"if TYPE_CHECKING:\n    from cdpify.domains import {domains_list}"
 
-        # Direct imports (no TYPE_CHECKING)
         lines = [
             f"from cdpify.domains import {domain}" for domain in sorted(unique_domains)
         ]

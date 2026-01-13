@@ -5,13 +5,13 @@ from .exceptions import (
     CDPException,
     CDPTimeoutException,
 )
+from .logging import configure_websocket_logging
 
 __all__ = [
-    # CDPClient
     "CDPClient",
-    # Exceptions
     "CDPException",
     "CDPConnectionException",
     "CDPCommandException",
     "CDPTimeoutException",
+    "configure_websocket_logging",
 ]

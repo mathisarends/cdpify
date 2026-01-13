@@ -150,7 +150,7 @@ print(result.result.value)  # Pydantic model with full IDE support
 The CDP bindings are generated from the official Chrome DevTools Protocol specifications. To regenerate:
 
 ```bash
-uv run python -m pydantic_cpd.generator
+uv run python -m cdpify.generator
 ```
 
 This downloads the latest protocol definitions and generates:

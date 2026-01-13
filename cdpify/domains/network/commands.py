@@ -276,6 +276,7 @@ class GetRequestPostDataParams(CDPModel):
 @dataclass(kw_only=True)
 class GetRequestPostDataResult(CDPModel):
     post_data: str
+    base64_encoded: bool
 
 
 @dataclass(kw_only=True)
