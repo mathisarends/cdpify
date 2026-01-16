@@ -503,7 +503,6 @@ class Cookie(CDPModel):
     session: bool
     same_site: CookieSameSite | None | None = None
     priority: CookiePriority
-    same_party: bool
     source_scheme: CookieSourceScheme
     source_port: int
     partition_key: CookiePartitionKey | None | None = None
@@ -531,8 +530,6 @@ SetCookieBlockedReason = Literal[
     "SchemefulSameSiteStrict",
     "SchemefulSameSiteLax",
     "SchemefulSameSiteUnspecifiedTreatedAsLax",
-    "SamePartyFromCrossPartyContext",
-    "SamePartyConflictsWithOtherAttributes",
     "NameValuePairExceedsMaxSize",
     "DisallowedCharacter",
     "NoCookieContent",
@@ -556,7 +553,6 @@ CookieBlockedReason = Literal[
     "SchemefulSameSiteStrict",
     "SchemefulSameSiteLax",
     "SchemefulSameSiteUnspecifiedTreatedAsLax",
-    "SamePartyFromCrossPartyContext",
     "NameValuePairExceedsMaxSize",
     "PortMismatch",
     "SchemeMismatch",
@@ -634,7 +630,6 @@ class CookieParam(CDPModel):
     same_site: CookieSameSite | None | None = None
     expires: TimeSinceEpoch | None | None = None
     priority: CookiePriority | None | None = None
-    same_party: bool | None | None = None
     source_scheme: CookieSourceScheme | None | None = None
     source_port: int | None | None = None
     partition_key: CookiePartitionKey | None | None = None

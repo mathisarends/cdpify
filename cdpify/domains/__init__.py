@@ -1,89 +1,89 @@
 """Generated CDP domains."""
 
-from .fetch import FetchClient
-from .accessibility import AccessibilityClient
-from .target import TargetClient
-from .deviceorientation import DeviceOrientationClient
-from .animation import AnimationClient
-from .input import InputClient
-from .memory import MemoryClient
-from .webaudio import WebAudioClient
-from .io import IOClient
-from .serviceworker import ServiceWorkerClient
-from .runtime import RuntimeClient
-from .security import SecurityClient
-from .domsnapshot import DOMSnapshotClient
+from .indexeddb import IndexedDBClient
 from .page import PageClient
-from .media import MediaClient
-from .webauthn import WebAuthnClient
+from .emulation import EmulationClient
 from .overlay import OverlayClient
-from .backgroundservice import BackgroundServiceClient
-from .schema import SchemaClient
-from .css import CSSClient
-from .dom import DOMClient
-from .debugger import DebuggerClient
-from .performance import PerformanceClient
+from .serviceworker import ServiceWorkerClient
 from .storage import StorageClient
-from .browser import BrowserClient
-from .log import LogClient
+from .backgroundservice import BackgroundServiceClient
+from .performance import PerformanceClient
+from .accessibility import AccessibilityClient
+from .network import NetworkClient
+from .debugger import DebuggerClient
+from .webauthn import WebAuthnClient
 from .tracing import TracingClient
-from .heapprofiler import HeapProfilerClient
+from .webaudio import WebAudioClient
+from .cast import CastClient
+from .media import MediaClient
+from .browser import BrowserClient
+from .domsnapshot import DOMSnapshotClient
+from .dom import DOMClient
+from .domdebugger import DOMDebuggerClient
+from .layertree import LayerTreeClient
+from .css import CSSClient
+from .io import IOClient
 from .audits import AuditsClient
 from .systeminfo import SystemInfoClient
-from .cast import CastClient
-from .layertree import LayerTreeClient
-from .profiler import ProfilerClient
-from .indexeddb import IndexedDBClient
-from .tethering import TetheringClient
-from .emulation import EmulationClient
-from .cachestorage import CacheStorageClient
-from .network import NetworkClient
-from .domdebugger import DOMDebuggerClient
-from .domstorage import DOMStorageClient
+from .schema import SchemaClient
+from .deviceorientation import DeviceOrientationClient
+from .memory import MemoryClient
 from .eventbreakpoints import EventBreakpointsClient
+from .animation import AnimationClient
+from .heapprofiler import HeapProfilerClient
+from .target import TargetClient
+from .domstorage import DOMStorageClient
+from .profiler import ProfilerClient
+from .security import SecurityClient
+from .runtime import RuntimeClient
+from .tethering import TetheringClient
+from .cachestorage import CacheStorageClient
 from .console import ConsoleClient
+from .fetch import FetchClient
+from .log import LogClient
+from .input import InputClient
 
 __all__ = [
-    "FetchClient",
-    "AccessibilityClient",
-    "TargetClient",
-    "DeviceOrientationClient",
-    "AnimationClient",
-    "InputClient",
-    "MemoryClient",
-    "WebAudioClient",
-    "IOClient",
-    "ServiceWorkerClient",
-    "RuntimeClient",
-    "SecurityClient",
-    "DOMSnapshotClient",
+    "IndexedDBClient",
     "PageClient",
-    "MediaClient",
-    "WebAuthnClient",
+    "EmulationClient",
     "OverlayClient",
-    "BackgroundServiceClient",
-    "SchemaClient",
-    "CSSClient",
-    "DOMClient",
-    "DebuggerClient",
-    "PerformanceClient",
+    "ServiceWorkerClient",
     "StorageClient",
-    "BrowserClient",
-    "LogClient",
+    "BackgroundServiceClient",
+    "PerformanceClient",
+    "AccessibilityClient",
+    "NetworkClient",
+    "DebuggerClient",
+    "WebAuthnClient",
     "TracingClient",
-    "HeapProfilerClient",
+    "WebAudioClient",
+    "CastClient",
+    "MediaClient",
+    "BrowserClient",
+    "DOMSnapshotClient",
+    "DOMClient",
+    "DOMDebuggerClient",
+    "LayerTreeClient",
+    "CSSClient",
+    "IOClient",
     "AuditsClient",
     "SystemInfoClient",
-    "CastClient",
-    "LayerTreeClient",
-    "ProfilerClient",
-    "IndexedDBClient",
-    "TetheringClient",
-    "EmulationClient",
-    "CacheStorageClient",
-    "NetworkClient",
-    "DOMDebuggerClient",
-    "DOMStorageClient",
+    "SchemaClient",
+    "DeviceOrientationClient",
+    "MemoryClient",
     "EventBreakpointsClient",
+    "AnimationClient",
+    "HeapProfilerClient",
+    "TargetClient",
+    "DOMStorageClient",
+    "ProfilerClient",
+    "SecurityClient",
+    "RuntimeClient",
+    "TetheringClient",
+    "CacheStorageClient",
     "ConsoleClient",
+    "FetchClient",
+    "LogClient",
+    "InputClient",
 ]

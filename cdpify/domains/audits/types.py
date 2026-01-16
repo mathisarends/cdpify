@@ -45,8 +45,6 @@ CookieExclusionReason = Literal[
     "ExcludeSameSiteNoneInsecure",
     "ExcludeSameSiteLax",
     "ExcludeSameSiteStrict",
-    "ExcludeInvalidSameParty",
-    "ExcludeSamePartyCrossPartyContext",
     "ExcludeDomainNonASCII",
     "ExcludeThirdPartyCookieBlockedInFirstPartySet",
     "ExcludeThirdPartyPhaseout",

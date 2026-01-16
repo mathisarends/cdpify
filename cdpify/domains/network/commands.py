@@ -384,7 +384,6 @@ class SetCookieParams(CDPModel):
     same_site: CookieSameSite | None | None = None
     expires: TimeSinceEpoch | None | None = None
     priority: CookiePriority | None | None = None
-    same_party: bool | None | None = None
     source_scheme: CookieSourceScheme | None | None = None
     source_port: int | None | None = None
     partition_key: CookiePartitionKey | None | None = None

@@ -14,24 +14,6 @@ This library provides Python bindings for the Chrome DevTools Protocol with full
 
 ## Usage
 
-### Basic Connection
-
-```python
-import asyncio
-from cdpify import CDPClient
-
-async def main():
-    async with CDPClient("ws://localhost:9222/devtools/browser/...") as client:
-        # Send CDP commands
-        result = await client.send_raw(
-            method="Target.getTargets",
-            params=None
-        )
-        print(f"Targets: {result}")
-
-asyncio.run(main())
-```
-
 ### Using Domain Clients
 
 Domain-specific clients provide typed methods for all CDP commands:
@@ -61,35 +43,32 @@ asyncio.run(main())
 
 ### Event Handling
 
-Register handlers for CDP events:
+Listen to typed CDP events using async iterators:
 
 ```python
 from cdpify import CDPClient
 from cdpify.domains import PageClient
+from cdpify.domains.page.events import ScreencastFrameEvent
 
 async def main():
-    client = CDPClient("ws://localhost:9222/devtools/page/...")
-    await client.connect()
+    async with CDPClient("ws://localhost:9222/devtools/page/...") as client:
+        page = PageClient(client)
+        await page.enable()
 
-    # Register event handler
-    @client.on("Page.loadEventFired")
-    async def on_load(params, session_id):
-        print(f"Page loaded at timestamp: {params['timestamp']}")
+        # Start screencast
+        await page.start_screencast(format="jpeg", quality=80)
 
-    # Wildcard handler for all events
-    @client.on()
-    async def on_any_event(params, session_id):
-        print(f"Event received: {params}")
-
-    page = PageClient(client)
-    await page.enable()
-    await page.navigate(url="https://example.com")
-
-    await asyncio.sleep(5)
-    await client.disconnect()
+        # Listen to events with full type safety
+        async for frame in client.listen("Page.screencastFrame", ScreencastFrameEvent):
+            print(f"Frame received: {frame.data}")
+            await page.screencast_frame_ack(
+                screencast_frame_ack_session_id=frame.session_id
+            )
 
 asyncio.run(main())
 ```
+
+Events are automatically deserialized into typed Pydantic models with full IDE support.
 
 ### Configuration
 
@@ -157,7 +136,7 @@ This downloads the latest protocol definitions and generates:
 - `pydantic_cpd/domains/*/types.py` - Type definitions
 - `pydantic_cpd/domains/*/commands.py` - Command parameters and results
 - `pydantic_cpd/domains/*/events.py` - Event definitions
-- `pydantic_cpd/domains/*/library.py` - Domain client classes
+- `pydantic_cpd/domains/*/client.py` - Domain client classes
 
 ## Project Structure
 
@@ -184,7 +163,7 @@ pydantic_cpd/
 
 ## Inspiration
 
-The idea for automatic code generation and the overall approach is inspired by [cdp-use](https://github.com/browser-use/cdp-use). This project adapts that concept for Python, with a slightly different API design and type system using Pydantic models.
+The concept of automatic code generation from the CDP specification is inspired by [cdp-use](https://github.com/browser-use/cdp-use).
 
 ## Links
 
