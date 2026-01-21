@@ -7,7 +7,7 @@ import httpx
 
 from cdpify import CDPClient
 from cdpify.domains import PageClient
-from cdpify.domains.page.events import PageEvent, ScreencastFrameEvent
+from cdpify.domains.page.events import ScreencastFrameEvent
 
 logging.basicConfig(
     level=logging.DEBUG, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
@@ -61,18 +61,20 @@ async def main():
 
         frame_count = 0
         try:
-            async for frame in client.listen(
-                PageEvent.SCREENCAST_FRAME, ScreencastFrameEvent
+            async for event in client.listen_multiple(
+                {
+                    "Page.screencastFrame": ScreencastFrameEvent,
+                }
             ):
                 frame_count += 1
-                print(f"🎬 Frame {frame_count} received!")
+                print(f"🎬 Frame {frame_count} received! (Event: {event.name})")
 
                 await page.screencast_frame_ack(
-                    screencast_frame_ack_session_id=frame.session_id
+                    screencast_frame_ack_session_id=event.data.session_id
                 )
 
                 # Save frame
-                await save_frame(frame.data, frame_count, output_dir)
+                await save_frame(event.data.data, frame_count, output_dir)
 
         except KeyboardInterrupt:
             print("\n⏹️  Stopping...")

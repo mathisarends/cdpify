@@ -8,7 +8,7 @@ import websockets
 from websockets.asyncio.client import ClientConnection, connect
 
 from cdpify.domains.shared import CDPModel
-from cdpify.events import EventDispatcher
+from cdpify.events import CDPEvent, EventDispatcher
 from cdpify.exceptions import (
     CDPCommandException,
     CDPConnectionException,
@@ -55,29 +55,47 @@ class CDPClient:
     async def listen(
         self, event_name: str, event_type: type[T], timeout: float | None = None
     ) -> AsyncIterator[T]:
+        async for event in self.listen_multiple({event_name: event_type}, timeout):
+            yield event.data
+
+    async def listen_multiple(
+        self, event_map: dict[str, type[T]], timeout: float | None = None
+    ) -> AsyncIterator[CDPEvent[T]]:
         """
-        Listen to typed CDP events.
+        Listen to multiple typed CDP events.
 
         Usage:
-            async for frame in client.listen(
-                "Page.screencastFrame", ScreencastFrameEvent
-            ):
-                print(frame.data, frame.session_id)
+            async for event in client.listen_multiple({
+                "Target.targetCreated": TargetCreatedEvent,
+                "Target.targetInfoChanged": TargetInfoChangedEvent
+            }):
+                if event.name == "Target.targetCreated":
+                    print(event.data.target_id)
         """
-        queue: asyncio.Queue[T] = asyncio.Queue()
+        queue: asyncio.Queue[CDPEvent[T]] = asyncio.Queue()
 
-        async def handler(params: dict[str, Any]) -> None:
-            typed_event = event_type.from_cdp(params)
-            await queue.put(typed_event)
+        def create_handler(event_name: str, event_type: type[T]):
+            async def handler(params: dict[str, Any]) -> None:
+                typed_event = event_type.from_cdp(params)
+                await queue.put(CDPEvent(name=event_name, data=typed_event))
 
-        self._events.add_handler(event_name, handler)
+            return handler
+
+        handlers = [
+            (event_name, create_handler(event_name, event_type))
+            for event_name, event_type in event_map.items()
+        ]
 
         try:
+            for event_name, handler in handlers:
+                self._events.add_handler(event_name, handler)
+
             while True:
-                event = await asyncio.wait_for(queue.get(), timeout=timeout)
-                yield event
+                yield await asyncio.wait_for(queue.get(), timeout=timeout)
+
         finally:
-            self._events.remove_handler(event_name, handler)
+            for event_name, handler in handlers:
+                self._events.remove_handler(event_name, handler)
 
     async def connect(self) -> None:
         if self._ws is not None:

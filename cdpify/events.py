@@ -1,12 +1,20 @@
-from __future__ import annotations
-
 import logging
 from collections.abc import Awaitable, Callable
-from typing import Any
+from dataclasses import dataclass
+from typing import Any, Generic, TypeVar
 
 logger = logging.getLogger(__name__)
 
+
 _EventHandler = Callable[[dict[str, Any]], Awaitable[None]]
+
+T = TypeVar("T")
+
+
+@dataclass
+class CDPEvent(Generic[T]):
+    name: str
+    data: T
 
 
 class EventDispatcher:
