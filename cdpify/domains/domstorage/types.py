@@ -4,7 +4,7 @@
 
 from typing import Any
 from dataclasses import dataclass
-from cdpify.domains.shared import CDPModel
+from cdpify.shared.models import CDPModel
 
 SerializedStorageKey = str
 

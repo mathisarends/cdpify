@@ -3,7 +3,7 @@
 # Generated from Chrome DevTools Protocol specifications.
 
 from dataclasses import dataclass
-from cdpify.domains.shared import CDPModel
+from cdpify.shared.models import CDPModel
 
 """
 This is either obtained from another method or specified as `blob:<uuid>` where

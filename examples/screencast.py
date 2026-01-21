@@ -6,8 +6,7 @@ from pathlib import Path
 import httpx
 
 from cdpify import CDPClient
-from cdpify.domains import PageClient
-from cdpify.domains.page.events import ScreencastFrameEvent
+from cdpify.domains.page.events import PageEvent, ScreencastFrameEvent
 
 logging.basicConfig(
     level=logging.DEBUG, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
@@ -42,14 +41,12 @@ async def main():
     print(f"Connecting to: {ws_url}\n")
 
     async with CDPClient(ws_url) as client:
-        page = PageClient(client)
-
         # Enable page domain
         print("📄 Enabling Page domain...")
-        await page.enable()
+        await client.page.enable()
 
         print("🎬 Starting screencast...")
-        await page.start_screencast(
+        await client.page.start_screencast(
             format="jpeg",
             quality=80,
             max_width=1280,
@@ -63,13 +60,13 @@ async def main():
         try:
             async for event in client.listen_multiple(
                 {
-                    "Page.screencastFrame": ScreencastFrameEvent,
+                    PageEvent.SCREENCAST_FRAME: ScreencastFrameEvent,
                 }
             ):
                 frame_count += 1
                 print(f"🎬 Frame {frame_count} received! (Event: {event.name})")
 
-                await page.screencast_frame_ack(
+                await client.page.screencast_frame_ack(
                     screencast_frame_ack_session_id=event.data.session_id
                 )
 
@@ -82,7 +79,7 @@ async def main():
             print("\n⏱️  Timeout reached...")
         finally:
             print("🛑 Stopping screencast...")
-            await page.stop_screencast()
+            await client.page.stop_screencast()
             print(f"📹 Recorded {frame_count} frames to {output_dir.absolute()}")
 
 

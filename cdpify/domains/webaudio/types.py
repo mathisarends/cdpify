@@ -4,7 +4,7 @@
 
 from typing import Literal
 from dataclasses import dataclass
-from cdpify.domains.shared import CDPModel
+from cdpify.shared.models import CDPModel
 
 """
 An unique ID for a graph object (AudioContext, AudioNode, AudioParam) in Web Audio API

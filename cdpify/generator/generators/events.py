@@ -55,7 +55,7 @@ class EventsGenerator(TypeAwareGenerator):
 
         lines.append("from dataclasses import dataclass")
         lines.append("from enum import StrEnum")
-        lines.append("from cdpify.domains.shared import CDPModel")
+        lines.append("from cdpify.shared.models import CDPModel")
 
         type_imports = self._build_type_imports()
         if type_imports:

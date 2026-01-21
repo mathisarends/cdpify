@@ -31,7 +31,6 @@ class DomainGenerator:
         for domain in domains:
             self._generate_domain(domain)
 
-        self._generate_base_file()
         self._generate_init_file(domains)
         self._format_with_ruff()
 
@@ -67,103 +66,22 @@ class DomainGenerator:
         (domain_dir / "client.py").write_text(self._client_gen.generate(domain))
         (domain_dir / "__init__.py").write_text(self._init_gen.generate(domain))
 
-    def _generate_base_file(self) -> None:
-        (CDP_DIR / "shared.py").write_text(self._build_shared_content())
-        logger.info("  ✓ shared.py")
-
-    def _build_shared_content(self) -> str:
-        return """import re
-from dataclasses import asdict, dataclass, fields, is_dataclass
-from typing import Any, Self, get_args, get_origin
-
-
-_ACRONYMS = frozenset({
-    "api", "css", "dom", "html", "json", "pdf", "spc",
-    "ssl", "url", "uuid", "xml", "xhr", "ax", "cpu", "gpu",
-    "io", "js", "os", "ui", "uri", "usb", "wasm", "http", "https",
-})
-
-
-def _to_camel(s: str) -> str:
-    parts = s.split("_")
-
-    if not parts:
-        return s
-
-    result = [parts[0].lower()]
-
-    for part in parts[1:]:
-        lower = part.lower()
-        result.append(part.upper() if lower in _ACRONYMS else part.capitalize())
-
-    return "".join(result)
-
-
-def _to_snake(s: str) -> str:
-    return re.sub(r"(?<!^)(?=[A-Z])", "_", s).lower()
-
-
-@dataclass
-class CDPModel:
-    def to_cdp_params(self) -> dict[str, Any]:
-        return {_to_camel(k): v for k, v in asdict(self).items() if v is not None}
-
-    @classmethod
-    def from_cdp(cls, data: dict) -> Self:
-        snake_data = {_to_snake(k): v for k, v in data.items()}
-        field_types = {f.name: f.type for f in fields(cls)}
-
-        converted = {}
-        for field_name, value in snake_data.items():
-            if field_name not in field_types:
-                continue
-
-            field_type = field_types[field_name]
-            converted[field_name] = _deserialize_field(value, field_type)
-
-        return cls(**converted)
-
-def _deserialize_field(value: Any, field_type: type) -> Any:
-    if value is None:
-        return None
-
-    origin = get_origin(field_type)
-    if origin is not None:
-        args = get_args(field_type)
-
-        if origin is type(None) or (len(args) == 2 and type(None) in args):
-            actual_type = args[0] if args[1] is type(None) else args[1]
-            return _deserialize_field(value, actual_type)
-
-        if origin is list:
-            item_type = args[0]
-            return [_deserialize_field(item, item_type) for item in value]
-
-    if (
-        isinstance(value, dict)
-        and is_dataclass(field_type)
-        and issubclass(field_type, CDPModel)
-    ):
-        return field_type.from_cdp(value)
-
-    return value
-"""
-
     def _generate_init_file(self, domains: list[Domain]) -> None:
         content = self._build_main_init_content(domains)
         (CDP_DIR / "__init__.py").write_text(content)
         logger.info("  ✓ __init__.py")
 
     def _build_main_init_content(self, domains: list[Domain]) -> str:
+        header = self._init_gen._header()
         imports = self._build_domain_imports(domains)
         exports = self._build_domain_exports(domains)
 
-        return f'''"""Generated CDP domains."""
+        return f"""{header}
 
 {imports}
 
 {exports}
-'''
+"""
 
     def _build_domain_imports(self, domains: list[Domain]) -> str:
         lines = []

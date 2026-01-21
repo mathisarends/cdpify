@@ -5,7 +5,7 @@
 from typing import Any, TYPE_CHECKING
 from dataclasses import dataclass
 from enum import StrEnum
-from cdpify.domains.shared import CDPModel
+from cdpify.shared.models import CDPModel
 
 from .types import (
     StreamCompression,

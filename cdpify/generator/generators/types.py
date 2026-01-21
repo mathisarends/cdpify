@@ -39,7 +39,7 @@ class TypesGenerator(BaseGenerator):
             lines.append(typing_imports)
 
         lines.append("from dataclasses import dataclass")
-        lines.append("from cdpify.domains.shared import CDPModel")
+        lines.append("from cdpify.shared.models import CDPModel")
 
         return "\n".join(lines)
 

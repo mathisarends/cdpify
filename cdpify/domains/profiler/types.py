@@ -4,7 +4,7 @@
 
 from typing import TYPE_CHECKING
 from dataclasses import dataclass
-from cdpify.domains.shared import CDPModel
+from cdpify.shared.models import CDPModel
 
 if TYPE_CHECKING:
     from cdpify.domains import runtime

@@ -90,7 +90,7 @@ class TestTypesGeneratorGenerate:
         self, types_generator: TypesGenerator, domain_with_simple_type: Domain
     ) -> None:
         result = types_generator.generate(domain_with_simple_type)
-        assert "from cdpify.domains.shared import CDPModel" in result
+        assert "from cdpify.shared.models import CDPModel" in result
 
     def test_generate_with_cross_domain_ref_includes_type_checking_import(
         self, types_generator: TypesGenerator, domain_with_cross_domain_ref: Domain

@@ -3,7 +3,6 @@ import asyncio
 import httpx
 
 from cdpify import CDPClient
-from cdpify.domains import PageClient
 
 
 async def get_ws_url() -> str:
@@ -24,9 +23,8 @@ async def test_basic():
     print(f"Connecting to: {ws_url}")
 
     async with CDPClient(ws_url) as client:
-        page_client = PageClient(client)
+        result = await client.page.navigate(url="https://example.com")
 
-        result = await page_client.navigate(url="https://example.com")
         print(f"Navigation Result: {result}")
 
 

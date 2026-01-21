@@ -109,7 +109,7 @@ class TestCommandsGeneratorGenerate:
         self, commands_generator: CommandsGenerator, domain_with_simple_command: Domain
     ) -> None:
         result = commands_generator.generate(domain_with_simple_command)
-        assert "from cdpify.domains.shared import CDPModel" in result
+        assert "from cdpify.shared.models import CDPModel" in result
 
     def test_generate_with_cross_domain_ref_includes_import(
         self,
