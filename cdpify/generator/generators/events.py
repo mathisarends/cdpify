@@ -49,6 +49,11 @@ class EventsGenerator(TypeAwareGenerator):
 
         lines = []
 
+        # Add __future__ import if TYPE_CHECKING is used
+        if self._uses_type_checking:
+            lines.append("from __future__ import annotations")
+            lines.append("")
+
         typing_imports = self._build_typing_imports()
         if typing_imports:
             lines.append(typing_imports)

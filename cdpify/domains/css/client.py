@@ -270,7 +270,8 @@ class CSSClient:
         property's declaration. If a value cannot be parsed according to the provided
         property syntax, the value is parsed using combined syntax as if null
         `propertyName` was provided. If the value cannot be resolved even then, return
-        the provided value without any changes.
+        the provided value without any changes. Note: this function currently does not
+        resolve CSS random() function, it returns unmodified random() function parts.`
         """
         params = ResolveValuesParams(
             values=values,

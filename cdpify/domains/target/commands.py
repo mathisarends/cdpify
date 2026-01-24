@@ -141,6 +141,7 @@ class CreateTargetParams(CDPModel):
     background: bool | None | None = None
     for_tab: bool | None | None = None
     hidden: bool | None | None = None
+    focus: bool | None | None = None
 
 
 @dataclass(kw_only=True)

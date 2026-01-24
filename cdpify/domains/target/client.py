@@ -212,6 +212,7 @@ class TargetClient:
         background: bool | None = None,
         for_tab: bool | None = None,
         hidden: bool | None = None,
+        focus: bool | None = None,
         session_id: str | None = None,
     ) -> CreateTargetResult:
         """
@@ -230,6 +231,7 @@ class TargetClient:
             background=background,
             for_tab=for_tab,
             hidden=hidden,
+            focus=focus,
         )
 
         result = await self._client.send_raw(
