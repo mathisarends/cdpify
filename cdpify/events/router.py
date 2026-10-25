@@ -48,14 +48,14 @@ class EventRouter:
 
     def listen[T](
         self,
-        event_name: str,
         event_type: type[T],
         *,
         session_id: str | None,
         timeout: float | None = None,
+        event_name: str | None = None,
     ) -> EventSubscription[T]:
         return self._subscribe(
-            event_name,
+            _resolve_event_name(event_type, event_name),
             lambda event: decode_cdp(event_type, event.params),
             session_id=session_id,
             timeout=timeout,
@@ -63,13 +63,13 @@ class EventRouter:
 
     def listen_all[T](
         self,
-        event_name: str,
         event_type: type[T],
         *,
         timeout: float | None = None,
+        event_name: str | None = None,
     ) -> EventSubscription[ReceivedEvent[T]]:
         return self._subscribe(
-            event_name,
+            _resolve_event_name(event_type, event_name),
             lambda event: ReceivedEvent(
                 value=decode_cdp(event_type, event.params),
                 session_id=event.session_id,
@@ -116,6 +116,18 @@ class EventRouter:
         return EventSubscription(
             buffer, convert, timeout=timeout, unsubscribe=unsubscribe
         )
+
+
+def _resolve_event_name(event_type: type, event_name: str | None) -> str:
+    if event_name is not None:
+        return event_name
+    name = getattr(event_type, "__cdp_event__", None)
+    if not isinstance(name, str):
+        raise TypeError(
+            f"{event_type.__qualname__} does not define __cdp_event__; "
+            "pass event_name= to listen for it"
+        )
+    return name
 
 
 def _do_nothing() -> None:

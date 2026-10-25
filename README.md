@@ -126,32 +126,44 @@ specifications. Each domain is available as a lazy property on `Client` and
 
 ## Listening for events
 
-Events are exposed as typed async streams:
+Pass a generated event class to `listen()`. The returned subscription is an
+async iterator of typed events:
 
 ```python
-from cdpify.domains.network.events import NetworkEvent, RequestWillBeSentEvent
+from cdpify.domains.network.events import RequestWillBeSentEvent
 
 
 await client.network.enable()
 
-async for event in client.listen(
-    event_name=NetworkEvent.REQUEST_WILL_BE_SENT,
-    event_type=RequestWillBeSentEvent,
-):
+async for event in client.listen(RequestWillBeSentEvent):
     print(event.request.method, event.request.url)
 ```
 
-`client.listen()` accepts an optional `timeout` in seconds and yields only
-events from the root connection. A session view applies the same rule to its
-bound target:
+The subscription is registered as soon as `listen()` is called, and events are
+buffered until you read them. To wait for an event that your own command
+triggers, subscribe first and then send the command:
+
+```python
+from cdpify.domains.page.events import LoadEventFiredEvent
+
+
+async with client.listen(LoadEventFiredEvent) as events:
+    await client.page.navigate(url="https://example.com")
+    await events.next(timeout=10)
+```
+
+Leaving the `async with` block unsubscribes. A stream also ends when the client
+disconnects; `events.next()` then raises `CDPStreamClosedError`. The optional
+`timeout` on `listen()` limits how long each read waits and raises
+`TimeoutError` when it expires.
+
+`client.listen()` yields only events from the root connection. A session view
+applies the same rule to its bound target:
 
 ```python
 tab = client.session("session-id")
 
-async for event in tab.listen(
-    event_name=NetworkEvent.REQUEST_WILL_BE_SENT,
-    event_type=RequestWillBeSentEvent,
-):
+async for event in tab.listen(RequestWillBeSentEvent):
     # This stream contains events from this session only.
     print(event.request.url)
 ```
@@ -161,15 +173,14 @@ To observe the root connection and all attached sessions together, use
 event model:
 
 ```python
-async for received in client.listen_all(
-    event_name=NetworkEvent.REQUEST_WILL_BE_SENT,
-    event_type=RequestWillBeSentEvent,
-):
+async for received in client.listen_all(RequestWillBeSentEvent):
     print(received.session_id, received.value.request.url)
 ```
 
 `received.session_id` is `None` for a root event. Generated event dataclasses
-contain only fields defined by the CDP specification.
+contain only fields defined by the CDP specification, plus their CDP name in
+`__cdp_event__`. To listen with your own dataclass, pass the name explicitly:
+`client.listen(MyEvent, event_name="Page.loadEventFired")`.
 
 ## Working with target sessions
 

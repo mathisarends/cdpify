@@ -6,7 +6,7 @@ from pathlib import Path
 from _chrome import get_ws_url
 
 from cdpify import Client
-from cdpify.domains.page.events import PageEvent, ScreencastFrameEvent
+from cdpify.domains.page.events import ScreencastFrameEvent
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
@@ -43,10 +43,7 @@ async def main():
 
         frame_count = 0
         try:
-            async for event in client.listen(
-                event_name=PageEvent.SCREENCAST_FRAME,
-                event_type=ScreencastFrameEvent,
-            ):
+            async for event in client.listen(ScreencastFrameEvent):
                 frame_count += 1
                 print(f"🎬 Frame {frame_count} received!")
 

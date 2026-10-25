@@ -84,29 +84,40 @@ class Client(DomainAccessors):
 
     def listen[T](
         self,
-        event_name: str,
         event_type: type[T],
+        *,
         timeout: float | None = None,
+        event_name: str | None = None,
     ) -> EventSubscription[T]:
-        """Subscribe to events emitted by the root CDP connection only."""
+        """Subscribe to events emitted by the root CDP connection only.
+
+        ``event_type`` is a generated event class such as
+        ``RequestWillBeSentEvent``; its CDP name is read from ``__cdp_event__``.
+        Pass ``event_name`` to listen with a custom dataclass instead. ``timeout``
+        limits how long each read waits for the next event.
+        """
         return self._event_router.listen(
-            event_name,
             event_type,
             session_id=None,
             timeout=timeout,
+            event_name=event_name,
         )
 
     def listen_all[T](
         self,
-        event_name: str,
         event_type: type[T],
+        *,
         timeout: float | None = None,
+        event_name: str | None = None,
     ) -> EventSubscription[ReceivedEvent[T]]:
-        """Subscribe to matching events from the root and every target session."""
+        """Subscribe to matching events from the root and every target session.
+
+        Accepts the same arguments as :meth:`listen`.
+        """
         return self._event_router.listen_all(
-            event_name,
             event_type,
             timeout=timeout,
+            event_name=event_name,
         )
 
     async def _run_event_loop(self) -> None:

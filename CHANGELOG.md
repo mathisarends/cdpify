@@ -20,6 +20,23 @@ Breaking changes are listed first in each release.
   that return an `EventSubscription` instead of async generators. `async for`
   and `aclose()` keep working. Code that relied on the generator type itself
   (e.g. `inspect.isasyncgen`) or on `asend()`/`athrow()` must be updated.
+- `listen()`, `listen_all()` and `CDPSession.listen()` take the event class
+  instead of an event name plus class, and `timeout` is keyword-only:
+
+  ```python
+  # Before
+  client.listen(NetworkEvent.REQUEST_WILL_BE_SENT, RequestWillBeSentEvent)
+  client.listen(
+      event_name=NetworkEvent.REQUEST_WILL_BE_SENT,
+      event_type=RequestWillBeSentEvent,
+  )
+
+  # After
+  client.listen(RequestWillBeSentEvent)
+  ```
+
+  The CDP name comes from the new `__cdp_event__` class variable on generated
+  event classes. For custom dataclasses pass `event_name="Domain.event"`.
 
 ### Added
 
@@ -28,6 +45,8 @@ Breaking changes are listed first in each release.
   `async with` for deterministic cleanup and `await events.next(timeout=...)`
   for waiting on a single event. `next()` raises `CDPStreamClosedError` once
   the stream has ended.
+- Generated event classes expose their CDP method name as `__cdp_event__`,
+  e.g. `LoadEventFiredEvent.__cdp_event__ == "Page.loadEventFired"`.
 - `FindInPage` domain (`client.find_in_page`) from the latest CDP spec.
 
 ### Changed

@@ -7,7 +7,6 @@ from cdpify import Client
 from cdpify.domains.network.events import (
     LoadingFailedEvent,
     LoadingFinishedEvent,
-    NetworkEvent,
     RequestWillBeSentEvent,
     ResponseReceivedEvent,
 )
@@ -18,20 +17,14 @@ logging.basicConfig(
 
 
 async def monitor_requests(client: Client) -> None:
-    async for event in client.listen(
-        event_name=NetworkEvent.REQUEST_WILL_BE_SENT,
-        event_type=RequestWillBeSentEvent,
-    ):
+    async for event in client.listen(RequestWillBeSentEvent):
         url = event.request.url
         method = event.request.method
         print(f"📤 Request: {method} {url}")
 
 
 async def monitor_responses(client: Client) -> None:
-    async for event in client.listen(
-        event_name=NetworkEvent.RESPONSE_RECEIVED,
-        event_type=ResponseReceivedEvent,
-    ):
+    async for event in client.listen(ResponseReceivedEvent):
         url = event.response.url
         status = event.response.status
         mime_type = event.response.mime_type
@@ -39,19 +32,13 @@ async def monitor_responses(client: Client) -> None:
 
 
 async def monitor_loading_finished(client: Client) -> None:
-    async for event in client.listen(
-        event_name=NetworkEvent.LOADING_FINISHED,
-        event_type=LoadingFinishedEvent,
-    ):
+    async for event in client.listen(LoadingFinishedEvent):
         request_id = event.request_id
         print(f"✓ Loading finished: {request_id}")
 
 
 async def monitor_loading_failed(client: Client) -> None:
-    async for event in client.listen(
-        event_name=NetworkEvent.LOADING_FAILED,
-        event_type=LoadingFailedEvent,
-    ):
+    async for event in client.listen(LoadingFailedEvent):
         request_id = event.request_id
         error_text = event.error_text
         print(f"✗ Loading failed: {request_id} - {error_text}")

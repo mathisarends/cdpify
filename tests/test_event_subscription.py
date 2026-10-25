@@ -1,6 +1,7 @@
 import asyncio
 import gc
 from dataclasses import dataclass
+from typing import ClassVar
 
 import pytest
 
@@ -11,6 +12,8 @@ from cdpify.transport import TransportEvent
 
 @dataclass
 class _Event:
+    __cdp_event__: ClassVar[str] = "Test.event"
+
     value: int
 
 
@@ -21,7 +24,7 @@ def _event(value: int, session_id: str | None = None) -> TransportEvent:
 @pytest.mark.asyncio
 async def test_events_before_first_read_are_buffered() -> None:
     router = EventRouter()
-    events = router.listen("Test.event", _Event, session_id=None)
+    events = router.listen(_Event, session_id=None)
 
     await router.dispatch(_event(1))
 
@@ -32,7 +35,7 @@ async def test_events_before_first_read_are_buffered() -> None:
 async def test_async_with_unsubscribes_on_exit() -> None:
     router = EventRouter()
 
-    async with router.listen("Test.event", _Event, session_id=None) as events:
+    async with router.listen(_Event, session_id=None) as events:
         assert await router.dispatch(_event(1)) is True
 
     assert events.closed is True
@@ -42,7 +45,7 @@ async def test_async_with_unsubscribes_on_exit() -> None:
 @pytest.mark.asyncio
 async def test_next_raises_timeout_error_without_events() -> None:
     router = EventRouter()
-    events = router.listen("Test.event", _Event, session_id=None)
+    events = router.listen(_Event, session_id=None)
 
     with pytest.raises(TimeoutError):
         await events.next(timeout=0.01)
@@ -51,7 +54,7 @@ async def test_next_raises_timeout_error_without_events() -> None:
 @pytest.mark.asyncio
 async def test_next_uses_listen_timeout_by_default() -> None:
     router = EventRouter()
-    events = router.listen("Test.event", _Event, session_id=None, timeout=0.01)
+    events = router.listen(_Event, session_id=None, timeout=0.01)
 
     with pytest.raises(TimeoutError):
         await events.next()
@@ -60,7 +63,7 @@ async def test_next_uses_listen_timeout_by_default() -> None:
 @pytest.mark.asyncio
 async def test_router_close_drains_buffered_events_then_ends() -> None:
     router = EventRouter()
-    events = router.listen("Test.event", _Event, session_id=None)
+    events = router.listen(_Event, session_id=None)
     await router.dispatch(_event(1))
 
     router.close()
@@ -73,7 +76,7 @@ async def test_router_close_drains_buffered_events_then_ends() -> None:
 @pytest.mark.asyncio
 async def test_aclose_drops_buffered_events() -> None:
     router = EventRouter()
-    events = router.listen("Test.event", _Event, session_id=None)
+    events = router.listen(_Event, session_id=None)
     await router.dispatch(_event(1))
 
     await events.aclose()
@@ -84,7 +87,7 @@ async def test_aclose_drops_buffered_events() -> None:
 @pytest.mark.asyncio
 async def test_aclose_wakes_a_waiting_reader() -> None:
     router = EventRouter()
-    events = router.listen("Test.event", _Event, session_id=None)
+    events = router.listen(_Event, session_id=None)
     reader = asyncio.create_task(anext(events, None))
     await asyncio.sleep(0)
 
@@ -96,7 +99,7 @@ async def test_aclose_wakes_a_waiting_reader() -> None:
 @pytest.mark.asyncio
 async def test_unreferenced_subscription_unsubscribes() -> None:
     router = EventRouter()
-    router.listen("Test.event", _Event, session_id=None)
+    router.listen(_Event, session_id=None)
     gc.collect()
 
     assert await router.dispatch(_event(1)) is False
@@ -105,10 +108,32 @@ async def test_unreferenced_subscription_unsubscribes() -> None:
 @pytest.mark.asyncio
 async def test_listen_all_wraps_events_with_session_id() -> None:
     router = EventRouter()
-    events = router.listen_all("Test.event", _Event)
+    events = router.listen_all(_Event)
 
     await router.dispatch(_event(1, session_id="S1"))
     received = await events.next(timeout=1.0)
 
     assert received.value == _Event(value=1)
     assert received.session_id == "S1"
+
+
+@dataclass
+class _UnnamedEvent:
+    value: int
+
+
+def test_listen_requires_event_name_for_classes_without_cdp_event() -> None:
+    router = EventRouter()
+
+    with pytest.raises(TypeError, match="pass event_name="):
+        router.listen(_UnnamedEvent, session_id=None)
+
+
+@pytest.mark.asyncio
+async def test_event_name_overrides_cdp_event() -> None:
+    router = EventRouter()
+    events = router.listen(_UnnamedEvent, session_id=None, event_name="Custom.event")
+
+    await router.dispatch(TransportEvent("Custom.event", {"value": 5}))
+
+    assert await events.next(timeout=1.0) == _UnnamedEvent(value=5)

@@ -2,7 +2,7 @@ import asyncio
 import builtins
 from collections.abc import AsyncIterator
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, ClassVar
 
 import pytest
 
@@ -54,6 +54,8 @@ class _FakeTransport:
 
 @dataclass
 class _EventModel:
+    __cdp_event__: ClassVar[str] = "Test.event"
+
     value: int = field(metadata={"cdp_name": "value"})
 
 
@@ -194,7 +196,7 @@ async def test_listen_yields_only_typed_root_events() -> None:
     transport = _FakeTransport()
     client = Client(transport=transport)
     await client.connect()
-    stream = client.listen("Test.event", _EventModel, timeout=1.0)
+    stream = client.listen(_EventModel, timeout=1.0)
 
     next_event_task = asyncio.create_task(anext(stream))
     await asyncio.sleep(0)
@@ -219,7 +221,7 @@ async def test_listen_all_preserves_session_metadata_in_envelope() -> None:
     transport = _FakeTransport()
     client = Client(transport=transport)
     await client.connect()
-    stream = client.listen_all("Test.event", _EventModel, timeout=1.0)
+    stream = client.listen_all(_EventModel, timeout=1.0)
 
     next_event_task = asyncio.create_task(anext(stream))
     await asyncio.sleep(0)
@@ -244,7 +246,7 @@ async def test_listen_ends_when_transport_stream_ends() -> None:
     transport = _FakeTransport()
     client = Client(transport=transport)
     await client.connect()
-    stream = client.listen("Test.event", _EventModel)
+    stream = client.listen(_EventModel)
     next_event_task = asyncio.create_task(anext(stream, None))
     await asyncio.sleep(0)
 
@@ -265,7 +267,7 @@ async def test_listen_ends_on_client_disconnect() -> None:
     await client.connect()
 
     async def consume() -> list[_EventModel]:
-        return [event async for event in client.listen("Test.event", _EventModel)]
+        return [event async for event in client.listen(_EventModel)]
 
     consumer = asyncio.create_task(consume())
     await asyncio.sleep(0)
@@ -281,7 +283,7 @@ async def test_listen_after_disconnect_ends_immediately() -> None:
     await client.connect()
     await client.disconnect()
 
-    events = [event async for event in client.listen("Test.event", _EventModel)]
+    events = [event async for event in client.listen(_EventModel)]
 
     assert events == []
 
@@ -292,7 +294,7 @@ async def test_listen_receives_events_emitted_before_first_read() -> None:
     client = Client(transport=transport)
     await client.connect()
 
-    async with client.listen("Test.event", _EventModel) as events:
+    async with client.listen(_EventModel) as events:
         transport.emit(TransportEvent(method="Test.event", params={"value": 3}))
         await asyncio.sleep(0.01)
 

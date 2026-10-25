@@ -40,14 +40,18 @@ class CDPSession(DomainAccessors):
 
     def listen[T](
         self,
-        event_name: str,
         event_type: type[T],
+        *,
         timeout: float | None = None,
+        event_name: str | None = None,
     ) -> EventSubscription[T]:
-        """Subscribe to events emitted by this session only."""
+        """Subscribe to events emitted by this session only.
+
+        Accepts the same arguments as :meth:`cdpify.Client.listen`.
+        """
         return self._event_router.listen(
-            event_name,
             event_type,
             session_id=self._session_id,
             timeout=timeout,
+            event_name=event_name,
         )

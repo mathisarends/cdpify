@@ -1,6 +1,7 @@
 import asyncio
 from collections.abc import AsyncIterator
 from dataclasses import dataclass, field
+from typing import ClassVar
 from unittest.mock import AsyncMock, call
 
 import pytest
@@ -11,6 +12,8 @@ from cdpify.transport import TransportEvent
 
 @dataclass(kw_only=True, slots=True)
 class _Event:
+    __cdp_event__: ClassVar[str] = "Test.event"
+
     value: int = field(metadata={"cdp_name": "value"})
 
 
@@ -128,7 +131,7 @@ async def test_session_listener_filters_other_sessions() -> None:
     transport = _Transport()
     client = Client(transport=transport)  # type: ignore[arg-type]
     await client.connect()
-    stream = client.session("A").listen("Test.event", _Event, timeout=1.0)
+    stream = client.session("A").listen(_Event, timeout=1.0)
     next_event = asyncio.create_task(anext(stream))
     await asyncio.sleep(0)
 
