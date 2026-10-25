@@ -5,6 +5,8 @@ Breaking changes are listed first in each release.
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-10-25
+
 ### Breaking changes
 
 - Named protocol enums are now `StrEnum` subclasses instead of `Literal`
