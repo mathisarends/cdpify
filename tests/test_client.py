@@ -237,3 +237,50 @@ async def test_listen_all_preserves_session_metadata_in_envelope() -> None:
 
     await stream.aclose()
     await client.disconnect()
+
+
+@pytest.mark.asyncio
+async def test_listen_ends_when_transport_stream_ends() -> None:
+    transport = _FakeTransport()
+    client = Client(transport=transport)
+    await client.connect()
+    stream = client.listen("Test.event", _EventModel)
+    next_event_task = asyncio.create_task(anext(stream, None))
+    await asyncio.sleep(0)
+
+    transport.emit(TransportEvent(method="Test.event", params={"value": 1}))
+    first = await next_event_task
+    await transport.disconnect()
+    remaining = [event async for event in stream]
+
+    assert first == _EventModel(value=1)
+    assert remaining == []
+    await client.disconnect()
+
+
+@pytest.mark.asyncio
+async def test_listen_ends_on_client_disconnect() -> None:
+    transport = _FakeTransport()
+    client = Client(transport=transport)
+    await client.connect()
+
+    async def consume() -> list[_EventModel]:
+        return [event async for event in client.listen("Test.event", _EventModel)]
+
+    consumer = asyncio.create_task(consume())
+    await asyncio.sleep(0)
+    await client.disconnect()
+
+    assert await asyncio.wait_for(consumer, timeout=1.0) == []
+
+
+@pytest.mark.asyncio
+async def test_listen_after_disconnect_ends_immediately() -> None:
+    transport = _FakeTransport()
+    client = Client(transport=transport)
+    await client.connect()
+    await client.disconnect()
+
+    events = [event async for event in client.listen("Test.event", _EventModel)]
+
+    assert events == []

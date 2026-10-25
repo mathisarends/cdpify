@@ -16,11 +16,32 @@ class ReceivedEvent[T]:
     session_id: str | None
 
 
+_STREAM_CLOSED = object()
+
+
 class EventRouter:
     """Decode and route transport events to root, session, or global listeners."""
 
     def __init__(self) -> None:
         self._dispatcher = EventDispatcher()
+        self._queues: set[asyncio.Queue[RawCDPEvent | object]] = set()
+        self._closed = False
+
+    @property
+    def is_closed(self) -> bool:
+        return self._closed
+
+    def open(self) -> None:
+        """Accept new listeners again, e.g. after a reconnect."""
+        self._closed = False
+
+    def close(self) -> None:
+        """End every active listener once its buffered events are consumed."""
+        if self._closed:
+            return
+        self._closed = True
+        for queue in self._queues:
+            queue.put_nowait(_STREAM_CLOSED)
 
     async def dispatch(self, event: TransportEvent) -> bool:
         return await self._dispatcher.dispatch(
@@ -68,11 +89,15 @@ class EventRouter:
         all_sessions: bool = False,
         timeout: float | None = None,
     ) -> AsyncIterator[RawCDPEvent]:
-        queue: asyncio.Queue[RawCDPEvent] = asyncio.Queue()
+        if self._closed:
+            return
+
+        queue: asyncio.Queue[RawCDPEvent | object] = asyncio.Queue()
 
         async def handler(event: RawCDPEvent) -> None:
-            await queue.put(event)
+            queue.put_nowait(event)
 
+        self._queues.add(queue)
         try:
             self._dispatcher.add_handler(
                 event_name,
@@ -81,8 +106,15 @@ class EventRouter:
                 all_sessions=all_sessions,
             )
             while True:
-                yield await asyncio.wait_for(queue.get(), timeout=timeout)
+                if timeout is None:
+                    item = await queue.get()
+                else:
+                    item = await asyncio.wait_for(queue.get(), timeout=timeout)
+                if not isinstance(item, RawCDPEvent):
+                    return
+                yield item
         finally:
+            self._queues.discard(queue)
             self._dispatcher.remove_handler(
                 event_name,
                 handler,

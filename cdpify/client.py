@@ -56,10 +56,12 @@ class Client(DomainAccessors):
 
     async def connect(self) -> None:
         await self._transport.connect()
+        self._event_router.open()
         self._event_loop_task = asyncio.create_task(self._run_event_loop())
 
     async def disconnect(self) -> None:
         await self._stop_event_loop()
+        self._event_router.close()
         await self._transport.disconnect()
 
     def session(self, session_id: str) -> CDPSession:
@@ -118,6 +120,8 @@ class Client(DomainAccessors):
             raise
         except Exception:
             logger.exception("Transport event loop error")
+        finally:
+            self._event_router.close()
 
     async def _dispatch_event(self, event: TransportEvent) -> None:
         logger.debug("Event: %s", event.method)
