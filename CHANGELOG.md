@@ -101,8 +101,11 @@ Breaking changes are listed first in each release.
 
 ### Fixed
 
+- Distributions include the `py.typed` marker so type checkers recognize the
+  installed package's inline annotations.
 - A connection closing while a command is being sent now raises
   `CDPConnectionError` and does not leave an unobserved response-future exception.
+  Commands submitted after shutdown starts are rejected immediately.
 - Concurrent disconnects and browser-initiated closure now wait for the same
   cleanup. Cancelling a disconnect waiter no longer interrupts socket cleanup
   or masks cancellation with an error when detaching the event callback.

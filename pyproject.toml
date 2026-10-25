@@ -45,6 +45,7 @@ dev = [
 ]
 
 [tool.setuptools.package-data]
+"cdpify" = ["py.typed"]
 "cdpify.generator" = ["templates/*.jinja2"]
 
 
