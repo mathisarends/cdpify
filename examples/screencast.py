@@ -50,10 +50,11 @@ async def main():
                 await client.page.screencast_frame_ack(session_id=event.session_id)
 
                 await save_frame(event.data, frame_count, output_dir)
-        except KeyboardInterrupt:
+        except asyncio.CancelledError:
+            # Ctrl+C cancels the main task; KeyboardInterrupt only reaches
+            # the caller of asyncio.run().
             print("\n⏹️  Stopping...")
-        except asyncio.TimeoutError:
-            print("\n⏱️  Timeout reached...")
+            raise
         finally:
             print("🛑 Stopping screencast...")
             await client.page.stop_screencast()

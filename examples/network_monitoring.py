@@ -63,8 +63,11 @@ async def main() -> None:
 
         try:
             await asyncio.gather(*tasks)
-        except KeyboardInterrupt:
+        except asyncio.CancelledError:
+            # Ctrl+C cancels the main task; KeyboardInterrupt only reaches
+            # the caller of asyncio.run().
             print("\n⏹️  Stopping...")
+            raise
         finally:
             for task in tasks:
                 task.cancel()
