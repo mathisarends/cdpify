@@ -259,6 +259,24 @@ result = await client.execute(
 )
 ```
 
+### When Chrome deviates from the spec
+
+Chrome does not always send every field the protocol marks as required.
+Instead of failing, cdpify logs a warning on the `cdpify.codec` logger and
+sets the missing field to `None`, even if its type says otherwise. Unknown
+fields from newer Chrome versions are ignored.
+
+Deprecated CDP commands still work but emit a `DeprecationWarning`. Use
+Python's warning filters to silence them or turn them into errors:
+
+```python
+import warnings
+
+warnings.filterwarnings(
+    "ignore", category=DeprecationWarning, message=r"\w+\.\w+ is deprecated"
+)
+```
+
 ## Development
 
 Install the project and its development dependencies with
