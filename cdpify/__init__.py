@@ -1,4 +1,4 @@
-from .client import Client
+from .client import CdpClient
 from .codec import decode_cdp, encode_cdp
 from .events import EventSubscription, ReceivedEvent
 from .exceptions import (
@@ -10,12 +10,12 @@ from .exceptions import (
     deprecated_exception,
 )
 from .executor import CommandExecutor
-from .session import CDPSession
+from .session import CdpSession
 from .transport import Transport, TransportEvent
 
 __all__ = [
-    "Client",
-    "CDPSession",
+    "CdpClient",
+    "CdpSession",
     "CommandExecutor",
     "EventSubscription",
     "ReceivedEvent",

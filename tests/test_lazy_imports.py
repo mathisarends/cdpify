@@ -32,8 +32,8 @@ def test_importing_cdpify_does_not_load_domain_modules() -> None:
 
 def test_domain_accessor_loads_only_its_domain_on_demand() -> None:
     output = _run_isolated(
-        "import sys; from cdpify import Client; "
-        "client = Client(transport=object()); client.page; "
+        "import sys; from cdpify import CdpClient; "
+        "client = CdpClient(transport=object()); client.page; "
         "print('cdpify.domains.page.domain' in sys.modules, "
         "'cdpify.domains.webaudio.domain' in sys.modules)"
     )

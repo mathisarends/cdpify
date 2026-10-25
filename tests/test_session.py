@@ -6,7 +6,7 @@ from unittest.mock import AsyncMock, call
 
 import pytest
 
-from cdpify import CDPSession, Client
+from cdpify import CdpClient, CdpSession
 from cdpify.transport import TransportEvent
 
 
@@ -42,11 +42,11 @@ class _Transport:
 
 
 def test_client_creates_immutable_session_view() -> None:
-    client = Client(transport=_Transport())  # type: ignore[arg-type]
+    client = CdpClient(transport=_Transport())  # type: ignore[arg-type]
 
     session = client.session("session-1")
 
-    assert isinstance(session, CDPSession)
+    assert isinstance(session, CdpSession)
     assert session.session_id == "session-1"
     assert not hasattr(session, "switch_to")
     with pytest.raises(AttributeError):
@@ -54,7 +54,7 @@ def test_client_creates_immutable_session_view() -> None:
 
 
 def test_rejects_empty_session_id() -> None:
-    client = Client(transport=_Transport())  # type: ignore[arg-type]
+    client = CdpClient(transport=_Transport())  # type: ignore[arg-type]
 
     with pytest.raises(ValueError, match="must not be empty"):
         client.session("")
@@ -63,7 +63,7 @@ def test_rejects_empty_session_id() -> None:
 @pytest.mark.asyncio
 async def test_generated_commands_are_bound_to_session() -> None:
     transport = _Transport()
-    session = Client(transport=transport).session("session-2")  # type: ignore[arg-type]
+    session = CdpClient(transport=transport).session("session-2")  # type: ignore[arg-type]
 
     await session.page.enable()
 
@@ -78,7 +78,7 @@ async def test_generated_commands_are_bound_to_session() -> None:
 @pytest.mark.asyncio
 async def test_low_level_execute_cannot_override_bound_session() -> None:
     transport = _Transport()
-    session = Client(transport=transport).session("session-2")  # type: ignore[arg-type]
+    session = CdpClient(transport=transport).session("session-2")  # type: ignore[arg-type]
 
     await session.execute("Runtime.evaluate", {"expression": "1 + 1"})
 
@@ -98,7 +98,7 @@ async def test_low_level_execute_cannot_override_bound_session() -> None:
 @pytest.mark.asyncio
 async def test_sessions_are_safe_to_use_concurrently() -> None:
     transport = _Transport()
-    client = Client(transport=transport)  # type: ignore[arg-type]
+    client = CdpClient(transport=transport)  # type: ignore[arg-type]
     session_a = client.session("A")
     session_b = client.session("B")
 
@@ -129,7 +129,7 @@ async def test_sessions_are_safe_to_use_concurrently() -> None:
 @pytest.mark.asyncio
 async def test_session_listener_filters_other_sessions() -> None:
     transport = _Transport()
-    client = Client(transport=transport)  # type: ignore[arg-type]
+    client = CdpClient(transport=transport)  # type: ignore[arg-type]
     await client.connect()
     stream = client.session("A").listen(_Event, timeout=1.0)
     next_event = asyncio.create_task(anext(stream))

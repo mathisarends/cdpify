@@ -39,7 +39,7 @@ pip install "cdpify[websocket]"
 ```
 
 Requires Python 3.12 or newer. The WebSocket extra provides the recommended
-default transport used by `Client(url)`. Install `cdpify` without an extra when
+default transport used by `CdpClient(url)`. Install `cdpify` without an extra when
 supplying your own `Transport` implementation.
 
 Install the generator dependencies only when regenerating protocol modules:
@@ -58,7 +58,7 @@ import asyncio
 import json
 from urllib.request import urlopen
 
-from cdpify import Client
+from cdpify import CdpClient
 
 
 def get_websocket_url() -> str:
@@ -69,7 +69,7 @@ def get_websocket_url() -> str:
 async def main() -> None:
     ws_url = get_websocket_url()
 
-    async with Client(ws_url) as client:
+    async with CdpClient(ws_url) as client:
         await client.page.navigate(url="https://example.com")
 
         result = await client.runtime.evaluate(
@@ -82,14 +82,14 @@ async def main() -> None:
 asyncio.run(main())
 ```
 
-Domains are available as lazy properties on `Client`. Parameters use
+Domains are available as lazy properties on `CdpClient`. Parameters use
 Python's `snake_case`; `cdpify` handles conversion to and from CDP's wire format.
 
 ## Supported domains
 
 The generated client currently includes all 59 domains from the bundled CDP
-specifications. Each domain is available as a lazy property on `Client` and
-`CDPSession`:
+specifications. Each domain is available as a lazy property on `CdpClient` and
+`CdpSession`:
 
 | CDP domain | Python accessor | CDP domain | Python accessor |
 | --- | --- | --- | --- |
@@ -189,10 +189,10 @@ Attach to a target in flat mode and create an immutable session view with
 session:
 
 ```python
-from cdpify import Client
+from cdpify import CdpClient
 
 
-async with Client(browser_ws_url) as root_client:
+async with CdpClient(browser_ws_url) as root_client:
     attached = await root_client.target.attach_to_target(
         target_id="target-id",
         flatten=True,
@@ -233,7 +233,7 @@ await tab.execute("Runtime.evaluate", {"expression": "1 + 1"})
 ## Configuration
 
 ```python
-client = Client(
+client = CdpClient(
     url="ws://localhost:9222/devtools/browser/...",
     additional_headers={"Authorization": "Bearer token"},
     max_frame_size=100 * 1024 * 1024,
@@ -245,9 +245,9 @@ For another transport protocol, implement the exported `Transport` protocol
 and inject it directly:
 
 ```python
-from cdpify import Client
+from cdpify import CdpClient
 
-client = Client(transport=my_transport)
+client = CdpClient(transport=my_transport)
 ```
 
 For methods not covered by the generated API, use the low-level escape hatch:

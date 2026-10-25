@@ -7,6 +7,9 @@ Breaking changes are listed first in each release.
 
 ### Breaking changes
 
+- `Client` and `CDPSession` are renamed to `CdpClient` and `CdpSession`.
+  Update imports to `from cdpify import CdpClient, CdpSession` and calls to
+  `CdpClient(...)`. `client.session(...)` now returns `CdpSession`.
 - Exceptions follow Python naming: `CDPException` → `CDPError`,
   `CDPConnectionException` → `CDPConnectionError`, `CDPCommandException` →
   `CDPCommandError`, `CDPTimeoutException` → `CDPTimeoutError`. The old names
@@ -16,11 +19,11 @@ Breaking changes are listed first in each release.
   raw error dict. Use `CDPCommandError.from_response(method, error)` to build
   one from a CDP error payload. The message now names the failed method, e.g.
   `Page.navigate failed with CDP error -32000: Cannot navigate to invalid URL`.
-- `listen()`, `listen_all()` and `CDPSession.listen()` are now regular methods
+- `listen()`, `listen_all()` and `CdpSession.listen()` are now regular methods
   that return an `EventSubscription` instead of async generators. `async for`
   and `aclose()` keep working. Code that relied on the generator type itself
   (e.g. `inspect.isasyncgen`) or on `asend()`/`athrow()` must be updated.
-- `listen()`, `listen_all()` and `CDPSession.listen()` take the event class
+- `listen()`, `listen_all()` and `CdpSession.listen()` take the event class
   instead of an event name plus class, and `timeout` is keyword-only:
 
   ```python
@@ -76,7 +79,7 @@ Breaking changes are listed first in each release.
   connection. The message is logged and skipped.
 - Events sent with `"params": null` are delivered with empty params instead of
   being dropped as malformed.
-- Event listeners (`listen()`, `listen_all()`, `CDPSession.listen()`) now end
+- Event listeners (`listen()`, `listen_all()`, `CdpSession.listen()`) now end
   when the transport event stream ends or the client disconnects. Previously
   they waited forever unless a `timeout` was set. Events that were already
   received are still delivered before the stream ends.

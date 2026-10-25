@@ -3,7 +3,7 @@ import logging
 
 from _chrome import get_ws_url
 
-from cdpify import Client
+from cdpify import CdpClient
 from cdpify.domains.network.events import (
     LoadingFailedEvent,
     LoadingFinishedEvent,
@@ -16,14 +16,14 @@ logging.basicConfig(
 )
 
 
-async def monitor_requests(client: Client) -> None:
+async def monitor_requests(client: CdpClient) -> None:
     async for event in client.listen(RequestWillBeSentEvent):
         url = event.request.url
         method = event.request.method
         print(f"📤 Request: {method} {url}")
 
 
-async def monitor_responses(client: Client) -> None:
+async def monitor_responses(client: CdpClient) -> None:
     async for event in client.listen(ResponseReceivedEvent):
         url = event.response.url
         status = event.response.status
@@ -31,13 +31,13 @@ async def monitor_responses(client: Client) -> None:
         print(f"📥 Response: {status} {url} ({mime_type})")
 
 
-async def monitor_loading_finished(client: Client) -> None:
+async def monitor_loading_finished(client: CdpClient) -> None:
     async for event in client.listen(LoadingFinishedEvent):
         request_id = event.request_id
         print(f"✓ Loading finished: {request_id}")
 
 
-async def monitor_loading_failed(client: Client) -> None:
+async def monitor_loading_failed(client: CdpClient) -> None:
     async for event in client.listen(LoadingFailedEvent):
         request_id = event.request_id
         error_text = event.error_text
@@ -48,7 +48,7 @@ async def main() -> None:
     ws_url = get_ws_url()
     print(f"Connecting to: {ws_url}\n")
 
-    async with Client(ws_url) as client:
+    async with CdpClient(ws_url) as client:
         await client.network.enable()
 
         print("🌐 Network monitoring started...")

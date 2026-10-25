@@ -2,7 +2,7 @@ import asyncio
 
 from _chrome import get_ws_url
 
-from cdpify import Client
+from cdpify import CdpClient
 
 
 async def test_basic():
@@ -11,7 +11,7 @@ async def test_basic():
     ws_url = get_ws_url()
     print(f"Connecting to: {ws_url}")
 
-    async with Client(ws_url) as client:
+    async with CdpClient(ws_url) as client:
         result = await client.page.navigate(url="https://example.com")
 
         print(f"Navigation Result: {result}")

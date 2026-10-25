@@ -5,13 +5,13 @@ from typing import Any, Self
 from cdpify.domains import DomainAccessors
 from cdpify.events import EventRouter, EventSubscription, ReceivedEvent
 from cdpify.executor import BoundCommandExecutor
-from cdpify.session import CDPSession
+from cdpify.session import CdpSession
 from cdpify.transport import Transport, TransportEvent
 
 logger = logging.getLogger(__name__)
 
 
-class Client(DomainAccessors):
+class CdpClient(DomainAccessors):
     def __init__(
         self,
         url: str | None = None,
@@ -25,7 +25,7 @@ class Client(DomainAccessors):
             raise TypeError("Pass either url or transport, not both")
         if transport is None:
             if url is None:
-                raise TypeError("Client requires either url or transport")
+                raise TypeError("CdpClient requires either url or transport")
             transport = _create_websocket_transport(
                 url,
                 additional_headers=additional_headers,
@@ -63,9 +63,9 @@ class Client(DomainAccessors):
         self._event_router.close()
         await self._transport.disconnect()
 
-    def session(self, session_id: str) -> CDPSession:
+    def session(self, session_id: str) -> CdpSession:
         """Create an immutable domain view bound to ``session_id``."""
-        return CDPSession(self._transport, self._event_router, session_id)
+        return CdpSession(self._transport, self._event_router, session_id)
 
     async def execute(
         self,

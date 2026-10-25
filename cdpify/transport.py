@@ -29,7 +29,7 @@ class Transport(Protocol):
     def events(self) -> AsyncIterator[TransportEvent]:
         """Yield incoming events until the connection closes.
 
-        The stream has a single consumer: ``Client`` reads it to route events
-        to listeners. Use ``Client.listen()`` instead of iterating it directly.
+        The stream has a single consumer: ``CdpClient`` reads it to route events
+        to listeners. Use ``CdpClient.listen()`` instead of iterating it directly.
         """
         ...

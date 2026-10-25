@@ -6,7 +6,7 @@ from cdpify.executor import BoundCommandExecutor
 from cdpify.transport import Transport
 
 
-class CDPSession(DomainAccessors):
+class CdpSession(DomainAccessors):
     """An immutable view of the CDP domains bound to one target session."""
 
     def __init__(
@@ -47,7 +47,7 @@ class CDPSession(DomainAccessors):
     ) -> EventSubscription[T]:
         """Subscribe to events emitted by this session only.
 
-        Accepts the same arguments as :meth:`cdpify.Client.listen`.
+        Accepts the same arguments as :meth:`cdpify.CdpClient.listen`.
         """
         return self._event_router.listen(
             event_type,

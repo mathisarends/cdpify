@@ -6,7 +6,7 @@ from typing import Any, ClassVar
 
 import pytest
 
-from cdpify.client import Client
+from cdpify.client import CdpClient
 from cdpify.transport import TransportEvent
 
 
@@ -61,12 +61,12 @@ class _EventModel:
 
 def test_requires_url_or_transport() -> None:
     with pytest.raises(TypeError, match="requires either url or transport"):
-        Client()
+        CdpClient()
 
 
 def test_rejects_url_and_transport_together() -> None:
     with pytest.raises(TypeError, match="either url or transport"):
-        Client("ws://example", transport=_FakeTransport())
+        CdpClient("ws://example", transport=_FakeTransport())
 
 
 def test_default_transport_has_actionable_optional_dependency_error(
@@ -82,11 +82,11 @@ def test_default_transport_has_actionable_optional_dependency_error(
     monkeypatch.setattr(builtins, "__import__", blocked_import)
 
     with pytest.raises(RuntimeError, match=r"cdpify\[websocket\]"):
-        Client("ws://example")
+        CdpClient("ws://example")
 
 
 def test_domain_clients_are_cached() -> None:
-    client = Client(transport=_FakeTransport())
+    client = CdpClient(transport=_FakeTransport())
     properties = [
         "accessibility",
         "animation",
@@ -141,7 +141,7 @@ def test_domain_clients_are_cached() -> None:
 async def test_execute_delegates_to_transport() -> None:
     transport = _FakeTransport()
     transport.result = {"value": 42}
-    client = Client(transport=transport)
+    client = CdpClient(transport=transport)
 
     result = await client.execute(
         "Runtime.evaluate",
@@ -164,7 +164,7 @@ async def test_execute_delegates_to_transport() -> None:
 @pytest.mark.asyncio
 async def test_generated_domain_uses_transport_execute() -> None:
     transport = _FakeTransport()
-    client = Client(transport=transport)
+    client = CdpClient(transport=transport)
 
     await client.tracing.end()
 
@@ -181,7 +181,7 @@ async def test_generated_domain_uses_transport_execute() -> None:
 @pytest.mark.asyncio
 async def test_connect_and_disconnect_manage_transport() -> None:
     transport = _FakeTransport()
-    client = Client(transport=transport)
+    client = CdpClient(transport=transport)
 
     await client.connect()
     assert client.is_connected is True
@@ -194,7 +194,7 @@ async def test_connect_and_disconnect_manage_transport() -> None:
 @pytest.mark.asyncio
 async def test_listen_yields_only_typed_root_events() -> None:
     transport = _FakeTransport()
-    client = Client(transport=transport)
+    client = CdpClient(transport=transport)
     await client.connect()
     stream = client.listen(_EventModel, timeout=1.0)
 
@@ -219,7 +219,7 @@ async def test_listen_yields_only_typed_root_events() -> None:
 @pytest.mark.asyncio
 async def test_listen_all_preserves_session_metadata_in_envelope() -> None:
     transport = _FakeTransport()
-    client = Client(transport=transport)
+    client = CdpClient(transport=transport)
     await client.connect()
     stream = client.listen_all(_EventModel, timeout=1.0)
 
@@ -244,7 +244,7 @@ async def test_listen_all_preserves_session_metadata_in_envelope() -> None:
 @pytest.mark.asyncio
 async def test_listen_ends_when_transport_stream_ends() -> None:
     transport = _FakeTransport()
-    client = Client(transport=transport)
+    client = CdpClient(transport=transport)
     await client.connect()
     stream = client.listen(_EventModel)
     next_event_task = asyncio.create_task(anext(stream, None))
@@ -263,7 +263,7 @@ async def test_listen_ends_when_transport_stream_ends() -> None:
 @pytest.mark.asyncio
 async def test_listen_ends_on_client_disconnect() -> None:
     transport = _FakeTransport()
-    client = Client(transport=transport)
+    client = CdpClient(transport=transport)
     await client.connect()
 
     async def consume() -> list[_EventModel]:
@@ -279,7 +279,7 @@ async def test_listen_ends_on_client_disconnect() -> None:
 @pytest.mark.asyncio
 async def test_listen_after_disconnect_ends_immediately() -> None:
     transport = _FakeTransport()
-    client = Client(transport=transport)
+    client = CdpClient(transport=transport)
     await client.connect()
     await client.disconnect()
 
@@ -291,7 +291,7 @@ async def test_listen_after_disconnect_ends_immediately() -> None:
 @pytest.mark.asyncio
 async def test_listen_receives_events_emitted_before_first_read() -> None:
     transport = _FakeTransport()
-    client = Client(transport=transport)
+    client = CdpClient(transport=transport)
     await client.connect()
 
     async with client.listen(_EventModel) as events:

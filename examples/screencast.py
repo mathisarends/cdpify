@@ -5,7 +5,7 @@ from pathlib import Path
 
 from _chrome import get_ws_url
 
-from cdpify import Client
+from cdpify import CdpClient
 from cdpify.domains.page.events import ScreencastFrameEvent
 
 logging.basicConfig(
@@ -27,7 +27,7 @@ async def main():
     ws_url = get_ws_url(start_url="https://example.com")
     print(f"Connecting to: {ws_url}\n")
 
-    async with Client(ws_url) as client:
+    async with CdpClient(ws_url) as client:
         await client.page.enable()
 
         print("🎬 Starting screencast...")
