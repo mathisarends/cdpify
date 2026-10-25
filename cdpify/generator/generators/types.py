@@ -4,7 +4,7 @@ from cdpify.generator.generators.utils import (
     format_docstring,
     map_cdp_type,
     resolve_type,
-    to_snake_case,
+    to_identifier,
 )
 from cdpify.generator.generators.views import FieldView, TypeDefinitionView
 from cdpify.generator.rendering import render_template
@@ -83,7 +83,7 @@ def _build_alias_view(
 def _build_field_view(
     param: Parameter, type_id: str, ctx: GenerationContext
 ) -> FieldView:
-    field_name = to_snake_case(param.name)
+    field_name = to_identifier(param.name)
     py_type = resolve_type(param)
 
     if param.ref and "." in param.ref:

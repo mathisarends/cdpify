@@ -1,3 +1,5 @@
+import keyword
+
 from cdpify.generator.schemas import Parameter
 from cdpify.shared.naming import to_snake_case
 
@@ -16,6 +18,16 @@ def to_pascal_case(name: str) -> str:
         return name
 
     return name[0].upper() + name[1:]
+
+
+def to_identifier(name: str) -> str:
+    """Convert a CDP name to a snake_case identifier that is never a keyword.
+
+    Keywords such as ``or``/``not`` get a trailing underscore (PEP 8); the wire
+    name is preserved separately via ``cdp_name`` metadata.
+    """
+    identifier = to_snake_case(name)
+    return f"{identifier}_" if keyword.iskeyword(identifier) else identifier
 
 
 def to_enum_name(name: str) -> str:

@@ -4,8 +4,8 @@ from cdpify.generator.generators.utils import (
     format_docstring,
     resolve_type,
     to_enum_name,
+    to_identifier,
     to_pascal_case,
-    to_snake_case,
 )
 from cdpify.generator.generators.views import EnumMemberView, FieldView, ModelView
 from cdpify.generator.rendering import render_template
@@ -79,7 +79,7 @@ def _build_result_model(command: Command, ctx: GenerationContext) -> ModelView:
 
 
 def _build_field_view(param: Parameter, ctx: GenerationContext) -> FieldView:
-    field_name = to_snake_case(param.name)
+    field_name = to_identifier(param.name)
     py_type = resolve_type(param)
     ctx.track_type_string(py_type)
     return FieldView(

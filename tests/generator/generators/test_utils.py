@@ -5,6 +5,7 @@ from cdpify.generator.generators.utils import (
     map_cdp_type,
     resolve_type,
     to_enum_name,
+    to_identifier,
     to_pascal_case,
     to_snake_case,
 )
@@ -132,3 +133,11 @@ class TestFormatDocstring:
         ]
         assert len(body_lines) > 1
         assert all(len(line) <= 88 for line in body_lines)
+
+
+@pytest.mark.parametrize(
+    ("cdp_name", "expected"),
+    [("or", "or_"), ("not", "not_"), ("from", "from_"), ("urlPattern", "url_pattern")],
+)
+def test_to_identifier_escapes_python_keywords(cdp_name: str, expected: str) -> None:
+    assert to_identifier(cdp_name) == expected

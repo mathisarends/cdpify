@@ -4,6 +4,7 @@ from cdpify.generator.generators.utils import (
     format_docstring,
     resolve_type,
     to_enum_name,
+    to_identifier,
     to_pascal_case,
     to_snake_case,
 )
@@ -65,7 +66,7 @@ def _build_method(command: Command, ctx: GenerationContext) -> MethodView:
 
     params_model = f"{pascal_name}Params" if command.parameters else None
     constructor_args = ", ".join(
-        f"{to_snake_case(parameter.name)}={to_snake_case(parameter.name)}"
+        f"{to_identifier(parameter.name)}={to_identifier(parameter.name)}"
         for parameter in command.parameters
     )
 
@@ -91,7 +92,7 @@ def _build_parameter_view(parameter: Parameter, ctx: GenerationContext) -> Field
     annotation = resolve_type(parameter)
     ctx.track_type_string(annotation)
     return FieldView(
-        name=to_snake_case(parameter.name),
+        name=to_identifier(parameter.name),
         annotation=annotation,
         optional=parameter.optional,
     )
