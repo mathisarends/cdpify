@@ -66,6 +66,10 @@ Breaking changes are listed first in each release.
   when the transport event stream ends or the client disconnects. Previously
   they waited forever unless a `timeout` was set. Events that were already
   received are still delivered before the stream ends.
+- Array type aliases keep their element type instead of `list[Any]`, e.g.
+  `DOM.Quad = list[float]` and `Target.TargetFilter = list[FilterEntry]`.
+  Fields typed as `TargetFilter` now decode to `FilterEntry` objects instead
+  of plain dicts.
 - Generated fields and parameters whose CDP name is a Python keyword get a
   trailing underscore (`or` → `or_`), so the generated code is valid again.
 

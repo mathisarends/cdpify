@@ -69,7 +69,12 @@ def _build_alias_view(
     type_def: TypeDefinition, ctx: GenerationContext
 ) -> TypeDefinitionView:
     py_type = map_cdp_type(
-        Parameter(name=type_def.id, type=type_def.type, optional=False)
+        Parameter(
+            name=type_def.id,
+            type=type_def.type,
+            items=type_def.items,
+            optional=False,
+        )
     )
     ctx.track_type_string(py_type)
     return TypeDefinitionView(

@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Literal
+from typing import Literal
 
 from cdpify.domains import dom
 
@@ -98,4 +98,4 @@ class Layer:
 """
 Array of timings, one per paint step.
 """
-PaintProfile = list[Any]
+PaintProfile = list[float]

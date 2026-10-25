@@ -5,7 +5,6 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any
 
 SerializedStorageKey = str
 
@@ -28,4 +27,4 @@ class StorageId:
 """
 DOM Storage item.
 """
-Item = list[Any]
+Item = list[str]

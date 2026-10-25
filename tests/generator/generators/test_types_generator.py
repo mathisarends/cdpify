@@ -16,6 +16,27 @@ def test_renders_alias_for_primitive_type(simple_domain: Domain) -> None:
     assert "NodeId = int" in output
 
 
+def test_array_alias_keeps_item_type() -> None:
+    domain = Domain(
+        domain="Target",
+        types=[
+            TypeDefinition(id="FilterEntry", type="object", properties=[]),
+            TypeDefinition(
+                id="TargetFilter", type="array", items={"$ref": "FilterEntry"}
+            ),
+            TypeDefinition(id="Quad", type="array", items={"type": "number"}),
+            TypeDefinition(id="Frames", type="array", items={"$ref": "Page.FrameId"}),
+        ],
+    )
+
+    output = types.generate(domain)
+
+    assert "TargetFilter = list[FilterEntry]" in output
+    assert "Quad = list[float]" in output
+    assert "Frames = list[page.FrameId]" in output
+    assert "from cdpify.domains import page" in output
+
+
 def test_renders_enum_as_literal(simple_domain: Domain) -> None:
     output = types.generate(simple_domain)
     assert 'type Color = Literal["red", "green", "blue"]' in output

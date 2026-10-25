@@ -5,7 +5,6 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any
 
 from cdpify.domains import dom, domdebugger, page
 
@@ -138,7 +137,7 @@ StringIndex = int
 """
 Index of the string in the strings table.
 """
-ArrayOfStrings = list[Any]
+ArrayOfStrings = list[StringIndex]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -162,7 +161,7 @@ class RareIntegerData:
     value: list[int] = field(metadata={"cdp_name": "value"})
 
 
-Rectangle = list[Any]
+Rectangle = list[float]
 
 
 @dataclass(kw_only=True, slots=True)

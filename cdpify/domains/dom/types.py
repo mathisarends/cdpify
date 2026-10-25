@@ -222,7 +222,7 @@ class RGBA:
 An array of quad vertices, x immediately followed by y for each point, points
 clock-wise.
 """
-Quad = list[Any]
+Quad = list[float]
 
 
 @dataclass(kw_only=True, slots=True)

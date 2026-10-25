@@ -59,7 +59,7 @@ of `exclude` field in the entry. If filter is not specified, the one assumed is 
 "browser", exclude: true}, {type: "tab", exclude: true}, {}] (i.e. include everything
 but `browser` and `tab`).
 """
-TargetFilter = list[Any]
+TargetFilter = list[FilterEntry]
 
 
 @dataclass(kw_only=True, slots=True)
