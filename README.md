@@ -192,6 +192,22 @@ contain only fields defined by the CDP specification, plus their CDP name in
 `__cdp_event__`. To listen with your own dataclass, pass the name explicitly:
 `client.listen(MyEvent, event_name="Page.loadEventFired")`.
 
+An incoming event is decoded once per event class, when the first listener
+reads it. Matching `listen()`, `CdpSession.listen()`, and `listen_all()`
+subscriptions share that model (`received.value` for `listen_all()`). Treat
+event data as read-only: changing a shared model also changes what other
+listeners see. Make a deep copy when you need your own mutable instance:
+
+```python
+from copy import deepcopy
+
+owned_event = deepcopy(event)
+```
+
+Different incoming messages and different event classes have separate cached
+models. Unread events are not decoded. A cache is released when the last
+subscription has read or discarded the incoming event.
+
 ### Limiting buffered events
 
 Set `max_queue_size` on `CdpClient` to limit each listener's buffer. The default,
@@ -210,8 +226,7 @@ async with client:
 The same options apply to `listen_all()` and `CdpSession.listen()`. Passing `0`
 to a listener disables its limit. `events.dropped_events` counts events evicted
 by that listener's buffer. Disconnecting drains the remaining buffered events;
-`aclose()` releases them immediately. Each listener receives its own decoded
-event model, so changing one listener's model does not change another's.
+`aclose()` releases them immediately.
 
 ## Working with target sessions
 

@@ -24,6 +24,9 @@ class EventSubscription[T]:
     Iterating with ``async for`` yields events until the subscription is closed or
     the client disconnects. Leaving the ``async with`` block or calling
     :meth:`aclose` unsubscribes immediately.
+
+    Listeners for the same incoming event and event type share one decoded
+    model. Treat it as read-only, or use ``copy.deepcopy`` before changing it.
     """
 
     def __init__(

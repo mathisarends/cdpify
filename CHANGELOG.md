@@ -7,6 +7,10 @@ Breaking changes are listed first in each release.
 
 ### Breaking changes
 
+- Matching event listeners now share one decoded model per incoming event and
+  event class, including `listen_all()`'s `ReceivedEvent.value`. Mutations are
+  visible to other listeners. Treat event data as read-only or make a
+  `copy.deepcopy(event)` before changing it privately.
 - All generated type aliases use `type` statements, including primitives and
   arrays, e.g. `type FrameId = str` and `type Quad = list[float]`. Use them in
   annotations; pass plain values such as `frame_id: FrameId = "F1"` instead of
@@ -114,8 +118,10 @@ Breaking changes are listed first in each release.
 ### Performance
 
 - The default WebSocket transport delivers events directly to the router,
-  removing the intermediate queue and client event-loop task. Each listener
-  still receives its own decoded model.
+  removing the intermediate queue and client event-loop task.
+- Event models are decoded lazily once per incoming event and target class,
+  then reused by matching listeners. Unread events are not decoded; caches are
+  released together with the buffered event instead of being retained globally.
 - `decode_cdp` builds a converter per field once per model instead of
   inspecting type annotations for every value. Decoding typical Network
   events is 4–7× faster (`ResponseReceivedEvent`: 56 µs → 7 µs).

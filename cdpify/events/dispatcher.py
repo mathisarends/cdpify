@@ -1,15 +1,33 @@
 import logging
 from collections.abc import Awaitable, Callable
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any
 
+from cdpify.codec import decode_cdp
+
 logger = logging.getLogger(__name__)
+_NOT_DECODED = object()
 
 
 @dataclass(frozen=True, slots=True)
 class RawCDPEvent:
     params: dict[str, Any]
     session_id: str | None = None
+    _decoded: dict[type, Any] = field(
+        default_factory=dict, init=False, repr=False, compare=False
+    )
+
+    def decode[T](self, event_type: type[T]) -> T:
+        """Decode lazily once per type; listeners share the cached model.
+
+        Treat the result as read-only, or copy it before making changes. The
+        cache lives only as long as this received event remains referenced.
+        """
+        model = self._decoded.get(event_type, _NOT_DECODED)
+        if model is _NOT_DECODED:
+            model = decode_cdp(event_type, self.params)
+            self._decoded[event_type] = model
+        return model
 
 
 _EventHandler = Callable[[RawCDPEvent], Awaitable[None]]

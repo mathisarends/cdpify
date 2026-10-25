@@ -1,10 +1,14 @@
 import asyncio
 import gc
+import weakref
+from copy import deepcopy
 from dataclasses import dataclass
 from typing import ClassVar
+from unittest.mock import Mock
 
 import pytest
 
+from cdpify.codec import decode_cdp
 from cdpify.events import EventRouter
 from cdpify.exceptions import CDPStreamClosedError
 from cdpify.transport import TransportEvent
@@ -207,18 +211,91 @@ async def test_reopening_router_keeps_old_subscriptions_closed() -> None:
 
 
 @pytest.mark.asyncio
-async def test_listeners_receive_independent_mutable_models() -> None:
+@pytest.mark.parametrize("session_id", [None, "S1"])
+async def test_matching_listeners_decode_once_and_share_model(
+    monkeypatch: pytest.MonkeyPatch, session_id: str | None
+) -> None:
+    decode = Mock(wraps=decode_cdp)
+    monkeypatch.setattr("cdpify.events.dispatcher.decode_cdp", decode)
+    router = EventRouter()
+    first = router.listen(_Event, session_id=session_id)
+    second = router.listen(_Event, session_id=session_id)
+    all_events = router.listen_all(_Event)
+    await router.dispatch(_event(1, session_id=session_id))
+    decode.assert_not_called()
+
+    shared = await first.next(timeout=1.0)
+    assert await second.next(timeout=1.0) is shared
+    received = await all_events.next(timeout=1.0)
+    assert received.value is shared
+    assert received.session_id == session_id
+    decode.assert_called_once_with(_Event, {"value": 1})
+
+    owned = deepcopy(shared)
+    owned.value = 99
+    assert shared.value == 1
+    await first.aclose()
+    await second.aclose()
+    await all_events.aclose()
+
+
+@pytest.mark.asyncio
+async def test_decode_cache_is_scoped_to_each_event_and_target_type(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    decode = Mock(wraps=decode_cdp)
+    monkeypatch.setattr("cdpify.events.dispatcher.decode_cdp", decode)
+    router = EventRouter()
+    events = router.listen(_Event, session_id=None)
+    duplicates = router.listen(_Event, session_id=None)
+    custom = router.listen(_UnnamedEvent, session_id=None, event_name="Test.event")
+    for value in (1, 2):
+        await router.dispatch(_event(value))
+    router.close()
+
+    first, second = [event async for event in events]
+    copies = [event async for event in duplicates]
+    other_types = [event async for event in custom]
+
+    assert first is copies[0]
+    assert second is copies[1]
+    assert first is not second
+    assert [first, second] == [_Event(1), _Event(2)]
+    assert other_types == [_UnnamedEvent(1), _UnnamedEvent(2)]
+    assert decode.call_count == 4
+
+
+@pytest.mark.asyncio
+async def test_shared_event_mutations_are_visible_to_other_listeners() -> None:
     router = EventRouter()
     first = router.listen(_Event, session_id=None)
     second = router.listen(_Event, session_id=None)
     await router.dispatch(_event(1))
 
-    changed = await first.next(timeout=1.0)
-    changed.value = 99
+    shared = await first.next(timeout=1.0)
+    shared.value = 99
 
-    assert await second.next(timeout=1.0) == _Event(1)
+    assert (await second.next(timeout=1.0)).value == 99
     await first.aclose()
     await second.aclose()
+
+
+@pytest.mark.asyncio
+async def test_decode_cache_is_released_when_remaining_listener_closes() -> None:
+    router = EventRouter()
+    first = router.listen(_Event, session_id=None)
+    slow = router.listen(_Event, session_id=None)
+    await router.dispatch(_event(1))
+    model = await first.next(timeout=1.0)
+    reference = weakref.ref(model)
+    del model
+    await first.aclose()
+    assert reference() is not None
+
+    await slow.aclose()
+    gc.collect()
+
+    assert reference() is None
 
 
 @pytest.mark.parametrize("max_queue_size", [-1, 1.5])

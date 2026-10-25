@@ -1,7 +1,6 @@
 from collections.abc import Callable
 from dataclasses import dataclass
 
-from cdpify.codec import decode_cdp
 from cdpify.event_queue import EventQueue
 from cdpify.transport import TransportEvent
 
@@ -65,7 +64,7 @@ class EventRouter:
     ) -> EventSubscription[T]:
         return self._subscribe(
             _resolve_event_name(event_type, event_name),
-            lambda event: decode_cdp(event_type, event.params),
+            lambda event: event.decode(event_type),
             session_id=session_id,
             timeout=timeout,
             max_queue_size=max_queue_size,
@@ -82,7 +81,7 @@ class EventRouter:
         return self._subscribe(
             _resolve_event_name(event_type, event_name),
             lambda event: ReceivedEvent(
-                value=decode_cdp(event_type, event.params),
+                value=event.decode(event_type),
                 session_id=event.session_id,
             ),
             all_sessions=True,

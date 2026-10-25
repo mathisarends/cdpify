@@ -24,6 +24,8 @@ class EventSource:
         ``max_queue_size`` overrides the client's default for this subscription;
         zero is unlimited. Full buffers discard the oldest event without
         blocking command responses. See ``EventSubscription.dropped_events``.
+        Matching listeners share the same decoded model; copy it before making
+        changes that should be private to this listener.
         """
         return self._event_router.listen(
             event_type,
