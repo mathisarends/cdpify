@@ -4,10 +4,15 @@
 
 """CDP Log Domain."""
 
-from .commands import LogCommand, StartViolationsReportParams
-from .domain import Log
-from .events import EntryAddedEvent, LogEvent
-from .types import LogEntry, ViolationSetting
+from typing import TYPE_CHECKING
+
+from cdpify.shared.lazy import lazy_exports
+
+if TYPE_CHECKING:
+    from .commands import LogCommand, StartViolationsReportParams
+    from .domain import Log
+    from .events import EntryAddedEvent, LogEvent
+    from .types import LogEntry, ViolationSetting
 
 __all__ = [
     "EntryAddedEvent",
@@ -18,3 +23,16 @@ __all__ = [
     "StartViolationsReportParams",
     "ViolationSetting",
 ]
+
+__getattr__, __dir__ = lazy_exports(
+    __name__,
+    {
+        "EntryAddedEvent": (".events", "EntryAddedEvent"),
+        "Log": (".domain", "Log"),
+        "LogCommand": (".commands", "LogCommand"),
+        "LogEntry": (".types", "LogEntry"),
+        "LogEvent": (".events", "LogEvent"),
+        "StartViolationsReportParams": (".commands", "StartViolationsReportParams"),
+        "ViolationSetting": (".types", "ViolationSetting"),
+    },
+)

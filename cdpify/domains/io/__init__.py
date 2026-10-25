@@ -4,16 +4,21 @@
 
 """CDP IO Domain."""
 
-from .commands import (
-    CloseParams,
-    IOCommand,
-    ReadParams,
-    ReadResult,
-    ResolveBlobParams,
-    ResolveBlobResult,
-)
-from .domain import IO
-from .types import StreamHandle
+from typing import TYPE_CHECKING
+
+from cdpify.shared.lazy import lazy_exports
+
+if TYPE_CHECKING:
+    from .commands import (
+        CloseParams,
+        IOCommand,
+        ReadParams,
+        ReadResult,
+        ResolveBlobParams,
+        ResolveBlobResult,
+    )
+    from .domain import IO
+    from .types import StreamHandle
 
 __all__ = [
     "CloseParams",
@@ -25,3 +30,17 @@ __all__ = [
     "ResolveBlobResult",
     "StreamHandle",
 ]
+
+__getattr__, __dir__ = lazy_exports(
+    __name__,
+    {
+        "CloseParams": (".commands", "CloseParams"),
+        "IO": (".domain", "IO"),
+        "IOCommand": (".commands", "IOCommand"),
+        "ReadParams": (".commands", "ReadParams"),
+        "ReadResult": (".commands", "ReadResult"),
+        "ResolveBlobParams": (".commands", "ResolveBlobParams"),
+        "ResolveBlobResult": (".commands", "ResolveBlobResult"),
+        "StreamHandle": (".types", "StreamHandle"),
+    },
+)

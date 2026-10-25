@@ -4,25 +4,30 @@
 
 """CDP Memory Domain."""
 
-from .commands import (
-    GetAllTimeSamplingProfileResult,
-    GetBrowserSamplingProfileResult,
-    GetDOMCountersForLeakDetectionResult,
-    GetDOMCountersResult,
-    GetSamplingProfileResult,
-    MemoryCommand,
-    SetPressureNotificationsSuppressedParams,
-    SimulatePressureNotificationParams,
-    StartSamplingParams,
-)
-from .domain import Memory
-from .types import (
-    DOMCounter,
-    Module,
-    PressureLevel,
-    SamplingProfile,
-    SamplingProfileNode,
-)
+from typing import TYPE_CHECKING
+
+from cdpify.shared.lazy import lazy_exports
+
+if TYPE_CHECKING:
+    from .commands import (
+        GetAllTimeSamplingProfileResult,
+        GetBrowserSamplingProfileResult,
+        GetDOMCountersForLeakDetectionResult,
+        GetDOMCountersResult,
+        GetSamplingProfileResult,
+        MemoryCommand,
+        SetPressureNotificationsSuppressedParams,
+        SimulatePressureNotificationParams,
+        StartSamplingParams,
+    )
+    from .domain import Memory
+    from .types import (
+        DOMCounter,
+        Module,
+        PressureLevel,
+        SamplingProfile,
+        SamplingProfileNode,
+    )
 
 __all__ = [
     "DOMCounter",
@@ -41,3 +46,39 @@ __all__ = [
     "SimulatePressureNotificationParams",
     "StartSamplingParams",
 ]
+
+__getattr__, __dir__ = lazy_exports(
+    __name__,
+    {
+        "DOMCounter": (".types", "DOMCounter"),
+        "GetAllTimeSamplingProfileResult": (
+            ".commands",
+            "GetAllTimeSamplingProfileResult",
+        ),
+        "GetBrowserSamplingProfileResult": (
+            ".commands",
+            "GetBrowserSamplingProfileResult",
+        ),
+        "GetDOMCountersForLeakDetectionResult": (
+            ".commands",
+            "GetDOMCountersForLeakDetectionResult",
+        ),
+        "GetDOMCountersResult": (".commands", "GetDOMCountersResult"),
+        "GetSamplingProfileResult": (".commands", "GetSamplingProfileResult"),
+        "Memory": (".domain", "Memory"),
+        "MemoryCommand": (".commands", "MemoryCommand"),
+        "Module": (".types", "Module"),
+        "PressureLevel": (".types", "PressureLevel"),
+        "SamplingProfile": (".types", "SamplingProfile"),
+        "SamplingProfileNode": (".types", "SamplingProfileNode"),
+        "SetPressureNotificationsSuppressedParams": (
+            ".commands",
+            "SetPressureNotificationsSuppressedParams",
+        ),
+        "SimulatePressureNotificationParams": (
+            ".commands",
+            "SimulatePressureNotificationParams",
+        ),
+        "StartSamplingParams": (".commands", "StartSamplingParams"),
+    },
+)

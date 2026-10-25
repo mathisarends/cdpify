@@ -4,31 +4,36 @@
 
 """CDP DOMSnapshot Domain."""
 
-from .commands import (
-    CaptureSnapshotParams,
-    CaptureSnapshotResult,
-    DOMSnapshotCommand,
-    GetSnapshotParams,
-    GetSnapshotResult,
-)
-from .domain import DOMSnapshot
-from .types import (
-    ArrayOfStrings,
-    ComputedStyle,
-    DocumentSnapshot,
-    DOMNode,
-    InlineTextBox,
-    LayoutTreeNode,
-    LayoutTreeSnapshot,
-    NameValue,
-    NodeTreeSnapshot,
-    RareBooleanData,
-    RareIntegerData,
-    RareStringData,
-    Rectangle,
-    StringIndex,
-    TextBoxSnapshot,
-)
+from typing import TYPE_CHECKING
+
+from cdpify.shared.lazy import lazy_exports
+
+if TYPE_CHECKING:
+    from .commands import (
+        CaptureSnapshotParams,
+        CaptureSnapshotResult,
+        DOMSnapshotCommand,
+        GetSnapshotParams,
+        GetSnapshotResult,
+    )
+    from .domain import DOMSnapshot
+    from .types import (
+        ArrayOfStrings,
+        ComputedStyle,
+        DocumentSnapshot,
+        DOMNode,
+        InlineTextBox,
+        LayoutTreeNode,
+        LayoutTreeSnapshot,
+        NameValue,
+        NodeTreeSnapshot,
+        RareBooleanData,
+        RareIntegerData,
+        RareStringData,
+        Rectangle,
+        StringIndex,
+        TextBoxSnapshot,
+    )
 
 __all__ = [
     "ArrayOfStrings",
@@ -53,3 +58,30 @@ __all__ = [
     "StringIndex",
     "TextBoxSnapshot",
 ]
+
+__getattr__, __dir__ = lazy_exports(
+    __name__,
+    {
+        "ArrayOfStrings": (".types", "ArrayOfStrings"),
+        "CaptureSnapshotParams": (".commands", "CaptureSnapshotParams"),
+        "CaptureSnapshotResult": (".commands", "CaptureSnapshotResult"),
+        "ComputedStyle": (".types", "ComputedStyle"),
+        "DOMNode": (".types", "DOMNode"),
+        "DOMSnapshot": (".domain", "DOMSnapshot"),
+        "DOMSnapshotCommand": (".commands", "DOMSnapshotCommand"),
+        "DocumentSnapshot": (".types", "DocumentSnapshot"),
+        "GetSnapshotParams": (".commands", "GetSnapshotParams"),
+        "GetSnapshotResult": (".commands", "GetSnapshotResult"),
+        "InlineTextBox": (".types", "InlineTextBox"),
+        "LayoutTreeNode": (".types", "LayoutTreeNode"),
+        "LayoutTreeSnapshot": (".types", "LayoutTreeSnapshot"),
+        "NameValue": (".types", "NameValue"),
+        "NodeTreeSnapshot": (".types", "NodeTreeSnapshot"),
+        "RareBooleanData": (".types", "RareBooleanData"),
+        "RareIntegerData": (".types", "RareIntegerData"),
+        "RareStringData": (".types", "RareStringData"),
+        "Rectangle": (".types", "Rectangle"),
+        "StringIndex": (".types", "StringIndex"),
+        "TextBoxSnapshot": (".types", "TextBoxSnapshot"),
+    },
+)

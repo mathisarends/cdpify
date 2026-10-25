@@ -4,31 +4,36 @@
 
 """CDP Preload Domain."""
 
-from .commands import PreloadCommand
-from .domain import Preload
-from .events import (
-    PrefetchStatusUpdatedEvent,
-    PreloadEnabledStateUpdatedEvent,
-    PreloadEvent,
-    PreloadingAttemptSourcesUpdatedEvent,
-    PrerenderStatusUpdatedEvent,
-    RuleSetRemovedEvent,
-    RuleSetUpdatedEvent,
-)
-from .types import (
-    PrefetchStatus,
-    PreloadingAttemptKey,
-    PreloadingAttemptSource,
-    PreloadingStatus,
-    PreloadPipelineId,
-    PrerenderFinalStatus,
-    PrerenderMismatchedHeaders,
-    RuleSet,
-    RuleSetErrorType,
-    RuleSetId,
-    SpeculationAction,
-    SpeculationTargetHint,
-)
+from typing import TYPE_CHECKING
+
+from cdpify.shared.lazy import lazy_exports
+
+if TYPE_CHECKING:
+    from .commands import PreloadCommand
+    from .domain import Preload
+    from .events import (
+        PrefetchStatusUpdatedEvent,
+        PreloadEnabledStateUpdatedEvent,
+        PreloadEvent,
+        PreloadingAttemptSourcesUpdatedEvent,
+        PrerenderStatusUpdatedEvent,
+        RuleSetRemovedEvent,
+        RuleSetUpdatedEvent,
+    )
+    from .types import (
+        PrefetchStatus,
+        PreloadingAttemptKey,
+        PreloadingAttemptSource,
+        PreloadingStatus,
+        PreloadPipelineId,
+        PrerenderFinalStatus,
+        PrerenderMismatchedHeaders,
+        RuleSet,
+        RuleSetErrorType,
+        RuleSetId,
+        SpeculationAction,
+        SpeculationTargetHint,
+    )
 
 __all__ = [
     "PrefetchStatus",
@@ -53,3 +58,36 @@ __all__ = [
     "SpeculationAction",
     "SpeculationTargetHint",
 ]
+
+__getattr__, __dir__ = lazy_exports(
+    __name__,
+    {
+        "PrefetchStatus": (".types", "PrefetchStatus"),
+        "PrefetchStatusUpdatedEvent": (".events", "PrefetchStatusUpdatedEvent"),
+        "Preload": (".domain", "Preload"),
+        "PreloadCommand": (".commands", "PreloadCommand"),
+        "PreloadEnabledStateUpdatedEvent": (
+            ".events",
+            "PreloadEnabledStateUpdatedEvent",
+        ),
+        "PreloadEvent": (".events", "PreloadEvent"),
+        "PreloadPipelineId": (".types", "PreloadPipelineId"),
+        "PreloadingAttemptKey": (".types", "PreloadingAttemptKey"),
+        "PreloadingAttemptSource": (".types", "PreloadingAttemptSource"),
+        "PreloadingAttemptSourcesUpdatedEvent": (
+            ".events",
+            "PreloadingAttemptSourcesUpdatedEvent",
+        ),
+        "PreloadingStatus": (".types", "PreloadingStatus"),
+        "PrerenderFinalStatus": (".types", "PrerenderFinalStatus"),
+        "PrerenderMismatchedHeaders": (".types", "PrerenderMismatchedHeaders"),
+        "PrerenderStatusUpdatedEvent": (".events", "PrerenderStatusUpdatedEvent"),
+        "RuleSet": (".types", "RuleSet"),
+        "RuleSetErrorType": (".types", "RuleSetErrorType"),
+        "RuleSetId": (".types", "RuleSetId"),
+        "RuleSetRemovedEvent": (".events", "RuleSetRemovedEvent"),
+        "RuleSetUpdatedEvent": (".events", "RuleSetUpdatedEvent"),
+        "SpeculationAction": (".types", "SpeculationAction"),
+        "SpeculationTargetHint": (".types", "SpeculationTargetHint"),
+    },
+)

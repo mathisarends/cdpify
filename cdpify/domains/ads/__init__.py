@@ -4,9 +4,14 @@
 
 """CDP Ads Domain."""
 
-from .commands import AdsCommand, GetAdMetricsResult, GetAdScriptsResult
-from .domain import Ads
-from .types import AdFrameData, AdMetrics, AdScript
+from typing import TYPE_CHECKING
+
+from cdpify.shared.lazy import lazy_exports
+
+if TYPE_CHECKING:
+    from .commands import AdsCommand, GetAdMetricsResult, GetAdScriptsResult
+    from .domain import Ads
+    from .types import AdFrameData, AdMetrics, AdScript
 
 __all__ = [
     "AdFrameData",
@@ -17,3 +22,16 @@ __all__ = [
     "GetAdMetricsResult",
     "GetAdScriptsResult",
 ]
+
+__getattr__, __dir__ = lazy_exports(
+    __name__,
+    {
+        "AdFrameData": (".types", "AdFrameData"),
+        "AdMetrics": (".types", "AdMetrics"),
+        "AdScript": (".types", "AdScript"),
+        "Ads": (".domain", "Ads"),
+        "AdsCommand": (".commands", "AdsCommand"),
+        "GetAdMetricsResult": (".commands", "GetAdMetricsResult"),
+        "GetAdScriptsResult": (".commands", "GetAdScriptsResult"),
+    },
+)

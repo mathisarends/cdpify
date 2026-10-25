@@ -4,30 +4,35 @@
 
 """CDP Profiler Domain."""
 
-from .commands import (
-    GetBestEffortCoverageResult,
-    ProfilerCommand,
-    SetSamplingIntervalParams,
-    StartPreciseCoverageParams,
-    StartPreciseCoverageResult,
-    StopResult,
-    TakePreciseCoverageResult,
-)
-from .domain import Profiler
-from .events import (
-    ConsoleProfileFinishedEvent,
-    ConsoleProfileStartedEvent,
-    PreciseCoverageDeltaUpdateEvent,
-    ProfilerEvent,
-)
-from .types import (
-    CoverageRange,
-    FunctionCoverage,
-    PositionTickInfo,
-    Profile,
-    ProfileNode,
-    ScriptCoverage,
-)
+from typing import TYPE_CHECKING
+
+from cdpify.shared.lazy import lazy_exports
+
+if TYPE_CHECKING:
+    from .commands import (
+        GetBestEffortCoverageResult,
+        ProfilerCommand,
+        SetSamplingIntervalParams,
+        StartPreciseCoverageParams,
+        StartPreciseCoverageResult,
+        StopResult,
+        TakePreciseCoverageResult,
+    )
+    from .domain import Profiler
+    from .events import (
+        ConsoleProfileFinishedEvent,
+        ConsoleProfileStartedEvent,
+        PreciseCoverageDeltaUpdateEvent,
+        ProfilerEvent,
+    )
+    from .types import (
+        CoverageRange,
+        FunctionCoverage,
+        PositionTickInfo,
+        Profile,
+        ProfileNode,
+        ScriptCoverage,
+    )
 
 __all__ = [
     "ConsoleProfileFinishedEvent",
@@ -49,3 +54,30 @@ __all__ = [
     "StopResult",
     "TakePreciseCoverageResult",
 ]
+
+__getattr__, __dir__ = lazy_exports(
+    __name__,
+    {
+        "ConsoleProfileFinishedEvent": (".events", "ConsoleProfileFinishedEvent"),
+        "ConsoleProfileStartedEvent": (".events", "ConsoleProfileStartedEvent"),
+        "CoverageRange": (".types", "CoverageRange"),
+        "FunctionCoverage": (".types", "FunctionCoverage"),
+        "GetBestEffortCoverageResult": (".commands", "GetBestEffortCoverageResult"),
+        "PositionTickInfo": (".types", "PositionTickInfo"),
+        "PreciseCoverageDeltaUpdateEvent": (
+            ".events",
+            "PreciseCoverageDeltaUpdateEvent",
+        ),
+        "Profile": (".types", "Profile"),
+        "ProfileNode": (".types", "ProfileNode"),
+        "Profiler": (".domain", "Profiler"),
+        "ProfilerCommand": (".commands", "ProfilerCommand"),
+        "ProfilerEvent": (".events", "ProfilerEvent"),
+        "ScriptCoverage": (".types", "ScriptCoverage"),
+        "SetSamplingIntervalParams": (".commands", "SetSamplingIntervalParams"),
+        "StartPreciseCoverageParams": (".commands", "StartPreciseCoverageParams"),
+        "StartPreciseCoverageResult": (".commands", "StartPreciseCoverageResult"),
+        "StopResult": (".commands", "StopResult"),
+        "TakePreciseCoverageResult": (".commands", "TakePreciseCoverageResult"),
+    },
+)

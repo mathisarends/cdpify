@@ -4,31 +4,36 @@
 
 """CDP Input Domain."""
 
-from .commands import (
-    DispatchDragEventParams,
-    DispatchKeyEventParams,
-    DispatchMouseEventParams,
-    DispatchTouchEventParams,
-    EmulateTouchFromMouseEventParams,
-    ImeSetCompositionParams,
-    InputCommand,
-    InsertTextParams,
-    SetIgnoreInputEventsParams,
-    SetInterceptDragsParams,
-    SynthesizePinchGestureParams,
-    SynthesizeScrollGestureParams,
-    SynthesizeTapGestureParams,
-)
-from .domain import Input
-from .events import DragInterceptedEvent, InputEvent
-from .types import (
-    DragData,
-    DragDataItem,
-    GestureSourceType,
-    MouseButton,
-    TimeSinceEpoch,
-    TouchPoint,
-)
+from typing import TYPE_CHECKING
+
+from cdpify.shared.lazy import lazy_exports
+
+if TYPE_CHECKING:
+    from .commands import (
+        DispatchDragEventParams,
+        DispatchKeyEventParams,
+        DispatchMouseEventParams,
+        DispatchTouchEventParams,
+        EmulateTouchFromMouseEventParams,
+        ImeSetCompositionParams,
+        InputCommand,
+        InsertTextParams,
+        SetIgnoreInputEventsParams,
+        SetInterceptDragsParams,
+        SynthesizePinchGestureParams,
+        SynthesizeScrollGestureParams,
+        SynthesizeTapGestureParams,
+    )
+    from .domain import Input
+    from .events import DragInterceptedEvent, InputEvent
+    from .types import (
+        DragData,
+        DragDataItem,
+        GestureSourceType,
+        MouseButton,
+        TimeSinceEpoch,
+        TouchPoint,
+    )
 
 __all__ = [
     "DispatchDragEventParams",
@@ -54,3 +59,34 @@ __all__ = [
     "TimeSinceEpoch",
     "TouchPoint",
 ]
+
+__getattr__, __dir__ = lazy_exports(
+    __name__,
+    {
+        "DispatchDragEventParams": (".commands", "DispatchDragEventParams"),
+        "DispatchKeyEventParams": (".commands", "DispatchKeyEventParams"),
+        "DispatchMouseEventParams": (".commands", "DispatchMouseEventParams"),
+        "DispatchTouchEventParams": (".commands", "DispatchTouchEventParams"),
+        "DragData": (".types", "DragData"),
+        "DragDataItem": (".types", "DragDataItem"),
+        "DragInterceptedEvent": (".events", "DragInterceptedEvent"),
+        "EmulateTouchFromMouseEventParams": (
+            ".commands",
+            "EmulateTouchFromMouseEventParams",
+        ),
+        "GestureSourceType": (".types", "GestureSourceType"),
+        "ImeSetCompositionParams": (".commands", "ImeSetCompositionParams"),
+        "Input": (".domain", "Input"),
+        "InputCommand": (".commands", "InputCommand"),
+        "InputEvent": (".events", "InputEvent"),
+        "InsertTextParams": (".commands", "InsertTextParams"),
+        "MouseButton": (".types", "MouseButton"),
+        "SetIgnoreInputEventsParams": (".commands", "SetIgnoreInputEventsParams"),
+        "SetInterceptDragsParams": (".commands", "SetInterceptDragsParams"),
+        "SynthesizePinchGestureParams": (".commands", "SynthesizePinchGestureParams"),
+        "SynthesizeScrollGestureParams": (".commands", "SynthesizeScrollGestureParams"),
+        "SynthesizeTapGestureParams": (".commands", "SynthesizeTapGestureParams"),
+        "TimeSinceEpoch": (".types", "TimeSinceEpoch"),
+        "TouchPoint": (".types", "TouchPoint"),
+    },
+)

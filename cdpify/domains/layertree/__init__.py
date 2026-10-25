@@ -4,33 +4,38 @@
 
 """CDP LayerTree Domain."""
 
-from .commands import (
-    CompositingReasonsParams,
-    CompositingReasonsResult,
-    LayerTreeCommand,
-    LoadSnapshotParams,
-    LoadSnapshotResult,
-    MakeSnapshotParams,
-    MakeSnapshotResult,
-    ProfileSnapshotParams,
-    ProfileSnapshotResult,
-    ReleaseSnapshotParams,
-    ReplaySnapshotParams,
-    ReplaySnapshotResult,
-    SnapshotCommandLogParams,
-    SnapshotCommandLogResult,
-)
-from .domain import LayerTree
-from .events import LayerPaintedEvent, LayerTreeDidChangeEvent, LayerTreeEvent
-from .types import (
-    Layer,
-    LayerId,
-    PaintProfile,
-    PictureTile,
-    ScrollRect,
-    SnapshotId,
-    StickyPositionConstraint,
-)
+from typing import TYPE_CHECKING
+
+from cdpify.shared.lazy import lazy_exports
+
+if TYPE_CHECKING:
+    from .commands import (
+        CompositingReasonsParams,
+        CompositingReasonsResult,
+        LayerTreeCommand,
+        LoadSnapshotParams,
+        LoadSnapshotResult,
+        MakeSnapshotParams,
+        MakeSnapshotResult,
+        ProfileSnapshotParams,
+        ProfileSnapshotResult,
+        ReleaseSnapshotParams,
+        ReplaySnapshotParams,
+        ReplaySnapshotResult,
+        SnapshotCommandLogParams,
+        SnapshotCommandLogResult,
+    )
+    from .domain import LayerTree
+    from .events import LayerPaintedEvent, LayerTreeDidChangeEvent, LayerTreeEvent
+    from .types import (
+        Layer,
+        LayerId,
+        PaintProfile,
+        PictureTile,
+        ScrollRect,
+        SnapshotId,
+        StickyPositionConstraint,
+    )
 
 __all__ = [
     "CompositingReasonsParams",
@@ -59,3 +64,34 @@ __all__ = [
     "SnapshotId",
     "StickyPositionConstraint",
 ]
+
+__getattr__, __dir__ = lazy_exports(
+    __name__,
+    {
+        "CompositingReasonsParams": (".commands", "CompositingReasonsParams"),
+        "CompositingReasonsResult": (".commands", "CompositingReasonsResult"),
+        "Layer": (".types", "Layer"),
+        "LayerId": (".types", "LayerId"),
+        "LayerPaintedEvent": (".events", "LayerPaintedEvent"),
+        "LayerTree": (".domain", "LayerTree"),
+        "LayerTreeCommand": (".commands", "LayerTreeCommand"),
+        "LayerTreeDidChangeEvent": (".events", "LayerTreeDidChangeEvent"),
+        "LayerTreeEvent": (".events", "LayerTreeEvent"),
+        "LoadSnapshotParams": (".commands", "LoadSnapshotParams"),
+        "LoadSnapshotResult": (".commands", "LoadSnapshotResult"),
+        "MakeSnapshotParams": (".commands", "MakeSnapshotParams"),
+        "MakeSnapshotResult": (".commands", "MakeSnapshotResult"),
+        "PaintProfile": (".types", "PaintProfile"),
+        "PictureTile": (".types", "PictureTile"),
+        "ProfileSnapshotParams": (".commands", "ProfileSnapshotParams"),
+        "ProfileSnapshotResult": (".commands", "ProfileSnapshotResult"),
+        "ReleaseSnapshotParams": (".commands", "ReleaseSnapshotParams"),
+        "ReplaySnapshotParams": (".commands", "ReplaySnapshotParams"),
+        "ReplaySnapshotResult": (".commands", "ReplaySnapshotResult"),
+        "ScrollRect": (".types", "ScrollRect"),
+        "SnapshotCommandLogParams": (".commands", "SnapshotCommandLogParams"),
+        "SnapshotCommandLogResult": (".commands", "SnapshotCommandLogResult"),
+        "SnapshotId": (".types", "SnapshotId"),
+        "StickyPositionConstraint": (".types", "StickyPositionConstraint"),
+    },
+)

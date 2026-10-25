@@ -4,9 +4,14 @@
 
 """CDP DigitalCredentials Domain."""
 
-from .commands import DigitalCredentialsCommand, SetVirtualWalletBehaviorParams
-from .domain import DigitalCredentials
-from .types import VirtualWalletAction
+from typing import TYPE_CHECKING
+
+from cdpify.shared.lazy import lazy_exports
+
+if TYPE_CHECKING:
+    from .commands import DigitalCredentialsCommand, SetVirtualWalletBehaviorParams
+    from .domain import DigitalCredentials
+    from .types import VirtualWalletAction
 
 __all__ = [
     "DigitalCredentials",
@@ -14,3 +19,16 @@ __all__ = [
     "SetVirtualWalletBehaviorParams",
     "VirtualWalletAction",
 ]
+
+__getattr__, __dir__ = lazy_exports(
+    __name__,
+    {
+        "DigitalCredentials": (".domain", "DigitalCredentials"),
+        "DigitalCredentialsCommand": (".commands", "DigitalCredentialsCommand"),
+        "SetVirtualWalletBehaviorParams": (
+            ".commands",
+            "SetVirtualWalletBehaviorParams",
+        ),
+        "VirtualWalletAction": (".types", "VirtualWalletAction"),
+    },
+)

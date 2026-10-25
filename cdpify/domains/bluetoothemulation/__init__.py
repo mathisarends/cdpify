@@ -4,44 +4,49 @@
 
 """CDP BluetoothEmulation Domain."""
 
-from .commands import (
-    AddCharacteristicParams,
-    AddCharacteristicResult,
-    AddDescriptorParams,
-    AddDescriptorResult,
-    AddServiceParams,
-    AddServiceResult,
-    BluetoothEmulationCommand,
-    EnableParams,
-    RemoveCharacteristicParams,
-    RemoveDescriptorParams,
-    RemoveServiceParams,
-    SetSimulatedCentralStateParams,
-    SimulateAdvertisementParams,
-    SimulateCharacteristicOperationResponseParams,
-    SimulateDescriptorOperationResponseParams,
-    SimulateGATTDisconnectionParams,
-    SimulateGATTOperationResponseParams,
-    SimulatePreconnectedPeripheralParams,
-)
-from .domain import BluetoothEmulation
-from .events import (
-    BluetoothEmulationEvent,
-    CharacteristicOperationReceivedEvent,
-    DescriptorOperationReceivedEvent,
-    GattOperationReceivedEvent,
-)
-from .types import (
-    CentralState,
-    CharacteristicOperationType,
-    CharacteristicProperties,
-    CharacteristicWriteType,
-    DescriptorOperationType,
-    GATTOperationType,
-    ManufacturerData,
-    ScanEntry,
-    ScanRecord,
-)
+from typing import TYPE_CHECKING
+
+from cdpify.shared.lazy import lazy_exports
+
+if TYPE_CHECKING:
+    from .commands import (
+        AddCharacteristicParams,
+        AddCharacteristicResult,
+        AddDescriptorParams,
+        AddDescriptorResult,
+        AddServiceParams,
+        AddServiceResult,
+        BluetoothEmulationCommand,
+        EnableParams,
+        RemoveCharacteristicParams,
+        RemoveDescriptorParams,
+        RemoveServiceParams,
+        SetSimulatedCentralStateParams,
+        SimulateAdvertisementParams,
+        SimulateCharacteristicOperationResponseParams,
+        SimulateDescriptorOperationResponseParams,
+        SimulateGATTDisconnectionParams,
+        SimulateGATTOperationResponseParams,
+        SimulatePreconnectedPeripheralParams,
+    )
+    from .domain import BluetoothEmulation
+    from .events import (
+        BluetoothEmulationEvent,
+        CharacteristicOperationReceivedEvent,
+        DescriptorOperationReceivedEvent,
+        GattOperationReceivedEvent,
+    )
+    from .types import (
+        CentralState,
+        CharacteristicOperationType,
+        CharacteristicProperties,
+        CharacteristicWriteType,
+        DescriptorOperationType,
+        GATTOperationType,
+        ManufacturerData,
+        ScanEntry,
+        ScanRecord,
+    )
 
 __all__ = [
     "AddCharacteristicParams",
@@ -77,3 +82,65 @@ __all__ = [
     "SimulateGATTOperationResponseParams",
     "SimulatePreconnectedPeripheralParams",
 ]
+
+__getattr__, __dir__ = lazy_exports(
+    __name__,
+    {
+        "AddCharacteristicParams": (".commands", "AddCharacteristicParams"),
+        "AddCharacteristicResult": (".commands", "AddCharacteristicResult"),
+        "AddDescriptorParams": (".commands", "AddDescriptorParams"),
+        "AddDescriptorResult": (".commands", "AddDescriptorResult"),
+        "AddServiceParams": (".commands", "AddServiceParams"),
+        "AddServiceResult": (".commands", "AddServiceResult"),
+        "BluetoothEmulation": (".domain", "BluetoothEmulation"),
+        "BluetoothEmulationCommand": (".commands", "BluetoothEmulationCommand"),
+        "BluetoothEmulationEvent": (".events", "BluetoothEmulationEvent"),
+        "CentralState": (".types", "CentralState"),
+        "CharacteristicOperationReceivedEvent": (
+            ".events",
+            "CharacteristicOperationReceivedEvent",
+        ),
+        "CharacteristicOperationType": (".types", "CharacteristicOperationType"),
+        "CharacteristicProperties": (".types", "CharacteristicProperties"),
+        "CharacteristicWriteType": (".types", "CharacteristicWriteType"),
+        "DescriptorOperationReceivedEvent": (
+            ".events",
+            "DescriptorOperationReceivedEvent",
+        ),
+        "DescriptorOperationType": (".types", "DescriptorOperationType"),
+        "EnableParams": (".commands", "EnableParams"),
+        "GATTOperationType": (".types", "GATTOperationType"),
+        "GattOperationReceivedEvent": (".events", "GattOperationReceivedEvent"),
+        "ManufacturerData": (".types", "ManufacturerData"),
+        "RemoveCharacteristicParams": (".commands", "RemoveCharacteristicParams"),
+        "RemoveDescriptorParams": (".commands", "RemoveDescriptorParams"),
+        "RemoveServiceParams": (".commands", "RemoveServiceParams"),
+        "ScanEntry": (".types", "ScanEntry"),
+        "ScanRecord": (".types", "ScanRecord"),
+        "SetSimulatedCentralStateParams": (
+            ".commands",
+            "SetSimulatedCentralStateParams",
+        ),
+        "SimulateAdvertisementParams": (".commands", "SimulateAdvertisementParams"),
+        "SimulateCharacteristicOperationResponseParams": (
+            ".commands",
+            "SimulateCharacteristicOperationResponseParams",
+        ),
+        "SimulateDescriptorOperationResponseParams": (
+            ".commands",
+            "SimulateDescriptorOperationResponseParams",
+        ),
+        "SimulateGATTDisconnectionParams": (
+            ".commands",
+            "SimulateGATTDisconnectionParams",
+        ),
+        "SimulateGATTOperationResponseParams": (
+            ".commands",
+            "SimulateGATTOperationResponseParams",
+        ),
+        "SimulatePreconnectedPeripheralParams": (
+            ".commands",
+            "SimulatePreconnectedPeripheralParams",
+        ),
+    },
+)

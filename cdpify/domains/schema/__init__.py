@@ -4,9 +4,14 @@
 
 """CDP Schema Domain."""
 
-from .commands import GetDomainsResult, SchemaCommand
-from .domain import Schema
-from .types import Domain
+from typing import TYPE_CHECKING
+
+from cdpify.shared.lazy import lazy_exports
+
+if TYPE_CHECKING:
+    from .commands import GetDomainsResult, SchemaCommand
+    from .domain import Schema
+    from .types import Domain
 
 __all__ = [
     "Domain",
@@ -14,3 +19,13 @@ __all__ = [
     "Schema",
     "SchemaCommand",
 ]
+
+__getattr__, __dir__ = lazy_exports(
+    __name__,
+    {
+        "Domain": (".types", "Domain"),
+        "GetDomainsResult": (".commands", "GetDomainsResult"),
+        "Schema": (".domain", "Schema"),
+        "SchemaCommand": (".commands", "SchemaCommand"),
+    },
+)

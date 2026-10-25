@@ -4,18 +4,23 @@
 
 """CDP Autofill Domain."""
 
-from .commands import AutofillCommand, SetAddressesParams, TriggerParams
-from .domain import Autofill
-from .events import AddressFormFilledEvent, AutofillEvent
-from .types import (
-    Address,
-    AddressField,
-    AddressFields,
-    AddressUI,
-    CreditCard,
-    FilledField,
-    FillingStrategy,
-)
+from typing import TYPE_CHECKING
+
+from cdpify.shared.lazy import lazy_exports
+
+if TYPE_CHECKING:
+    from .commands import AutofillCommand, SetAddressesParams, TriggerParams
+    from .domain import Autofill
+    from .events import AddressFormFilledEvent, AutofillEvent
+    from .types import (
+        Address,
+        AddressField,
+        AddressFields,
+        AddressUI,
+        CreditCard,
+        FilledField,
+        FillingStrategy,
+    )
 
 __all__ = [
     "Address",
@@ -32,3 +37,22 @@ __all__ = [
     "SetAddressesParams",
     "TriggerParams",
 ]
+
+__getattr__, __dir__ = lazy_exports(
+    __name__,
+    {
+        "Address": (".types", "Address"),
+        "AddressField": (".types", "AddressField"),
+        "AddressFields": (".types", "AddressFields"),
+        "AddressFormFilledEvent": (".events", "AddressFormFilledEvent"),
+        "AddressUI": (".types", "AddressUI"),
+        "Autofill": (".domain", "Autofill"),
+        "AutofillCommand": (".commands", "AutofillCommand"),
+        "AutofillEvent": (".events", "AutofillEvent"),
+        "CreditCard": (".types", "CreditCard"),
+        "FilledField": (".types", "FilledField"),
+        "FillingStrategy": (".types", "FillingStrategy"),
+        "SetAddressesParams": (".commands", "SetAddressesParams"),
+        "TriggerParams": (".commands", "TriggerParams"),
+    },
+)

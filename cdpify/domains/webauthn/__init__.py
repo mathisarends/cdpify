@@ -4,40 +4,45 @@
 
 """CDP WebAuthn Domain."""
 
-from .commands import (
-    AddCredentialParams,
-    AddVirtualAuthenticatorParams,
-    AddVirtualAuthenticatorResult,
-    ClearCredentialsParams,
-    EnableParams,
-    GetCredentialParams,
-    GetCredentialResult,
-    GetCredentialsParams,
-    GetCredentialsResult,
-    RemoveCredentialParams,
-    RemoveVirtualAuthenticatorParams,
-    SetAutomaticPresenceSimulationParams,
-    SetCredentialPropertiesParams,
-    SetResponseOverrideBitsParams,
-    SetUserVerifiedParams,
-    WebAuthnCommand,
-)
-from .domain import WebAuthn
-from .events import (
-    CredentialAddedEvent,
-    CredentialAssertedEvent,
-    CredentialDeletedEvent,
-    CredentialUpdatedEvent,
-    WebAuthnEvent,
-)
-from .types import (
-    AuthenticatorId,
-    AuthenticatorProtocol,
-    AuthenticatorTransport,
-    Credential,
-    Ctap2Version,
-    VirtualAuthenticatorOptions,
-)
+from typing import TYPE_CHECKING
+
+from cdpify.shared.lazy import lazy_exports
+
+if TYPE_CHECKING:
+    from .commands import (
+        AddCredentialParams,
+        AddVirtualAuthenticatorParams,
+        AddVirtualAuthenticatorResult,
+        ClearCredentialsParams,
+        EnableParams,
+        GetCredentialParams,
+        GetCredentialResult,
+        GetCredentialsParams,
+        GetCredentialsResult,
+        RemoveCredentialParams,
+        RemoveVirtualAuthenticatorParams,
+        SetAutomaticPresenceSimulationParams,
+        SetCredentialPropertiesParams,
+        SetResponseOverrideBitsParams,
+        SetUserVerifiedParams,
+        WebAuthnCommand,
+    )
+    from .domain import WebAuthn
+    from .events import (
+        CredentialAddedEvent,
+        CredentialAssertedEvent,
+        CredentialDeletedEvent,
+        CredentialUpdatedEvent,
+        WebAuthnEvent,
+    )
+    from .types import (
+        AuthenticatorId,
+        AuthenticatorProtocol,
+        AuthenticatorTransport,
+        Credential,
+        Ctap2Version,
+        VirtualAuthenticatorOptions,
+    )
 
 __all__ = [
     "AddCredentialParams",
@@ -69,3 +74,43 @@ __all__ = [
     "WebAuthnCommand",
     "WebAuthnEvent",
 ]
+
+__getattr__, __dir__ = lazy_exports(
+    __name__,
+    {
+        "AddCredentialParams": (".commands", "AddCredentialParams"),
+        "AddVirtualAuthenticatorParams": (".commands", "AddVirtualAuthenticatorParams"),
+        "AddVirtualAuthenticatorResult": (".commands", "AddVirtualAuthenticatorResult"),
+        "AuthenticatorId": (".types", "AuthenticatorId"),
+        "AuthenticatorProtocol": (".types", "AuthenticatorProtocol"),
+        "AuthenticatorTransport": (".types", "AuthenticatorTransport"),
+        "ClearCredentialsParams": (".commands", "ClearCredentialsParams"),
+        "Credential": (".types", "Credential"),
+        "CredentialAddedEvent": (".events", "CredentialAddedEvent"),
+        "CredentialAssertedEvent": (".events", "CredentialAssertedEvent"),
+        "CredentialDeletedEvent": (".events", "CredentialDeletedEvent"),
+        "CredentialUpdatedEvent": (".events", "CredentialUpdatedEvent"),
+        "Ctap2Version": (".types", "Ctap2Version"),
+        "EnableParams": (".commands", "EnableParams"),
+        "GetCredentialParams": (".commands", "GetCredentialParams"),
+        "GetCredentialResult": (".commands", "GetCredentialResult"),
+        "GetCredentialsParams": (".commands", "GetCredentialsParams"),
+        "GetCredentialsResult": (".commands", "GetCredentialsResult"),
+        "RemoveCredentialParams": (".commands", "RemoveCredentialParams"),
+        "RemoveVirtualAuthenticatorParams": (
+            ".commands",
+            "RemoveVirtualAuthenticatorParams",
+        ),
+        "SetAutomaticPresenceSimulationParams": (
+            ".commands",
+            "SetAutomaticPresenceSimulationParams",
+        ),
+        "SetCredentialPropertiesParams": (".commands", "SetCredentialPropertiesParams"),
+        "SetResponseOverrideBitsParams": (".commands", "SetResponseOverrideBitsParams"),
+        "SetUserVerifiedParams": (".commands", "SetUserVerifiedParams"),
+        "VirtualAuthenticatorOptions": (".types", "VirtualAuthenticatorOptions"),
+        "WebAuthn": (".domain", "WebAuthn"),
+        "WebAuthnCommand": (".commands", "WebAuthnCommand"),
+        "WebAuthnEvent": (".events", "WebAuthnEvent"),
+    },
+)

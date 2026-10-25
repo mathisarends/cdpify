@@ -4,38 +4,43 @@
 
 """CDP ServiceWorker Domain."""
 
-from .commands import (
-    DeliverPushMessageParams,
-    DispatchPeriodicSyncEventParams,
-    DispatchSyncEventParams,
-    ServiceWorkerCommand,
-    SetForceUpdateOnPageLoadParams,
-    SkipWaitingParams,
-    StartWorkerParams,
-    StopWorkerParams,
-    UnregisterParams,
-    UpdateRegistrationParams,
-)
-from .domain import ServiceWorker
-from .events import (
-    ServiceWorkerEvent,
-    WorkerErrorReportedEvent,
-    WorkerRegistrationUpdatedEvent,
-    WorkerVersionUpdatedEvent,
-)
-from .types import (
-    RegistrationID,
-    ServiceWorkerErrorMessage,
-    ServiceWorkerRegistration,
-    ServiceWorkerRouterCondition,
-    ServiceWorkerRouterRule,
-    ServiceWorkerRouterSource,
-    ServiceWorkerRouterSourceDict,
-    ServiceWorkerRouterSourceType,
-    ServiceWorkerVersion,
-    ServiceWorkerVersionRunningStatus,
-    ServiceWorkerVersionStatus,
-)
+from typing import TYPE_CHECKING
+
+from cdpify.shared.lazy import lazy_exports
+
+if TYPE_CHECKING:
+    from .commands import (
+        DeliverPushMessageParams,
+        DispatchPeriodicSyncEventParams,
+        DispatchSyncEventParams,
+        ServiceWorkerCommand,
+        SetForceUpdateOnPageLoadParams,
+        SkipWaitingParams,
+        StartWorkerParams,
+        StopWorkerParams,
+        UnregisterParams,
+        UpdateRegistrationParams,
+    )
+    from .domain import ServiceWorker
+    from .events import (
+        ServiceWorkerEvent,
+        WorkerErrorReportedEvent,
+        WorkerRegistrationUpdatedEvent,
+        WorkerVersionUpdatedEvent,
+    )
+    from .types import (
+        RegistrationID,
+        ServiceWorkerErrorMessage,
+        ServiceWorkerRegistration,
+        ServiceWorkerRouterCondition,
+        ServiceWorkerRouterRule,
+        ServiceWorkerRouterSource,
+        ServiceWorkerRouterSourceDict,
+        ServiceWorkerRouterSourceType,
+        ServiceWorkerVersion,
+        ServiceWorkerVersionRunningStatus,
+        ServiceWorkerVersionStatus,
+    )
 
 __all__ = [
     "DeliverPushMessageParams",
@@ -65,3 +70,44 @@ __all__ = [
     "WorkerRegistrationUpdatedEvent",
     "WorkerVersionUpdatedEvent",
 ]
+
+__getattr__, __dir__ = lazy_exports(
+    __name__,
+    {
+        "DeliverPushMessageParams": (".commands", "DeliverPushMessageParams"),
+        "DispatchPeriodicSyncEventParams": (
+            ".commands",
+            "DispatchPeriodicSyncEventParams",
+        ),
+        "DispatchSyncEventParams": (".commands", "DispatchSyncEventParams"),
+        "RegistrationID": (".types", "RegistrationID"),
+        "ServiceWorker": (".domain", "ServiceWorker"),
+        "ServiceWorkerCommand": (".commands", "ServiceWorkerCommand"),
+        "ServiceWorkerErrorMessage": (".types", "ServiceWorkerErrorMessage"),
+        "ServiceWorkerEvent": (".events", "ServiceWorkerEvent"),
+        "ServiceWorkerRegistration": (".types", "ServiceWorkerRegistration"),
+        "ServiceWorkerRouterCondition": (".types", "ServiceWorkerRouterCondition"),
+        "ServiceWorkerRouterRule": (".types", "ServiceWorkerRouterRule"),
+        "ServiceWorkerRouterSource": (".types", "ServiceWorkerRouterSource"),
+        "ServiceWorkerRouterSourceDict": (".types", "ServiceWorkerRouterSourceDict"),
+        "ServiceWorkerRouterSourceType": (".types", "ServiceWorkerRouterSourceType"),
+        "ServiceWorkerVersion": (".types", "ServiceWorkerVersion"),
+        "ServiceWorkerVersionRunningStatus": (
+            ".types",
+            "ServiceWorkerVersionRunningStatus",
+        ),
+        "ServiceWorkerVersionStatus": (".types", "ServiceWorkerVersionStatus"),
+        "SetForceUpdateOnPageLoadParams": (
+            ".commands",
+            "SetForceUpdateOnPageLoadParams",
+        ),
+        "SkipWaitingParams": (".commands", "SkipWaitingParams"),
+        "StartWorkerParams": (".commands", "StartWorkerParams"),
+        "StopWorkerParams": (".commands", "StopWorkerParams"),
+        "UnregisterParams": (".commands", "UnregisterParams"),
+        "UpdateRegistrationParams": (".commands", "UpdateRegistrationParams"),
+        "WorkerErrorReportedEvent": (".events", "WorkerErrorReportedEvent"),
+        "WorkerRegistrationUpdatedEvent": (".events", "WorkerRegistrationUpdatedEvent"),
+        "WorkerVersionUpdatedEvent": (".events", "WorkerVersionUpdatedEvent"),
+    },
+)

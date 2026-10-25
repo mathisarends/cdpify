@@ -4,9 +4,14 @@
 
 """CDP Tethering Domain."""
 
-from .commands import BindParams, TetheringCommand, UnbindParams
-from .domain import Tethering
-from .events import AcceptedEvent, TetheringEvent
+from typing import TYPE_CHECKING
+
+from cdpify.shared.lazy import lazy_exports
+
+if TYPE_CHECKING:
+    from .commands import BindParams, TetheringCommand, UnbindParams
+    from .domain import Tethering
+    from .events import AcceptedEvent, TetheringEvent
 
 __all__ = [
     "AcceptedEvent",
@@ -16,3 +21,15 @@ __all__ = [
     "TetheringEvent",
     "UnbindParams",
 ]
+
+__getattr__, __dir__ = lazy_exports(
+    __name__,
+    {
+        "AcceptedEvent": (".events", "AcceptedEvent"),
+        "BindParams": (".commands", "BindParams"),
+        "Tethering": (".domain", "Tethering"),
+        "TetheringCommand": (".commands", "TetheringCommand"),
+        "TetheringEvent": (".events", "TetheringEvent"),
+        "UnbindParams": (".commands", "UnbindParams"),
+    },
+)

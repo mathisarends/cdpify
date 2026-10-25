@@ -4,26 +4,31 @@
 
 """CDP CacheStorage Domain."""
 
-from .commands import (
-    CacheStorageCommand,
-    DeleteCacheParams,
-    DeleteEntryParams,
-    RequestCachedResponseParams,
-    RequestCachedResponseResult,
-    RequestCacheNamesParams,
-    RequestCacheNamesResult,
-    RequestEntriesParams,
-    RequestEntriesResult,
-)
-from .domain import CacheStorage
-from .types import (
-    Cache,
-    CachedResponse,
-    CachedResponseType,
-    CacheId,
-    DataEntry,
-    Header,
-)
+from typing import TYPE_CHECKING
+
+from cdpify.shared.lazy import lazy_exports
+
+if TYPE_CHECKING:
+    from .commands import (
+        CacheStorageCommand,
+        DeleteCacheParams,
+        DeleteEntryParams,
+        RequestCachedResponseParams,
+        RequestCachedResponseResult,
+        RequestCacheNamesParams,
+        RequestCacheNamesResult,
+        RequestEntriesParams,
+        RequestEntriesResult,
+    )
+    from .domain import CacheStorage
+    from .types import (
+        Cache,
+        CachedResponse,
+        CachedResponseType,
+        CacheId,
+        DataEntry,
+        Header,
+    )
 
 __all__ = [
     "Cache",
@@ -43,3 +48,25 @@ __all__ = [
     "RequestEntriesParams",
     "RequestEntriesResult",
 ]
+
+__getattr__, __dir__ = lazy_exports(
+    __name__,
+    {
+        "Cache": (".types", "Cache"),
+        "CacheId": (".types", "CacheId"),
+        "CacheStorage": (".domain", "CacheStorage"),
+        "CacheStorageCommand": (".commands", "CacheStorageCommand"),
+        "CachedResponse": (".types", "CachedResponse"),
+        "CachedResponseType": (".types", "CachedResponseType"),
+        "DataEntry": (".types", "DataEntry"),
+        "DeleteCacheParams": (".commands", "DeleteCacheParams"),
+        "DeleteEntryParams": (".commands", "DeleteEntryParams"),
+        "Header": (".types", "Header"),
+        "RequestCacheNamesParams": (".commands", "RequestCacheNamesParams"),
+        "RequestCacheNamesResult": (".commands", "RequestCacheNamesResult"),
+        "RequestCachedResponseParams": (".commands", "RequestCachedResponseParams"),
+        "RequestCachedResponseResult": (".commands", "RequestCachedResponseResult"),
+        "RequestEntriesParams": (".commands", "RequestEntriesParams"),
+        "RequestEntriesResult": (".commands", "RequestEntriesResult"),
+    },
+)

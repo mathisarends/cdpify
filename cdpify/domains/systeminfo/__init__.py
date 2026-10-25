@@ -4,24 +4,29 @@
 
 """CDP SystemInfo Domain."""
 
-from .commands import (
-    GetFeatureStateParams,
-    GetFeatureStateResult,
-    GetInfoResult,
-    GetProcessInfoResult,
-    SystemInfoCommand,
-)
-from .domain import SystemInfo
-from .types import (
-    GPUDevice,
-    GPUInfo,
-    ImageType,
-    ProcessInfo,
-    Size,
-    SubsamplingFormat,
-    VideoDecodeAcceleratorCapability,
-    VideoEncodeAcceleratorCapability,
-)
+from typing import TYPE_CHECKING
+
+from cdpify.shared.lazy import lazy_exports
+
+if TYPE_CHECKING:
+    from .commands import (
+        GetFeatureStateParams,
+        GetFeatureStateResult,
+        GetInfoResult,
+        GetProcessInfoResult,
+        SystemInfoCommand,
+    )
+    from .domain import SystemInfo
+    from .types import (
+        GPUDevice,
+        GPUInfo,
+        ImageType,
+        ProcessInfo,
+        Size,
+        SubsamplingFormat,
+        VideoDecodeAcceleratorCapability,
+        VideoEncodeAcceleratorCapability,
+    )
 
 __all__ = [
     "GPUDevice",
@@ -39,3 +44,29 @@ __all__ = [
     "VideoDecodeAcceleratorCapability",
     "VideoEncodeAcceleratorCapability",
 ]
+
+__getattr__, __dir__ = lazy_exports(
+    __name__,
+    {
+        "GPUDevice": (".types", "GPUDevice"),
+        "GPUInfo": (".types", "GPUInfo"),
+        "GetFeatureStateParams": (".commands", "GetFeatureStateParams"),
+        "GetFeatureStateResult": (".commands", "GetFeatureStateResult"),
+        "GetInfoResult": (".commands", "GetInfoResult"),
+        "GetProcessInfoResult": (".commands", "GetProcessInfoResult"),
+        "ImageType": (".types", "ImageType"),
+        "ProcessInfo": (".types", "ProcessInfo"),
+        "Size": (".types", "Size"),
+        "SubsamplingFormat": (".types", "SubsamplingFormat"),
+        "SystemInfo": (".domain", "SystemInfo"),
+        "SystemInfoCommand": (".commands", "SystemInfoCommand"),
+        "VideoDecodeAcceleratorCapability": (
+            ".types",
+            "VideoDecodeAcceleratorCapability",
+        ),
+        "VideoEncodeAcceleratorCapability": (
+            ".types",
+            "VideoEncodeAcceleratorCapability",
+        ),
+    },
+)

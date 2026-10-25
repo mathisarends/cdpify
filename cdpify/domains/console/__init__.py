@@ -4,10 +4,15 @@
 
 """CDP Console Domain."""
 
-from .commands import ConsoleCommand
-from .domain import Console
-from .events import ConsoleEvent, MessageAddedEvent
-from .types import ConsoleMessage
+from typing import TYPE_CHECKING
+
+from cdpify.shared.lazy import lazy_exports
+
+if TYPE_CHECKING:
+    from .commands import ConsoleCommand
+    from .domain import Console
+    from .events import ConsoleEvent, MessageAddedEvent
+    from .types import ConsoleMessage
 
 __all__ = [
     "Console",
@@ -16,3 +21,14 @@ __all__ = [
     "ConsoleMessage",
     "MessageAddedEvent",
 ]
+
+__getattr__, __dir__ = lazy_exports(
+    __name__,
+    {
+        "Console": (".domain", "Console"),
+        "ConsoleCommand": (".commands", "ConsoleCommand"),
+        "ConsoleEvent": (".events", "ConsoleEvent"),
+        "ConsoleMessage": (".types", "ConsoleMessage"),
+        "MessageAddedEvent": (".events", "MessageAddedEvent"),
+    },
+)

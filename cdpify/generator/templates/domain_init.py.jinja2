@@ -1,22 +1,35 @@
 {% macro render_import(block) %}
 {% if block.names | length <= 3 %}
-from .{{ block.module }} import {{ block.names | join(", ") }}
+    from .{{ block.module }} import {{ block.names | join(", ") }}
 {% else %}
-from .{{ block.module }} import (
-    {{ block.names | join(",\n    ") }},
-)
+    from .{{ block.module }} import (
+        {{ block.names | join(",\n        ") }},
+    )
 {% endif %}
 {% endmacro %}
 {{ header }}
 
 """CDP {{ domain_name }} Domain."""
+
+from typing import TYPE_CHECKING
+
+from cdpify.shared.lazy import lazy_exports
+
+if TYPE_CHECKING:
 {% for block in import_blocks %}
-
-{{ render_import(block) | trim }}
+{{ render_import(block) | trim("\n") }}
 {% endfor %}
-
-from .domain import {{ domain_class }}
+    from .domain import {{ domain_class }}
 
 __all__ = [
     "{{ exports | join('",\n    "') }}",
 ]
+
+__getattr__, __dir__ = lazy_exports(
+    __name__,
+    {
+{% for export in lazy_exports %}
+        "{{ export.name }}": (".{{ export.module }}", "{{ export.attribute }}"),
+{% endfor %}
+    },
+)

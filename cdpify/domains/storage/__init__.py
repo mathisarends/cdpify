@@ -4,57 +4,62 @@
 
 """CDP Storage Domain."""
 
-from .commands import (
-    ClearCookiesParams,
-    ClearDataForOriginParams,
-    ClearDataForStorageKeyParams,
-    ClearTrustTokensParams,
-    ClearTrustTokensResult,
-    DeleteStorageBucketParams,
-    GetCookiesParams,
-    GetCookiesResult,
-    GetRelatedWebsiteSetsResult,
-    GetStorageKeyForFrameParams,
-    GetStorageKeyForFrameResult,
-    GetStorageKeyParams,
-    GetStorageKeyResult,
-    GetTrustTokensResult,
-    GetUsageAndQuotaParams,
-    GetUsageAndQuotaResult,
-    OverrideQuotaForOriginParams,
-    RunBounceTrackingMitigationsResult,
-    SetCookiesParams,
-    SetStorageBucketTrackingParams,
-    StorageCommand,
-    TrackCacheStorageForOriginParams,
-    TrackCacheStorageForStorageKeyParams,
-    TrackIndexedDBForOriginParams,
-    TrackIndexedDBForStorageKeyParams,
-    UntrackCacheStorageForOriginParams,
-    UntrackCacheStorageForStorageKeyParams,
-    UntrackIndexedDBForOriginParams,
-    UntrackIndexedDBForStorageKeyParams,
-)
-from .domain import Storage
-from .events import (
-    CacheStorageContentUpdatedEvent,
-    CacheStorageListUpdatedEvent,
-    IndexedDBContentUpdatedEvent,
-    IndexedDBListUpdatedEvent,
-    StorageBucketCreatedOrUpdatedEvent,
-    StorageBucketDeletedEvent,
-    StorageEvent,
-)
-from .types import (
-    RelatedWebsiteSet,
-    SerializedStorageKey,
-    StorageBucket,
-    StorageBucketInfo,
-    StorageBucketsDurability,
-    StorageType,
-    TrustTokens,
-    UsageForType,
-)
+from typing import TYPE_CHECKING
+
+from cdpify.shared.lazy import lazy_exports
+
+if TYPE_CHECKING:
+    from .commands import (
+        ClearCookiesParams,
+        ClearDataForOriginParams,
+        ClearDataForStorageKeyParams,
+        ClearTrustTokensParams,
+        ClearTrustTokensResult,
+        DeleteStorageBucketParams,
+        GetCookiesParams,
+        GetCookiesResult,
+        GetRelatedWebsiteSetsResult,
+        GetStorageKeyForFrameParams,
+        GetStorageKeyForFrameResult,
+        GetStorageKeyParams,
+        GetStorageKeyResult,
+        GetTrustTokensResult,
+        GetUsageAndQuotaParams,
+        GetUsageAndQuotaResult,
+        OverrideQuotaForOriginParams,
+        RunBounceTrackingMitigationsResult,
+        SetCookiesParams,
+        SetStorageBucketTrackingParams,
+        StorageCommand,
+        TrackCacheStorageForOriginParams,
+        TrackCacheStorageForStorageKeyParams,
+        TrackIndexedDBForOriginParams,
+        TrackIndexedDBForStorageKeyParams,
+        UntrackCacheStorageForOriginParams,
+        UntrackCacheStorageForStorageKeyParams,
+        UntrackIndexedDBForOriginParams,
+        UntrackIndexedDBForStorageKeyParams,
+    )
+    from .domain import Storage
+    from .events import (
+        CacheStorageContentUpdatedEvent,
+        CacheStorageListUpdatedEvent,
+        IndexedDBContentUpdatedEvent,
+        IndexedDBListUpdatedEvent,
+        StorageBucketCreatedOrUpdatedEvent,
+        StorageBucketDeletedEvent,
+        StorageEvent,
+    )
+    from .types import (
+        RelatedWebsiteSet,
+        SerializedStorageKey,
+        StorageBucket,
+        StorageBucketInfo,
+        StorageBucketsDurability,
+        StorageType,
+        TrustTokens,
+        UsageForType,
+    )
 
 __all__ = [
     "CacheStorageContentUpdatedEvent",
@@ -103,3 +108,87 @@ __all__ = [
     "UntrackIndexedDBForStorageKeyParams",
     "UsageForType",
 ]
+
+__getattr__, __dir__ = lazy_exports(
+    __name__,
+    {
+        "CacheStorageContentUpdatedEvent": (
+            ".events",
+            "CacheStorageContentUpdatedEvent",
+        ),
+        "CacheStorageListUpdatedEvent": (".events", "CacheStorageListUpdatedEvent"),
+        "ClearCookiesParams": (".commands", "ClearCookiesParams"),
+        "ClearDataForOriginParams": (".commands", "ClearDataForOriginParams"),
+        "ClearDataForStorageKeyParams": (".commands", "ClearDataForStorageKeyParams"),
+        "ClearTrustTokensParams": (".commands", "ClearTrustTokensParams"),
+        "ClearTrustTokensResult": (".commands", "ClearTrustTokensResult"),
+        "DeleteStorageBucketParams": (".commands", "DeleteStorageBucketParams"),
+        "GetCookiesParams": (".commands", "GetCookiesParams"),
+        "GetCookiesResult": (".commands", "GetCookiesResult"),
+        "GetRelatedWebsiteSetsResult": (".commands", "GetRelatedWebsiteSetsResult"),
+        "GetStorageKeyForFrameParams": (".commands", "GetStorageKeyForFrameParams"),
+        "GetStorageKeyForFrameResult": (".commands", "GetStorageKeyForFrameResult"),
+        "GetStorageKeyParams": (".commands", "GetStorageKeyParams"),
+        "GetStorageKeyResult": (".commands", "GetStorageKeyResult"),
+        "GetTrustTokensResult": (".commands", "GetTrustTokensResult"),
+        "GetUsageAndQuotaParams": (".commands", "GetUsageAndQuotaParams"),
+        "GetUsageAndQuotaResult": (".commands", "GetUsageAndQuotaResult"),
+        "IndexedDBContentUpdatedEvent": (".events", "IndexedDBContentUpdatedEvent"),
+        "IndexedDBListUpdatedEvent": (".events", "IndexedDBListUpdatedEvent"),
+        "OverrideQuotaForOriginParams": (".commands", "OverrideQuotaForOriginParams"),
+        "RelatedWebsiteSet": (".types", "RelatedWebsiteSet"),
+        "RunBounceTrackingMitigationsResult": (
+            ".commands",
+            "RunBounceTrackingMitigationsResult",
+        ),
+        "SerializedStorageKey": (".types", "SerializedStorageKey"),
+        "SetCookiesParams": (".commands", "SetCookiesParams"),
+        "SetStorageBucketTrackingParams": (
+            ".commands",
+            "SetStorageBucketTrackingParams",
+        ),
+        "Storage": (".domain", "Storage"),
+        "StorageBucket": (".types", "StorageBucket"),
+        "StorageBucketCreatedOrUpdatedEvent": (
+            ".events",
+            "StorageBucketCreatedOrUpdatedEvent",
+        ),
+        "StorageBucketDeletedEvent": (".events", "StorageBucketDeletedEvent"),
+        "StorageBucketInfo": (".types", "StorageBucketInfo"),
+        "StorageBucketsDurability": (".types", "StorageBucketsDurability"),
+        "StorageCommand": (".commands", "StorageCommand"),
+        "StorageEvent": (".events", "StorageEvent"),
+        "StorageType": (".types", "StorageType"),
+        "TrackCacheStorageForOriginParams": (
+            ".commands",
+            "TrackCacheStorageForOriginParams",
+        ),
+        "TrackCacheStorageForStorageKeyParams": (
+            ".commands",
+            "TrackCacheStorageForStorageKeyParams",
+        ),
+        "TrackIndexedDBForOriginParams": (".commands", "TrackIndexedDBForOriginParams"),
+        "TrackIndexedDBForStorageKeyParams": (
+            ".commands",
+            "TrackIndexedDBForStorageKeyParams",
+        ),
+        "TrustTokens": (".types", "TrustTokens"),
+        "UntrackCacheStorageForOriginParams": (
+            ".commands",
+            "UntrackCacheStorageForOriginParams",
+        ),
+        "UntrackCacheStorageForStorageKeyParams": (
+            ".commands",
+            "UntrackCacheStorageForStorageKeyParams",
+        ),
+        "UntrackIndexedDBForOriginParams": (
+            ".commands",
+            "UntrackIndexedDBForOriginParams",
+        ),
+        "UntrackIndexedDBForStorageKeyParams": (
+            ".commands",
+            "UntrackIndexedDBForStorageKeyParams",
+        ),
+        "UsageForType": (".types", "UsageForType"),
+    },
+)

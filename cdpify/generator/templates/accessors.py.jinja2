@@ -1,17 +1,30 @@
 {{ header }}
 
-from functools import cached_property
+from __future__ import annotations
 
-from cdpify.executor import CommandExecutor
-{{ domains | map(attribute="import_statement") | join("\n") }}
+from functools import cached_property
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from cdpify.executor import CommandExecutor
+{% for domain in domains %}
+    {{ domain.import_statement }}
+{% endfor %}
+
 
 class DomainAccessors:
-    """Generated domain API mixed into executor-backed objects."""
+    """Generated domain API mixed into executor-backed objects.
+
+    Each domain module is imported on first access to keep ``import cdpify``
+    fast; the resulting domain object is cached per instance.
+    """
 
     _executor: CommandExecutor
 {% for domain in domains %}
 
     @cached_property
     def {{ domain.property_name }}(self) -> {{ domain.name }}:
+        {{ domain.import_statement }}
+
         return {{ domain.name }}(self._executor)
 {% endfor %}

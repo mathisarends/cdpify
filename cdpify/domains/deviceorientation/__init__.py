@@ -4,11 +4,28 @@
 
 """CDP DeviceOrientation Domain."""
 
-from .commands import DeviceOrientationCommand, SetDeviceOrientationOverrideParams
-from .domain import DeviceOrientation
+from typing import TYPE_CHECKING
+
+from cdpify.shared.lazy import lazy_exports
+
+if TYPE_CHECKING:
+    from .commands import DeviceOrientationCommand, SetDeviceOrientationOverrideParams
+    from .domain import DeviceOrientation
 
 __all__ = [
     "DeviceOrientation",
     "DeviceOrientationCommand",
     "SetDeviceOrientationOverrideParams",
 ]
+
+__getattr__, __dir__ = lazy_exports(
+    __name__,
+    {
+        "DeviceOrientation": (".domain", "DeviceOrientation"),
+        "DeviceOrientationCommand": (".commands", "DeviceOrientationCommand"),
+        "SetDeviceOrientationOverrideParams": (
+            ".commands",
+            "SetDeviceOrientationOverrideParams",
+        ),
+    },
+)

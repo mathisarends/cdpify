@@ -4,21 +4,26 @@
 
 """CDP Extensions Domain."""
 
-from .commands import (
-    ClearStorageItemsParams,
-    ExtensionsCommand,
-    GetExtensionsResult,
-    GetStorageItemsParams,
-    GetStorageItemsResult,
-    LoadUnpackedParams,
-    LoadUnpackedResult,
-    RemoveStorageItemsParams,
-    SetStorageItemsParams,
-    TriggerActionParams,
-    UninstallParams,
-)
-from .domain import Extensions
-from .types import ExtensionInfo, StorageArea
+from typing import TYPE_CHECKING
+
+from cdpify.shared.lazy import lazy_exports
+
+if TYPE_CHECKING:
+    from .commands import (
+        ClearStorageItemsParams,
+        ExtensionsCommand,
+        GetExtensionsResult,
+        GetStorageItemsParams,
+        GetStorageItemsResult,
+        LoadUnpackedParams,
+        LoadUnpackedResult,
+        RemoveStorageItemsParams,
+        SetStorageItemsParams,
+        TriggerActionParams,
+        UninstallParams,
+    )
+    from .domain import Extensions
+    from .types import ExtensionInfo, StorageArea
 
 __all__ = [
     "ClearStorageItemsParams",
@@ -36,3 +41,23 @@ __all__ = [
     "TriggerActionParams",
     "UninstallParams",
 ]
+
+__getattr__, __dir__ = lazy_exports(
+    __name__,
+    {
+        "ClearStorageItemsParams": (".commands", "ClearStorageItemsParams"),
+        "ExtensionInfo": (".types", "ExtensionInfo"),
+        "Extensions": (".domain", "Extensions"),
+        "ExtensionsCommand": (".commands", "ExtensionsCommand"),
+        "GetExtensionsResult": (".commands", "GetExtensionsResult"),
+        "GetStorageItemsParams": (".commands", "GetStorageItemsParams"),
+        "GetStorageItemsResult": (".commands", "GetStorageItemsResult"),
+        "LoadUnpackedParams": (".commands", "LoadUnpackedParams"),
+        "LoadUnpackedResult": (".commands", "LoadUnpackedResult"),
+        "RemoveStorageItemsParams": (".commands", "RemoveStorageItemsParams"),
+        "SetStorageItemsParams": (".commands", "SetStorageItemsParams"),
+        "StorageArea": (".types", "StorageArea"),
+        "TriggerActionParams": (".commands", "TriggerActionParams"),
+        "UninstallParams": (".commands", "UninstallParams"),
+    },
+)

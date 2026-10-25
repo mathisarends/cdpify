@@ -4,22 +4,27 @@
 
 """CDP BackgroundService Domain."""
 
-from .commands import (
-    BackgroundServiceCommand,
-    ClearEventsParams,
-    SetRecordingParams,
-    StartObservingParams,
-    StopObservingParams,
-)
-from .domain import BackgroundService
-from .events import (
-    BackgroundServiceEvent as BackgroundServiceEventName,
-)
-from .events import (
-    BackgroundServiceEventReceivedEvent,
-    RecordingStateChangedEvent,
-)
-from .types import BackgroundServiceEvent, EventMetadata, ServiceName
+from typing import TYPE_CHECKING
+
+from cdpify.shared.lazy import lazy_exports
+
+if TYPE_CHECKING:
+    from .commands import (
+        BackgroundServiceCommand,
+        ClearEventsParams,
+        SetRecordingParams,
+        StartObservingParams,
+        StopObservingParams,
+    )
+    from .domain import BackgroundService
+    from .events import (
+        BackgroundServiceEvent as BackgroundServiceEventName,
+    )
+    from .events import (
+        BackgroundServiceEventReceivedEvent,
+        RecordingStateChangedEvent,
+    )
+    from .types import BackgroundServiceEvent, EventMetadata, ServiceName
 
 __all__ = [
     "BackgroundService",
@@ -35,3 +40,24 @@ __all__ = [
     "StartObservingParams",
     "StopObservingParams",
 ]
+
+__getattr__, __dir__ = lazy_exports(
+    __name__,
+    {
+        "BackgroundService": (".domain", "BackgroundService"),
+        "BackgroundServiceCommand": (".commands", "BackgroundServiceCommand"),
+        "BackgroundServiceEvent": (".types", "BackgroundServiceEvent"),
+        "BackgroundServiceEventName": (".events", "BackgroundServiceEvent"),
+        "BackgroundServiceEventReceivedEvent": (
+            ".events",
+            "BackgroundServiceEventReceivedEvent",
+        ),
+        "ClearEventsParams": (".commands", "ClearEventsParams"),
+        "EventMetadata": (".types", "EventMetadata"),
+        "RecordingStateChangedEvent": (".events", "RecordingStateChangedEvent"),
+        "ServiceName": (".types", "ServiceName"),
+        "SetRecordingParams": (".commands", "SetRecordingParams"),
+        "StartObservingParams": (".commands", "StartObservingParams"),
+        "StopObservingParams": (".commands", "StopObservingParams"),
+    },
+)

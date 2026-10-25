@@ -4,30 +4,35 @@
 
 """CDP Tracing Domain."""
 
-from .commands import (
-    GetCategoriesResult,
-    GetTrackEventDescriptorResult,
-    RecordClockSyncMarkerParams,
-    RequestMemoryDumpParams,
-    RequestMemoryDumpResult,
-    StartParams,
-    TracingCommand,
-)
-from .domain import Tracing
-from .events import (
-    BufferUsageEvent,
-    DataCollectedEvent,
-    TracingCompleteEvent,
-    TracingEvent,
-)
-from .types import (
-    MemoryDumpConfig,
-    MemoryDumpLevelOfDetail,
-    StreamCompression,
-    StreamFormat,
-    TraceConfig,
-    TracingBackend,
-)
+from typing import TYPE_CHECKING
+
+from cdpify.shared.lazy import lazy_exports
+
+if TYPE_CHECKING:
+    from .commands import (
+        GetCategoriesResult,
+        GetTrackEventDescriptorResult,
+        RecordClockSyncMarkerParams,
+        RequestMemoryDumpParams,
+        RequestMemoryDumpResult,
+        StartParams,
+        TracingCommand,
+    )
+    from .domain import Tracing
+    from .events import (
+        BufferUsageEvent,
+        DataCollectedEvent,
+        TracingCompleteEvent,
+        TracingEvent,
+    )
+    from .types import (
+        MemoryDumpConfig,
+        MemoryDumpLevelOfDetail,
+        StreamCompression,
+        StreamFormat,
+        TraceConfig,
+        TracingBackend,
+    )
 
 __all__ = [
     "BufferUsageEvent",
@@ -49,3 +54,27 @@ __all__ = [
     "TracingCompleteEvent",
     "TracingEvent",
 ]
+
+__getattr__, __dir__ = lazy_exports(
+    __name__,
+    {
+        "BufferUsageEvent": (".events", "BufferUsageEvent"),
+        "DataCollectedEvent": (".events", "DataCollectedEvent"),
+        "GetCategoriesResult": (".commands", "GetCategoriesResult"),
+        "GetTrackEventDescriptorResult": (".commands", "GetTrackEventDescriptorResult"),
+        "MemoryDumpConfig": (".types", "MemoryDumpConfig"),
+        "MemoryDumpLevelOfDetail": (".types", "MemoryDumpLevelOfDetail"),
+        "RecordClockSyncMarkerParams": (".commands", "RecordClockSyncMarkerParams"),
+        "RequestMemoryDumpParams": (".commands", "RequestMemoryDumpParams"),
+        "RequestMemoryDumpResult": (".commands", "RequestMemoryDumpResult"),
+        "StartParams": (".commands", "StartParams"),
+        "StreamCompression": (".types", "StreamCompression"),
+        "StreamFormat": (".types", "StreamFormat"),
+        "TraceConfig": (".types", "TraceConfig"),
+        "Tracing": (".domain", "Tracing"),
+        "TracingBackend": (".types", "TracingBackend"),
+        "TracingCommand": (".commands", "TracingCommand"),
+        "TracingCompleteEvent": (".events", "TracingCompleteEvent"),
+        "TracingEvent": (".events", "TracingEvent"),
+    },
+)

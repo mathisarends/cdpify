@@ -4,22 +4,27 @@
 
 """CDP DOMDebugger Domain."""
 
-from .commands import (
-    DOMDebuggerCommand,
-    GetEventListenersParams,
-    GetEventListenersResult,
-    RemoveDOMBreakpointParams,
-    RemoveEventListenerBreakpointParams,
-    RemoveInstrumentationBreakpointParams,
-    RemoveXHRBreakpointParams,
-    SetBreakOnCSPViolationParams,
-    SetDOMBreakpointParams,
-    SetEventListenerBreakpointParams,
-    SetInstrumentationBreakpointParams,
-    SetXHRBreakpointParams,
-)
-from .domain import DOMDebugger
-from .types import CSPViolationType, DOMBreakpointType, EventListener
+from typing import TYPE_CHECKING
+
+from cdpify.shared.lazy import lazy_exports
+
+if TYPE_CHECKING:
+    from .commands import (
+        DOMDebuggerCommand,
+        GetEventListenersParams,
+        GetEventListenersResult,
+        RemoveDOMBreakpointParams,
+        RemoveEventListenerBreakpointParams,
+        RemoveInstrumentationBreakpointParams,
+        RemoveXHRBreakpointParams,
+        SetBreakOnCSPViolationParams,
+        SetDOMBreakpointParams,
+        SetEventListenerBreakpointParams,
+        SetInstrumentationBreakpointParams,
+        SetXHRBreakpointParams,
+    )
+    from .domain import DOMDebugger
+    from .types import CSPViolationType, DOMBreakpointType, EventListener
 
 __all__ = [
     "CSPViolationType",
@@ -39,3 +44,37 @@ __all__ = [
     "SetInstrumentationBreakpointParams",
     "SetXHRBreakpointParams",
 ]
+
+__getattr__, __dir__ = lazy_exports(
+    __name__,
+    {
+        "CSPViolationType": (".types", "CSPViolationType"),
+        "DOMBreakpointType": (".types", "DOMBreakpointType"),
+        "DOMDebugger": (".domain", "DOMDebugger"),
+        "DOMDebuggerCommand": (".commands", "DOMDebuggerCommand"),
+        "EventListener": (".types", "EventListener"),
+        "GetEventListenersParams": (".commands", "GetEventListenersParams"),
+        "GetEventListenersResult": (".commands", "GetEventListenersResult"),
+        "RemoveDOMBreakpointParams": (".commands", "RemoveDOMBreakpointParams"),
+        "RemoveEventListenerBreakpointParams": (
+            ".commands",
+            "RemoveEventListenerBreakpointParams",
+        ),
+        "RemoveInstrumentationBreakpointParams": (
+            ".commands",
+            "RemoveInstrumentationBreakpointParams",
+        ),
+        "RemoveXHRBreakpointParams": (".commands", "RemoveXHRBreakpointParams"),
+        "SetBreakOnCSPViolationParams": (".commands", "SetBreakOnCSPViolationParams"),
+        "SetDOMBreakpointParams": (".commands", "SetDOMBreakpointParams"),
+        "SetEventListenerBreakpointParams": (
+            ".commands",
+            "SetEventListenerBreakpointParams",
+        ),
+        "SetInstrumentationBreakpointParams": (
+            ".commands",
+            "SetInstrumentationBreakpointParams",
+        ),
+        "SetXHRBreakpointParams": (".commands", "SetXHRBreakpointParams"),
+    },
+)

@@ -4,35 +4,40 @@
 
 """CDP Accessibility Domain."""
 
-from .commands import (
-    AccessibilityCommand,
-    GetAXNodeAndAncestorsParams,
-    GetAXNodeAndAncestorsResult,
-    GetChildAXNodesParams,
-    GetChildAXNodesResult,
-    GetFullAXTreeParams,
-    GetFullAXTreeResult,
-    GetPartialAXTreeParams,
-    GetPartialAXTreeResult,
-    GetRootAXNodeParams,
-    GetRootAXNodeResult,
-    QueryAXTreeParams,
-    QueryAXTreeResult,
-)
-from .domain import Accessibility
-from .events import AccessibilityEvent, LoadCompleteEvent, NodesUpdatedEvent
-from .types import (
-    AXNode,
-    AXNodeId,
-    AXProperty,
-    AXPropertyName,
-    AXRelatedNode,
-    AXValue,
-    AXValueNativeSourceType,
-    AXValueSource,
-    AXValueSourceType,
-    AXValueType,
-)
+from typing import TYPE_CHECKING
+
+from cdpify.shared.lazy import lazy_exports
+
+if TYPE_CHECKING:
+    from .commands import (
+        AccessibilityCommand,
+        GetAXNodeAndAncestorsParams,
+        GetAXNodeAndAncestorsResult,
+        GetChildAXNodesParams,
+        GetChildAXNodesResult,
+        GetFullAXTreeParams,
+        GetFullAXTreeResult,
+        GetPartialAXTreeParams,
+        GetPartialAXTreeResult,
+        GetRootAXNodeParams,
+        GetRootAXNodeResult,
+        QueryAXTreeParams,
+        QueryAXTreeResult,
+    )
+    from .domain import Accessibility
+    from .events import AccessibilityEvent, LoadCompleteEvent, NodesUpdatedEvent
+    from .types import (
+        AXNode,
+        AXNodeId,
+        AXProperty,
+        AXPropertyName,
+        AXRelatedNode,
+        AXValue,
+        AXValueNativeSourceType,
+        AXValueSource,
+        AXValueSourceType,
+        AXValueType,
+    )
 
 __all__ = [
     "AXNode",
@@ -63,3 +68,36 @@ __all__ = [
     "QueryAXTreeParams",
     "QueryAXTreeResult",
 ]
+
+__getattr__, __dir__ = lazy_exports(
+    __name__,
+    {
+        "AXNode": (".types", "AXNode"),
+        "AXNodeId": (".types", "AXNodeId"),
+        "AXProperty": (".types", "AXProperty"),
+        "AXPropertyName": (".types", "AXPropertyName"),
+        "AXRelatedNode": (".types", "AXRelatedNode"),
+        "AXValue": (".types", "AXValue"),
+        "AXValueNativeSourceType": (".types", "AXValueNativeSourceType"),
+        "AXValueSource": (".types", "AXValueSource"),
+        "AXValueSourceType": (".types", "AXValueSourceType"),
+        "AXValueType": (".types", "AXValueType"),
+        "Accessibility": (".domain", "Accessibility"),
+        "AccessibilityCommand": (".commands", "AccessibilityCommand"),
+        "AccessibilityEvent": (".events", "AccessibilityEvent"),
+        "GetAXNodeAndAncestorsParams": (".commands", "GetAXNodeAndAncestorsParams"),
+        "GetAXNodeAndAncestorsResult": (".commands", "GetAXNodeAndAncestorsResult"),
+        "GetChildAXNodesParams": (".commands", "GetChildAXNodesParams"),
+        "GetChildAXNodesResult": (".commands", "GetChildAXNodesResult"),
+        "GetFullAXTreeParams": (".commands", "GetFullAXTreeParams"),
+        "GetFullAXTreeResult": (".commands", "GetFullAXTreeResult"),
+        "GetPartialAXTreeParams": (".commands", "GetPartialAXTreeParams"),
+        "GetPartialAXTreeResult": (".commands", "GetPartialAXTreeResult"),
+        "GetRootAXNodeParams": (".commands", "GetRootAXNodeParams"),
+        "GetRootAXNodeResult": (".commands", "GetRootAXNodeResult"),
+        "LoadCompleteEvent": (".events", "LoadCompleteEvent"),
+        "NodesUpdatedEvent": (".events", "NodesUpdatedEvent"),
+        "QueryAXTreeParams": (".commands", "QueryAXTreeParams"),
+        "QueryAXTreeResult": (".commands", "QueryAXTreeResult"),
+    },
+)

@@ -4,48 +4,53 @@
 
 """CDP SmartCardEmulation Domain."""
 
-from .commands import (
-    ReportBeginTransactionResultParams,
-    ReportConnectResultParams,
-    ReportDataResultParams,
-    ReportErrorParams,
-    ReportEstablishContextResultParams,
-    ReportGetStatusChangeResultParams,
-    ReportListReadersResultParams,
-    ReportPlainResultParams,
-    ReportReleaseContextResultParams,
-    ReportStatusResultParams,
-    SmartCardEmulationCommand,
-)
-from .domain import SmartCardEmulation
-from .events import (
-    BeginTransactionRequestedEvent,
-    CancelRequestedEvent,
-    ConnectRequestedEvent,
-    ControlRequestedEvent,
-    DisconnectRequestedEvent,
-    EndTransactionRequestedEvent,
-    EstablishContextRequestedEvent,
-    GetAttribRequestedEvent,
-    GetStatusChangeRequestedEvent,
-    ListReadersRequestedEvent,
-    ReleaseContextRequestedEvent,
-    SetAttribRequestedEvent,
-    SmartCardEmulationEvent,
-    StatusRequestedEvent,
-    TransmitRequestedEvent,
-)
-from .types import (
-    ConnectionState,
-    Disposition,
-    Protocol,
-    ProtocolSet,
-    ReaderStateFlags,
-    ReaderStateIn,
-    ReaderStateOut,
-    ResultCode,
-    ShareMode,
-)
+from typing import TYPE_CHECKING
+
+from cdpify.shared.lazy import lazy_exports
+
+if TYPE_CHECKING:
+    from .commands import (
+        ReportBeginTransactionResultParams,
+        ReportConnectResultParams,
+        ReportDataResultParams,
+        ReportErrorParams,
+        ReportEstablishContextResultParams,
+        ReportGetStatusChangeResultParams,
+        ReportListReadersResultParams,
+        ReportPlainResultParams,
+        ReportReleaseContextResultParams,
+        ReportStatusResultParams,
+        SmartCardEmulationCommand,
+    )
+    from .domain import SmartCardEmulation
+    from .events import (
+        BeginTransactionRequestedEvent,
+        CancelRequestedEvent,
+        ConnectRequestedEvent,
+        ControlRequestedEvent,
+        DisconnectRequestedEvent,
+        EndTransactionRequestedEvent,
+        EstablishContextRequestedEvent,
+        GetAttribRequestedEvent,
+        GetStatusChangeRequestedEvent,
+        ListReadersRequestedEvent,
+        ReleaseContextRequestedEvent,
+        SetAttribRequestedEvent,
+        SmartCardEmulationEvent,
+        StatusRequestedEvent,
+        TransmitRequestedEvent,
+    )
+    from .types import (
+        ConnectionState,
+        Disposition,
+        Protocol,
+        ProtocolSet,
+        ReaderStateFlags,
+        ReaderStateIn,
+        ReaderStateOut,
+        ResultCode,
+        ShareMode,
+    )
 
 __all__ = [
     "BeginTransactionRequestedEvent",
@@ -85,3 +90,57 @@ __all__ = [
     "StatusRequestedEvent",
     "TransmitRequestedEvent",
 ]
+
+__getattr__, __dir__ = lazy_exports(
+    __name__,
+    {
+        "BeginTransactionRequestedEvent": (".events", "BeginTransactionRequestedEvent"),
+        "CancelRequestedEvent": (".events", "CancelRequestedEvent"),
+        "ConnectRequestedEvent": (".events", "ConnectRequestedEvent"),
+        "ConnectionState": (".types", "ConnectionState"),
+        "ControlRequestedEvent": (".events", "ControlRequestedEvent"),
+        "DisconnectRequestedEvent": (".events", "DisconnectRequestedEvent"),
+        "Disposition": (".types", "Disposition"),
+        "EndTransactionRequestedEvent": (".events", "EndTransactionRequestedEvent"),
+        "EstablishContextRequestedEvent": (".events", "EstablishContextRequestedEvent"),
+        "GetAttribRequestedEvent": (".events", "GetAttribRequestedEvent"),
+        "GetStatusChangeRequestedEvent": (".events", "GetStatusChangeRequestedEvent"),
+        "ListReadersRequestedEvent": (".events", "ListReadersRequestedEvent"),
+        "Protocol": (".types", "Protocol"),
+        "ProtocolSet": (".types", "ProtocolSet"),
+        "ReaderStateFlags": (".types", "ReaderStateFlags"),
+        "ReaderStateIn": (".types", "ReaderStateIn"),
+        "ReaderStateOut": (".types", "ReaderStateOut"),
+        "ReleaseContextRequestedEvent": (".events", "ReleaseContextRequestedEvent"),
+        "ReportBeginTransactionResultParams": (
+            ".commands",
+            "ReportBeginTransactionResultParams",
+        ),
+        "ReportConnectResultParams": (".commands", "ReportConnectResultParams"),
+        "ReportDataResultParams": (".commands", "ReportDataResultParams"),
+        "ReportErrorParams": (".commands", "ReportErrorParams"),
+        "ReportEstablishContextResultParams": (
+            ".commands",
+            "ReportEstablishContextResultParams",
+        ),
+        "ReportGetStatusChangeResultParams": (
+            ".commands",
+            "ReportGetStatusChangeResultParams",
+        ),
+        "ReportListReadersResultParams": (".commands", "ReportListReadersResultParams"),
+        "ReportPlainResultParams": (".commands", "ReportPlainResultParams"),
+        "ReportReleaseContextResultParams": (
+            ".commands",
+            "ReportReleaseContextResultParams",
+        ),
+        "ReportStatusResultParams": (".commands", "ReportStatusResultParams"),
+        "ResultCode": (".types", "ResultCode"),
+        "SetAttribRequestedEvent": (".events", "SetAttribRequestedEvent"),
+        "ShareMode": (".types", "ShareMode"),
+        "SmartCardEmulation": (".domain", "SmartCardEmulation"),
+        "SmartCardEmulationCommand": (".commands", "SmartCardEmulationCommand"),
+        "SmartCardEmulationEvent": (".events", "SmartCardEmulationEvent"),
+        "StatusRequestedEvent": (".events", "StatusRequestedEvent"),
+        "TransmitRequestedEvent": (".events", "TransmitRequestedEvent"),
+    },
+)

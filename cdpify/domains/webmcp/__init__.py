@@ -4,26 +4,31 @@
 
 """CDP WebMCP Domain."""
 
-from .commands import (
-    CancelInvocationParams,
-    InvokeToolParams,
-    InvokeToolResult,
-    WebMCPCommand,
-)
-from .domain import WebMCP
-from .events import (
-    ToolInvokedEvent,
-    ToolRespondedEvent,
-    ToolsAddedEvent,
-    ToolsRemovedEvent,
-    WebMCPEvent,
-)
-from .types import (
-    Annotation,
-    InvocationStatus,
-    RemovedTool,
-    Tool,
-)
+from typing import TYPE_CHECKING
+
+from cdpify.shared.lazy import lazy_exports
+
+if TYPE_CHECKING:
+    from .commands import (
+        CancelInvocationParams,
+        InvokeToolParams,
+        InvokeToolResult,
+        WebMCPCommand,
+    )
+    from .domain import WebMCP
+    from .events import (
+        ToolInvokedEvent,
+        ToolRespondedEvent,
+        ToolsAddedEvent,
+        ToolsRemovedEvent,
+        WebMCPEvent,
+    )
+    from .types import (
+        Annotation,
+        InvocationStatus,
+        RemovedTool,
+        Tool,
+    )
 
 __all__ = [
     "Annotation",
@@ -41,3 +46,23 @@ __all__ = [
     "WebMCPCommand",
     "WebMCPEvent",
 ]
+
+__getattr__, __dir__ = lazy_exports(
+    __name__,
+    {
+        "Annotation": (".types", "Annotation"),
+        "CancelInvocationParams": (".commands", "CancelInvocationParams"),
+        "InvocationStatus": (".types", "InvocationStatus"),
+        "InvokeToolParams": (".commands", "InvokeToolParams"),
+        "InvokeToolResult": (".commands", "InvokeToolResult"),
+        "RemovedTool": (".types", "RemovedTool"),
+        "Tool": (".types", "Tool"),
+        "ToolInvokedEvent": (".events", "ToolInvokedEvent"),
+        "ToolRespondedEvent": (".events", "ToolRespondedEvent"),
+        "ToolsAddedEvent": (".events", "ToolsAddedEvent"),
+        "ToolsRemovedEvent": (".events", "ToolsRemovedEvent"),
+        "WebMCP": (".domain", "WebMCP"),
+        "WebMCPCommand": (".commands", "WebMCPCommand"),
+        "WebMCPEvent": (".events", "WebMCPEvent"),
+    },
+)

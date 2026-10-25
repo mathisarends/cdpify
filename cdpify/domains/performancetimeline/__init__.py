@@ -4,15 +4,20 @@
 
 """CDP PerformanceTimeline Domain."""
 
-from .commands import EnableParams, PerformanceTimelineCommand
-from .domain import PerformanceTimeline
-from .events import PerformanceTimelineEvent, TimelineEventAddedEvent
-from .types import (
-    LargestContentfulPaint,
-    LayoutShift,
-    LayoutShiftAttribution,
-    TimelineEvent,
-)
+from typing import TYPE_CHECKING
+
+from cdpify.shared.lazy import lazy_exports
+
+if TYPE_CHECKING:
+    from .commands import EnableParams, PerformanceTimelineCommand
+    from .domain import PerformanceTimeline
+    from .events import PerformanceTimelineEvent, TimelineEventAddedEvent
+    from .types import (
+        LargestContentfulPaint,
+        LayoutShift,
+        LayoutShiftAttribution,
+        TimelineEvent,
+    )
 
 __all__ = [
     "EnableParams",
@@ -25,3 +30,18 @@ __all__ = [
     "TimelineEvent",
     "TimelineEventAddedEvent",
 ]
+
+__getattr__, __dir__ = lazy_exports(
+    __name__,
+    {
+        "EnableParams": (".commands", "EnableParams"),
+        "LargestContentfulPaint": (".types", "LargestContentfulPaint"),
+        "LayoutShift": (".types", "LayoutShift"),
+        "LayoutShiftAttribution": (".types", "LayoutShiftAttribution"),
+        "PerformanceTimeline": (".domain", "PerformanceTimeline"),
+        "PerformanceTimelineCommand": (".commands", "PerformanceTimelineCommand"),
+        "PerformanceTimelineEvent": (".events", "PerformanceTimelineEvent"),
+        "TimelineEvent": (".types", "TimelineEvent"),
+        "TimelineEventAddedEvent": (".events", "TimelineEventAddedEvent"),
+    },
+)

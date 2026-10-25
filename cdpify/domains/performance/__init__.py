@@ -4,15 +4,20 @@
 
 """CDP Performance Domain."""
 
-from .commands import (
-    EnableParams,
-    GetMetricsResult,
-    PerformanceCommand,
-    SetTimeDomainParams,
-)
-from .domain import Performance
-from .events import MetricsEvent, PerformanceEvent
-from .types import Metric
+from typing import TYPE_CHECKING
+
+from cdpify.shared.lazy import lazy_exports
+
+if TYPE_CHECKING:
+    from .commands import (
+        EnableParams,
+        GetMetricsResult,
+        PerformanceCommand,
+        SetTimeDomainParams,
+    )
+    from .domain import Performance
+    from .events import MetricsEvent, PerformanceEvent
+    from .types import Metric
 
 __all__ = [
     "EnableParams",
@@ -24,3 +29,17 @@ __all__ = [
     "PerformanceEvent",
     "SetTimeDomainParams",
 ]
+
+__getattr__, __dir__ = lazy_exports(
+    __name__,
+    {
+        "EnableParams": (".commands", "EnableParams"),
+        "GetMetricsResult": (".commands", "GetMetricsResult"),
+        "Metric": (".types", "Metric"),
+        "MetricsEvent": (".events", "MetricsEvent"),
+        "Performance": (".domain", "Performance"),
+        "PerformanceCommand": (".commands", "PerformanceCommand"),
+        "PerformanceEvent": (".events", "PerformanceEvent"),
+        "SetTimeDomainParams": (".commands", "SetTimeDomainParams"),
+    },
+)

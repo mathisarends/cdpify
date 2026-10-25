@@ -4,9 +4,14 @@
 
 """CDP CrashReportContext Domain."""
 
-from .commands import CrashReportContextCommand, GetEntriesResult
-from .domain import CrashReportContext
-from .types import CrashReportContextEntry
+from typing import TYPE_CHECKING
+
+from cdpify.shared.lazy import lazy_exports
+
+if TYPE_CHECKING:
+    from .commands import CrashReportContextCommand, GetEntriesResult
+    from .domain import CrashReportContext
+    from .types import CrashReportContextEntry
 
 __all__ = [
     "CrashReportContext",
@@ -14,3 +19,13 @@ __all__ = [
     "CrashReportContextEntry",
     "GetEntriesResult",
 ]
+
+__getattr__, __dir__ = lazy_exports(
+    __name__,
+    {
+        "CrashReportContext": (".domain", "CrashReportContext"),
+        "CrashReportContextCommand": (".commands", "CrashReportContextCommand"),
+        "CrashReportContextEntry": (".types", "CrashReportContextEntry"),
+        "GetEntriesResult": (".commands", "GetEntriesResult"),
+    },
+)

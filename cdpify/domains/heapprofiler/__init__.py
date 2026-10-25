@@ -4,35 +4,40 @@
 
 """CDP HeapProfiler Domain."""
 
-from .commands import (
-    AddInspectedHeapObjectParams,
-    GetHeapObjectIdParams,
-    GetHeapObjectIdResult,
-    GetObjectByHeapObjectIdParams,
-    GetObjectByHeapObjectIdResult,
-    GetSamplingProfileResult,
-    HeapProfilerCommand,
-    StartSamplingParams,
-    StartTrackingHeapObjectsParams,
-    StopSamplingResult,
-    StopTrackingHeapObjectsParams,
-    TakeHeapSnapshotParams,
-)
-from .domain import HeapProfiler
-from .events import (
-    AddHeapSnapshotChunkEvent,
-    HeapProfilerEvent,
-    HeapStatsUpdateEvent,
-    LastSeenObjectIdEvent,
-    ReportHeapSnapshotProgressEvent,
-    ResetProfilesEvent,
-)
-from .types import (
-    HeapSnapshotObjectId,
-    SamplingHeapProfile,
-    SamplingHeapProfileNode,
-    SamplingHeapProfileSample,
-)
+from typing import TYPE_CHECKING
+
+from cdpify.shared.lazy import lazy_exports
+
+if TYPE_CHECKING:
+    from .commands import (
+        AddInspectedHeapObjectParams,
+        GetHeapObjectIdParams,
+        GetHeapObjectIdResult,
+        GetObjectByHeapObjectIdParams,
+        GetObjectByHeapObjectIdResult,
+        GetSamplingProfileResult,
+        HeapProfilerCommand,
+        StartSamplingParams,
+        StartTrackingHeapObjectsParams,
+        StopSamplingResult,
+        StopTrackingHeapObjectsParams,
+        TakeHeapSnapshotParams,
+    )
+    from .domain import HeapProfiler
+    from .events import (
+        AddHeapSnapshotChunkEvent,
+        HeapProfilerEvent,
+        HeapStatsUpdateEvent,
+        LastSeenObjectIdEvent,
+        ReportHeapSnapshotProgressEvent,
+        ResetProfilesEvent,
+    )
+    from .types import (
+        HeapSnapshotObjectId,
+        SamplingHeapProfile,
+        SamplingHeapProfileNode,
+        SamplingHeapProfileSample,
+    )
 
 __all__ = [
     "AddHeapSnapshotChunkEvent",
@@ -59,3 +64,38 @@ __all__ = [
     "StopTrackingHeapObjectsParams",
     "TakeHeapSnapshotParams",
 ]
+
+__getattr__, __dir__ = lazy_exports(
+    __name__,
+    {
+        "AddHeapSnapshotChunkEvent": (".events", "AddHeapSnapshotChunkEvent"),
+        "AddInspectedHeapObjectParams": (".commands", "AddInspectedHeapObjectParams"),
+        "GetHeapObjectIdParams": (".commands", "GetHeapObjectIdParams"),
+        "GetHeapObjectIdResult": (".commands", "GetHeapObjectIdResult"),
+        "GetObjectByHeapObjectIdParams": (".commands", "GetObjectByHeapObjectIdParams"),
+        "GetObjectByHeapObjectIdResult": (".commands", "GetObjectByHeapObjectIdResult"),
+        "GetSamplingProfileResult": (".commands", "GetSamplingProfileResult"),
+        "HeapProfiler": (".domain", "HeapProfiler"),
+        "HeapProfilerCommand": (".commands", "HeapProfilerCommand"),
+        "HeapProfilerEvent": (".events", "HeapProfilerEvent"),
+        "HeapSnapshotObjectId": (".types", "HeapSnapshotObjectId"),
+        "HeapStatsUpdateEvent": (".events", "HeapStatsUpdateEvent"),
+        "LastSeenObjectIdEvent": (".events", "LastSeenObjectIdEvent"),
+        "ReportHeapSnapshotProgressEvent": (
+            ".events",
+            "ReportHeapSnapshotProgressEvent",
+        ),
+        "ResetProfilesEvent": (".events", "ResetProfilesEvent"),
+        "SamplingHeapProfile": (".types", "SamplingHeapProfile"),
+        "SamplingHeapProfileNode": (".types", "SamplingHeapProfileNode"),
+        "SamplingHeapProfileSample": (".types", "SamplingHeapProfileSample"),
+        "StartSamplingParams": (".commands", "StartSamplingParams"),
+        "StartTrackingHeapObjectsParams": (
+            ".commands",
+            "StartTrackingHeapObjectsParams",
+        ),
+        "StopSamplingResult": (".commands", "StopSamplingResult"),
+        "StopTrackingHeapObjectsParams": (".commands", "StopTrackingHeapObjectsParams"),
+        "TakeHeapSnapshotParams": (".commands", "TakeHeapSnapshotParams"),
+    },
+)

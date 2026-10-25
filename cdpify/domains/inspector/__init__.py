@@ -4,15 +4,20 @@
 
 """CDP Inspector Domain."""
 
-from .commands import InspectorCommand
-from .domain import Inspector
-from .events import (
-    DetachedEvent,
-    InspectorEvent,
-    TargetCrashedEvent,
-    TargetReloadedAfterCrashEvent,
-    WorkerScriptLoadedEvent,
-)
+from typing import TYPE_CHECKING
+
+from cdpify.shared.lazy import lazy_exports
+
+if TYPE_CHECKING:
+    from .commands import InspectorCommand
+    from .domain import Inspector
+    from .events import (
+        DetachedEvent,
+        InspectorEvent,
+        TargetCrashedEvent,
+        TargetReloadedAfterCrashEvent,
+        WorkerScriptLoadedEvent,
+    )
 
 __all__ = [
     "DetachedEvent",
@@ -23,3 +28,16 @@ __all__ = [
     "TargetReloadedAfterCrashEvent",
     "WorkerScriptLoadedEvent",
 ]
+
+__getattr__, __dir__ = lazy_exports(
+    __name__,
+    {
+        "DetachedEvent": (".events", "DetachedEvent"),
+        "Inspector": (".domain", "Inspector"),
+        "InspectorCommand": (".commands", "InspectorCommand"),
+        "InspectorEvent": (".events", "InspectorEvent"),
+        "TargetCrashedEvent": (".events", "TargetCrashedEvent"),
+        "TargetReloadedAfterCrashEvent": (".events", "TargetReloadedAfterCrashEvent"),
+        "WorkerScriptLoadedEvent": (".events", "WorkerScriptLoadedEvent"),
+    },
+)

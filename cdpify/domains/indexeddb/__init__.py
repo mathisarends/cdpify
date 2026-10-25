@@ -4,30 +4,35 @@
 
 """CDP IndexedDB Domain."""
 
-from .commands import (
-    ClearObjectStoreParams,
-    DeleteDatabaseParams,
-    DeleteObjectStoreEntriesParams,
-    GetMetadataParams,
-    GetMetadataResult,
-    IndexedDBCommand,
-    RequestDatabaseNamesParams,
-    RequestDatabaseNamesResult,
-    RequestDatabaseParams,
-    RequestDatabaseResult,
-    RequestDataParams,
-    RequestDataResult,
-)
-from .domain import IndexedDB
-from .types import (
-    DatabaseWithObjectStores,
-    DataEntry,
-    Key,
-    KeyPath,
-    KeyRange,
-    ObjectStore,
-    ObjectStoreIndex,
-)
+from typing import TYPE_CHECKING
+
+from cdpify.shared.lazy import lazy_exports
+
+if TYPE_CHECKING:
+    from .commands import (
+        ClearObjectStoreParams,
+        DeleteDatabaseParams,
+        DeleteObjectStoreEntriesParams,
+        GetMetadataParams,
+        GetMetadataResult,
+        IndexedDBCommand,
+        RequestDatabaseNamesParams,
+        RequestDatabaseNamesResult,
+        RequestDatabaseParams,
+        RequestDatabaseResult,
+        RequestDataParams,
+        RequestDataResult,
+    )
+    from .domain import IndexedDB
+    from .types import (
+        DatabaseWithObjectStores,
+        DataEntry,
+        Key,
+        KeyPath,
+        KeyRange,
+        ObjectStore,
+        ObjectStoreIndex,
+    )
 
 __all__ = [
     "ClearObjectStoreParams",
@@ -51,3 +56,32 @@ __all__ = [
     "RequestDatabaseParams",
     "RequestDatabaseResult",
 ]
+
+__getattr__, __dir__ = lazy_exports(
+    __name__,
+    {
+        "ClearObjectStoreParams": (".commands", "ClearObjectStoreParams"),
+        "DataEntry": (".types", "DataEntry"),
+        "DatabaseWithObjectStores": (".types", "DatabaseWithObjectStores"),
+        "DeleteDatabaseParams": (".commands", "DeleteDatabaseParams"),
+        "DeleteObjectStoreEntriesParams": (
+            ".commands",
+            "DeleteObjectStoreEntriesParams",
+        ),
+        "GetMetadataParams": (".commands", "GetMetadataParams"),
+        "GetMetadataResult": (".commands", "GetMetadataResult"),
+        "IndexedDB": (".domain", "IndexedDB"),
+        "IndexedDBCommand": (".commands", "IndexedDBCommand"),
+        "Key": (".types", "Key"),
+        "KeyPath": (".types", "KeyPath"),
+        "KeyRange": (".types", "KeyRange"),
+        "ObjectStore": (".types", "ObjectStore"),
+        "ObjectStoreIndex": (".types", "ObjectStoreIndex"),
+        "RequestDataParams": (".commands", "RequestDataParams"),
+        "RequestDataResult": (".commands", "RequestDataResult"),
+        "RequestDatabaseNamesParams": (".commands", "RequestDatabaseNamesParams"),
+        "RequestDatabaseNamesResult": (".commands", "RequestDatabaseNamesResult"),
+        "RequestDatabaseParams": (".commands", "RequestDatabaseParams"),
+        "RequestDatabaseResult": (".commands", "RequestDatabaseResult"),
+    },
+)

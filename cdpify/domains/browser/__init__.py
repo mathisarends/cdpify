@@ -4,46 +4,51 @@
 
 """CDP Browser Domain."""
 
-from .commands import (
-    AddPrivacySandboxEnrollmentOverrideParams,
-    BrowserCommand,
-    CancelDownloadParams,
-    ExecuteBrowserCommandParams,
-    GetBrowserCommandLineResult,
-    GetGlobalPrivacyControlResult,
-    GetHistogramParams,
-    GetHistogramResult,
-    GetHistogramsParams,
-    GetHistogramsResult,
-    GetVersionResult,
-    GetWindowBoundsParams,
-    GetWindowBoundsResult,
-    GetWindowForTargetParams,
-    GetWindowForTargetResult,
-    GrantPermissionsParams,
-    ResetPermissionsParams,
-    SetContentsSizeParams,
-    SetDockTileParams,
-    SetDownloadBehaviorParams,
-    SetGlobalPrivacyControlParams,
-    SetGlobalPrivacyControlResult,
-    SetPermissionParams,
-    SetWindowBoundsParams,
-)
-from .domain import Browser
-from .events import BrowserEvent, DownloadProgressEvent, DownloadWillBeginEvent
-from .types import (
-    Bounds,
-    BrowserCommandId,
-    BrowserContextID,
-    Bucket,
-    Histogram,
-    PermissionDescriptor,
-    PermissionSetting,
-    PermissionType,
-    WindowID,
-    WindowState,
-)
+from typing import TYPE_CHECKING
+
+from cdpify.shared.lazy import lazy_exports
+
+if TYPE_CHECKING:
+    from .commands import (
+        AddPrivacySandboxEnrollmentOverrideParams,
+        BrowserCommand,
+        CancelDownloadParams,
+        ExecuteBrowserCommandParams,
+        GetBrowserCommandLineResult,
+        GetGlobalPrivacyControlResult,
+        GetHistogramParams,
+        GetHistogramResult,
+        GetHistogramsParams,
+        GetHistogramsResult,
+        GetVersionResult,
+        GetWindowBoundsParams,
+        GetWindowBoundsResult,
+        GetWindowForTargetParams,
+        GetWindowForTargetResult,
+        GrantPermissionsParams,
+        ResetPermissionsParams,
+        SetContentsSizeParams,
+        SetDockTileParams,
+        SetDownloadBehaviorParams,
+        SetGlobalPrivacyControlParams,
+        SetGlobalPrivacyControlResult,
+        SetPermissionParams,
+        SetWindowBoundsParams,
+    )
+    from .domain import Browser
+    from .events import BrowserEvent, DownloadProgressEvent, DownloadWillBeginEvent
+    from .types import (
+        Bounds,
+        BrowserCommandId,
+        BrowserContextID,
+        Bucket,
+        Histogram,
+        PermissionDescriptor,
+        PermissionSetting,
+        PermissionType,
+        WindowID,
+        WindowState,
+    )
 
 __all__ = [
     "AddPrivacySandboxEnrollmentOverrideParams",
@@ -85,3 +90,50 @@ __all__ = [
     "WindowID",
     "WindowState",
 ]
+
+__getattr__, __dir__ = lazy_exports(
+    __name__,
+    {
+        "AddPrivacySandboxEnrollmentOverrideParams": (
+            ".commands",
+            "AddPrivacySandboxEnrollmentOverrideParams",
+        ),
+        "Bounds": (".types", "Bounds"),
+        "Browser": (".domain", "Browser"),
+        "BrowserCommand": (".commands", "BrowserCommand"),
+        "BrowserCommandId": (".types", "BrowserCommandId"),
+        "BrowserContextID": (".types", "BrowserContextID"),
+        "BrowserEvent": (".events", "BrowserEvent"),
+        "Bucket": (".types", "Bucket"),
+        "CancelDownloadParams": (".commands", "CancelDownloadParams"),
+        "DownloadProgressEvent": (".events", "DownloadProgressEvent"),
+        "DownloadWillBeginEvent": (".events", "DownloadWillBeginEvent"),
+        "ExecuteBrowserCommandParams": (".commands", "ExecuteBrowserCommandParams"),
+        "GetBrowserCommandLineResult": (".commands", "GetBrowserCommandLineResult"),
+        "GetGlobalPrivacyControlResult": (".commands", "GetGlobalPrivacyControlResult"),
+        "GetHistogramParams": (".commands", "GetHistogramParams"),
+        "GetHistogramResult": (".commands", "GetHistogramResult"),
+        "GetHistogramsParams": (".commands", "GetHistogramsParams"),
+        "GetHistogramsResult": (".commands", "GetHistogramsResult"),
+        "GetVersionResult": (".commands", "GetVersionResult"),
+        "GetWindowBoundsParams": (".commands", "GetWindowBoundsParams"),
+        "GetWindowBoundsResult": (".commands", "GetWindowBoundsResult"),
+        "GetWindowForTargetParams": (".commands", "GetWindowForTargetParams"),
+        "GetWindowForTargetResult": (".commands", "GetWindowForTargetResult"),
+        "GrantPermissionsParams": (".commands", "GrantPermissionsParams"),
+        "Histogram": (".types", "Histogram"),
+        "PermissionDescriptor": (".types", "PermissionDescriptor"),
+        "PermissionSetting": (".types", "PermissionSetting"),
+        "PermissionType": (".types", "PermissionType"),
+        "ResetPermissionsParams": (".commands", "ResetPermissionsParams"),
+        "SetContentsSizeParams": (".commands", "SetContentsSizeParams"),
+        "SetDockTileParams": (".commands", "SetDockTileParams"),
+        "SetDownloadBehaviorParams": (".commands", "SetDownloadBehaviorParams"),
+        "SetGlobalPrivacyControlParams": (".commands", "SetGlobalPrivacyControlParams"),
+        "SetGlobalPrivacyControlResult": (".commands", "SetGlobalPrivacyControlResult"),
+        "SetPermissionParams": (".commands", "SetPermissionParams"),
+        "SetWindowBoundsParams": (".commands", "SetWindowBoundsParams"),
+        "WindowID": (".types", "WindowID"),
+        "WindowState": (".types", "WindowState"),
+    },
+)

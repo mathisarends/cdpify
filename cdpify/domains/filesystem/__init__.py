@@ -4,9 +4,14 @@
 
 """CDP FileSystem Domain."""
 
-from .commands import FileSystemCommand, GetDirectoryParams, GetDirectoryResult
-from .domain import FileSystem
-from .types import BucketFileSystemLocator, Directory, File
+from typing import TYPE_CHECKING
+
+from cdpify.shared.lazy import lazy_exports
+
+if TYPE_CHECKING:
+    from .commands import FileSystemCommand, GetDirectoryParams, GetDirectoryResult
+    from .domain import FileSystem
+    from .types import BucketFileSystemLocator, Directory, File
 
 __all__ = [
     "BucketFileSystemLocator",
@@ -17,3 +22,16 @@ __all__ = [
     "GetDirectoryParams",
     "GetDirectoryResult",
 ]
+
+__getattr__, __dir__ = lazy_exports(
+    __name__,
+    {
+        "BucketFileSystemLocator": (".types", "BucketFileSystemLocator"),
+        "Directory": (".types", "Directory"),
+        "File": (".types", "File"),
+        "FileSystem": (".domain", "FileSystem"),
+        "FileSystemCommand": (".commands", "FileSystemCommand"),
+        "GetDirectoryParams": (".commands", "GetDirectoryParams"),
+        "GetDirectoryResult": (".commands", "GetDirectoryResult"),
+    },
+)

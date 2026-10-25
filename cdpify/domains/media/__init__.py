@@ -4,26 +4,31 @@
 
 """CDP Media Domain."""
 
-from .commands import MediaCommand
-from .domain import Media
-from .events import (
-    MediaEvent,
-    PlayerCreatedEvent,
-    PlayerErrorsRaisedEvent,
-    PlayerEventsAddedEvent,
-    PlayerMessagesLoggedEvent,
-    PlayerPropertiesChangedEvent,
-)
-from .types import (
-    Player,
-    PlayerError,
-    PlayerErrorSourceLocation,
-    PlayerEvent,
-    PlayerId,
-    PlayerMessage,
-    PlayerProperty,
-    Timestamp,
-)
+from typing import TYPE_CHECKING
+
+from cdpify.shared.lazy import lazy_exports
+
+if TYPE_CHECKING:
+    from .commands import MediaCommand
+    from .domain import Media
+    from .events import (
+        MediaEvent,
+        PlayerCreatedEvent,
+        PlayerErrorsRaisedEvent,
+        PlayerEventsAddedEvent,
+        PlayerMessagesLoggedEvent,
+        PlayerPropertiesChangedEvent,
+    )
+    from .types import (
+        Player,
+        PlayerError,
+        PlayerErrorSourceLocation,
+        PlayerEvent,
+        PlayerId,
+        PlayerMessage,
+        PlayerProperty,
+        Timestamp,
+    )
 
 __all__ = [
     "Media",
@@ -43,3 +48,25 @@ __all__ = [
     "PlayerProperty",
     "Timestamp",
 ]
+
+__getattr__, __dir__ = lazy_exports(
+    __name__,
+    {
+        "Media": (".domain", "Media"),
+        "MediaCommand": (".commands", "MediaCommand"),
+        "MediaEvent": (".events", "MediaEvent"),
+        "Player": (".types", "Player"),
+        "PlayerCreatedEvent": (".events", "PlayerCreatedEvent"),
+        "PlayerError": (".types", "PlayerError"),
+        "PlayerErrorSourceLocation": (".types", "PlayerErrorSourceLocation"),
+        "PlayerErrorsRaisedEvent": (".events", "PlayerErrorsRaisedEvent"),
+        "PlayerEvent": (".types", "PlayerEvent"),
+        "PlayerEventsAddedEvent": (".events", "PlayerEventsAddedEvent"),
+        "PlayerId": (".types", "PlayerId"),
+        "PlayerMessage": (".types", "PlayerMessage"),
+        "PlayerMessagesLoggedEvent": (".events", "PlayerMessagesLoggedEvent"),
+        "PlayerPropertiesChangedEvent": (".events", "PlayerPropertiesChangedEvent"),
+        "PlayerProperty": (".types", "PlayerProperty"),
+        "Timestamp": (".types", "Timestamp"),
+    },
+)

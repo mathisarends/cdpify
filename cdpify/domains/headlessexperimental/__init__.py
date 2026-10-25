@@ -4,9 +4,18 @@
 
 """CDP HeadlessExperimental Domain."""
 
-from .commands import BeginFrameParams, BeginFrameResult, HeadlessExperimentalCommand
-from .domain import HeadlessExperimental
-from .types import ScreenshotParams
+from typing import TYPE_CHECKING
+
+from cdpify.shared.lazy import lazy_exports
+
+if TYPE_CHECKING:
+    from .commands import (
+        BeginFrameParams,
+        BeginFrameResult,
+        HeadlessExperimentalCommand,
+    )
+    from .domain import HeadlessExperimental
+    from .types import ScreenshotParams
 
 __all__ = [
     "BeginFrameParams",
@@ -15,3 +24,14 @@ __all__ = [
     "HeadlessExperimentalCommand",
     "ScreenshotParams",
 ]
+
+__getattr__, __dir__ = lazy_exports(
+    __name__,
+    {
+        "BeginFrameParams": (".commands", "BeginFrameParams"),
+        "BeginFrameResult": (".commands", "BeginFrameResult"),
+        "HeadlessExperimental": (".domain", "HeadlessExperimental"),
+        "HeadlessExperimentalCommand": (".commands", "HeadlessExperimentalCommand"),
+        "ScreenshotParams": (".types", "ScreenshotParams"),
+    },
+)

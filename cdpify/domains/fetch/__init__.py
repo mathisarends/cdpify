@@ -4,29 +4,34 @@
 
 """CDP Fetch Domain."""
 
-from .commands import (
-    ContinueRequestParams,
-    ContinueResponseParams,
-    ContinueWithAuthParams,
-    EnableParams,
-    FailRequestParams,
-    FetchCommand,
-    FulfillRequestParams,
-    GetResponseBodyParams,
-    GetResponseBodyResult,
-    TakeResponseBodyAsStreamParams,
-    TakeResponseBodyAsStreamResult,
-)
-from .domain import Fetch
-from .events import AuthRequiredEvent, FetchEvent, RequestPausedEvent
-from .types import (
-    AuthChallenge,
-    AuthChallengeResponse,
-    HeaderEntry,
-    RequestId,
-    RequestPattern,
-    RequestStage,
-)
+from typing import TYPE_CHECKING
+
+from cdpify.shared.lazy import lazy_exports
+
+if TYPE_CHECKING:
+    from .commands import (
+        ContinueRequestParams,
+        ContinueResponseParams,
+        ContinueWithAuthParams,
+        EnableParams,
+        FailRequestParams,
+        FetchCommand,
+        FulfillRequestParams,
+        GetResponseBodyParams,
+        GetResponseBodyResult,
+        TakeResponseBodyAsStreamParams,
+        TakeResponseBodyAsStreamResult,
+    )
+    from .domain import Fetch
+    from .events import AuthRequiredEvent, FetchEvent, RequestPausedEvent
+    from .types import (
+        AuthChallenge,
+        AuthChallengeResponse,
+        HeaderEntry,
+        RequestId,
+        RequestPattern,
+        RequestStage,
+    )
 
 __all__ = [
     "AuthChallenge",
@@ -51,3 +56,36 @@ __all__ = [
     "TakeResponseBodyAsStreamParams",
     "TakeResponseBodyAsStreamResult",
 ]
+
+__getattr__, __dir__ = lazy_exports(
+    __name__,
+    {
+        "AuthChallenge": (".types", "AuthChallenge"),
+        "AuthChallengeResponse": (".types", "AuthChallengeResponse"),
+        "AuthRequiredEvent": (".events", "AuthRequiredEvent"),
+        "ContinueRequestParams": (".commands", "ContinueRequestParams"),
+        "ContinueResponseParams": (".commands", "ContinueResponseParams"),
+        "ContinueWithAuthParams": (".commands", "ContinueWithAuthParams"),
+        "EnableParams": (".commands", "EnableParams"),
+        "FailRequestParams": (".commands", "FailRequestParams"),
+        "Fetch": (".domain", "Fetch"),
+        "FetchCommand": (".commands", "FetchCommand"),
+        "FetchEvent": (".events", "FetchEvent"),
+        "FulfillRequestParams": (".commands", "FulfillRequestParams"),
+        "GetResponseBodyParams": (".commands", "GetResponseBodyParams"),
+        "GetResponseBodyResult": (".commands", "GetResponseBodyResult"),
+        "HeaderEntry": (".types", "HeaderEntry"),
+        "RequestId": (".types", "RequestId"),
+        "RequestPattern": (".types", "RequestPattern"),
+        "RequestPausedEvent": (".events", "RequestPausedEvent"),
+        "RequestStage": (".types", "RequestStage"),
+        "TakeResponseBodyAsStreamParams": (
+            ".commands",
+            "TakeResponseBodyAsStreamParams",
+        ),
+        "TakeResponseBodyAsStreamResult": (
+            ".commands",
+            "TakeResponseBodyAsStreamResult",
+        ),
+    },
+)

@@ -4,23 +4,28 @@
 
 """CDP FedCm Domain."""
 
-from .commands import (
-    ClickDialogButtonParams,
-    DismissDialogParams,
-    EnableParams,
-    FedCmCommand,
-    OpenUrlParams,
-    SelectAccountParams,
-)
-from .domain import FedCm
-from .events import DialogClosedEvent, DialogShownEvent, FedCmEvent
-from .types import (
-    Account,
-    AccountUrlType,
-    DialogButton,
-    DialogType,
-    LoginState,
-)
+from typing import TYPE_CHECKING
+
+from cdpify.shared.lazy import lazy_exports
+
+if TYPE_CHECKING:
+    from .commands import (
+        ClickDialogButtonParams,
+        DismissDialogParams,
+        EnableParams,
+        FedCmCommand,
+        OpenUrlParams,
+        SelectAccountParams,
+    )
+    from .domain import FedCm
+    from .events import DialogClosedEvent, DialogShownEvent, FedCmEvent
+    from .types import (
+        Account,
+        AccountUrlType,
+        DialogButton,
+        DialogType,
+        LoginState,
+    )
 
 __all__ = [
     "Account",
@@ -39,3 +44,24 @@ __all__ = [
     "OpenUrlParams",
     "SelectAccountParams",
 ]
+
+__getattr__, __dir__ = lazy_exports(
+    __name__,
+    {
+        "Account": (".types", "Account"),
+        "AccountUrlType": (".types", "AccountUrlType"),
+        "ClickDialogButtonParams": (".commands", "ClickDialogButtonParams"),
+        "DialogButton": (".types", "DialogButton"),
+        "DialogClosedEvent": (".events", "DialogClosedEvent"),
+        "DialogShownEvent": (".events", "DialogShownEvent"),
+        "DialogType": (".types", "DialogType"),
+        "DismissDialogParams": (".commands", "DismissDialogParams"),
+        "EnableParams": (".commands", "EnableParams"),
+        "FedCm": (".domain", "FedCm"),
+        "FedCmCommand": (".commands", "FedCmCommand"),
+        "FedCmEvent": (".events", "FedCmEvent"),
+        "LoginState": (".types", "LoginState"),
+        "OpenUrlParams": (".commands", "OpenUrlParams"),
+        "SelectAccountParams": (".commands", "SelectAccountParams"),
+    },
+)

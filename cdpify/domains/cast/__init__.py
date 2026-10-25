@@ -4,17 +4,22 @@
 
 """CDP Cast Domain."""
 
-from .commands import (
-    CastCommand,
-    EnableParams,
-    SetSinkToUseParams,
-    StartDesktopMirroringParams,
-    StartTabMirroringParams,
-    StopCastingParams,
-)
-from .domain import Cast
-from .events import CastEvent, IssueUpdatedEvent, SinksUpdatedEvent
-from .types import Sink
+from typing import TYPE_CHECKING
+
+from cdpify.shared.lazy import lazy_exports
+
+if TYPE_CHECKING:
+    from .commands import (
+        CastCommand,
+        EnableParams,
+        SetSinkToUseParams,
+        StartDesktopMirroringParams,
+        StartTabMirroringParams,
+        StopCastingParams,
+    )
+    from .domain import Cast
+    from .events import CastEvent, IssueUpdatedEvent, SinksUpdatedEvent
+    from .types import Sink
 
 __all__ = [
     "Cast",
@@ -29,3 +34,20 @@ __all__ = [
     "StartTabMirroringParams",
     "StopCastingParams",
 ]
+
+__getattr__, __dir__ = lazy_exports(
+    __name__,
+    {
+        "Cast": (".domain", "Cast"),
+        "CastCommand": (".commands", "CastCommand"),
+        "CastEvent": (".events", "CastEvent"),
+        "EnableParams": (".commands", "EnableParams"),
+        "IssueUpdatedEvent": (".events", "IssueUpdatedEvent"),
+        "SetSinkToUseParams": (".commands", "SetSinkToUseParams"),
+        "Sink": (".types", "Sink"),
+        "SinksUpdatedEvent": (".events", "SinksUpdatedEvent"),
+        "StartDesktopMirroringParams": (".commands", "StartDesktopMirroringParams"),
+        "StartTabMirroringParams": (".commands", "StartTabMirroringParams"),
+        "StopCastingParams": (".commands", "StopCastingParams"),
+    },
+)

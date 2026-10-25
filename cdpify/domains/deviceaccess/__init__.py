@@ -4,10 +4,15 @@
 
 """CDP DeviceAccess Domain."""
 
-from .commands import CancelPromptParams, DeviceAccessCommand, SelectPromptParams
-from .domain import DeviceAccess
-from .events import DeviceAccessEvent, DeviceRequestPromptedEvent
-from .types import DeviceId, PromptDevice, RequestId
+from typing import TYPE_CHECKING
+
+from cdpify.shared.lazy import lazy_exports
+
+if TYPE_CHECKING:
+    from .commands import CancelPromptParams, DeviceAccessCommand, SelectPromptParams
+    from .domain import DeviceAccess
+    from .events import DeviceAccessEvent, DeviceRequestPromptedEvent
+    from .types import DeviceId, PromptDevice, RequestId
 
 __all__ = [
     "CancelPromptParams",
@@ -20,3 +25,18 @@ __all__ = [
     "RequestId",
     "SelectPromptParams",
 ]
+
+__getattr__, __dir__ = lazy_exports(
+    __name__,
+    {
+        "CancelPromptParams": (".commands", "CancelPromptParams"),
+        "DeviceAccess": (".domain", "DeviceAccess"),
+        "DeviceAccessCommand": (".commands", "DeviceAccessCommand"),
+        "DeviceAccessEvent": (".events", "DeviceAccessEvent"),
+        "DeviceId": (".types", "DeviceId"),
+        "DeviceRequestPromptedEvent": (".events", "DeviceRequestPromptedEvent"),
+        "PromptDevice": (".types", "PromptDevice"),
+        "RequestId": (".types", "RequestId"),
+        "SelectPromptParams": (".commands", "SelectPromptParams"),
+    },
+)

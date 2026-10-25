@@ -4,39 +4,44 @@
 
 """CDP WebAudio Domain."""
 
-from .commands import GetRealtimeDataParams, GetRealtimeDataResult, WebAudioCommand
-from .domain import WebAudio
-from .events import (
-    AudioListenerCreatedEvent,
-    AudioListenerWillBeDestroyedEvent,
-    AudioNodeCreatedEvent,
-    AudioNodeWillBeDestroyedEvent,
-    AudioParamCreatedEvent,
-    AudioParamWillBeDestroyedEvent,
-    ContextChangedEvent,
-    ContextCreatedEvent,
-    ContextWillBeDestroyedEvent,
-    NodeParamConnectedEvent,
-    NodeParamDisconnectedEvent,
-    NodesConnectedEvent,
-    NodesDisconnectedEvent,
-    WebAudioEvent,
-)
-from .types import (
-    AudioListener,
-    AudioNode,
-    AudioParam,
-    AutomationRate,
-    BaseAudioContext,
-    ChannelCountMode,
-    ChannelInterpretation,
-    ContextRealtimeData,
-    ContextState,
-    ContextType,
-    GraphObjectId,
-    NodeType,
-    ParamType,
-)
+from typing import TYPE_CHECKING
+
+from cdpify.shared.lazy import lazy_exports
+
+if TYPE_CHECKING:
+    from .commands import GetRealtimeDataParams, GetRealtimeDataResult, WebAudioCommand
+    from .domain import WebAudio
+    from .events import (
+        AudioListenerCreatedEvent,
+        AudioListenerWillBeDestroyedEvent,
+        AudioNodeCreatedEvent,
+        AudioNodeWillBeDestroyedEvent,
+        AudioParamCreatedEvent,
+        AudioParamWillBeDestroyedEvent,
+        ContextChangedEvent,
+        ContextCreatedEvent,
+        ContextWillBeDestroyedEvent,
+        NodeParamConnectedEvent,
+        NodeParamDisconnectedEvent,
+        NodesConnectedEvent,
+        NodesDisconnectedEvent,
+        WebAudioEvent,
+    )
+    from .types import (
+        AudioListener,
+        AudioNode,
+        AudioParam,
+        AutomationRate,
+        BaseAudioContext,
+        ChannelCountMode,
+        ChannelInterpretation,
+        ContextRealtimeData,
+        ContextState,
+        ContextType,
+        GraphObjectId,
+        NodeType,
+        ParamType,
+    )
 
 __all__ = [
     "AudioListener",
@@ -71,3 +76,43 @@ __all__ = [
     "WebAudioCommand",
     "WebAudioEvent",
 ]
+
+__getattr__, __dir__ = lazy_exports(
+    __name__,
+    {
+        "AudioListener": (".types", "AudioListener"),
+        "AudioListenerCreatedEvent": (".events", "AudioListenerCreatedEvent"),
+        "AudioListenerWillBeDestroyedEvent": (
+            ".events",
+            "AudioListenerWillBeDestroyedEvent",
+        ),
+        "AudioNode": (".types", "AudioNode"),
+        "AudioNodeCreatedEvent": (".events", "AudioNodeCreatedEvent"),
+        "AudioNodeWillBeDestroyedEvent": (".events", "AudioNodeWillBeDestroyedEvent"),
+        "AudioParam": (".types", "AudioParam"),
+        "AudioParamCreatedEvent": (".events", "AudioParamCreatedEvent"),
+        "AudioParamWillBeDestroyedEvent": (".events", "AudioParamWillBeDestroyedEvent"),
+        "AutomationRate": (".types", "AutomationRate"),
+        "BaseAudioContext": (".types", "BaseAudioContext"),
+        "ChannelCountMode": (".types", "ChannelCountMode"),
+        "ChannelInterpretation": (".types", "ChannelInterpretation"),
+        "ContextChangedEvent": (".events", "ContextChangedEvent"),
+        "ContextCreatedEvent": (".events", "ContextCreatedEvent"),
+        "ContextRealtimeData": (".types", "ContextRealtimeData"),
+        "ContextState": (".types", "ContextState"),
+        "ContextType": (".types", "ContextType"),
+        "ContextWillBeDestroyedEvent": (".events", "ContextWillBeDestroyedEvent"),
+        "GetRealtimeDataParams": (".commands", "GetRealtimeDataParams"),
+        "GetRealtimeDataResult": (".commands", "GetRealtimeDataResult"),
+        "GraphObjectId": (".types", "GraphObjectId"),
+        "NodeParamConnectedEvent": (".events", "NodeParamConnectedEvent"),
+        "NodeParamDisconnectedEvent": (".events", "NodeParamDisconnectedEvent"),
+        "NodeType": (".types", "NodeType"),
+        "NodesConnectedEvent": (".events", "NodesConnectedEvent"),
+        "NodesDisconnectedEvent": (".events", "NodesDisconnectedEvent"),
+        "ParamType": (".types", "ParamType"),
+        "WebAudio": (".domain", "WebAudio"),
+        "WebAudioCommand": (".commands", "WebAudioCommand"),
+        "WebAudioEvent": (".events", "WebAudioEvent"),
+    },
+)

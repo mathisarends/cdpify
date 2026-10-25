@@ -55,7 +55,9 @@ def test_short_import_uses_inline_form(simple_domain: Domain) -> None:
 
     # types has 3 entries → should use inline form
     types_line = next(
-        line for line in output.splitlines() if line.startswith("from .types import")
+        line.strip()
+        for line in output.splitlines()
+        if line.strip().startswith("from .types import")
     )
     assert "(" not in types_line
 
@@ -106,3 +108,34 @@ def test_aliases_event_enum_when_it_collides_with_a_type() -> None:
     assert "BackgroundServiceEvent as BackgroundServiceEventName" in output
     assert '"BackgroundServiceEvent",' in output
     assert '"BackgroundServiceEventName",' in output
+
+
+def test_exports_are_resolved_lazily(simple_domain: Domain) -> None:
+    output = init.generate(simple_domain)
+
+    assert "if TYPE_CHECKING:" in output
+    assert "__getattr__, __dir__ = lazy_exports(" in output
+    assert '"Sample": (".domain", "Sample"),' in output
+    assert '"GetNodeParams": (".commands", "GetNodeParams"),' in output
+    assert '"NodeAddedEvent": (".events", "NodeAddedEvent"),' in output
+
+
+def test_lazy_exports_follow_import_aliases() -> None:
+    domain = Domain(
+        domain="Animation",
+        types=[TypeDefinition(id="Animation", type="object")],
+    )
+
+    output = init.generate(domain)
+
+    assert '"AnimationType": (".types", "Animation"),' in output
+    assert '"Animation": (".domain", "Animation"),' in output
+
+
+def test_root_init_resolves_domains_lazily() -> None:
+    output = init.generate_root([Domain(domain="Page"), Domain(domain="DOMStorage")])
+
+    assert "from .accessors import DomainAccessors" in output
+    assert "    from .page import Page" in output
+    assert '"Page": (".page", "Page"),' in output
+    assert '"DOMStorage": (".domstorage", "DOMStorage"),' in output

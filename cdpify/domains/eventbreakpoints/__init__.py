@@ -4,12 +4,17 @@
 
 """CDP EventBreakpoints Domain."""
 
-from .commands import (
-    EventBreakpointsCommand,
-    RemoveInstrumentationBreakpointParams,
-    SetInstrumentationBreakpointParams,
-)
-from .domain import EventBreakpoints
+from typing import TYPE_CHECKING
+
+from cdpify.shared.lazy import lazy_exports
+
+if TYPE_CHECKING:
+    from .commands import (
+        EventBreakpointsCommand,
+        RemoveInstrumentationBreakpointParams,
+        SetInstrumentationBreakpointParams,
+    )
+    from .domain import EventBreakpoints
 
 __all__ = [
     "EventBreakpoints",
@@ -17,3 +22,19 @@ __all__ = [
     "RemoveInstrumentationBreakpointParams",
     "SetInstrumentationBreakpointParams",
 ]
+
+__getattr__, __dir__ = lazy_exports(
+    __name__,
+    {
+        "EventBreakpoints": (".domain", "EventBreakpoints"),
+        "EventBreakpointsCommand": (".commands", "EventBreakpointsCommand"),
+        "RemoveInstrumentationBreakpointParams": (
+            ".commands",
+            "RemoveInstrumentationBreakpointParams",
+        ),
+        "SetInstrumentationBreakpointParams": (
+            ".commands",
+            "SetInstrumentationBreakpointParams",
+        ),
+    },
+)

@@ -1,9 +1,26 @@
 {{ header }}
 
+from typing import TYPE_CHECKING
+
+from cdpify.shared.lazy import lazy_exports
+
 from .accessors import DomainAccessors
-{{ domains | map(attribute="import_statement") | join("\n") }}
+
+if TYPE_CHECKING:
+{% for domain in domains %}
+    {{ domain.import_statement }}
+{% endfor %}
 
 __all__ = [
     "DomainAccessors",
     {{ domains | map(attribute="export") | join("\n    ") }}
 ]
+
+__getattr__, __dir__ = lazy_exports(
+    __name__,
+    {
+{% for domain in domains %}
+        "{{ domain.name }}": (".{{ domain.module }}", "{{ domain.name }}"),
+{% endfor %}
+    },
+)

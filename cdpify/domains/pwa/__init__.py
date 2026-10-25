@@ -4,21 +4,26 @@
 
 """CDP PWA Domain."""
 
-from .commands import (
-    ChangeAppUserSettingsParams,
-    GetOsAppStateParams,
-    GetOsAppStateResult,
-    InstallParams,
-    LaunchFilesInAppParams,
-    LaunchFilesInAppResult,
-    LaunchParams,
-    LaunchResult,
-    OpenCurrentPageInAppParams,
-    PWACommand,
-    UninstallParams,
-)
-from .domain import PWA
-from .types import DisplayMode, FileHandler, FileHandlerAccept
+from typing import TYPE_CHECKING
+
+from cdpify.shared.lazy import lazy_exports
+
+if TYPE_CHECKING:
+    from .commands import (
+        ChangeAppUserSettingsParams,
+        GetOsAppStateParams,
+        GetOsAppStateResult,
+        InstallParams,
+        LaunchFilesInAppParams,
+        LaunchFilesInAppResult,
+        LaunchParams,
+        LaunchResult,
+        OpenCurrentPageInAppParams,
+        PWACommand,
+        UninstallParams,
+    )
+    from .domain import PWA
+    from .types import DisplayMode, FileHandler, FileHandlerAccept
 
 __all__ = [
     "ChangeAppUserSettingsParams",
@@ -37,3 +42,24 @@ __all__ = [
     "PWACommand",
     "UninstallParams",
 ]
+
+__getattr__, __dir__ = lazy_exports(
+    __name__,
+    {
+        "ChangeAppUserSettingsParams": (".commands", "ChangeAppUserSettingsParams"),
+        "DisplayMode": (".types", "DisplayMode"),
+        "FileHandler": (".types", "FileHandler"),
+        "FileHandlerAccept": (".types", "FileHandlerAccept"),
+        "GetOsAppStateParams": (".commands", "GetOsAppStateParams"),
+        "GetOsAppStateResult": (".commands", "GetOsAppStateResult"),
+        "InstallParams": (".commands", "InstallParams"),
+        "LaunchFilesInAppParams": (".commands", "LaunchFilesInAppParams"),
+        "LaunchFilesInAppResult": (".commands", "LaunchFilesInAppResult"),
+        "LaunchParams": (".commands", "LaunchParams"),
+        "LaunchResult": (".commands", "LaunchResult"),
+        "OpenCurrentPageInAppParams": (".commands", "OpenCurrentPageInAppParams"),
+        "PWA": (".domain", "PWA"),
+        "PWACommand": (".commands", "PWACommand"),
+        "UninstallParams": (".commands", "UninstallParams"),
+    },
+)

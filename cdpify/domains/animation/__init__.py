@@ -4,36 +4,41 @@
 
 """CDP Animation Domain."""
 
-from .commands import (
-    AnimationCommand,
-    GetCurrentTimeParams,
-    GetCurrentTimeResult,
-    GetPlaybackRateResult,
-    ReleaseAnimationsParams,
-    ResolveAnimationParams,
-    ResolveAnimationResult,
-    SeekAnimationsParams,
-    SetPausedParams,
-    SetPlaybackRateParams,
-    SetTimingParams,
-)
-from .domain import Animation
-from .events import (
-    AnimationCanceledEvent,
-    AnimationCreatedEvent,
-    AnimationEvent,
-    AnimationStartedEvent,
-    AnimationUpdatedEvent,
-)
-from .types import (
-    Animation as AnimationType,
-)
-from .types import (
-    AnimationEffect,
-    KeyframesRule,
-    KeyframeStyle,
-    ViewOrScrollTimeline,
-)
+from typing import TYPE_CHECKING
+
+from cdpify.shared.lazy import lazy_exports
+
+if TYPE_CHECKING:
+    from .commands import (
+        AnimationCommand,
+        GetCurrentTimeParams,
+        GetCurrentTimeResult,
+        GetPlaybackRateResult,
+        ReleaseAnimationsParams,
+        ResolveAnimationParams,
+        ResolveAnimationResult,
+        SeekAnimationsParams,
+        SetPausedParams,
+        SetPlaybackRateParams,
+        SetTimingParams,
+    )
+    from .domain import Animation
+    from .events import (
+        AnimationCanceledEvent,
+        AnimationCreatedEvent,
+        AnimationEvent,
+        AnimationStartedEvent,
+        AnimationUpdatedEvent,
+    )
+    from .types import (
+        Animation as AnimationType,
+    )
+    from .types import (
+        AnimationEffect,
+        KeyframesRule,
+        KeyframeStyle,
+        ViewOrScrollTimeline,
+    )
 
 __all__ = [
     "Animation",
@@ -59,3 +64,31 @@ __all__ = [
     "SetTimingParams",
     "ViewOrScrollTimeline",
 ]
+
+__getattr__, __dir__ = lazy_exports(
+    __name__,
+    {
+        "Animation": (".domain", "Animation"),
+        "AnimationCanceledEvent": (".events", "AnimationCanceledEvent"),
+        "AnimationCommand": (".commands", "AnimationCommand"),
+        "AnimationCreatedEvent": (".events", "AnimationCreatedEvent"),
+        "AnimationEffect": (".types", "AnimationEffect"),
+        "AnimationEvent": (".events", "AnimationEvent"),
+        "AnimationStartedEvent": (".events", "AnimationStartedEvent"),
+        "AnimationType": (".types", "Animation"),
+        "AnimationUpdatedEvent": (".events", "AnimationUpdatedEvent"),
+        "GetCurrentTimeParams": (".commands", "GetCurrentTimeParams"),
+        "GetCurrentTimeResult": (".commands", "GetCurrentTimeResult"),
+        "GetPlaybackRateResult": (".commands", "GetPlaybackRateResult"),
+        "KeyframeStyle": (".types", "KeyframeStyle"),
+        "KeyframesRule": (".types", "KeyframesRule"),
+        "ReleaseAnimationsParams": (".commands", "ReleaseAnimationsParams"),
+        "ResolveAnimationParams": (".commands", "ResolveAnimationParams"),
+        "ResolveAnimationResult": (".commands", "ResolveAnimationResult"),
+        "SeekAnimationsParams": (".commands", "SeekAnimationsParams"),
+        "SetPausedParams": (".commands", "SetPausedParams"),
+        "SetPlaybackRateParams": (".commands", "SetPlaybackRateParams"),
+        "SetTimingParams": (".commands", "SetTimingParams"),
+        "ViewOrScrollTimeline": (".types", "ViewOrScrollTimeline"),
+    },
+)

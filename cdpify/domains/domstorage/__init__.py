@@ -4,23 +4,28 @@
 
 """CDP DOMStorage Domain."""
 
-from .commands import (
-    ClearParams,
-    DOMStorageCommand,
-    GetDOMStorageItemsParams,
-    GetDOMStorageItemsResult,
-    RemoveDOMStorageItemParams,
-    SetDOMStorageItemParams,
-)
-from .domain import DOMStorage
-from .events import (
-    DOMStorageEvent,
-    DomStorageItemAddedEvent,
-    DomStorageItemRemovedEvent,
-    DomStorageItemsClearedEvent,
-    DomStorageItemUpdatedEvent,
-)
-from .types import Item, SerializedStorageKey, StorageId
+from typing import TYPE_CHECKING
+
+from cdpify.shared.lazy import lazy_exports
+
+if TYPE_CHECKING:
+    from .commands import (
+        ClearParams,
+        DOMStorageCommand,
+        GetDOMStorageItemsParams,
+        GetDOMStorageItemsResult,
+        RemoveDOMStorageItemParams,
+        SetDOMStorageItemParams,
+    )
+    from .domain import DOMStorage
+    from .events import (
+        DOMStorageEvent,
+        DomStorageItemAddedEvent,
+        DomStorageItemRemovedEvent,
+        DomStorageItemsClearedEvent,
+        DomStorageItemUpdatedEvent,
+    )
+    from .types import Item, SerializedStorageKey, StorageId
 
 __all__ = [
     "ClearParams",
@@ -39,3 +44,24 @@ __all__ = [
     "SetDOMStorageItemParams",
     "StorageId",
 ]
+
+__getattr__, __dir__ = lazy_exports(
+    __name__,
+    {
+        "ClearParams": (".commands", "ClearParams"),
+        "DOMStorage": (".domain", "DOMStorage"),
+        "DOMStorageCommand": (".commands", "DOMStorageCommand"),
+        "DOMStorageEvent": (".events", "DOMStorageEvent"),
+        "DomStorageItemAddedEvent": (".events", "DomStorageItemAddedEvent"),
+        "DomStorageItemRemovedEvent": (".events", "DomStorageItemRemovedEvent"),
+        "DomStorageItemUpdatedEvent": (".events", "DomStorageItemUpdatedEvent"),
+        "DomStorageItemsClearedEvent": (".events", "DomStorageItemsClearedEvent"),
+        "GetDOMStorageItemsParams": (".commands", "GetDOMStorageItemsParams"),
+        "GetDOMStorageItemsResult": (".commands", "GetDOMStorageItemsResult"),
+        "Item": (".types", "Item"),
+        "RemoveDOMStorageItemParams": (".commands", "RemoveDOMStorageItemParams"),
+        "SerializedStorageKey": (".types", "SerializedStorageKey"),
+        "SetDOMStorageItemParams": (".commands", "SetDOMStorageItemParams"),
+        "StorageId": (".types", "StorageId"),
+    },
+)

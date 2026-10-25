@@ -4,31 +4,36 @@
 
 """CDP Security Domain."""
 
-from .commands import (
-    HandleCertificateErrorParams,
-    SecurityCommand,
-    SetIgnoreCertificateErrorsParams,
-    SetOverrideCertificateErrorsParams,
-)
-from .domain import Security
-from .events import (
-    CertificateErrorEvent,
-    SecurityEvent,
-    SecurityStateChangedEvent,
-    VisibleSecurityStateChangedEvent,
-)
-from .types import (
-    CertificateErrorAction,
-    CertificateId,
-    CertificateSecurityState,
-    InsecureContentStatus,
-    MixedContentType,
-    SafetyTipInfo,
-    SafetyTipStatus,
-    SecurityState,
-    SecurityStateExplanation,
-    VisibleSecurityState,
-)
+from typing import TYPE_CHECKING
+
+from cdpify.shared.lazy import lazy_exports
+
+if TYPE_CHECKING:
+    from .commands import (
+        HandleCertificateErrorParams,
+        SecurityCommand,
+        SetIgnoreCertificateErrorsParams,
+        SetOverrideCertificateErrorsParams,
+    )
+    from .domain import Security
+    from .events import (
+        CertificateErrorEvent,
+        SecurityEvent,
+        SecurityStateChangedEvent,
+        VisibleSecurityStateChangedEvent,
+    )
+    from .types import (
+        CertificateErrorAction,
+        CertificateId,
+        CertificateSecurityState,
+        InsecureContentStatus,
+        MixedContentType,
+        SafetyTipInfo,
+        SafetyTipStatus,
+        SecurityState,
+        SecurityStateExplanation,
+        VisibleSecurityState,
+    )
 
 __all__ = [
     "CertificateErrorAction",
@@ -51,3 +56,37 @@ __all__ = [
     "VisibleSecurityState",
     "VisibleSecurityStateChangedEvent",
 ]
+
+__getattr__, __dir__ = lazy_exports(
+    __name__,
+    {
+        "CertificateErrorAction": (".types", "CertificateErrorAction"),
+        "CertificateErrorEvent": (".events", "CertificateErrorEvent"),
+        "CertificateId": (".types", "CertificateId"),
+        "CertificateSecurityState": (".types", "CertificateSecurityState"),
+        "HandleCertificateErrorParams": (".commands", "HandleCertificateErrorParams"),
+        "InsecureContentStatus": (".types", "InsecureContentStatus"),
+        "MixedContentType": (".types", "MixedContentType"),
+        "SafetyTipInfo": (".types", "SafetyTipInfo"),
+        "SafetyTipStatus": (".types", "SafetyTipStatus"),
+        "Security": (".domain", "Security"),
+        "SecurityCommand": (".commands", "SecurityCommand"),
+        "SecurityEvent": (".events", "SecurityEvent"),
+        "SecurityState": (".types", "SecurityState"),
+        "SecurityStateChangedEvent": (".events", "SecurityStateChangedEvent"),
+        "SecurityStateExplanation": (".types", "SecurityStateExplanation"),
+        "SetIgnoreCertificateErrorsParams": (
+            ".commands",
+            "SetIgnoreCertificateErrorsParams",
+        ),
+        "SetOverrideCertificateErrorsParams": (
+            ".commands",
+            "SetOverrideCertificateErrorsParams",
+        ),
+        "VisibleSecurityState": (".types", "VisibleSecurityState"),
+        "VisibleSecurityStateChangedEvent": (
+            ".events",
+            "VisibleSecurityStateChangedEvent",
+        ),
+    },
+)

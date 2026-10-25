@@ -88,3 +88,10 @@ class DomainView:
 class ImportBlockView:
     module: str
     names: tuple[str, ...]
+
+
+@dataclass(frozen=True, slots=True)
+class LazyExportView:
+    name: str
+    module: str
+    attribute: str
