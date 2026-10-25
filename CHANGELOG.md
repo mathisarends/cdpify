@@ -54,6 +54,8 @@ Breaking changes are listed first in each release.
   bounded queues drop their oldest event instead of blocking command responses.
   Subscriptions inherit the client limit unless overridden. Both subscriptions
   and the standalone WebSocket transport expose `dropped_events` counters.
+- `cdpify[orjson]` enables optional `orjson` encoding and decoding in the WebSocket
+  transport, with automatic fallback to `json` and outgoing text frames.
 - Optional `CallbackTransport` protocol in `cdpify.transport` for direct event
   delivery without a transport queue. Existing `Transport` implementations work
   through their event iterator.
@@ -69,7 +71,8 @@ Breaking changes are listed first in each release.
 ### Changed
 
 - The root client and session views share the implementation of `listen()`.
-- CI runs tests on Ubuntu, Windows, and macOS with Python 3.12, 3.13, and 3.14.
+- CI runs tests on Ubuntu, Windows, and macOS with Python 3.12, 3.13, and 3.14,
+  including both JSON backends.
 - `CDPTimeoutError` also inherits from the built-in `TimeoutError`, so
   `except TimeoutError` catches command timeouts.
 - Docstrings of generated type aliases follow the alias, so IDEs and Sphinx

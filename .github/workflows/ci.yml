@@ -27,7 +27,7 @@ jobs:
         run: uv python install ${{ matrix.python-version }}
 
       - name: Install dependencies
-        run: uv sync --python ${{ matrix.python-version }} --dev
+        run: uv sync --python ${{ matrix.python-version }} --dev --extra orjson
 
       - name: Ruff check
         run: uv run --python ${{ matrix.python-version }} ruff check . --exclude cdpify/domains
@@ -36,4 +36,4 @@ jobs:
         run: uv run --python ${{ matrix.python-version }} ruff format --check . --exclude cdpify/domains
 
       - name: Run tests
-        run: uv run --python ${{ matrix.python-version }} pytest tests -v
+        run: uv run --python ${{ matrix.python-version }} --extra orjson pytest tests -v

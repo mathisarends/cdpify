@@ -2,11 +2,12 @@
 
 Stand: 2026-10-25, Version 0.3.0
 
-Erledigte Aufgaben sind entfernt; Änderungen und API-Brüche stehen in `CHANGELOG.md`.
+Alle umsetzbaren Review-Punkte sind erledigt. Die Änderungen einschließlich
+Queue-Limits, optionalem `orjson`, direkter Event-Zustellung, gemeinsamen
+Listener-Methoden und der Namen `CdpClient`/`CdpSession` stehen in `CHANGELOG.md`.
 
-## Offene Umsetzungspunkte
-
-- [ ] Optionales `cdpify[orjson]` mit JSON-Fallback, Tests und CI-Integration.
+Erledigte Aufgaben sind hier entfernt. API-Brüche sind erlaubt und werden im
+Changelog dokumentiert. Es gibt keine offenen Umsetzungspunkte.
 
 ## Bisherige Messwerte
 

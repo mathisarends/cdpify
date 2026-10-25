@@ -8,6 +8,7 @@ _PROJECT_ROOT = Path(__file__).parents[1]
 _PACKAGE_ROOT = _PROJECT_ROOT / "cdpify"
 _GENERATOR_ONLY_PACKAGES = {"jinja2", "pydantic", "ruff"}
 _OPTIONAL_TRANSPORT_PACKAGES = {"websockets"}
+_OPTIONAL_ORJSON_PACKAGES = {"orjson"}
 
 
 def test_generator_dependencies_are_optional() -> None:
@@ -62,6 +63,17 @@ def test_runtime_does_not_import_generator_code_or_dependencies() -> None:
     assert violations == []
 
 
+def test_orjson_dependency_is_optional() -> None:
+    with (_PROJECT_ROOT / "pyproject.toml").open("rb") as pyproject_file:
+        project = tomllib.load(pyproject_file)["project"]
+
+    assert project["dependencies"] == []
+    assert any(
+        dependency.startswith("orjson>=")
+        for dependency in project["optional-dependencies"]["orjson"]
+    )
+
+
 def test_optional_websocket_dependency_is_isolated_to_its_transport() -> None:
     violations: list[str] = []
 
@@ -71,7 +83,9 @@ def test_optional_websocket_dependency_is_isolated_to_its_transport() -> None:
             continue
 
         for imported_name in _imported_names(source_path):
-            if imported_name.split(".", 1)[0] in _OPTIONAL_TRANSPORT_PACKAGES:
+            if imported_name.split(".", 1)[0] in (
+                _OPTIONAL_TRANSPORT_PACKAGES | _OPTIONAL_ORJSON_PACKAGES
+            ):
                 relative_path = source_path.relative_to(_PROJECT_ROOT)
                 violations.append(f"{relative_path}: {imported_name}")
 
@@ -79,7 +93,11 @@ def test_optional_websocket_dependency_is_isolated_to_its_transport() -> None:
 
 
 def test_core_package_imports_without_optional_dependencies() -> None:
-    optional_packages = _GENERATOR_ONLY_PACKAGES | _OPTIONAL_TRANSPORT_PACKAGES
+    optional_packages = (
+        _GENERATOR_ONLY_PACKAGES
+        | _OPTIONAL_TRANSPORT_PACKAGES
+        | _OPTIONAL_ORJSON_PACKAGES
+    )
     blocked_modules = "; ".join(
         f"sys.modules[{package!r}] = None" for package in sorted(optional_packages)
     )

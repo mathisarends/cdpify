@@ -12,6 +12,11 @@ from cdpify.event_queue import EventQueue
 from cdpify.exceptions import CDPCommandError, CDPConnectionError, CDPTimeoutError
 from cdpify.transport import EventHandler, TransportEvent
 
+try:
+    import orjson
+except ModuleNotFoundError:
+    orjson = None
+
 logger = logging.getLogger(__name__)
 
 
@@ -163,7 +168,7 @@ class WebSocketTransport:
                 await self._finish_event_stream()
 
     async def _process_message(self, raw: str | bytes) -> None:
-        message = json.loads(raw)
+        message = orjson.loads(raw) if orjson is not None else json.loads(raw)
 
         if "id" in message:
             self._handle_response(message)
@@ -234,7 +239,12 @@ class WebSocketTransport:
         if connection is None:
             raise CDPConnectionError("Not connected")
         logger.debug("-> #%s: %s", message_id, method)
-        await connection.send(json.dumps(message))
+        payload = (
+            orjson.dumps(message).decode("utf-8")
+            if orjson is not None
+            else json.dumps(message)
+        )
+        await connection.send(payload)
 
     async def _await_response(
         self,

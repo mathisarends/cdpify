@@ -13,6 +13,9 @@ classifiers = [
 dependencies = []
 
 [project.optional-dependencies]
+orjson = [
+    "orjson>=3.11.3",
+]
 websocket = [
     "websockets>=15.0.1",
 ]

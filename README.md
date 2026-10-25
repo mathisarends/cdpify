@@ -42,6 +42,16 @@ Requires Python 3.12 or newer. The WebSocket extra provides the recommended
 default transport used by `CdpClient(url)`. Install `cdpify` without an extra when
 supplying your own `Transport` implementation.
 
+For faster JSON encoding and decoding in the WebSocket transport, install the
+optional `orjson` extra as well:
+
+```bash
+pip install "cdpify[websocket,orjson]"
+```
+
+The transport automatically uses `orjson` when available and otherwise uses
+Python's standard `json` module. Outgoing WebSocket messages remain text frames.
+
 Install the generator dependencies only when regenerating protocol modules:
 
 ```bash
@@ -318,6 +328,10 @@ uv sync --dev
 uv run pytest
 uv run ruff check . --exclude cdpify/domains
 ```
+
+Use `uv sync --dev --extra orjson` and `uv run --extra orjson pytest` to include
+the optional backend. CI installs this extra and tests both JSON backends on
+Ubuntu, Windows, and macOS with Python 3.12, 3.13, and 3.14.
 
 To download the latest protocol definitions and regenerate all domain clients:
 

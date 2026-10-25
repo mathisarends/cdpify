@@ -104,9 +104,9 @@ async def test_send_serializes_payload_as_json() -> None:
         {"id": 3, "method": "Page.enable", "params": {}},
     )
 
-    assert transport._ws.sent_messages == [  # type: ignore[union-attr]
-        json.dumps({"id": 3, "method": "Page.enable", "params": {}})
-    ]
+    payload = transport._ws.sent_messages[0]  # type: ignore[union-attr]
+    assert isinstance(payload, str)
+    assert json.loads(payload) == {"id": 3, "method": "Page.enable", "params": {}}
 
 
 @pytest.mark.asyncio
@@ -185,9 +185,17 @@ class _ScriptedWebSocket(_FakeWebSocket):
 
 
 @pytest.mark.asyncio
+@pytest.mark.parametrize("backend", ["json", "orjson"])
 async def test_message_loop_skips_malformed_messages(
     caplog: pytest.LogCaptureFixture,
+    monkeypatch: pytest.MonkeyPatch,
+    backend: str,
 ) -> None:
+    monkeypatch.setattr(
+        websocket_module,
+        "orjson",
+        None if backend == "json" else pytest.importorskip("orjson"),
+    )
     transport = WebSocketTransport("ws://example")
     transport._ws = _ScriptedWebSocket(  # type: ignore[assignment]
         [
@@ -247,6 +255,54 @@ async def test_disconnect_wakes_transport_reader() -> None:
     assert await asyncio.wait_for(reader, timeout=1.0) is None
 
 
+@pytest.mark.asyncio
+@pytest.mark.parametrize("backend", ["json", "orjson"])
+async def test_json_backends_send_text_and_decode_events_and_responses(
+    monkeypatch: pytest.MonkeyPatch, backend: str
+) -> None:
+    monkeypatch.setattr(
+        websocket_module,
+        "orjson",
+        None if backend == "json" else pytest.importorskip("orjson"),
+    )
+    transport = WebSocketTransport("ws://example")
+    socket = _FakeWebSocket()
+    transport._ws = socket  # type: ignore[assignment]
+    payload = {"id": 1, "method": "Test.command", "params": {"text": "Grüße 🌍"}}
+
+    await transport._send(1, "Test.command", payload)
+    assert isinstance(socket.sent_messages[0], str)
+    assert json.loads(socket.sent_messages[0]) == payload
+    pending = _create_pending_request(transport._pending_requests, 1)
+    await transport._process_message(b'{"id":1,"result":{"ok":true}}')
+    assert await transport._await_response(1, "Test.command", pending, 1.0) == {
+        "ok": True
+    }
+    await transport._process_message(
+        json.dumps({"method": "Test.event", "params": {"text": "Grüße 🌍"}}).encode()
+    )
+    assert (await anext(transport.events())).params == {"text": "Grüße 🌍"}
+    await transport.disconnect()
+
+
+@pytest.mark.asyncio
+async def test_callback_stream_closes_once_and_excludes_iterator() -> None:
+    transport = WebSocketTransport("ws://example")
+    handler = AsyncMock()
+    transport.set_event_handler(handler)
+    await transport._process_message('{"method":"Test.event"}')
+    with pytest.raises(RuntimeError, match="event handler"):
+        await anext(transport.events())
+
+    await transport.disconnect()
+    await transport.disconnect()
+
+    assert [call.args[0] for call in handler.await_args_list] == [
+        websocket_module.TransportEvent("Test.event", {}),
+        None,
+    ]
+
+
 def test_websocket_transport_rejects_negative_queue_limit() -> None:
     with pytest.raises(ValueError, match="max_queue_size"):
         WebSocketTransport("ws://example", max_queue_size=-1)
@@ -281,21 +337,3 @@ async def test_reconnect_resets_buffer_without_migrating_old_readers(
     assert [event.params["value"] async for event in old_events] == [3]
     assert [event.params["value"] async for event in transport.events()] == [4]
     await transport.disconnect()
-
-
-@pytest.mark.asyncio
-async def test_callback_stream_closes_once_and_excludes_iterator() -> None:
-    transport = WebSocketTransport("ws://example")
-    handler = AsyncMock()
-    transport.set_event_handler(handler)
-    await transport._process_message('{"method":"Test.event"}')
-    with pytest.raises(RuntimeError, match="event handler"):
-        await anext(transport.events())
-
-    await transport.disconnect()
-    await transport.disconnect()
-
-    assert [call.args[0] for call in handler.await_args_list] == [
-        websocket_module.TransportEvent("Test.event", {}),
-        None,
-    ]
