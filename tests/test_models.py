@@ -11,6 +11,8 @@ from cdpify.codec import _compile_model, decode_cdp, encode_cdp
 from cdpify.domains.accessibility import AXNode
 from cdpify.domains.dom.commands import GetOuterHTMLParams
 from cdpify.domains.page.events import LifecycleEventEvent
+from cdpify.domains.target.commands import SetDiscoverTargetsParams
+from cdpify.domains.target.types import FilterEntry
 
 
 @dataclass(kw_only=True, slots=True)
@@ -25,18 +27,28 @@ class TestGeneratedModels:
         assert not hasattr(params, "cdp_session_id")
 
     def test_event_models_do_not_carry_session_metadata(self) -> None:
-        event = decode_cdp(
-            LifecycleEventEvent,
-            {
-                "frameId": "F1",
-                "loaderId": "L1",
-                "name": "networkIdle",
-                "timestamp": 12.5,
-            },
-        )
+        payload = {
+            "frameId": "F1",
+            "loaderId": "L1",
+            "name": "networkIdle",
+            "timestamp": 12.5,
+        }
+        event = decode_cdp(LifecycleEventEvent, payload)
 
         assert event.name == "networkIdle"
+        assert event.frame_id == "F1"
+        assert event.loader_id == "L1"
+        assert event.timestamp == 12.5
+        assert encode_cdp(event) == payload
         assert not hasattr(event, "cdp_session_id")
+
+    def test_array_alias_decodes_nested_models_and_round_trips(self) -> None:
+        payload = {"discover": True, "filter": [{"type": "page", "exclude": False}]}
+
+        params = decode_cdp(SetDiscoverTargetsParams, payload)
+
+        assert params.filter == [FilterEntry(type="page", exclude=False)]
+        assert encode_cdp(params) == payload
 
     def test_models_are_mutable_and_slotted(self) -> None:
         model = _Sample(value=1)

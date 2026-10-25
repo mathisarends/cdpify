@@ -300,6 +300,20 @@ result = await client.execute(
 )
 ```
 
+### Generated type aliases
+
+Generated aliases such as `FrameId`, `NodeId`, and `TargetFilter` use Python's
+`type` statement. Use them in annotations and pass ordinary Python values:
+
+```python
+from cdpify.domains.page import FrameId
+
+frame_id: FrameId = "F1"
+```
+
+Aliases are not constructors or runtime classes. Use `"F1"` directly rather
+than `FrameId("F1")`, and `isinstance(frame_id, str)` for a runtime check.
+
 ### When Chrome deviates from the spec
 
 Chrome does not always send every field the protocol marks as required.

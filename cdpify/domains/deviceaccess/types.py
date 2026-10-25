@@ -6,12 +6,12 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-RequestId = str
+type RequestId = str
 """
 Device request id.
 """
 
-DeviceId = str
+type DeviceId = str
 """
 A device id.
 """

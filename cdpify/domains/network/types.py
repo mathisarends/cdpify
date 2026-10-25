@@ -34,12 +34,12 @@ type ResourceType = Literal[
 Resource type as it was perceived by the rendering engine.
 """
 
-LoaderId = str
+type LoaderId = str
 """
 Unique loader identifier.
 """
 
-RequestId = str
+type RequestId = str
 """
 Unique network request identifier. Note that this does not identify individual HTTP
 requests that are part of a network request.
@@ -65,17 +65,17 @@ type ErrorReason = Literal[
 Network level fetch failure reason.
 """
 
-TimeSinceEpoch = float
+type TimeSinceEpoch = float
 """
 UTC time in seconds, counted from January 1, 1970.
 """
 
-MonotonicTime = float
+type MonotonicTime = float
 """
 Monotonically increasing time in seconds since an arbitrary point in the past.
 """
 
-Headers = dict[str, Any]
+type Headers = dict[str, Any]
 """
 Request / response headers as keys / values of JSON object.
 """
@@ -1030,7 +1030,7 @@ type ReportStatus = Literal["Queued", "Pending", "MarkedForRemoval", "Success"]
 The status of a Reporting API report.
 """
 
-ReportId = str
+type ReportId = str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -1146,7 +1146,7 @@ class DeviceBoundSession:
     )
 
 
-DeviceBoundSessionEventId = str
+type DeviceBoundSessionEventId = str
 """
 A unique identifier for a device bound session event.
 """

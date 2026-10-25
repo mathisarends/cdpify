@@ -9,7 +9,7 @@ from typing import Literal
 
 from cdpify.domains import network
 
-CertificateId = int
+type CertificateId = int
 """
 An internal certificate ID value.
 """

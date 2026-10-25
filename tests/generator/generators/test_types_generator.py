@@ -13,7 +13,7 @@ def test_generates_header_and_dataclass_imports(simple_domain: Domain) -> None:
 
 def test_renders_alias_for_primitive_type(simple_domain: Domain) -> None:
     output = types.generate(simple_domain)
-    assert "NodeId = int" in output
+    assert "type NodeId = int" in output
 
 
 def test_array_alias_keeps_item_type() -> None:
@@ -31,9 +31,9 @@ def test_array_alias_keeps_item_type() -> None:
 
     output = types.generate(domain)
 
-    assert "TargetFilter = list[FilterEntry]" in output
-    assert "Quad = list[float]" in output
-    assert "Frames = list[page.FrameId]" in output
+    assert "type TargetFilter = list[FilterEntry]" in output
+    assert "type Quad = list[float]" in output
+    assert "type Frames = list[page.FrameId]" in output
     assert "from cdpify.domains import page" in output
 
 
@@ -69,7 +69,7 @@ def test_alias_docstring_follows_the_assignment() -> None:
 
     output = types.generate(domain)
 
-    assert 'FrameId = str\n"""\nUnique frame identifier.\n"""' in output
+    assert 'type FrameId = str\n"""\nUnique frame identifier.\n"""' in output
     assert 'type Kind = Literal["a", "b"]\n"""\nFrame kind.\n"""' in output
 
 

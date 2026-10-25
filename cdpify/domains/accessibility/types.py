@@ -9,7 +9,7 @@ from typing import Any, Literal
 
 from cdpify.domains import dom, page
 
-AXNodeId = str
+type AXNodeId = str
 """
 Unique accessibility node identifier.
 """

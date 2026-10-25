@@ -31,7 +31,7 @@ type GestureSourceType = Literal["default", "touch", "mouse"]
 
 type MouseButton = Literal["none", "left", "middle", "right", "back", "forward"]
 
-TimeSinceEpoch = float
+type TimeSinceEpoch = float
 """
 UTC time in seconds, counted from January 1, 1970.
 """

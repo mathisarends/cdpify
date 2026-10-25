@@ -9,12 +9,12 @@ from typing import Any, Literal
 
 from cdpify.domains import dom
 
-PlayerId = str
+type PlayerId = str
 """
 Players will get an ID that is unique within the agent context.
 """
 
-Timestamp = float
+type Timestamp = float
 
 
 @dataclass(kw_only=True, slots=True)

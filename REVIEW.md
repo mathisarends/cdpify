@@ -2,12 +2,18 @@
 
 Stand: 2026-10-25, Version 0.3.0
 
-Alle umsetzbaren Review-Punkte sind erledigt. Die Änderungen einschließlich
+Die bisherigen Review-Änderungen einschließlich
 Queue-Limits, optionalem `orjson`, direkter Event-Zustellung, gemeinsamen
-Listener-Methoden und der Namen `CdpClient`/`CdpSession` stehen in `CHANGELOG.md`.
+Listener-Methoden, der Namen `CdpClient`/`CdpSession` und einheitlicher
+`type`-Aliase stehen in `CHANGELOG.md`.
 
 Erledigte Aufgaben sind hier entfernt. API-Brüche sind erlaubt und werden im
-Changelog dokumentiert. Es gibt keine offenen Umsetzungspunkte.
+Changelog dokumentiert.
+
+## Offene Umsetzungspunkte
+
+- [ ] Event-Modelle pro Event und Zieltyp einmal decodieren und zwischen
+  Listenern teilen; das neue Verhalten dokumentieren und testen.
 
 ## Bisherige Messwerte
 
@@ -21,24 +27,10 @@ Changelog dokumentiert. Es gibt keine offenen Umsetzungspunkte.
 
 ## Bewusste Entscheidungen
 
-### Unabhängige Event-Modelle pro Listener
-
-Hören mehrere Listener auf dasselbe Event mit demselben Typ, wird es für jeden
-Listener separat decodiert. Ein Cache würde mutable Dataclass-Instanzen teilen:
-Änderungen eines Listeners wären bei anderen sichtbar. Der Decoder ist bereits
-vorkompiliert; unabhängige Modelle sind die zusätzliche Decodierung wert.
-
 ### Öffentliche Params-Dataclasses bleiben
 
 Die Params-Dataclasses wegoptimieren und direkt Dicts generieren: Encoden kostet ~0,7 µs,
 ein CDP-Roundtrip dauert Millisekunden. Die Dataclasses sind öffentliche, nützliche Typen.
-
-### Generierte Typaliase behalten ihre Semantik
-
-- **Gemischte Alias-Syntax:** `FrameId = str` neben `type AdFrameType = Literal[...]`.
-  Der Codec entpackt `type`-Aliase inzwischen, das ist also nur noch eine Stilfrage.
-  Eine Vereinheitlichung auf `type` würde `FrameId("...")` und `isinstance` brechen und
-  bringt wenig.
 
 ### Öffentliche Executor-Schnittstelle bleibt
 

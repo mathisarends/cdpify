@@ -9,7 +9,7 @@ from typing import Literal
 
 from cdpify.domains import dom, network
 
-RuleSetId = str
+type RuleSetId = str
 """
 Unique id
 """
@@ -92,7 +92,7 @@ class PreloadingAttemptSource:
     node_ids: list[dom.BackendNodeId] = field(metadata={"cdp_name": "nodeIds"})
 
 
-PreloadPipelineId = str
+type PreloadPipelineId = str
 """
 Chrome manages different types of preloads together using a concept of preloading
 pipeline. For example, if a site uses a SpeculationRules for prerender, Chrome first

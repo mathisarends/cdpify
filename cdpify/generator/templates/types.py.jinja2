@@ -21,7 +21,7 @@ class {{ definition.name }}:
 {% endif %}
     {{ definition.fields | map(attribute="declaration") | join("\n    ") }}
 {% else %}
-{% if definition.kind == "enum" %}type {% endif %}{{ definition.name }} = {{ definition.annotation }}
+type {{ definition.name }} = {{ definition.annotation }}
 {% if definition.docstring %}
 {{ definition.docstring }}
 {% endif %}

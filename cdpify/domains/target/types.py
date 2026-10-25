@@ -9,9 +9,9 @@ from typing import Any, Literal
 
 from cdpify.domains import browser, page
 
-TargetID = str
+type TargetID = str
 
-SessionID = str
+type SessionID = str
 """
 Unique identifier of attached debugging session.
 """
@@ -52,7 +52,7 @@ class FilterEntry:
     type: str | None = None
 
 
-TargetFilter = list[FilterEntry]
+type TargetFilter = list[FilterEntry]
 """
 The entries in TargetFilter are matched sequentially against targets and the first
 entry that matches determines if the target is included or not, depending on the value

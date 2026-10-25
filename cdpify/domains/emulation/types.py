@@ -167,7 +167,7 @@ class WorkAreaInsets:
     right: int | None = None
 
 
-ScreenId = str
+type ScreenId = str
 
 
 @dataclass(kw_only=True, slots=True)

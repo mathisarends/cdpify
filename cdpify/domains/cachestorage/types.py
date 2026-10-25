@@ -9,7 +9,7 @@ from typing import Literal
 
 from cdpify.domains import storage
 
-CacheId = str
+type CacheId = str
 """
 Unique identifier of the Cache object.
 """

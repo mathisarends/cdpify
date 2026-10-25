@@ -7,7 +7,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any, Literal
 
-MemoryDumpConfig = dict[str, Any]
+type MemoryDumpConfig = dict[str, Any]
 """
 Configuration for memory dump. Used only when "memory-infra" category is enabled.
 """

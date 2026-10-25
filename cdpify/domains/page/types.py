@@ -9,7 +9,7 @@ from typing import Literal
 
 from cdpify.domains import network
 
-FrameId = str
+type FrameId = str
 """
 Unique frame identifier.
 """
@@ -339,7 +339,7 @@ class FrameTree:
     )
 
 
-ScriptIdentifier = str
+type ScriptIdentifier = str
 """
 Unique script identifier.
 """

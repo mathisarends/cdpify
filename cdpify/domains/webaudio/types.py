@@ -7,7 +7,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Literal
 
-GraphObjectId = str
+type GraphObjectId = str
 """
 An unique ID for a graph object (AudioContext, AudioNode, AudioParam) in Web Audio API
 """
@@ -22,7 +22,7 @@ type ContextState = Literal["suspended", "running", "closed", "interrupted"]
 Enum of AudioContextState from the spec
 """
 
-NodeType = str
+type NodeType = str
 """
 Enum of AudioNode types
 """
@@ -37,7 +37,7 @@ type ChannelInterpretation = Literal["discrete", "speakers"]
 Enum of AudioNode::ChannelInterpretation from the spec
 """
 
-ParamType = str
+type ParamType = str
 """
 Enum of AudioParam types
 """

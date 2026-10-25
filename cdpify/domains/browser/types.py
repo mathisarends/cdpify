@@ -7,9 +7,9 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Literal
 
-BrowserContextID = str
+type BrowserContextID = str
 
-WindowID = int
+type WindowID = int
 
 type WindowState = Literal["normal", "minimized", "maximized", "fullscreen"]
 """

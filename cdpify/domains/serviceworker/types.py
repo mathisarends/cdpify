@@ -9,7 +9,7 @@ from typing import Literal
 
 from cdpify.domains import target
 
-RegistrationID = str
+type RegistrationID = str
 
 
 @dataclass(kw_only=True, slots=True)

@@ -9,18 +9,18 @@ from typing import Any, Literal
 
 from cdpify.domains import network, page
 
-NodeId = int
+type NodeId = int
 """
 Unique DOM node identifier.
 """
 
-BackendNodeId = int
+type BackendNodeId = int
 """
 Unique DOM node identifier used to reference a node that may not have been pushed to
 the front-end.
 """
 
-StyleSheetId = str
+type StyleSheetId = str
 """
 Unique identifier for a CSS stylesheet.
 """
@@ -216,7 +216,7 @@ class RGBA:
     a: float | None = None
 
 
-Quad = list[float]
+type Quad = list[float]
 """
 An array of quad vertices, x immediately followed by y for each point, points
 clock-wise.

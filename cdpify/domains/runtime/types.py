@@ -7,7 +7,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any, Literal
 
-ScriptId = str
+type ScriptId = str
 """
 Unique script identifier.
 """
@@ -66,12 +66,12 @@ class DeepSerializedValue:
     )
 
 
-RemoteObjectId = str
+type RemoteObjectId = str
 """
 Unique object identifier.
 """
 
-UnserializableValue = str
+type UnserializableValue = str
 """
 Primitive value which cannot be JSON-stringified. Includes values `-0`, `NaN`,
 `Infinity`, `-Infinity`, and bigint literals.
@@ -304,7 +304,7 @@ class CallArgument:
     )
 
 
-ExecutionContextId = int
+type ExecutionContextId = int
 """
 Id of an execution context.
 """
@@ -350,12 +350,12 @@ class ExceptionDetails:
     )
 
 
-Timestamp = float
+type Timestamp = float
 """
 Number of milliseconds since epoch.
 """
 
-TimeDelta = float
+type TimeDelta = float
 """
 Number of milliseconds.
 """
@@ -388,7 +388,7 @@ class StackTrace:
     )
 
 
-UniqueDebuggerId = str
+type UniqueDebuggerId = str
 """
 Unique identifier of current debugger.
 """

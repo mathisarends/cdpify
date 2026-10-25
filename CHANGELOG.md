@@ -7,6 +7,11 @@ Breaking changes are listed first in each release.
 
 ### Breaking changes
 
+- All generated type aliases use `type` statements, including primitives and
+  arrays, e.g. `type FrameId = str` and `type Quad = list[float]`. Use them in
+  annotations; pass plain values such as `frame_id: FrameId = "F1"` instead of
+  calling `FrameId("F1")`. For runtime checks use `isinstance(value, str)` rather
+  than `isinstance(value, FrameId)`.
 - `Client` and `CDPSession` are renamed to `CdpClient` and `CdpSession`.
   Update imports to `from cdpify import CdpClient, CdpSession` and calls to
   `CdpClient(...)`. `client.session(...)` now returns `CdpSession`.

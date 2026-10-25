@@ -9,7 +9,7 @@ from typing import Literal
 
 from cdpify.domains import network
 
-RequestId = str
+type RequestId = str
 """
 Unique request identifier. Note that this does not identify individual HTTP requests
 that are part of a network request.

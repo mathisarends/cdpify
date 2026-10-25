@@ -9,7 +9,7 @@ from typing import Literal
 
 from cdpify.domains import network
 
-SerializedStorageKey = str
+type SerializedStorageKey = str
 
 type StorageType = Literal[
     "cookies",

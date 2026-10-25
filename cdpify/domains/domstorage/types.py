@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-SerializedStorageKey = str
+type SerializedStorageKey = str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -24,7 +24,7 @@ class StorageId:
     is_local_storage: bool = field(metadata={"cdp_name": "isLocalStorage"})
 
 
-Item = list[str]
+type Item = list[str]
 """
 DOM Storage item.
 """

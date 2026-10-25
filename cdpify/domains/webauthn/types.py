@@ -7,7 +7,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Literal
 
-AuthenticatorId = str
+type AuthenticatorId = str
 
 type AuthenticatorProtocol = Literal["u2f", "ctap2"]
 

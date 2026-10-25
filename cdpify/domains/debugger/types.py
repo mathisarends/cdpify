@@ -9,12 +9,12 @@ from typing import Literal
 
 from cdpify.domains import runtime
 
-BreakpointId = str
+type BreakpointId = str
 """
 Breakpoint identifier.
 """
 
-CallFrameId = str
+type CallFrameId = str
 """
 Call frame identifier.
 """

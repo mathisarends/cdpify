@@ -127,12 +127,12 @@ class NameValue:
     value: str
 
 
-StringIndex = int
+type StringIndex = int
 """
 Index of the string in the strings table.
 """
 
-ArrayOfStrings = list[StringIndex]
+type ArrayOfStrings = list[StringIndex]
 """
 Index of the string in the strings table.
 """
@@ -159,7 +159,7 @@ class RareIntegerData:
     value: list[int]
 
 
-Rectangle = list[float]
+type Rectangle = list[float]
 
 
 @dataclass(kw_only=True, slots=True)

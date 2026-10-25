@@ -9,12 +9,12 @@ from typing import Literal
 
 from cdpify.domains import dom
 
-LayerId = str
+type LayerId = str
 """
 Unique Layer identifier.
 """
 
-SnapshotId = str
+type SnapshotId = str
 """
 Unique snapshot identifier.
 """
@@ -91,7 +91,7 @@ class Layer:
     )
 
 
-PaintProfile = list[float]
+type PaintProfile = list[float]
 """
 Array of timings, one per paint step.
 """

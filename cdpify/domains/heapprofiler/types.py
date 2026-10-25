@@ -8,7 +8,7 @@ from dataclasses import dataclass, field
 
 from cdpify.domains import runtime
 
-HeapSnapshotObjectId = str
+type HeapSnapshotObjectId = str
 """
 Heap snapshot object id.
 """
