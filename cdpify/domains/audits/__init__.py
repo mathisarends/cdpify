@@ -85,6 +85,8 @@ if TYPE_CHECKING:
         UnencodedDigestIssueDetails,
         UserReidentificationIssueDetails,
         UserReidentificationIssueType,
+        WebInstallIssueDetails,
+        WebInstallIssueReason,
     )
 
 __all__ = [
@@ -162,6 +164,8 @@ __all__ = [
     "UnencodedDigestIssueDetails",
     "UserReidentificationIssueDetails",
     "UserReidentificationIssueType",
+    "WebInstallIssueDetails",
+    "WebInstallIssueReason",
 ]
 
 __getattr__, __dir__ = lazy_exports(
@@ -289,5 +293,7 @@ __getattr__, __dir__ = lazy_exports(
             "UserReidentificationIssueDetails",
         ),
         "UserReidentificationIssueType": (".types", "UserReidentificationIssueType"),
+        "WebInstallIssueDetails": (".types", "WebInstallIssueDetails"),
+        "WebInstallIssueReason": (".types", "WebInstallIssueReason"),
     },
 )

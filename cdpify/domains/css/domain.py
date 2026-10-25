@@ -18,6 +18,7 @@ from .commands import (
     CreateStyleSheetParams,
     CreateStyleSheetResult,
     CSSCommand,
+    ForcePositionTryOptionParams,
     ForcePseudoStateParams,
     ForceStartingStyleParams,
     GetAnimatedStylesForNodeParams,
@@ -202,6 +203,22 @@ class CSS:
 
         await self._executor.execute(
             method=CSSCommand.FORCE_STARTING_STYLE,
+            params=encode_cdp(params),
+        )
+
+    async def force_position_try_option(
+        self,
+        *,
+        node_id: dom.NodeId,
+        index: int | None = None,
+    ) -> None:
+        """
+        Forces a position-try option for the given node.
+        """
+        params = ForcePositionTryOptionParams(node_id=node_id, index=index)
+
+        await self._executor.execute(
+            method=CSSCommand.FORCE_POSITION_TRY_OPTION,
             params=encode_cdp(params),
         )
 

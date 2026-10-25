@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING
 
 from cdpify.codec import decode_cdp, encode_cdp
 from cdpify.executor import CommandExecutor
+from cdpify.shared.decorators import deprecated
 
 from .commands import (
     CloseParams,
@@ -62,6 +63,7 @@ class IO:
         )
         return decode_cdp(ReadResult, result)
 
+    @deprecated()
     async def resolve_blob(
         self,
         *,

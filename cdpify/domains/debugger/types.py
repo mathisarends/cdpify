@@ -105,6 +105,9 @@ class Scope:
     end_location: Location | None = field(
         default=None, metadata={"cdp_name": "endLocation"}
     )
+    empty_reason: Literal["no-variables", "all-unavailable"] | None = field(
+        default=None, metadata={"cdp_name": "emptyReason"}
+    )
 
 
 @dataclass(kw_only=True, slots=True)

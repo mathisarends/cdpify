@@ -198,6 +198,12 @@ class SetDeviceMetricsOverrideParams:
     screen_orientation_lock_emulation: bool | None = field(
         default=None, metadata={"cdp_name": "screenOrientationLockEmulation"}
     )
+    viewport_meta: Literal["enable", "default"] | None = field(
+        default=None, metadata={"cdp_name": "viewportMeta"}
+    )
+    text_layout_mode: Literal["mobile", "default"] | None = field(
+        default=None, metadata={"cdp_name": "textLayoutMode"}
+    )
 
 
 @dataclass(kw_only=True, slots=True)

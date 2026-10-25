@@ -45,6 +45,8 @@ from .commands import (
     GetFlattenedDocumentResult,
     GetFrameOwnerParams,
     GetFrameOwnerResult,
+    GetImplicitAnchorCandidatesParams,
+    GetImplicitAnchorCandidatesResult,
     GetNodeForLocationParams,
     GetNodeForLocationResult,
     GetNodesForSubtreeByStyleParams,
@@ -89,6 +91,7 @@ from .commands import (
     SetNodeStackTracesEnabledParams,
     SetNodeValueParams,
     SetOuterHTMLParams,
+    SetTextMarkerParams,
 )
 from .types import (
     BackendNodeId,
@@ -1051,6 +1054,22 @@ class DOM:
         )
         return decode_cdp(ForceShowPopoverResult, result)
 
+    async def get_implicit_anchor_candidates(
+        self,
+        *,
+        node_id: NodeId,
+    ) -> GetImplicitAnchorCandidatesResult:
+        """
+        Returns candidate nodes that are configured as triggers for the given popover.
+        """
+        params = GetImplicitAnchorCandidatesParams(node_id=node_id)
+
+        result = await self._executor.execute(
+            method=DOMCommand.GET_IMPLICIT_ANCHOR_CANDIDATES,
+            params=encode_cdp(params),
+        )
+        return decode_cdp(GetImplicitAnchorCandidatesResult, result)
+
     async def force_show_interest(
         self,
         *,
@@ -1066,4 +1085,47 @@ class DOM:
         await self._executor.execute(
             method=DOMCommand.FORCE_SHOW_INTEREST,
             params=encode_cdp(params),
+        )
+
+    async def set_text_marker(
+        self,
+        *,
+        node_id: NodeId | None = None,
+        backend_node_id: BackendNodeId | None = None,
+        object_id: runtime.RemoteObjectId | None = None,
+        type: Literal["spelling", "grammar"],
+        start: int,
+        end: int,
+    ) -> None:
+        """
+        Sets a spelling or grammar error marker on the given range of text. See
+        https://github.com/Igalia/explainers/blob/main/force-spelling-grammar-markers/README.md
+        Note: exactly one between nodeId, backendNodeId and objectId should be passed to
+        identify the node.
+        """
+        params = SetTextMarkerParams(
+            node_id=node_id,
+            backend_node_id=backend_node_id,
+            object_id=object_id,
+            type=type,
+            start=start,
+            end=end,
+        )
+
+        await self._executor.execute(
+            method=DOMCommand.SET_TEXT_MARKER,
+            params=encode_cdp(params),
+        )
+
+    async def clear_text_markers(
+        self,
+    ) -> None:
+        """
+        Clears the spelling and grammar error text markers overlapping the ranges set
+        by setTextMarker in this session. These markers are also removed when the DOM
+        domain is disabled or the session ends.
+        """
+        await self._executor.execute(
+            method=DOMCommand.CLEAR_TEXT_MARKERS,
+            params=None,
         )

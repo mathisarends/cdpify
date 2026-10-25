@@ -158,6 +158,9 @@ class LoadingFinishedEvent:
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
     timestamp: MonotonicTime = field(metadata={"cdp_name": "timestamp"})
     encoded_data_length: float = field(metadata={"cdp_name": "encodedDataLength"})
+    encoded_body_length: float | None = field(
+        default=None, metadata={"cdp_name": "encodedBodyLength"}
+    )
 
 
 @dataclass(kw_only=True, slots=True)
@@ -426,12 +429,18 @@ class DirectTCPSocketChunkReceivedEvent:
 class DirectUDPSocketJoinedMulticastGroupEvent:
     identifier: RequestId = field(metadata={"cdp_name": "identifier"})
     ip_address: str = field(metadata={"cdp_name": "IPAddress"})
+    source_address: str | None = field(
+        default=None, metadata={"cdp_name": "sourceAddress"}
+    )
 
 
 @dataclass(kw_only=True, slots=True)
 class DirectUDPSocketLeftMulticastGroupEvent:
     identifier: RequestId = field(metadata={"cdp_name": "identifier"})
     ip_address: str = field(metadata={"cdp_name": "IPAddress"})
+    source_address: str | None = field(
+        default=None, metadata={"cdp_name": "sourceAddress"}
+    )
 
 
 @dataclass(kw_only=True, slots=True)

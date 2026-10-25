@@ -121,6 +121,7 @@ class RemoteObject:
             "dataview",
             "webassemblymemory",
             "wasmvalue",
+            "deferredmodule",
             "trustedtype",
         ]
         | None
@@ -195,6 +196,7 @@ class ObjectPreview:
             "dataview",
             "webassemblymemory",
             "wasmvalue",
+            "deferredmodule",
             "trustedtype",
         ]
         | None
@@ -251,6 +253,7 @@ class PropertyPreview:
             "dataview",
             "webassemblymemory",
             "wasmvalue",
+            "deferredmodule",
             "trustedtype",
         ]
         | None

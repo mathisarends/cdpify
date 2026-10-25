@@ -594,7 +594,6 @@ type SetCookieBlockedReason = Literal[
     "SameSiteNoneInsecure",
     "UserPreferences",
     "ThirdPartyPhaseout",
-    "ThirdPartyBlockedInFirstPartySet",
     "SyntaxError",
     "SchemeNotSupported",
     "OverwriteSecure",
@@ -622,7 +621,6 @@ type CookieBlockedReason = Literal[
     "SameSiteNoneInsecure",
     "UserPreferences",
     "ThirdPartyPhaseout",
-    "ThirdPartyBlockedInFirstPartySet",
     "UnknownError",
     "SchemefulSameSiteStrict",
     "SchemefulSameSiteLax",
@@ -1262,6 +1260,7 @@ type DeviceBoundSessionFetchResult = Literal[
     "PreProvisionedKeyNotFound",
     "AttestationCertificationError",
     "AttestationSigningError",
+    "FederatedRegistrationRedirected",
 ]
 
 
@@ -1314,6 +1313,7 @@ class RefreshEventDetails:
         "RefreshedAsWaiter",
         "TransientSigningError",
         "InScopeRefreshNotYetNeeded",
+        "Canceled",
     ] = field(  # noqa: E501
         metadata={"cdp_name": "refreshResult"},
     )
@@ -1347,6 +1347,7 @@ class TerminationEventDetails:
         "InvalidSessionParams",
         "RefreshFatalError",
         "DevTools",
+        "Replaced",
     ] = field(  # noqa: E501
         metadata={"cdp_name": "deletionReason"},
     )

@@ -44,6 +44,8 @@ if TYPE_CHECKING:
         GetFlattenedDocumentResult,
         GetFrameOwnerParams,
         GetFrameOwnerResult,
+        GetImplicitAnchorCandidatesParams,
+        GetImplicitAnchorCandidatesResult,
         GetNodeForLocationParams,
         GetNodeForLocationResult,
         GetNodesForSubtreeByStyleParams,
@@ -88,6 +90,7 @@ if TYPE_CHECKING:
         SetNodeStackTracesEnabledParams,
         SetNodeValueParams,
         SetOuterHTMLParams,
+        SetTextMarkerParams,
     )
     from .domain import DOM
     from .events import (
@@ -187,6 +190,8 @@ __all__ = [
     "GetFlattenedDocumentResult",
     "GetFrameOwnerParams",
     "GetFrameOwnerResult",
+    "GetImplicitAnchorCandidatesParams",
+    "GetImplicitAnchorCandidatesResult",
     "GetNodeForLocationParams",
     "GetNodeForLocationResult",
     "GetNodeStackTracesParams",
@@ -245,6 +250,7 @@ __all__ = [
     "SetNodeStackTracesEnabledParams",
     "SetNodeValueParams",
     "SetOuterHTMLParams",
+    "SetTextMarkerParams",
     "ShadowRootPoppedEvent",
     "ShadowRootPushedEvent",
     "ShadowRootType",
@@ -321,6 +327,14 @@ __getattr__, __dir__ = lazy_exports(
         "GetFlattenedDocumentResult": (".commands", "GetFlattenedDocumentResult"),
         "GetFrameOwnerParams": (".commands", "GetFrameOwnerParams"),
         "GetFrameOwnerResult": (".commands", "GetFrameOwnerResult"),
+        "GetImplicitAnchorCandidatesParams": (
+            ".commands",
+            "GetImplicitAnchorCandidatesParams",
+        ),
+        "GetImplicitAnchorCandidatesResult": (
+            ".commands",
+            "GetImplicitAnchorCandidatesResult",
+        ),
         "GetNodeForLocationParams": (".commands", "GetNodeForLocationParams"),
         "GetNodeForLocationResult": (".commands", "GetNodeForLocationResult"),
         "GetNodeStackTracesParams": (".commands", "GetNodeStackTracesParams"),
@@ -406,6 +420,7 @@ __getattr__, __dir__ = lazy_exports(
         ),
         "SetNodeValueParams": (".commands", "SetNodeValueParams"),
         "SetOuterHTMLParams": (".commands", "SetOuterHTMLParams"),
+        "SetTextMarkerParams": (".commands", "SetTextMarkerParams"),
         "ShadowRootPoppedEvent": (".events", "ShadowRootPoppedEvent"),
         "ShadowRootPushedEvent": (".events", "ShadowRootPushedEvent"),
         "ShadowRootType": (".types", "ShadowRootType"),

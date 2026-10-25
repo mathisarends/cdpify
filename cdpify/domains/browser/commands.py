@@ -33,6 +33,7 @@ class BrowserCommand(StrEnum):
     CRASH_GPU_PROCESS = "Browser.crashGpuProcess"
     GET_VERSION = "Browser.getVersion"
     GET_BROWSER_COMMAND_LINE = "Browser.getBrowserCommandLine"
+    ADD_MOCK_CAMERA = "Browser.addMockCamera"
     GET_HISTOGRAMS = "Browser.getHistograms"
     GET_HISTOGRAM = "Browser.getHistogram"
     GET_WINDOW_BOUNDS = "Browser.getWindowBounds"
@@ -134,6 +135,17 @@ class GetVersionResult:
 @dataclass(kw_only=True, slots=True)
 class GetBrowserCommandLineResult:
     arguments: list[str] = field(metadata={"cdp_name": "arguments"})
+
+
+@dataclass(kw_only=True, slots=True)
+class AddMockCameraParams:
+    """
+    Adds or updates a mock camera in the shared video capture device list for test
+    automation. The mock camera is not scoped to a particular page or frame and is
+    removed when the DevTools session that created it disconnects.
+    """
+
+    device_id: str = field(metadata={"cdp_name": "deviceId"})
 
 
 @dataclass(kw_only=True, slots=True)

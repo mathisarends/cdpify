@@ -19,6 +19,7 @@ from .types import (
     PrerenderMismatchedHeaders,
     RuleSet,
     RuleSetId,
+    SpeculationAction,
 )
 
 
@@ -90,6 +91,9 @@ class PrerenderStatusUpdatedEvent:
     key: PreloadingAttemptKey = field(metadata={"cdp_name": "key"})
     pipeline_id: PreloadPipelineId = field(metadata={"cdp_name": "pipelineId"})
     status: PreloadingStatus = field(metadata={"cdp_name": "status"})
+    effective_action: SpeculationAction | None = field(
+        default=None, metadata={"cdp_name": "effectiveAction"}
+    )
     prerender_status: PrerenderFinalStatus | None = field(
         default=None, metadata={"cdp_name": "prerenderStatus"}
     )

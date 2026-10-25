@@ -27,6 +27,7 @@ from .types import (
     ReferrerPolicy,
     ScriptFontFamilies,
     ScriptIdentifier,
+    SubApp,
     TransitionType,
     Viewport,
     VisualViewport,
@@ -51,7 +52,10 @@ class PageCommand(StrEnum):
     GET_INSTALLABILITY_ERRORS = "Page.getInstallabilityErrors"
     GET_MANIFEST_ICONS = "Page.getManifestIcons"
     GET_APP_ID = "Page.getAppId"
+    GET_SUB_APPS = "Page.getSubApps"
+    GET_SIBLING_SUB_APPS = "Page.getSiblingSubApps"
     GET_AD_SCRIPT_ANCESTRY = "Page.getAdScriptAncestry"
+    GET_SPELL_CHECK_CUSTOM_DICTIONARY = "Page.getSpellCheckCustomDictionary"
     GET_FRAME_TREE = "Page.getFrameTree"
     GET_LAYOUT_METRICS = "Page.getLayoutMetrics"
     GET_NAVIGATION_HISTORY = "Page.getNavigationHistory"
@@ -100,6 +104,7 @@ class PageCommand(StrEnum):
     SET_INTERCEPT_FILE_CHOOSER_DIALOG = "Page.setInterceptFileChooserDialog"
     SET_PRERENDERING_ALLOWED = "Page.setPrerenderingAllowed"
     GET_ANNOTATED_PAGE_CONTENT = "Page.getAnnotatedPageContent"
+    SET_INPUT_VISUALIZATION = "Page.setInputVisualization"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -267,6 +272,20 @@ class GetAppIdResult:
     recommended_id: str | None = field(
         default=None, metadata={"cdp_name": "recommendedId"}
     )
+    bundle_id: str | None = field(default=None, metadata={"cdp_name": "bundleId"})
+    parent_app_name: str | None = field(
+        default=None, metadata={"cdp_name": "parentAppName"}
+    )
+
+
+@dataclass(kw_only=True, slots=True)
+class GetSubAppsResult:
+    sub_apps: list[SubApp] = field(metadata={"cdp_name": "subApps"})
+
+
+@dataclass(kw_only=True, slots=True)
+class GetSiblingSubAppsResult:
+    sub_apps: list[SubApp] = field(metadata={"cdp_name": "subApps"})
 
 
 @dataclass(kw_only=True, slots=True)
@@ -279,6 +298,22 @@ class GetAdScriptAncestryResult:
     ad_script_ancestry: network.AdAncestry | None = field(
         default=None, metadata={"cdp_name": "adScriptAncestry"}
     )
+
+
+@dataclass(kw_only=True, slots=True)
+class GetSpellCheckCustomDictionaryParams:
+    """
+    Returns the words that the frame's document added to its spell check custom
+    dictionary with `document.spellCheckCustomDictionary.addWords()`, sorted. Page
+    script cannot read the dictionary back; this lets developers inspect it.
+    """
+
+    frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
+
+
+@dataclass(kw_only=True, slots=True)
+class GetSpellCheckCustomDictionaryResult:
+    words: list[str] = field(metadata={"cdp_name": "words"})
 
 
 @dataclass(kw_only=True, slots=True)
@@ -811,3 +846,12 @@ class GetAnnotatedPageContentParams:
 @dataclass(kw_only=True, slots=True)
 class GetAnnotatedPageContentResult:
     content: str = field(metadata={"cdp_name": "content"})
+
+
+@dataclass(kw_only=True, slots=True)
+class SetInputVisualizationParams:
+    """
+    Configures input visualization on the page.
+    """
+
+    clicks: bool | None = field(default=None, metadata={"cdp_name": "clicks"})

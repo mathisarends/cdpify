@@ -23,6 +23,7 @@ class Annotation:
     consequential: bool | None = field(
         default=None, metadata={"cdp_name": "consequential"}
     )
+    debugging: bool | None = field(default=None, metadata={"cdp_name": "debugging"})
     autosubmit: bool | None = field(default=None, metadata={"cdp_name": "autosubmit"})
 
 

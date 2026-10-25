@@ -78,7 +78,10 @@ class DOMCommand(StrEnum):
     GET_QUERYING_DESCENDANTS_FOR_CONTAINER = "DOM.getQueryingDescendantsForContainer"
     GET_ANCHOR_ELEMENT = "DOM.getAnchorElement"
     FORCE_SHOW_POPOVER = "DOM.forceShowPopover"
+    GET_IMPLICIT_ANCHOR_CANDIDATES = "DOM.getImplicitAnchorCandidates"
     FORCE_SHOW_INTEREST = "DOM.forceShowInterest"
+    SET_TEXT_MARKER = "DOM.setTextMarker"
+    CLEAR_TEXT_MARKERS = "DOM.clearTextMarkers"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -796,6 +799,22 @@ class ForceShowPopoverResult:
 
 
 @dataclass(kw_only=True, slots=True)
+class GetImplicitAnchorCandidatesParams:
+    """
+    Returns candidate nodes that are configured as triggers for the given popover.
+    """
+
+    node_id: NodeId = field(metadata={"cdp_name": "nodeId"})
+
+
+@dataclass(kw_only=True, slots=True)
+class GetImplicitAnchorCandidatesResult:
+    backend_node_ids: list[BackendNodeId] = field(
+        metadata={"cdp_name": "backendNodeIds"}
+    )
+
+
+@dataclass(kw_only=True, slots=True)
 class ForceShowInterestParams:
     """
     When enabling, this API forces an element to gain interest in its target, keeping
@@ -804,3 +823,24 @@ class ForceShowInterestParams:
 
     node_id: NodeId = field(metadata={"cdp_name": "nodeId"})
     enable: bool = field(metadata={"cdp_name": "enable"})
+
+
+@dataclass(kw_only=True, slots=True)
+class SetTextMarkerParams:
+    """
+    Sets a spelling or grammar error marker on the given range of text. See
+    https://github.com/Igalia/explainers/blob/main/force-spelling-grammar-markers/README.md
+    Note: exactly one between nodeId, backendNodeId and objectId should be passed to
+    identify the node.
+    """
+
+    node_id: NodeId | None = field(default=None, metadata={"cdp_name": "nodeId"})
+    backend_node_id: BackendNodeId | None = field(
+        default=None, metadata={"cdp_name": "backendNodeId"}
+    )
+    object_id: runtime.RemoteObjectId | None = field(
+        default=None, metadata={"cdp_name": "objectId"}
+    )
+    type: Literal["spelling", "grammar"] = field(metadata={"cdp_name": "type"})
+    start: int = field(metadata={"cdp_name": "start"})
+    end: int = field(metadata={"cdp_name": "end"})

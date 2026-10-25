@@ -44,6 +44,10 @@ from .commands import (
     GetResourceContentParams,
     GetResourceContentResult,
     GetResourceTreeResult,
+    GetSiblingSubAppsResult,
+    GetSpellCheckCustomDictionaryParams,
+    GetSpellCheckCustomDictionaryResult,
+    GetSubAppsResult,
     HandleJavaScriptDialogParams,
     NavigateParams,
     NavigateResult,
@@ -67,6 +71,7 @@ from .commands import (
     SetFontFamiliesParams,
     SetFontSizesParams,
     SetGeolocationOverrideParams,
+    SetInputVisualizationParams,
     SetInterceptFileChooserDialogParams,
     SetLifecycleEventsEnabledParams,
     SetPrerenderingAllowedParams,
@@ -348,14 +353,39 @@ class Page:
         self,
     ) -> GetAppIdResult:
         """
-        Returns the unique (PWA) app id. Only returns values if the feature flag
-        'WebAppEnableManifestId' is enabled
+        Returns the unique (PWA) app id, along with IWA bundle ID and parent app info.
+        Only returns values if the feature flag 'WebAppEnableManifestId' is enabled
         """
         result = await self._executor.execute(
             method=PageCommand.GET_APP_ID,
             params=None,
         )
         return decode_cdp(GetAppIdResult, result)
+
+    async def get_sub_apps(
+        self,
+    ) -> GetSubAppsResult:
+        """
+        Returns the list of installed child Sub-Apps for the inspected parent app.
+        """
+        result = await self._executor.execute(
+            method=PageCommand.GET_SUB_APPS,
+            params=None,
+        )
+        return decode_cdp(GetSubAppsResult, result)
+
+    async def get_sibling_sub_apps(
+        self,
+    ) -> GetSiblingSubAppsResult:
+        """
+        Returns the list of sibling Sub-Apps sharing the same parent app if the
+        inspected context is a Sub-App.
+        """
+        result = await self._executor.execute(
+            method=PageCommand.GET_SIBLING_SUB_APPS,
+            params=None,
+        )
+        return decode_cdp(GetSiblingSubAppsResult, result)
 
     async def get_ad_script_ancestry(
         self,
@@ -369,6 +399,24 @@ class Page:
             params=encode_cdp(params),
         )
         return decode_cdp(GetAdScriptAncestryResult, result)
+
+    async def get_spell_check_custom_dictionary(
+        self,
+        *,
+        frame_id: FrameId,
+    ) -> GetSpellCheckCustomDictionaryResult:
+        """
+        Returns the words that the frame's document added to its spell check custom
+        dictionary with `document.spellCheckCustomDictionary.addWords()`, sorted. Page
+        script cannot read the dictionary back; this lets developers inspect it.
+        """
+        params = GetSpellCheckCustomDictionaryParams(frame_id=frame_id)
+
+        result = await self._executor.execute(
+            method=PageCommand.GET_SPELL_CHECK_CUSTOM_DICTIONARY,
+            params=encode_cdp(params),
+        )
+        return decode_cdp(GetSpellCheckCustomDictionaryResult, result)
 
     async def get_frame_tree(
         self,
@@ -1187,3 +1235,18 @@ class Page:
             params=encode_cdp(params),
         )
         return decode_cdp(GetAnnotatedPageContentResult, result)
+
+    async def set_input_visualization(
+        self,
+        *,
+        clicks: bool | None = None,
+    ) -> None:
+        """
+        Configures input visualization on the page.
+        """
+        params = SetInputVisualizationParams(clicks=clicks)
+
+        await self._executor.execute(
+            method=PageCommand.SET_INPUT_VISUALIZATION,
+            params=encode_cdp(params),
+        )

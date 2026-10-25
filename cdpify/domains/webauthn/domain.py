@@ -252,7 +252,7 @@ class WebAuthn:
         backup_state: bool | None = None,
         active_cmtg_key_index: int | None = None,
         generate_cmtg_key_on_next_operation: bool | None = None,
-        sign_count: int | None = None,
+        sign_count: float | None = None,
     ) -> None:
         """
         Allows setting credential properties.

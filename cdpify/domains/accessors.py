@@ -37,6 +37,7 @@ if TYPE_CHECKING:
     from .fedcm import FedCm
     from .fetch import Fetch
     from .filesystem import FileSystem
+    from .findinpage import FindInPage
     from .headlessexperimental import HeadlessExperimental
     from .heapprofiler import HeapProfiler
     from .indexeddb import IndexedDB
@@ -228,6 +229,12 @@ class DomainAccessors:
         from .filesystem import FileSystem
 
         return FileSystem(self._executor)
+
+    @cached_property
+    def find_in_page(self) -> FindInPage:
+        from .findinpage import FindInPage
+
+        return FindInPage(self._executor)
 
     @cached_property
     def headless_experimental(self) -> HeadlessExperimental:

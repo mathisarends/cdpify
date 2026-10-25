@@ -668,11 +668,12 @@ class Debugger:
         self,
         *,
         skip_list: list[LocationRange] | None = None,
+        enter_ranges: list[LocationRange] | None = None,
     ) -> None:
         """
         Steps over the statement.
         """
-        params = StepOverParams(skip_list=skip_list)
+        params = StepOverParams(skip_list=skip_list, enter_ranges=enter_ranges)
 
         await self._executor.execute(
             method=DebuggerCommand.STEP_OVER,

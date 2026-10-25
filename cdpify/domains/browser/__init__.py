@@ -10,6 +10,7 @@ from cdpify.shared.lazy import lazy_exports
 
 if TYPE_CHECKING:
     from .commands import (
+        AddMockCameraParams,
         AddPrivacySandboxEnrollmentOverrideParams,
         BrowserCommand,
         CancelDownloadParams,
@@ -51,6 +52,7 @@ if TYPE_CHECKING:
     )
 
 __all__ = [
+    "AddMockCameraParams",
     "AddPrivacySandboxEnrollmentOverrideParams",
     "Bounds",
     "Browser",
@@ -94,6 +96,7 @@ __all__ = [
 __getattr__, __dir__ = lazy_exports(
     __name__,
     {
+        "AddMockCameraParams": (".commands", "AddMockCameraParams"),
         "AddPrivacySandboxEnrollmentOverrideParams": (
             ".commands",
             "AddPrivacySandboxEnrollmentOverrideParams",

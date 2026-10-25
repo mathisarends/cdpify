@@ -72,7 +72,12 @@ class SeekAnimationsParams:
     """
 
     animations: list[str] = field(metadata={"cdp_name": "animations"})
-    current_time: float = field(metadata={"cdp_name": "currentTime"})
+    current_time: float | None = field(
+        default=None, metadata={"cdp_name": "currentTime"}
+    )
+    current_times: list[float] | None = field(
+        default=None, metadata={"cdp_name": "currentTimes"}
+    )
 
 
 @dataclass(kw_only=True, slots=True)

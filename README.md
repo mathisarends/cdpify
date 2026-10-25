@@ -23,7 +23,7 @@ without working with raw JSON messages.
 
 - **Typed by default** — generated models for commands, results, events, and
   shared protocol types
-- **Complete domain coverage** — access all 58 generated CDP domains through
+- **Complete domain coverage** — access all 59 generated CDP domains through
   properties such as `client.page`, `client.network`, and `client.runtime`
 - **Async throughout** — transport-neutral core with an optional WebSocket
   implementation
@@ -87,7 +87,7 @@ Python's `snake_case`; `cdpify` handles conversion to and from CDP's wire format
 
 ## Supported domains
 
-The generated client currently includes all 58 domains from the bundled CDP
+The generated client currently includes all 59 domains from the bundled CDP
 specifications. Each domain is available as a lazy property on `Client` and
 `CDPSession`:
 
@@ -120,8 +120,9 @@ specifications. Each domain is available as a lazy property on `Client` and
 | `FedCm` | `client.fed_cm` | `Tethering` | `client.tethering` |
 | `Fetch` | `client.fetch` | `Tracing` | `client.tracing` |
 | `FileSystem` | `client.file_system` | `WebAudio` | `client.web_audio` |
-| `HeadlessExperimental` | `client.headless_experimental` | `WebAuthn` | `client.web_authn` |
-| `HeapProfiler` | `client.heap_profiler` | `WebMCP` | `client.web_mcp` |
+| `FindInPage` | `client.find_in_page` | `WebAuthn` | `client.web_authn` |
+| `HeadlessExperimental` | `client.headless_experimental` | `WebMCP` | `client.web_mcp` |
+| `HeapProfiler` | `client.heap_profiler` |  |  |
 
 ## Listening for events
 

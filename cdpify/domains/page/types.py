@@ -120,6 +120,7 @@ type PermissionsPolicyFeature = Literal[
     "gamepad",
     "geolocation",
     "gyroscope",
+    "haptics",
     "hid",
     "identity-credentials-get",
     "idle-detection",
@@ -144,11 +145,10 @@ type PermissionsPolicyFeature = Literal[
     "private-state-token-redemption",
     "publickey-credentials-create",
     "publickey-credentials-get",
+    "publickey-credentials-remote-client-data-json",
     "rewriter",
     "screen-wake-lock",
     "serial",
-    "shared-storage",
-    "shared-storage-select-url",
     "smart-card",
     "speaker-selection",
     "storage-access",
@@ -157,6 +157,7 @@ type PermissionsPolicyFeature = Literal[
     "sync-xhr",
     "tools",
     "translator",
+    "unbounded-element",
     "unload",
     "usb",
     "usb-unrestricted",
@@ -394,6 +395,9 @@ class ScreencastFrameMetadata:
     scroll_offset_y: float = field(metadata={"cdp_name": "scrollOffsetY"})
     timestamp: network.TimeSinceEpoch | None = field(
         default=None, metadata={"cdp_name": "timestamp"}
+    )
+    monotonic_timestamp: network.MonotonicTime | None = field(
+        default=None, metadata={"cdp_name": "monotonicTimestamp"}
     )
 
 
@@ -684,6 +688,14 @@ class WebAppManifest:
     )
     start_url: str | None = field(default=None, metadata={"cdp_name": "startUrl"})
     theme_color: str | None = field(default=None, metadata={"cdp_name": "themeColor"})
+
+
+@dataclass(kw_only=True, slots=True)
+class SubApp:
+    name: str = field(metadata={"cdp_name": "name"})
+    scope: str = field(metadata={"cdp_name": "scope"})
+    manifest_id: str = field(metadata={"cdp_name": "manifestId"})
+    start_url: str = field(metadata={"cdp_name": "startUrl"})
 
 
 """

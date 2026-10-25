@@ -51,6 +51,7 @@ class CSSCommand(StrEnum):
     ENABLE = "CSS.enable"
     FORCE_PSEUDO_STATE = "CSS.forcePseudoState"
     FORCE_STARTING_STYLE = "CSS.forceStartingStyle"
+    FORCE_POSITION_TRY_OPTION = "CSS.forcePositionTryOption"
     GET_BACKGROUND_COLORS = "CSS.getBackgroundColors"
     GET_COMPUTED_STYLE_FOR_NODE = "CSS.getComputedStyleForNode"
     RESOLVE_VALUES = "CSS.resolveValues"
@@ -155,6 +156,16 @@ class ForceStartingStyleParams:
 
     node_id: dom.NodeId = field(metadata={"cdp_name": "nodeId"})
     forced: bool = field(metadata={"cdp_name": "forced"})
+
+
+@dataclass(kw_only=True, slots=True)
+class ForcePositionTryOptionParams:
+    """
+    Forces a position-try option for the given node.
+    """
+
+    node_id: dom.NodeId = field(metadata={"cdp_name": "nodeId"})
+    index: int | None = field(default=None, metadata={"cdp_name": "index"})
 
 
 @dataclass(kw_only=True, slots=True)

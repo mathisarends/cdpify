@@ -14,12 +14,15 @@ from .commands import (
     ClearCookiesParams,
     ClearDataForOriginParams,
     ClearDataForStorageKeyParams,
+    ClearPrivateVerificationTokensParams,
     ClearTrustTokensParams,
     ClearTrustTokensResult,
+    DeletePrivateVerificationTokenParams,
     DeleteStorageBucketParams,
     GetCookiesParams,
     GetCookiesResult,
-    GetRelatedWebsiteSetsResult,
+    GetPrivateVerificationTokensIssuerConfigsResult,
+    GetPrivateVerificationTokensResult,
     GetStorageKeyForFrameParams,
     GetStorageKeyForFrameResult,
     GetStorageKeyParams,
@@ -30,6 +33,7 @@ from .commands import (
     OverrideQuotaForOriginParams,
     RunBounceTrackingMitigationsResult,
     SetCookiesParams,
+    SetPrivateVerificationTokensTrackingParams,
     SetStorageBucketTrackingParams,
     StorageCommand,
     TrackCacheStorageForOriginParams,
@@ -355,6 +359,77 @@ class Storage:
         )
         return decode_cdp(ClearTrustTokensResult, result)
 
+    async def get_private_verification_tokens(
+        self,
+    ) -> GetPrivateVerificationTokensResult:
+        """
+        Returns all stored Private Verification Tokens for the current browsing
+        context.
+        """
+        result = await self._executor.execute(
+            method=StorageCommand.GET_PRIVATE_VERIFICATION_TOKENS,
+            params=None,
+        )
+        return decode_cdp(GetPrivateVerificationTokensResult, result)
+
+    async def get_private_verification_tokens_issuer_configs(
+        self,
+    ) -> GetPrivateVerificationTokensIssuerConfigsResult:
+        """
+        Returns the configured Private Verification Tokens issuers and their redeemer
+        origins.
+        """
+        result = await self._executor.execute(
+            method=StorageCommand.GET_PRIVATE_VERIFICATION_TOKENS_ISSUER_CONFIGS,
+            params=None,
+        )
+        return decode_cdp(GetPrivateVerificationTokensIssuerConfigsResult, result)
+
+    async def clear_private_verification_tokens(
+        self,
+        *,
+        issuer_origin: str,
+    ) -> None:
+        """
+        Removes all Private Verification Tokens issued by the provided issuerOrigin.
+        """
+        params = ClearPrivateVerificationTokensParams(issuer_origin=issuer_origin)
+
+        await self._executor.execute(
+            method=StorageCommand.CLEAR_PRIVATE_VERIFICATION_TOKENS,
+            params=encode_cdp(params),
+        )
+
+    async def delete_private_verification_token(
+        self,
+        *,
+        token_id: str,
+    ) -> None:
+        """
+        Removes a specific Private Verification Token by its ID.
+        """
+        params = DeletePrivateVerificationTokenParams(token_id=token_id)
+
+        await self._executor.execute(
+            method=StorageCommand.DELETE_PRIVATE_VERIFICATION_TOKEN,
+            params=encode_cdp(params),
+        )
+
+    async def set_private_verification_tokens_tracking(
+        self,
+        *,
+        enable: bool,
+    ) -> None:
+        """
+        Set tracking for Private Verification Tokens.
+        """
+        params = SetPrivateVerificationTokensTrackingParams(enable=enable)
+
+        await self._executor.execute(
+            method=StorageCommand.SET_PRIVATE_VERIFICATION_TOKENS_TRACKING,
+            params=encode_cdp(params),
+        )
+
     async def set_storage_bucket_tracking(
         self,
         *,
@@ -397,17 +472,3 @@ class Storage:
             params=None,
         )
         return decode_cdp(RunBounceTrackingMitigationsResult, result)
-
-    async def get_related_website_sets(
-        self,
-    ) -> GetRelatedWebsiteSetsResult:
-        """
-        Returns the effective Related Website Sets in use by this profile for the
-        browser session. The effective Related Website Sets will not change during a
-        browser session.
-        """
-        result = await self._executor.execute(
-            method=StorageCommand.GET_RELATED_WEBSITE_SETS,
-            params=None,
-        )
-        return decode_cdp(GetRelatedWebsiteSetsResult, result)

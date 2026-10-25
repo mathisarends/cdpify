@@ -50,6 +50,31 @@ class TrustTokens:
     count: float = field(metadata={"cdp_name": "count"})
 
 
+@dataclass(kw_only=True, slots=True)
+class PrivateVerificationToken:
+    """
+    Details of a stored Private Verification Token.
+    """
+
+    id: str = field(metadata={"cdp_name": "id"})
+    issuer_origin: str = field(metadata={"cdp_name": "issuerOrigin"})
+    key_id: int = field(metadata={"cdp_name": "keyId"})
+    expiration: network.TimeSinceEpoch = field(metadata={"cdp_name": "expiration"})
+    creation_time: network.TimeSinceEpoch = field(metadata={"cdp_name": "creationTime"})
+    version: int = field(metadata={"cdp_name": "version"})
+    token: str = field(metadata={"cdp_name": "token"})
+
+
+@dataclass(kw_only=True, slots=True)
+class PrivateVerificationTokensIssuerConfig:
+    """
+    Configuration for a Private Verification Tokens issuer.
+    """
+
+    issuer_origin: str = field(metadata={"cdp_name": "issuerOrigin"})
+    redeemer_origins: list[str] = field(metadata={"cdp_name": "redeemerOrigins"})
+
+
 type StorageBucketsDurability = Literal["relaxed", "strict"]
 
 
@@ -67,14 +92,3 @@ class StorageBucketInfo:
     quota: float = field(metadata={"cdp_name": "quota"})
     persistent: bool = field(metadata={"cdp_name": "persistent"})
     durability: StorageBucketsDurability = field(metadata={"cdp_name": "durability"})
-
-
-@dataclass(kw_only=True, slots=True)
-class RelatedWebsiteSet:
-    """
-    A single Related Website Set object.
-    """
-
-    primary_sites: list[str] = field(metadata={"cdp_name": "primarySites"})
-    associated_sites: list[str] = field(metadata={"cdp_name": "associatedSites"})
-    service_sites: list[str] = field(metadata={"cdp_name": "serviceSites"})

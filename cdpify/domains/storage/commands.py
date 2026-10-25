@@ -10,7 +10,8 @@ from enum import StrEnum
 from cdpify.domains import browser, network, page
 
 from .types import (
-    RelatedWebsiteSet,
+    PrivateVerificationToken,
+    PrivateVerificationTokensIssuerConfig,
     SerializedStorageKey,
     StorageBucket,
     TrustTokens,
@@ -38,10 +39,18 @@ class StorageCommand(StrEnum):
     UNTRACK_INDEXED_DB_FOR_STORAGE_KEY = "Storage.untrackIndexedDBForStorageKey"
     GET_TRUST_TOKENS = "Storage.getTrustTokens"
     CLEAR_TRUST_TOKENS = "Storage.clearTrustTokens"
+    GET_PRIVATE_VERIFICATION_TOKENS = "Storage.getPrivateVerificationTokens"
+    GET_PRIVATE_VERIFICATION_TOKENS_ISSUER_CONFIGS = (
+        "Storage.getPrivateVerificationTokensIssuerConfigs"
+    )
+    CLEAR_PRIVATE_VERIFICATION_TOKENS = "Storage.clearPrivateVerificationTokens"
+    DELETE_PRIVATE_VERIFICATION_TOKEN = "Storage.deletePrivateVerificationToken"
+    SET_PRIVATE_VERIFICATION_TOKENS_TRACKING = (
+        "Storage.setPrivateVerificationTokensTracking"
+    )
     SET_STORAGE_BUCKET_TRACKING = "Storage.setStorageBucketTracking"
     DELETE_STORAGE_BUCKET = "Storage.deleteStorageBucket"
     RUN_BOUNCE_TRACKING_MITIGATIONS = "Storage.runBounceTrackingMitigations"
-    GET_RELATED_WEBSITE_SETS = "Storage.getRelatedWebsiteSets"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -256,6 +265,45 @@ class ClearTrustTokensResult:
 
 
 @dataclass(kw_only=True, slots=True)
+class GetPrivateVerificationTokensResult:
+    tokens: list[PrivateVerificationToken] = field(metadata={"cdp_name": "tokens"})
+
+
+@dataclass(kw_only=True, slots=True)
+class GetPrivateVerificationTokensIssuerConfigsResult:
+    configs: list[PrivateVerificationTokensIssuerConfig] = field(
+        metadata={"cdp_name": "configs"}
+    )
+
+
+@dataclass(kw_only=True, slots=True)
+class ClearPrivateVerificationTokensParams:
+    """
+    Removes all Private Verification Tokens issued by the provided issuerOrigin.
+    """
+
+    issuer_origin: str = field(metadata={"cdp_name": "issuerOrigin"})
+
+
+@dataclass(kw_only=True, slots=True)
+class DeletePrivateVerificationTokenParams:
+    """
+    Removes a specific Private Verification Token by its ID.
+    """
+
+    token_id: str = field(metadata={"cdp_name": "tokenId"})
+
+
+@dataclass(kw_only=True, slots=True)
+class SetPrivateVerificationTokensTrackingParams:
+    """
+    Set tracking for Private Verification Tokens.
+    """
+
+    enable: bool = field(metadata={"cdp_name": "enable"})
+
+
+@dataclass(kw_only=True, slots=True)
 class SetStorageBucketTrackingParams:
     """
     Set tracking for a storage key's buckets.
@@ -277,8 +325,3 @@ class DeleteStorageBucketParams:
 @dataclass(kw_only=True, slots=True)
 class RunBounceTrackingMitigationsResult:
     deleted_sites: list[str] = field(metadata={"cdp_name": "deletedSites"})
-
-
-@dataclass(kw_only=True, slots=True)
-class GetRelatedWebsiteSetsResult:
-    sets: list[RelatedWebsiteSet] = field(metadata={"cdp_name": "sets"})

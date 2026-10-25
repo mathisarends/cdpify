@@ -167,6 +167,42 @@ type ContrastAlgorithm = Literal["aa", "aaa", "apca"]
 
 
 @dataclass(kw_only=True, slots=True)
+class ImcbHighlightConfig:
+    """
+    Configuration for Inset-Modified Containing Block (IMCB) and CSS Anchor Positioning
+    highlight.
+    """
+
+    imcb_border_color: dom.RGBA | None = field(
+        default=None, metadata={"cdp_name": "imcbBorderColor"}
+    )
+    imcb_background_color: dom.RGBA | None = field(
+        default=None, metadata={"cdp_name": "imcbBackgroundColor"}
+    )
+    insets_background_color: dom.RGBA | None = field(
+        default=None, metadata={"cdp_name": "insetsBackgroundColor"}
+    )
+    insets_hatch_color: dom.RGBA | None = field(
+        default=None, metadata={"cdp_name": "insetsHatchColor"}
+    )
+    anchor_border_color: dom.RGBA | None = field(
+        default=None, metadata={"cdp_name": "anchorBorderColor"}
+    )
+    anchor_background_color: dom.RGBA | None = field(
+        default=None, metadata={"cdp_name": "anchorBackgroundColor"}
+    )
+    show_position_area_grid: bool | None = field(
+        default=None, metadata={"cdp_name": "showPositionAreaGrid"}
+    )
+    position_area_grid_line_color: dom.RGBA | None = field(
+        default=None, metadata={"cdp_name": "positionAreaGridLineColor"}
+    )
+    position_area_active_region_color: dom.RGBA | None = field(
+        default=None, metadata={"cdp_name": "positionAreaActiveRegionColor"}
+    )
+
+
+@dataclass(kw_only=True, slots=True)
 class HighlightConfig:
     """
     Configuration data for the highlighting of page elements.
@@ -225,6 +261,9 @@ class HighlightConfig:
     ) = field(  # noqa: E501
         default=None,
         metadata={"cdp_name": "containerQueryContainerHighlightConfig"},
+    )
+    imcb_highlight_config: ImcbHighlightConfig | None = field(
+        default=None, metadata={"cdp_name": "imcbHighlightConfig"}
     )
 
 

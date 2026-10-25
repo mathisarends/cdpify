@@ -539,3 +539,6 @@ class StepOverParams:
     skip_list: list[LocationRange] | None = field(
         default=None, metadata={"cdp_name": "skipList"}
     )
+    enter_ranges: list[LocationRange] | None = field(
+        default=None, metadata={"cdp_name": "enterRanges"}
+    )

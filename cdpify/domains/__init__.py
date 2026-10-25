@@ -36,6 +36,7 @@ if TYPE_CHECKING:
     from .fedcm import FedCm
     from .fetch import Fetch
     from .filesystem import FileSystem
+    from .findinpage import FindInPage
     from .headlessexperimental import HeadlessExperimental
     from .heapprofiler import HeapProfiler
     from .indexeddb import IndexedDB
@@ -95,6 +96,7 @@ __all__ = [
     "FedCm",
     "Fetch",
     "FileSystem",
+    "FindInPage",
     "HeadlessExperimental",
     "IO",
     "IndexedDB",
@@ -158,6 +160,7 @@ __getattr__, __dir__ = lazy_exports(
         "FedCm": (".fedcm", "FedCm"),
         "Fetch": (".fetch", "Fetch"),
         "FileSystem": (".filesystem", "FileSystem"),
+        "FindInPage": (".findinpage", "FindInPage"),
         "HeadlessExperimental": (".headlessexperimental", "HeadlessExperimental"),
         "IO": (".io", "IO"),
         "IndexedDB": (".indexeddb", "IndexedDB"),

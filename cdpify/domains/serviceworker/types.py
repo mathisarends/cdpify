@@ -36,9 +36,7 @@ type ServiceWorkerVersionStatus = Literal[
 class ServiceWorkerRouterCondition:
     """
     Mostly corresponds to `RouterCondition` in ServiceWorker spec
-    (https://www.w3.org/TR/service-workers/#dictdef-routercondition) while this
-    currently lacks support for the nested conditions ("or" and "not").
-    TODO(crbug.com/540469610): Support recursive conditions.
+    (https://www.w3.org/TR/service-workers/#dictdef-routercondition)
     """
 
     url_pattern: str | None = field(default=None, metadata={"cdp_name": "urlPattern"})
@@ -51,6 +49,12 @@ class ServiceWorkerRouterCondition:
     )
     running_status: ServiceWorkerVersionRunningStatus | None = field(
         default=None, metadata={"cdp_name": "runningStatus"}
+    )
+    or_: list[ServiceWorkerRouterCondition] | None = field(
+        default=None, metadata={"cdp_name": "or"}
+    )
+    not_: ServiceWorkerRouterCondition | None = field(
+        default=None, metadata={"cdp_name": "not"}
     )
 
 

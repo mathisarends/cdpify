@@ -180,4 +180,4 @@ class SetCredentialPropertiesParams:
     generate_cmtg_key_on_next_operation: bool | None = field(
         default=None, metadata={"cdp_name": "generateCmtgKeyOnNextOperation"}
     )
-    sign_count: int | None = field(default=None, metadata={"cdp_name": "signCount"})
+    sign_count: float | None = field(default=None, metadata={"cdp_name": "signCount"})

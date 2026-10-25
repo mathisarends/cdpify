@@ -17,6 +17,7 @@ if TYPE_CHECKING:
         CreateStyleSheetParams,
         CreateStyleSheetResult,
         CSSCommand,
+        ForcePositionTryOptionParams,
         ForcePseudoStateParams,
         ForceStartingStyleParams,
         GetAnimatedStylesForNodeParams,
@@ -173,6 +174,7 @@ __all__ = [
     "FontFace",
     "FontVariationAxis",
     "FontsUpdatedEvent",
+    "ForcePositionTryOptionParams",
     "ForcePseudoStateParams",
     "ForceStartingStyleParams",
     "GetAnimatedStylesForNodeParams",
@@ -294,6 +296,7 @@ __getattr__, __dir__ = lazy_exports(
         "FontFace": (".types", "FontFace"),
         "FontVariationAxis": (".types", "FontVariationAxis"),
         "FontsUpdatedEvent": (".events", "FontsUpdatedEvent"),
+        "ForcePositionTryOptionParams": (".commands", "ForcePositionTryOptionParams"),
         "ForcePseudoStateParams": (".commands", "ForcePseudoStateParams"),
         "ForceStartingStyleParams": (".commands", "ForceStartingStyleParams"),
         "GetAnimatedStylesForNodeParams": (

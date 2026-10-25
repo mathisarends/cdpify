@@ -19,6 +19,7 @@ class StorageEvent(StrEnum):
     INDEXED_DB_LIST_UPDATED = "Storage.indexedDBListUpdated"
     STORAGE_BUCKET_CREATED_OR_UPDATED = "Storage.storageBucketCreatedOrUpdated"
     STORAGE_BUCKET_DELETED = "Storage.storageBucketDeleted"
+    PRIVATE_VERIFICATION_TOKENS_UPDATED = "Storage.privateVerificationTokensUpdated"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -76,3 +77,12 @@ class StorageBucketCreatedOrUpdatedEvent:
 @dataclass(kw_only=True, slots=True)
 class StorageBucketDeletedEvent:
     bucket_id: str = field(metadata={"cdp_name": "bucketId"})
+
+
+@dataclass(kw_only=True, slots=True)
+class PrivateVerificationTokensUpdatedEvent:
+    """
+    Private Verification Tokens have been stored or deleted.
+    """
+
+    pass

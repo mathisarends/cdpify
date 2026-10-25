@@ -48,7 +48,6 @@ type CookieExclusionReason = Literal[
     "ExcludeSameSiteLax",
     "ExcludeSameSiteStrict",
     "ExcludeDomainNonASCII",
-    "ExcludeThirdPartyCookieBlockedInFirstPartySet",
     "ExcludeThirdPartyPhaseout",
     "ExcludePortMismatch",
     "ExcludeSchemeMismatch",
@@ -471,6 +470,7 @@ type GenericIssueErrorType = Literal[
     "FormModelContextMissingToolDescription",
     "FormModelContextRequiredParameterMissingName",
     "FormModelContextParameterMissingName",
+    "GeolocationPromptWithoutUserGesture",
 ]
 
 
@@ -605,6 +605,7 @@ type FederatedAuthRequestIssueReason = Literal[
     "UiDismissedNoEmbargo",
     "CorsError",
     "SuppressedBySegmentationPlatform",
+    "PopupBlockedByConnectionAllowlist",
 ]
 
 
@@ -705,6 +706,7 @@ type EmailVerificationRequestIssueReason = Literal[
     "TokenVerificationKbInvalidSdHash",
     "TokenVerificationKbMissingCnf",
     "TokenVerificationKbSignatureFailed",
+    "CrossOriginIframeNotSupported",
 ]
 
 
@@ -887,6 +889,26 @@ class PermissionElementIssueDetails:
     )
 
 
+type WebInstallIssueReason = Literal[
+    "ManifestParsingOrNetworkError",
+    "StartUrlInvalid",
+    "ManifestMissingNameOrShortName",
+    "ManifestMissingId",
+    "NoManifest",
+]
+
+
+@dataclass(kw_only=True, slots=True)
+class WebInstallIssueDetails:
+    """
+    This issue reports a failure involving a web app manifest used by a Web Install
+    operation.
+    """
+
+    manifest_url: str | None = field(default=None, metadata={"cdp_name": "manifestUrl"})
+    reason: WebInstallIssueReason = field(metadata={"cdp_name": "reason"})
+
+
 @dataclass(kw_only=True, slots=True)
 class SelectivePermissionsInterventionIssueDetails:
     """
@@ -947,6 +969,7 @@ type InspectorIssueCode = Literal[
     "SelectivePermissionsInterventionIssue",
     "EmailVerificationRequestIssue",
     "LazyLoadImageIssue",
+    "WebInstallIssue",
 ]
 
 
@@ -1071,6 +1094,9 @@ class InspectorIssueDetails:
     )
     lazy_load_image_issue_details: LazyLoadImageIssueDetails | None = field(
         default=None, metadata={"cdp_name": "lazyLoadImageIssueDetails"}
+    )
+    web_install_issue_details: WebInstallIssueDetails | None = field(
+        default=None, metadata={"cdp_name": "webInstallIssueDetails"}
     )
 
 

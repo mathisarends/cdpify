@@ -111,12 +111,17 @@ class Animation:
         self,
         *,
         animations: list[str],
-        current_time: float,
+        current_time: float | None = None,
+        current_times: list[float] | None = None,
     ) -> None:
         """
         Seek a set of animations to a particular time within each animation.
         """
-        params = SeekAnimationsParams(animations=animations, current_time=current_time)
+        params = SeekAnimationsParams(
+            animations=animations,
+            current_time=current_time,
+            current_times=current_times,
+        )
 
         await self._executor.execute(
             method=AnimationCommand.SEEK_ANIMATIONS,

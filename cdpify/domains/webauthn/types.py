@@ -72,7 +72,7 @@ class Credential:
     rp_id: str | None = field(default=None, metadata={"cdp_name": "rpId"})
     private_key: str = field(metadata={"cdp_name": "privateKey"})
     user_handle: str | None = field(default=None, metadata={"cdp_name": "userHandle"})
-    sign_count: int = field(metadata={"cdp_name": "signCount"})
+    sign_count: float = field(metadata={"cdp_name": "signCount"})
     large_blob: str | None = field(default=None, metadata={"cdp_name": "largeBlob"})
     backup_eligibility: bool | None = field(
         default=None, metadata={"cdp_name": "backupEligibility"}
