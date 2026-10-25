@@ -54,6 +54,9 @@ Breaking changes are listed first in each release.
   bounded queues drop their oldest event instead of blocking command responses.
   Subscriptions inherit the client limit unless overridden. Both subscriptions
   and the standalone WebSocket transport expose `dropped_events` counters.
+- Optional `CallbackTransport` protocol in `cdpify.transport` for direct event
+  delivery without a transport queue. Existing `Transport` implementations work
+  through their event iterator.
 - `EventSubscription` registers its handler as soon as `listen()` is called, so
   events emitted before the first read are no longer lost. It supports
   `async with` for deterministic cleanup and `await events.next(timeout=...)`
@@ -102,6 +105,9 @@ Breaking changes are listed first in each release.
 
 ### Performance
 
+- The default WebSocket transport delivers events directly to the router,
+  removing the intermediate queue and client event-loop task. Each listener
+  still receives its own decoded model.
 - `decode_cdp` builds a converter per field once per model instead of
   inspecting type annotations for every value. Decoding typical Network
   events is 4–7× faster (`ResponseReceivedEvent`: 56 µs → 7 µs).

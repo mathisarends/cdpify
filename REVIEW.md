@@ -6,7 +6,6 @@ Erledigte Aufgaben sind entfernt; Änderungen und API-Brüche stehen in `CHANGEL
 
 ## Offene Umsetzungspunkte
 
-- [ ] Direkte Event-Zustellung als optionale Transport-Fähigkeit.
 - [ ] Optionales `cdpify[orjson]` mit JSON-Fallback, Tests und CI-Integration.
 
 ## Bisherige Messwerte

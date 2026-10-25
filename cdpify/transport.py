@@ -1,6 +1,6 @@
-from collections.abc import AsyncIterator
+from collections.abc import AsyncIterator, Awaitable, Callable
 from dataclasses import dataclass
-from typing import Any, Protocol
+from typing import Any, Protocol, runtime_checkable
 
 
 @dataclass(frozen=True, slots=True)
@@ -31,5 +31,22 @@ class Transport(Protocol):
 
         The stream has a single consumer: ``CdpClient`` reads it to route events
         to listeners. Use ``CdpClient.listen()`` instead of iterating it directly.
+        """
+        ...
+
+
+type EventHandler = Callable[[TransportEvent | None], Awaitable[None]]
+
+
+@runtime_checkable
+class CallbackTransport(Transport, Protocol):
+    """Optional transport capability for delivering events without a queue."""
+
+    def set_event_handler(self, handler: EventHandler | None) -> None:
+        """Select callback delivery before connecting; None selects events().
+
+        Await the handler for each event, in order, and once with None on
+        stream closure. Handlers must not wait for commands on this transport:
+        they run inside its receive loop. CdpClient only enqueues listener data.
         """
         ...

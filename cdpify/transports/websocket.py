@@ -10,7 +10,7 @@ from websockets.asyncio.client import ClientConnection, connect
 
 from cdpify.event_queue import EventQueue
 from cdpify.exceptions import CDPCommandError, CDPConnectionError, CDPTimeoutError
-from cdpify.transport import TransportEvent
+from cdpify.transport import EventHandler, TransportEvent
 
 logger = logging.getLogger(__name__)
 
@@ -36,6 +36,7 @@ class WebSocketTransport:
         self._pending_requests: dict[int, asyncio.Future[dict[str, Any]]] = {}
         self._message_loop_task: asyncio.Task[None] | None = None
         self._event_queue = EventQueue[TransportEvent](max_queue_size)
+        self._event_handler: EventHandler | None = None
         self._event_stream_closed = False
         self._is_shutting_down = False
 
@@ -47,6 +48,12 @@ class WebSocketTransport:
     def dropped_events(self) -> int:
         """Oldest events discarded by events(); reset on each connection."""
         return self._event_queue.dropped_events
+
+    def set_event_handler(self, handler: EventHandler | None) -> None:
+        """Select callback delivery before connecting; None selects events()."""
+        if self.is_connected:
+            raise CDPConnectionError("Set the event handler before connecting")
+        self._event_handler = handler
 
     async def __aenter__(self) -> Self:
         await self.connect()
@@ -85,7 +92,7 @@ class WebSocketTransport:
         await self._stop_message_loop()
         self._cancel_pending_requests()
         await self._close_websocket()
-        self._finish_event_stream()
+        await self._finish_event_stream()
 
         logger.info("Disconnected")
 
@@ -117,6 +124,8 @@ class WebSocketTransport:
             self._pending_requests.pop(message_id, None)
 
     async def events(self) -> AsyncIterator[TransportEvent]:
+        if self._event_handler is not None:
+            raise RuntimeError("Events are being delivered to the event handler")
         queue = self._event_queue
         while True:
             event = await queue.get()
@@ -134,7 +143,7 @@ class WebSocketTransport:
                 if self._is_shutting_down:
                     break
                 try:
-                    self._process_message(raw_message)
+                    await self._process_message(raw_message)
                 except Exception:
                     logger.exception(
                         "Dropping malformed CDP message: %.200r", raw_message
@@ -151,15 +160,15 @@ class WebSocketTransport:
                 self._is_shutting_down = True
                 self._cancel_pending_requests()
                 await self._close_websocket()
-                self._finish_event_stream()
+                await self._finish_event_stream()
 
-    def _process_message(self, raw: str | bytes) -> None:
+    async def _process_message(self, raw: str | bytes) -> None:
         message = json.loads(raw)
 
         if "id" in message:
             self._handle_response(message)
         elif "method" in message:
-            self._handle_event(message)
+            await self._handle_event(message)
         else:
             logger.warning("Unknown CDP message format: %s", message)
 
@@ -171,13 +180,16 @@ class WebSocketTransport:
 
         future.set_result(message)
 
-    def _handle_event(self, message: dict[str, Any]) -> None:
+    async def _handle_event(self, message: dict[str, Any]) -> None:
         event = TransportEvent(
             method=message["method"],
             params=message.get("params") or {},
             session_id=message.get("sessionId"),
         )
-        self._event_queue.push(event)
+        if self._event_handler is not None:
+            await self._event_handler(event)
+        else:
+            self._event_queue.push(event)
 
     async def _stop_message_loop(self) -> None:
         task = self._message_loop_task
@@ -205,10 +217,12 @@ class WebSocketTransport:
             finally:
                 self._ws = None
 
-    def _finish_event_stream(self) -> None:
+    async def _finish_event_stream(self) -> None:
         if not self._event_stream_closed:
             self._event_stream_closed = True
             self._event_queue.finish()
+            if self._event_handler is not None:
+                await self._event_handler(None)
 
     async def _send(
         self,

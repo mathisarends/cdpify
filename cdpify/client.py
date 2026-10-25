@@ -5,9 +5,10 @@ from typing import Any, Self
 from cdpify.domains import DomainAccessors
 from cdpify.events import EventRouter, EventSubscription, ReceivedEvent
 from cdpify.events.source import EventSource
+from cdpify.exceptions import CDPConnectionError
 from cdpify.executor import BoundCommandExecutor
 from cdpify.session import CdpSession
-from cdpify.transport import Transport, TransportEvent
+from cdpify.transport import CallbackTransport, Transport, TransportEvent
 
 logger = logging.getLogger(__name__)
 
@@ -57,14 +58,32 @@ class CdpClient(DomainAccessors, EventSource):
         await self.disconnect()
 
     async def connect(self) -> None:
-        await self._transport.connect()
+        if self.is_connected:
+            raise CDPConnectionError("Already connected")
         self._event_router.open()
-        self._event_loop_task = asyncio.create_task(self._run_event_loop())
+        callback_transport = (
+            self._transport if isinstance(self._transport, CallbackTransport) else None
+        )
+        if callback_transport is not None:
+            callback_transport.set_event_handler(self._dispatch_event)
+        try:
+            await self._transport.connect()
+        except BaseException:
+            self._event_router.close()
+            if callback_transport is not None:
+                callback_transport.set_event_handler(None)
+            raise
+        if callback_transport is None:
+            self._event_loop_task = asyncio.create_task(self._run_event_loop())
 
     async def disconnect(self) -> None:
         await self._stop_event_loop()
-        self._event_router.close()
-        await self._transport.disconnect()
+        try:
+            await self._transport.disconnect()
+        finally:
+            self._event_router.close()
+            if isinstance(self._transport, CallbackTransport):
+                self._transport.set_event_handler(None)
 
     def session(self, session_id: str) -> CdpSession:
         """Create an immutable domain view bound to ``session_id``."""
@@ -115,7 +134,10 @@ class CdpClient(DomainAccessors, EventSource):
         finally:
             self._event_router.close()
 
-    async def _dispatch_event(self, event: TransportEvent) -> None:
+    async def _dispatch_event(self, event: TransportEvent | None) -> None:
+        if event is None:
+            self._event_router.close()
+            return
         logger.debug("Event: %s", event.method)
         handled = await self._event_router.dispatch(event)
         if not handled:

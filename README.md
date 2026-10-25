@@ -272,6 +272,11 @@ from cdpify import CdpClient
 client = CdpClient(transport=my_transport)
 ```
 
+Custom transports can optionally implement `CallbackTransport` from
+`cdpify.transport` to deliver events directly to the client. The default
+WebSocket transport uses this path to avoid an intermediate event queue.
+Transports that implement only `Transport.events()` continue to work.
+
 When using `WebSocketTransport.events()` directly, its `max_queue_size` option
 sets the same drop-oldest limit on its transport buffer; `dropped_events` counts
 those evictions. A client-supplied custom transport manages its own buffer limits.

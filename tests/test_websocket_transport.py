@@ -77,7 +77,7 @@ async def test_await_response_raises_command_error_with_method() -> None:
 async def test_process_message_exposes_transport_event() -> None:
     transport = WebSocketTransport("ws://example")
 
-    transport._process_message(
+    await transport._process_message(
         json.dumps(
             {
                 "method": "Runtime.consoleAPICalled",
@@ -169,7 +169,7 @@ async def test_process_message_warns_for_unknown_payload(
     transport = WebSocketTransport("ws://example")
 
     with caplog.at_level("WARNING"):
-        transport._process_message(json.dumps({"foo": "bar"}))
+        await transport._process_message(json.dumps({"foo": "bar"}))
 
     assert "Unknown CDP message format" in caplog.text
 
@@ -225,7 +225,7 @@ async def test_event_without_params_has_empty_params() -> None:
 async def test_bounded_transport_drains_latest_events_on_disconnect() -> None:
     transport = WebSocketTransport("ws://example", max_queue_size=2)
     for value in range(5):
-        transport._process_message(
+        await transport._process_message(
             json.dumps({"method": "Test.event", "params": {"value": value}})
         )
 
@@ -281,3 +281,21 @@ async def test_reconnect_resets_buffer_without_migrating_old_readers(
     assert [event.params["value"] async for event in old_events] == [3]
     assert [event.params["value"] async for event in transport.events()] == [4]
     await transport.disconnect()
+
+
+@pytest.mark.asyncio
+async def test_callback_stream_closes_once_and_excludes_iterator() -> None:
+    transport = WebSocketTransport("ws://example")
+    handler = AsyncMock()
+    transport.set_event_handler(handler)
+    await transport._process_message('{"method":"Test.event"}')
+    with pytest.raises(RuntimeError, match="event handler"):
+        await anext(transport.events())
+
+    await transport.disconnect()
+    await transport.disconnect()
+
+    assert [call.args[0] for call in handler.await_args_list] == [
+        websocket_module.TransportEvent("Test.event", {}),
+        None,
+    ]
