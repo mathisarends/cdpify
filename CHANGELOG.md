@@ -49,6 +49,11 @@ Breaking changes are listed first in each release.
 
 ### Added
 
+- Optional `max_queue_size` on `CdpClient`, `WebSocketTransport`, `listen()`,
+  `listen_all()`, and `CdpSession.listen()`. Zero keeps unlimited buffering;
+  bounded queues drop their oldest event instead of blocking command responses.
+  Subscriptions inherit the client limit unless overridden. Both subscriptions
+  and the standalone WebSocket transport expose `dropped_events` counters.
 - `EventSubscription` registers its handler as soon as `listen()` is called, so
   events emitted before the first read are no longer lost. It supports
   `async with` for deterministic cleanup and `await events.next(timeout=...)`
@@ -71,6 +76,10 @@ Breaking changes are listed first in each release.
 
 ### Fixed
 
+- Bounded event streams close even when their buffers are full, preserving
+  buffered events on disconnect. Explicit subscription closure releases pending
+  events immediately. Subscriptions from an earlier connection stay closed
+  after reconnecting.
 - `decode_cdp` now decodes nested models behind `type X = ...` aliases instead
   of leaving them as plain dicts.
 - `decode_cdp` logs a warning when a field annotation cannot be resolved,

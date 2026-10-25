@@ -1,41 +1,14 @@
-import asyncio
 import weakref
 from collections.abc import Callable
 from types import TracebackType
 from typing import Final, Self
 
+from cdpify.event_queue import EventQueue
 from cdpify.exceptions import CDPStreamClosedError
 
 from .dispatcher import RawCDPEvent
 
-_STREAM_END: Final = object()
 _UNSET: Final = object()
-
-
-class EventBuffer:
-    """Queue between the dispatcher and one subscription.
-
-    The router holds the buffer, not the subscription, so a subscription that is
-    garbage collected without being closed can still unsubscribe itself.
-    """
-
-    __slots__ = ("_queue",)
-
-    def __init__(self) -> None:
-        self._queue: asyncio.Queue[RawCDPEvent | object] = asyncio.Queue()
-
-    def push(self, event: RawCDPEvent) -> None:
-        self._queue.put_nowait(event)
-
-    def finish(self) -> None:
-        self._queue.put_nowait(_STREAM_END)
-
-    async def get(self, timeout: float | None) -> RawCDPEvent | None:
-        if timeout is None:
-            item = await self._queue.get()
-        else:
-            item = await asyncio.wait_for(self._queue.get(), timeout=timeout)
-        return item if isinstance(item, RawCDPEvent) else None
 
 
 class EventSubscription[T]:
@@ -55,7 +28,7 @@ class EventSubscription[T]:
 
     def __init__(
         self,
-        buffer: EventBuffer,
+        buffer: EventQueue[RawCDPEvent],
         convert: Callable[[RawCDPEvent], T],
         *,
         timeout: float | None,
@@ -71,6 +44,11 @@ class EventSubscription[T]:
     def closed(self) -> bool:
         """Whether the stream has ended and no further events will be returned."""
         return self._ended
+
+    @property
+    def dropped_events(self) -> int:
+        """Number of oldest events discarded because this buffer was full."""
+        return self._buffer.dropped_events
 
     async def next(self, timeout: float | None | object = _UNSET) -> T:
         """Wait for the next event.
@@ -93,7 +71,7 @@ class EventSubscription[T]:
             return
         self._ended = True
         self._unsubscribe()
-        self._buffer.finish()
+        self._buffer.finish(discard=True)
 
     def __aiter__(self) -> Self:
         return self

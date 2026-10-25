@@ -9,6 +9,7 @@ from cdpify.exceptions import (
     CDPConnectionError,
     CDPTimeoutError,
 )
+from cdpify.transports import websocket as websocket_module
 from cdpify.transports.websocket import (
     WebSocketTransport,
     _build_message,
@@ -218,3 +219,65 @@ async def test_event_without_params_has_empty_params() -> None:
     events = [event async for event in transport.events()]
 
     assert [event.params for event in events] == [{}, {}]
+
+
+@pytest.mark.asyncio
+async def test_bounded_transport_drains_latest_events_on_disconnect() -> None:
+    transport = WebSocketTransport("ws://example", max_queue_size=2)
+    for value in range(5):
+        transport._process_message(
+            json.dumps({"method": "Test.event", "params": {"value": value}})
+        )
+
+    await transport.disconnect()
+    await transport.disconnect()
+
+    assert [event.params["value"] async for event in transport.events()] == [3, 4]
+    assert transport.dropped_events == 3
+
+
+@pytest.mark.asyncio
+async def test_disconnect_wakes_transport_reader() -> None:
+    transport = WebSocketTransport("ws://example", max_queue_size=1)
+    reader = asyncio.create_task(anext(transport.events(), None))
+    await asyncio.sleep(0)
+
+    await transport.disconnect()
+
+    assert await asyncio.wait_for(reader, timeout=1.0) is None
+
+
+def test_websocket_transport_rejects_negative_queue_limit() -> None:
+    with pytest.raises(ValueError, match="max_queue_size"):
+        WebSocketTransport("ws://example", max_queue_size=-1)
+
+
+@pytest.mark.asyncio
+async def test_reconnect_resets_buffer_without_migrating_old_readers(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def messages(values: list[int]) -> _ScriptedWebSocket:
+        return _ScriptedWebSocket(
+            [
+                json.dumps({"method": "Test.event", "params": {"value": value}})
+                for value in values
+            ]
+        )
+
+    monkeypatch.setattr(
+        websocket_module,
+        "connect",
+        AsyncMock(side_effect=[messages([1, 2, 3]), messages([4])]),
+    )
+    transport = WebSocketTransport("ws://example", max_queue_size=2)
+    await transport.connect()
+    old_events = transport.events()
+    assert (await anext(old_events)).params == {"value": 2}
+    assert transport.dropped_events == 1
+
+    await transport.connect()
+
+    assert transport.dropped_events == 0
+    assert [event.params["value"] async for event in old_events] == [3]
+    assert [event.params["value"] async for event in transport.events()] == [4]
+    await transport.disconnect()

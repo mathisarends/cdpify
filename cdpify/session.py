@@ -44,6 +44,7 @@ class CdpSession(DomainAccessors):
         *,
         timeout: float | None = None,
         event_name: str | None = None,
+        max_queue_size: int | None = None,
     ) -> EventSubscription[T]:
         """Subscribe to events emitted by this session only.
 
@@ -54,4 +55,5 @@ class CdpSession(DomainAccessors):
             session_id=self._session_id,
             timeout=timeout,
             event_name=event_name,
+            max_queue_size=max_queue_size,
         )

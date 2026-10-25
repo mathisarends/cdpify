@@ -2,10 +2,11 @@ from collections.abc import Callable
 from dataclasses import dataclass
 
 from cdpify.codec import decode_cdp
+from cdpify.event_queue import EventQueue
 from cdpify.transport import TransportEvent
 
 from .dispatcher import EventDispatcher, RawCDPEvent
-from .subscription import EventBuffer, EventSubscription
+from .subscription import EventSubscription
 
 
 @dataclass(frozen=True, slots=True)
@@ -19,9 +20,12 @@ class ReceivedEvent[T]:
 class EventRouter:
     """Decode and route transport events to root, session, or global listeners."""
 
-    def __init__(self) -> None:
+    def __init__(self, *, max_queue_size: int = 0) -> None:
+        # Validate the default even when no listeners are registered yet.
+        EventQueue(max_queue_size)
+        self._max_queue_size = max_queue_size
         self._dispatcher = EventDispatcher()
-        self._buffers: set[EventBuffer] = set()
+        self._buffers: set[EventQueue[RawCDPEvent]] = set()
         self._closed = False
 
     @property
@@ -39,8 +43,12 @@ class EventRouter:
         self._closed = True
         for buffer in self._buffers:
             buffer.finish()
+        self._buffers.clear()
+        self._dispatcher = EventDispatcher()
 
     async def dispatch(self, event: TransportEvent) -> bool:
+        if self._closed:
+            return False
         return await self._dispatcher.dispatch(
             event.method,
             RawCDPEvent(params=event.params, session_id=event.session_id),
@@ -53,12 +61,14 @@ class EventRouter:
         session_id: str | None,
         timeout: float | None = None,
         event_name: str | None = None,
+        max_queue_size: int | None = None,
     ) -> EventSubscription[T]:
         return self._subscribe(
             _resolve_event_name(event_type, event_name),
             lambda event: decode_cdp(event_type, event.params),
             session_id=session_id,
             timeout=timeout,
+            max_queue_size=max_queue_size,
         )
 
     def listen_all[T](
@@ -67,6 +77,7 @@ class EventRouter:
         *,
         timeout: float | None = None,
         event_name: str | None = None,
+        max_queue_size: int | None = None,
     ) -> EventSubscription[ReceivedEvent[T]]:
         return self._subscribe(
             _resolve_event_name(event_type, event_name),
@@ -76,6 +87,7 @@ class EventRouter:
             ),
             all_sessions=True,
             timeout=timeout,
+            max_queue_size=max_queue_size,
         )
 
     def _subscribe[T](
@@ -86,8 +98,11 @@ class EventRouter:
         session_id: str | None = None,
         all_sessions: bool = False,
         timeout: float | None,
+        max_queue_size: int | None,
     ) -> EventSubscription[T]:
-        buffer = EventBuffer()
+        buffer = EventQueue[RawCDPEvent](
+            self._max_queue_size if max_queue_size is None else max_queue_size
+        )
         if self._closed:
             buffer.finish()
             return EventSubscription(
@@ -98,6 +113,7 @@ class EventRouter:
             buffer.push(event)
 
         def unsubscribe() -> None:
+            buffer.finish(discard=True)
             self._buffers.discard(buffer)
             self._dispatcher.remove_handler(
                 event_name,

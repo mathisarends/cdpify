@@ -20,6 +20,7 @@ class CdpClient(DomainAccessors):
         additional_headers: dict[str, str] | None = None,
         max_frame_size: int = 100 * 1024 * 1024,
         default_timeout: float = 30.0,
+        max_queue_size: int = 0,
     ) -> None:
         if transport is not None and url is not None:
             raise TypeError("Pass either url or transport, not both")
@@ -31,11 +32,12 @@ class CdpClient(DomainAccessors):
                 additional_headers=additional_headers,
                 max_frame_size=max_frame_size,
                 default_timeout=default_timeout,
+                max_queue_size=max_queue_size,
             )
 
         self._transport = transport
         self._executor = BoundCommandExecutor(transport)
-        self._event_router = EventRouter()
+        self._event_router = EventRouter(max_queue_size=max_queue_size)
         self._event_loop_task: asyncio.Task[None] | None = None
 
     @property
@@ -88,6 +90,7 @@ class CdpClient(DomainAccessors):
         *,
         timeout: float | None = None,
         event_name: str | None = None,
+        max_queue_size: int | None = None,
     ) -> EventSubscription[T]:
         """Subscribe to events emitted by the root CDP connection only.
 
@@ -101,6 +104,7 @@ class CdpClient(DomainAccessors):
             session_id=None,
             timeout=timeout,
             event_name=event_name,
+            max_queue_size=max_queue_size,
         )
 
     def listen_all[T](
@@ -109,6 +113,7 @@ class CdpClient(DomainAccessors):
         *,
         timeout: float | None = None,
         event_name: str | None = None,
+        max_queue_size: int | None = None,
     ) -> EventSubscription[ReceivedEvent[T]]:
         """Subscribe to matching events from the root and every target session.
 
@@ -118,6 +123,7 @@ class CdpClient(DomainAccessors):
             event_type,
             timeout=timeout,
             event_name=event_name,
+            max_queue_size=max_queue_size,
         )
 
     async def _run_event_loop(self) -> None:
@@ -154,6 +160,7 @@ def _create_websocket_transport(
     additional_headers: dict[str, str] | None,
     max_frame_size: int,
     default_timeout: float,
+    max_queue_size: int,
 ) -> Transport:
     try:
         from cdpify.transports.websocket import WebSocketTransport
@@ -169,4 +176,5 @@ def _create_websocket_transport(
         additional_headers=additional_headers,
         max_frame_size=max_frame_size,
         default_timeout=default_timeout,
+        max_queue_size=max_queue_size,
     )

@@ -182,6 +182,27 @@ contain only fields defined by the CDP specification, plus their CDP name in
 `__cdp_event__`. To listen with your own dataclass, pass the name explicitly:
 `client.listen(MyEvent, event_name="Page.loadEventFired")`.
 
+### Limiting buffered events
+
+Set `max_queue_size` on `CdpClient` to limit each listener's buffer. The default,
+`0`, is unlimited. A full buffer discards its oldest event so slow consumers do
+not block command responses. Override the limit for an individual subscription:
+
+```python
+client = CdpClient(ws_url, max_queue_size=256)
+
+async with client:
+    async with client.listen(RequestWillBeSentEvent, max_queue_size=32) as events:
+        event = await events.next(timeout=10)
+        print(events.dropped_events)
+```
+
+The same options apply to `listen_all()` and `CdpSession.listen()`. Passing `0`
+to a listener disables its limit. `events.dropped_events` counts events evicted
+by that listener's buffer. Disconnecting drains the remaining buffered events;
+`aclose()` releases them immediately. Each listener receives its own decoded
+event model, so changing one listener's model does not change another's.
+
 ## Working with target sessions
 
 Attach to a target in flat mode and create an immutable session view with
@@ -238,6 +259,7 @@ client = CdpClient(
     additional_headers={"Authorization": "Bearer token"},
     max_frame_size=100 * 1024 * 1024,
     default_timeout=30.0,
+    max_queue_size=256,
 )
 ```
 
@@ -249,6 +271,10 @@ from cdpify import CdpClient
 
 client = CdpClient(transport=my_transport)
 ```
+
+When using `WebSocketTransport.events()` directly, its `max_queue_size` option
+sets the same drop-oldest limit on its transport buffer; `dropped_events` counts
+those evictions. A client-supplied custom transport manages its own buffer limits.
 
 For methods not covered by the generated API, use the low-level escape hatch:
 

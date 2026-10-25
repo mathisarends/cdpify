@@ -137,3 +137,93 @@ async def test_event_name_overrides_cdp_event() -> None:
     await router.dispatch(TransportEvent("Custom.event", {"value": 5}))
 
     assert await events.next(timeout=1.0) == _UnnamedEvent(value=5)
+
+
+@pytest.mark.asyncio
+async def test_bounded_listeners_drop_oldest_independently_and_drain_on_close() -> None:
+    router = EventRouter(max_queue_size=2)
+    bounded = router.listen(_Event, session_id=None)
+    unlimited = router.listen(_Event, session_id=None, max_queue_size=0)
+    global_events = router.listen_all(_Event, max_queue_size=1)
+
+    for value in range(5):
+        await router.dispatch(_event(value))
+    router.close()
+    router.close()
+
+    assert [event.value async for event in bounded] == [3, 4]
+    assert bounded.dropped_events == 3
+    assert [event.value async for event in unlimited] == [0, 1, 2, 3, 4]
+    assert unlimited.dropped_events == 0
+    assert [event.value.value async for event in global_events] == [4]
+    assert global_events.dropped_events == 4
+
+
+@pytest.mark.asyncio
+async def test_full_buffer_can_be_closed_without_reading() -> None:
+    router = EventRouter(max_queue_size=1)
+    events = router.listen(_Event, session_id=None)
+    await router.dispatch(_event(1))
+
+    await asyncio.wait_for(events.aclose(), timeout=1.0)
+
+    assert [event async for event in events] == []
+    assert events.dropped_events == 0
+    assert await router.dispatch(_event(2)) is False
+
+
+@pytest.mark.asyncio
+async def test_timed_out_or_cancelled_read_does_not_lose_next_event() -> None:
+    router = EventRouter(max_queue_size=1)
+    events = router.listen(_Event, session_id=None)
+    with pytest.raises(TimeoutError):
+        await events.next(timeout=0.01)
+    reader = asyncio.create_task(events.next())
+    await asyncio.sleep(0)
+    reader.cancel()
+    with pytest.raises(asyncio.CancelledError):
+        await reader
+
+    await router.dispatch(_event(3))
+
+    assert await events.next(timeout=1.0) == _Event(3)
+    await events.aclose()
+
+
+@pytest.mark.asyncio
+async def test_reopening_router_keeps_old_subscriptions_closed() -> None:
+    router = EventRouter(max_queue_size=1)
+    old_events = router.listen(_Event, session_id=None)
+    await router.dispatch(_event(1))
+    router.close()
+    assert await router.dispatch(_event(2)) is False
+    router.open()
+    new_events = router.listen(_Event, session_id=None)
+    await router.dispatch(_event(3))
+    router.close()
+
+    assert [event.value async for event in old_events] == [1]
+    assert [event.value async for event in new_events] == [3]
+
+
+@pytest.mark.asyncio
+async def test_listeners_receive_independent_mutable_models() -> None:
+    router = EventRouter()
+    first = router.listen(_Event, session_id=None)
+    second = router.listen(_Event, session_id=None)
+    await router.dispatch(_event(1))
+
+    changed = await first.next(timeout=1.0)
+    changed.value = 99
+
+    assert await second.next(timeout=1.0) == _Event(1)
+    await first.aclose()
+    await second.aclose()
+
+
+@pytest.mark.parametrize("max_queue_size", [-1, 1.5])
+def test_rejects_invalid_queue_limits(max_queue_size: int) -> None:
+    with pytest.raises((ValueError, TypeError), match="max_queue_size"):
+        EventRouter(max_queue_size=max_queue_size)
+    with pytest.raises((ValueError, TypeError), match="max_queue_size"):
+        EventRouter().listen(_Event, session_id=None, max_queue_size=max_queue_size)

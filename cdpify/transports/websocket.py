@@ -8,6 +8,7 @@ from typing import Any, Self
 import websockets
 from websockets.asyncio.client import ClientConnection, connect
 
+from cdpify.event_queue import EventQueue
 from cdpify.exceptions import CDPCommandError, CDPConnectionError, CDPTimeoutError
 from cdpify.transport import TransportEvent
 
@@ -22,23 +23,30 @@ class WebSocketTransport:
         additional_headers: dict[str, str] | None = None,
         max_frame_size: int = 100 * 1024 * 1024,
         default_timeout: float = 30.0,
+        max_queue_size: int = 0,
     ) -> None:
         self.url = url
         self._additional_headers = additional_headers
         self._max_frame_size = max_frame_size
         self._default_timeout = default_timeout
+        self._max_queue_size = max_queue_size
 
         self._ws: ClientConnection | None = None
         self._message_ids = itertools.count()
         self._pending_requests: dict[int, asyncio.Future[dict[str, Any]]] = {}
         self._message_loop_task: asyncio.Task[None] | None = None
-        self._event_queue: asyncio.Queue[TransportEvent | None] = asyncio.Queue()
+        self._event_queue = EventQueue[TransportEvent](max_queue_size)
         self._event_stream_closed = False
         self._is_shutting_down = False
 
     @property
     def is_connected(self) -> bool:
         return self._ws is not None
+
+    @property
+    def dropped_events(self) -> int:
+        """Oldest events discarded by events(); reset on each connection."""
+        return self._event_queue.dropped_events
 
     async def __aenter__(self) -> Self:
         await self.connect()
@@ -62,7 +70,7 @@ class WebSocketTransport:
             raise CDPConnectionError(f"Connection failed: {error}") from error
 
         self._is_shutting_down = False
-        self._event_queue = asyncio.Queue()
+        self._event_queue = EventQueue(self._max_queue_size)
         self._event_stream_closed = False
         self._message_loop_task = asyncio.create_task(self._run_message_loop())
         logger.info("Connected")
@@ -109,8 +117,9 @@ class WebSocketTransport:
             self._pending_requests.pop(message_id, None)
 
     async def events(self) -> AsyncIterator[TransportEvent]:
+        queue = self._event_queue
         while True:
-            event = await self._event_queue.get()
+            event = await queue.get()
             if event is None:
                 return
             yield event
@@ -163,13 +172,12 @@ class WebSocketTransport:
         future.set_result(message)
 
     def _handle_event(self, message: dict[str, Any]) -> None:
-        self._event_queue.put_nowait(
-            TransportEvent(
-                method=message["method"],
-                params=message.get("params") or {},
-                session_id=message.get("sessionId"),
-            )
+        event = TransportEvent(
+            method=message["method"],
+            params=message.get("params") or {},
+            session_id=message.get("sessionId"),
         )
+        self._event_queue.push(event)
 
     async def _stop_message_loop(self) -> None:
         task = self._message_loop_task
@@ -200,7 +208,7 @@ class WebSocketTransport:
     def _finish_event_stream(self) -> None:
         if not self._event_stream_closed:
             self._event_stream_closed = True
-            self._event_queue.put_nowait(None)
+            self._event_queue.finish()
 
     async def _send(
         self,
