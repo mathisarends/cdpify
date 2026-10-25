@@ -123,7 +123,7 @@ class WebSocketTransport:
         session_id: str | None = None,
         timeout: float | None = None,
     ) -> dict[str, Any]:
-        if not self.is_connected:
+        if not self.is_connected or self._is_shutting_down:
             raise CDPConnectionError("Not connected")
 
         request_timeout = self._default_timeout if timeout is None else timeout

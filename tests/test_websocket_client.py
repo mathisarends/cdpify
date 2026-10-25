@@ -149,6 +149,8 @@ async def test_disconnect_waits_for_shared_cleanup(
     try:
         assert not first.done()
         assert not second.done()
+        with pytest.raises(CDPConnectionError):
+            await client.execute("Runtime.evaluate", timeout=0.01)
         if cancel_waiter:
             first.cancel()
             with pytest.raises(asyncio.CancelledError):
