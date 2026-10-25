@@ -4,9 +4,15 @@
 
 from __future__ import annotations
 
-from typing import Literal
+from cdpify.shared.enums import CDPStrEnum
 
-type VirtualWalletAction = Literal["respond", "decline", "wait", "clear"]
-"""
-The type of virtual wallet action.
-"""
+
+class VirtualWalletAction(CDPStrEnum):
+    """
+    The type of virtual wallet action.
+    """
+
+    RESPOND = "respond"
+    DECLINE = "decline"
+    WAIT = "wait"
+    CLEAR = "clear"

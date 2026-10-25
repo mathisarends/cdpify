@@ -19,7 +19,9 @@ class HeapProfilerEvent(StrEnum):
 
 @dataclass(kw_only=True, slots=True)
 class AddHeapSnapshotChunkEvent:
-    __cdp_event__: ClassVar[str] = "HeapProfiler.addHeapSnapshotChunk"
+    __cdp_event__: ClassVar[HeapProfilerEvent] = (
+        HeapProfilerEvent.ADD_HEAP_SNAPSHOT_CHUNK
+    )
 
     chunk: str
 
@@ -31,7 +33,7 @@ class HeapStatsUpdateEvent:
     more fragments
     """
 
-    __cdp_event__: ClassVar[str] = "HeapProfiler.heapStatsUpdate"
+    __cdp_event__: ClassVar[HeapProfilerEvent] = HeapProfilerEvent.HEAP_STATS_UPDATE
 
     stats_update: list[int] = field(metadata={"cdp_name": "statsUpdate"})
 
@@ -45,7 +47,7 @@ class LastSeenObjectIdEvent:
     before a new lastSeenObjectId event.
     """
 
-    __cdp_event__: ClassVar[str] = "HeapProfiler.lastSeenObjectId"
+    __cdp_event__: ClassVar[HeapProfilerEvent] = HeapProfilerEvent.LAST_SEEN_OBJECT_ID
 
     last_seen_object_id: int = field(metadata={"cdp_name": "lastSeenObjectId"})
     timestamp: float
@@ -53,7 +55,9 @@ class LastSeenObjectIdEvent:
 
 @dataclass(kw_only=True, slots=True)
 class ReportHeapSnapshotProgressEvent:
-    __cdp_event__: ClassVar[str] = "HeapProfiler.reportHeapSnapshotProgress"
+    __cdp_event__: ClassVar[HeapProfilerEvent] = (
+        HeapProfilerEvent.REPORT_HEAP_SNAPSHOT_PROGRESS
+    )
 
     done: int
     total: int
@@ -62,4 +66,4 @@ class ReportHeapSnapshotProgressEvent:
 
 @dataclass(kw_only=True, slots=True)
 class ResetProfilesEvent:
-    __cdp_event__: ClassVar[str] = "HeapProfiler.resetProfiles"
+    __cdp_event__: ClassVar[HeapProfilerEvent] = HeapProfilerEvent.RESET_PROFILES

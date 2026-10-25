@@ -88,7 +88,7 @@ def _build_event_model(
             _build_field_view(param, event_fqn, aliases, ctx)
             for param in event.parameters
         ),
-        event_name=event_fqn,
+        event_member=to_enum_name(event.name),
     )
 
 

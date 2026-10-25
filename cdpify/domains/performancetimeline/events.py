@@ -24,6 +24,8 @@ class TimelineEventAddedEvent:
     method.
     """
 
-    __cdp_event__: ClassVar[str] = "PerformanceTimeline.timelineEventAdded"
+    __cdp_event__: ClassVar[PerformanceTimelineEvent] = (
+        PerformanceTimelineEvent.TIMELINE_EVENT_ADDED
+    )
 
     event: TimelineEvent

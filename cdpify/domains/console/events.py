@@ -23,6 +23,6 @@ class MessageAddedEvent:
     Issued when new console message is added.
     """
 
-    __cdp_event__: ClassVar[str] = "Console.messageAdded"
+    __cdp_event__: ClassVar[ConsoleEvent] = ConsoleEvent.MESSAGE_ADDED
 
     message: ConsoleMessage

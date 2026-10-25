@@ -8,6 +8,7 @@ from dataclasses import dataclass, field
 from typing import Literal
 
 from cdpify.domains import runtime
+from cdpify.shared.enums import CDPStrEnum
 
 type BreakpointId = str
 """
@@ -134,10 +135,13 @@ class WasmDisassemblyChunk:
     bytecode_offsets: list[int] = field(metadata={"cdp_name": "bytecodeOffsets"})
 
 
-type ScriptLanguage = Literal["JavaScript", "WebAssembly"]
-"""
-Enum of possible script languages.
-"""
+class ScriptLanguage(CDPStrEnum):
+    """
+    Enum of possible script languages.
+    """
+
+    JAVA_SCRIPT = "JavaScript"
+    WEB_ASSEMBLY = "WebAssembly"
 
 
 @dataclass(kw_only=True, slots=True)

@@ -5,22 +5,23 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Literal
 
 from cdpify.domains import network, serviceworker
+from cdpify.shared.enums import CDPStrEnum
 
-type ServiceName = Literal[
-    "backgroundFetch",
-    "backgroundSync",
-    "pushMessaging",
-    "notifications",
-    "paymentHandler",
-    "periodicBackgroundSync",
-]
-"""
-The Background Service that will be associated with the commands/events. Every
-Background Service operates independently, but they share the same API.
-"""
+
+class ServiceName(CDPStrEnum):
+    """
+    The Background Service that will be associated with the commands/events. Every
+    Background Service operates independently, but they share the same API.
+    """
+
+    BACKGROUND_FETCH = "backgroundFetch"
+    BACKGROUND_SYNC = "backgroundSync"
+    PUSH_MESSAGING = "pushMessaging"
+    NOTIFICATIONS = "notifications"
+    PAYMENT_HANDLER = "paymentHandler"
+    PERIODIC_BACKGROUND_SYNC = "periodicBackgroundSync"
 
 
 @dataclass(kw_only=True, slots=True)

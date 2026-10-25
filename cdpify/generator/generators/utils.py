@@ -1,4 +1,5 @@
 import keyword
+import re
 
 from cdpify.generator.schemas import Parameter
 from cdpify.shared.naming import to_snake_case
@@ -31,7 +32,10 @@ def to_identifier(name: str) -> str:
 
 
 def to_enum_name(name: str) -> str:
-    return to_snake_case(name).upper()
+    identifier = re.sub(r"\W+", "_", to_snake_case(name)).strip("_").upper()
+    if not identifier:
+        return "EMPTY"
+    return f"VALUE_{identifier}" if identifier[0].isdigit() else identifier
 
 
 def resolve_type(param: Parameter) -> str:

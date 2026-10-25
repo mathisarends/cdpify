@@ -4,9 +4,11 @@ from cdpify.generator.generators.utils import (
     format_docstring,
     map_cdp_type,
     resolve_type,
+    to_enum_name,
     to_identifier,
 )
 from cdpify.generator.generators.views import (
+    EnumMemberView,
     FieldView,
     TypeDefinitionView,
     dataclass_import,
@@ -30,6 +32,7 @@ def generate(domain: Domain) -> str:
         typing_names=ctx.sorted_typing_names,
         cross_domain_modules=ctx.cross_domain_modules,
         definitions=definitions,
+        has_enums=any(definition.kind == "enum" for definition in definitions),
         dataclass_import=dataclass_import(definitions),
     )
 
@@ -38,22 +41,29 @@ def _build_type_view(
     type_def: TypeDefinition, ctx: GenerationContext
 ) -> TypeDefinitionView:
     if type_def.enum:
-        return _build_enum_view(type_def, ctx)
+        return _build_enum_view(type_def)
     if type_def.properties:
         return _build_object_view(type_def, ctx)
     return _build_alias_view(type_def, ctx)
 
 
-def _build_enum_view(
-    type_def: TypeDefinition, ctx: GenerationContext
-) -> TypeDefinitionView:
-    ctx.use_typing("Literal")
-    values = ", ".join(f'"{value}"' for value in type_def.enum)
+def _build_enum_view(type_def: TypeDefinition) -> TypeDefinitionView:
+    members = []
+    used_names = set()
+    for value in type_def.enum:
+        base_name = to_enum_name(value)
+        name = base_name
+        suffix = 2
+        while name in used_names:
+            name = f"{base_name}_{suffix}"
+            suffix += 1
+        used_names.add(name)
+        members.append(EnumMemberView(name=name, value=value))
     return TypeDefinitionView(
         kind="enum",
         name=type_def.id,
-        annotation=f"Literal[{values}]",
-        docstring=_docstring(type_def.description, indent=0),
+        members=tuple(members),
+        docstring=_docstring(type_def.description, indent=4),
     )
 
 

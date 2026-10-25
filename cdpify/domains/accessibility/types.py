@@ -5,61 +5,70 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Literal
+from typing import Any
 
 from cdpify.domains import dom, page
+from cdpify.shared.enums import CDPStrEnum
 
 type AXNodeId = str
 """
 Unique accessibility node identifier.
 """
 
-type AXValueType = Literal[
-    "boolean",
-    "tristate",
-    "booleanOrUndefined",
-    "idref",
-    "idrefList",
-    "integer",
-    "node",
-    "nodeList",
-    "number",
-    "string",
-    "computedString",
-    "token",
-    "tokenList",
-    "domRelation",
-    "role",
-    "internalRole",
-    "valueUndefined",
-]
-"""
-Enum of possible property types.
-"""
 
-type AXValueSourceType = Literal[
-    "attribute", "implicit", "style", "contents", "placeholder", "relatedElement"
-]
-"""
-Enum of possible property sources.
-"""
+class AXValueType(CDPStrEnum):
+    """
+    Enum of possible property types.
+    """
 
-type AXValueNativeSourceType = Literal[
-    "description",
-    "figcaption",
-    "label",
-    "labelfor",
-    "labelwrapped",
-    "legend",
-    "rubyannotation",
-    "tablecaption",
-    "title",
-    "other",
-]
-"""
-Enum of possible native property sources (as a subtype of a particular
-AXValueSourceType).
-"""
+    BOOLEAN = "boolean"
+    TRISTATE = "tristate"
+    BOOLEAN_OR_UNDEFINED = "booleanOrUndefined"
+    IDREF = "idref"
+    IDREF_LIST = "idrefList"
+    INTEGER = "integer"
+    NODE = "node"
+    NODE_LIST = "nodeList"
+    NUMBER = "number"
+    STRING = "string"
+    COMPUTED_STRING = "computedString"
+    TOKEN = "token"
+    TOKEN_LIST = "tokenList"
+    DOM_RELATION = "domRelation"
+    ROLE = "role"
+    INTERNAL_ROLE = "internalRole"
+    VALUE_UNDEFINED = "valueUndefined"
+
+
+class AXValueSourceType(CDPStrEnum):
+    """
+    Enum of possible property sources.
+    """
+
+    ATTRIBUTE = "attribute"
+    IMPLICIT = "implicit"
+    STYLE = "style"
+    CONTENTS = "contents"
+    PLACEHOLDER = "placeholder"
+    RELATED_ELEMENT = "relatedElement"
+
+
+class AXValueNativeSourceType(CDPStrEnum):
+    """
+    Enum of possible native property sources (as a subtype of a particular
+    AXValueSourceType).
+    """
+
+    DESCRIPTION = "description"
+    FIGCAPTION = "figcaption"
+    LABEL = "label"
+    LABELFOR = "labelfor"
+    LABELWRAPPED = "labelwrapped"
+    LEGEND = "legend"
+    RUBYANNOTATION = "rubyannotation"
+    TABLECAPTION = "tablecaption"
+    TITLE = "title"
+    OTHER = "other"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -116,74 +125,75 @@ class AXValue:
     sources: list[AXValueSource] | None = None
 
 
-type AXPropertyName = Literal[
-    "actions",
-    "busy",
-    "disabled",
-    "editable",
-    "focusable",
-    "focused",
-    "hidden",
-    "hiddenRoot",
-    "invalid",
-    "keyshortcuts",
-    "settable",
-    "roledescription",
-    "live",
-    "atomic",
-    "relevant",
-    "root",
-    "autocomplete",
-    "hasPopup",
-    "level",
-    "multiselectable",
-    "orientation",
-    "multiline",
-    "readonly",
-    "required",
-    "valuemin",
-    "valuemax",
-    "valuetext",
-    "checked",
-    "expanded",
-    "modal",
-    "pressed",
-    "selected",
-    "activedescendant",
-    "controls",
-    "describedby",
-    "details",
-    "errormessage",
-    "flowto",
-    "labelledby",
-    "owns",
-    "url",
-    "activeFullscreenElement",
-    "activeModalDialog",
-    "activeAriaModalDialog",
-    "ariaHiddenElement",
-    "ariaHiddenSubtree",
-    "emptyAlt",
-    "emptyText",
-    "inertElement",
-    "inertSubtree",
-    "labelContainer",
-    "labelFor",
-    "notRendered",
-    "notVisible",
-    "presentationalRole",
-    "probablyPresentational",
-    "inactiveCarouselTabContent",
-    "uninteresting",
-]
-"""
-Values of AXProperty name: - from 'busy' to 'roledescription': states which apply to
-every AX node - from 'live' to 'root': attributes which apply to nodes in live regions -
-from 'autocomplete' to 'valuetext': attributes which apply to widgets - from 'checked'
-to 'selected': states which apply to widgets - from 'activedescendant' to 'owns':
-relationships between elements other than parent/child/sibling - from
-'activeFullscreenElement' to 'uninteresting': reasons why this noode is hidden
-"""
+class AXPropertyName(CDPStrEnum):
+    """
+    Values of AXProperty name: - from 'busy' to 'roledescription': states which apply
+    to every AX node - from 'live' to 'root': attributes which apply to nodes in live
+    regions - from 'autocomplete' to 'valuetext': attributes which apply to widgets -
+    from 'checked' to 'selected': states which apply to widgets - from
+    'activedescendant' to 'owns': relationships between elements other than
+    parent/child/sibling - from 'activeFullscreenElement' to 'uninteresting': reasons
+    why this noode is hidden
+    """
+
+    ACTIONS = "actions"
+    BUSY = "busy"
+    DISABLED = "disabled"
+    EDITABLE = "editable"
+    FOCUSABLE = "focusable"
+    FOCUSED = "focused"
+    HIDDEN = "hidden"
+    HIDDEN_ROOT = "hiddenRoot"
+    INVALID = "invalid"
+    KEYSHORTCUTS = "keyshortcuts"
+    SETTABLE = "settable"
+    ROLEDESCRIPTION = "roledescription"
+    LIVE = "live"
+    ATOMIC = "atomic"
+    RELEVANT = "relevant"
+    ROOT = "root"
+    AUTOCOMPLETE = "autocomplete"
+    HAS_POPUP = "hasPopup"
+    LEVEL = "level"
+    MULTISELECTABLE = "multiselectable"
+    ORIENTATION = "orientation"
+    MULTILINE = "multiline"
+    READONLY = "readonly"
+    REQUIRED = "required"
+    VALUEMIN = "valuemin"
+    VALUEMAX = "valuemax"
+    VALUETEXT = "valuetext"
+    CHECKED = "checked"
+    EXPANDED = "expanded"
+    MODAL = "modal"
+    PRESSED = "pressed"
+    SELECTED = "selected"
+    ACTIVEDESCENDANT = "activedescendant"
+    CONTROLS = "controls"
+    DESCRIBEDBY = "describedby"
+    DETAILS = "details"
+    ERRORMESSAGE = "errormessage"
+    FLOWTO = "flowto"
+    LABELLEDBY = "labelledby"
+    OWNS = "owns"
+    URL = "url"
+    ACTIVE_FULLSCREEN_ELEMENT = "activeFullscreenElement"
+    ACTIVE_MODAL_DIALOG = "activeModalDialog"
+    ACTIVE_ARIA_MODAL_DIALOG = "activeAriaModalDialog"
+    ARIA_HIDDEN_ELEMENT = "ariaHiddenElement"
+    ARIA_HIDDEN_SUBTREE = "ariaHiddenSubtree"
+    EMPTY_ALT = "emptyAlt"
+    EMPTY_TEXT = "emptyText"
+    INERT_ELEMENT = "inertElement"
+    INERT_SUBTREE = "inertSubtree"
+    LABEL_CONTAINER = "labelContainer"
+    LABEL_FOR = "labelFor"
+    NOT_RENDERED = "notRendered"
+    NOT_VISIBLE = "notVisible"
+    PRESENTATIONAL_ROLE = "presentationalRole"
+    PROBABLY_PRESENTATIONAL = "probablyPresentational"
+    INACTIVE_CAROUSEL_TAB_CONTENT = "inactiveCarouselTabContent"
+    UNINTERESTING = "uninteresting"
 
 
 @dataclass(kw_only=True, slots=True)

@@ -27,7 +27,7 @@ class InspectNodeRequestedEvent:
     `setInspectMode` or when user manually inspects an element.
     """
 
-    __cdp_event__: ClassVar[str] = "Overlay.inspectNodeRequested"
+    __cdp_event__: ClassVar[OverlayEvent] = OverlayEvent.INSPECT_NODE_REQUESTED
 
     backend_node_id: dom.BackendNodeId = field(metadata={"cdp_name": "backendNodeId"})
 
@@ -39,7 +39,7 @@ class NodeHighlightRequestedEvent:
     `setInspectMode`.
     """
 
-    __cdp_event__: ClassVar[str] = "Overlay.nodeHighlightRequested"
+    __cdp_event__: ClassVar[OverlayEvent] = OverlayEvent.NODE_HIGHLIGHT_REQUESTED
 
     node_id: dom.NodeId = field(metadata={"cdp_name": "nodeId"})
 
@@ -50,7 +50,7 @@ class ScreenshotRequestedEvent:
     Fired when user asks to capture screenshot of some area on the page.
     """
 
-    __cdp_event__: ClassVar[str] = "Overlay.screenshotRequested"
+    __cdp_event__: ClassVar[OverlayEvent] = OverlayEvent.SCREENSHOT_REQUESTED
 
     viewport: page.Viewport
 
@@ -61,7 +61,7 @@ class InspectPanelShowRequestedEvent:
     Fired when user asks to show the Inspect panel.
     """
 
-    __cdp_event__: ClassVar[str] = "Overlay.inspectPanelShowRequested"
+    __cdp_event__: ClassVar[OverlayEvent] = OverlayEvent.INSPECT_PANEL_SHOW_REQUESTED
 
     backend_node_id: dom.BackendNodeId = field(metadata={"cdp_name": "backendNodeId"})
 
@@ -72,7 +72,9 @@ class InspectedElementWindowRestoredEvent:
     Fired when user asks to restore the Inspected Element floating window.
     """
 
-    __cdp_event__: ClassVar[str] = "Overlay.inspectedElementWindowRestored"
+    __cdp_event__: ClassVar[OverlayEvent] = (
+        OverlayEvent.INSPECTED_ELEMENT_WINDOW_RESTORED
+    )
 
     backend_node_id: dom.BackendNodeId = field(metadata={"cdp_name": "backendNodeId"})
 
@@ -83,4 +85,4 @@ class InspectModeCanceledEvent:
     Fired when user cancels the inspect mode.
     """
 
-    __cdp_event__: ClassVar[str] = "Overlay.inspectModeCanceled"
+    __cdp_event__: ClassVar[OverlayEvent] = OverlayEvent.INSPECT_MODE_CANCELED

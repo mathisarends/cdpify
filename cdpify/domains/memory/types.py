@@ -5,12 +5,17 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Literal
 
-type PressureLevel = Literal["moderate", "critical"]
-"""
-Memory pressure level.
-"""
+from cdpify.shared.enums import CDPStrEnum
+
+
+class PressureLevel(CDPStrEnum):
+    """
+    Memory pressure level.
+    """
+
+    MODERATE = "moderate"
+    CRITICAL = "critical"
 
 
 @dataclass(kw_only=True, slots=True)

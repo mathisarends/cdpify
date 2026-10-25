@@ -53,6 +53,7 @@ class TypeDefinitionView:
     docstring: str | None = None
     annotation: str | None = None
     fields: tuple[FieldView, ...] = ()
+    members: tuple[EnumMemberView, ...] = ()
 
 
 @dataclass(frozen=True, slots=True)
@@ -60,7 +61,7 @@ class ModelView:
     name: str
     docstring: str | None = None
     fields: tuple[FieldView, ...] = ()
-    event_name: str | None = None
+    event_member: str | None = None
 
 
 @dataclass(frozen=True, slots=True)

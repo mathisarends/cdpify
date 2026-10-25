@@ -56,7 +56,7 @@ class PageEvent(StrEnum):
 
 @dataclass(kw_only=True, slots=True)
 class DomContentEventFiredEvent:
-    __cdp_event__: ClassVar[str] = "Page.domContentEventFired"
+    __cdp_event__: ClassVar[PageEvent] = PageEvent.DOM_CONTENT_EVENT_FIRED
 
     timestamp: network.MonotonicTime
 
@@ -67,7 +67,7 @@ class FileChooserOpenedEvent:
     Emitted only when `page.interceptFileChooser` is enabled.
     """
 
-    __cdp_event__: ClassVar[str] = "Page.fileChooserOpened"
+    __cdp_event__: ClassVar[PageEvent] = PageEvent.FILE_CHOOSER_OPENED
 
     frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
     mode: Literal["selectSingle", "selectMultiple"]
@@ -82,7 +82,7 @@ class FrameAttachedEvent:
     Fired when frame has been attached to its parent.
     """
 
-    __cdp_event__: ClassVar[str] = "Page.frameAttached"
+    __cdp_event__: ClassVar[PageEvent] = PageEvent.FRAME_ATTACHED
 
     frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
     parent_frame_id: FrameId = field(metadata={"cdp_name": "parentFrameId"})
@@ -95,7 +95,7 @@ class FrameClearedScheduledNavigationEvent:
     Fired when frame no longer has a scheduled navigation.
     """
 
-    __cdp_event__: ClassVar[str] = "Page.frameClearedScheduledNavigation"
+    __cdp_event__: ClassVar[PageEvent] = PageEvent.FRAME_CLEARED_SCHEDULED_NAVIGATION
 
     frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
 
@@ -106,7 +106,7 @@ class FrameDetachedEvent:
     Fired when frame has been detached from its parent.
     """
 
-    __cdp_event__: ClassVar[str] = "Page.frameDetached"
+    __cdp_event__: ClassVar[PageEvent] = PageEvent.FRAME_DETACHED
 
     frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
     reason: Literal["remove", "swap"]
@@ -119,7 +119,7 @@ class FrameSubtreeWillBeDetachedEvent:
     actually detached.
     """
 
-    __cdp_event__: ClassVar[str] = "Page.frameSubtreeWillBeDetached"
+    __cdp_event__: ClassVar[PageEvent] = PageEvent.FRAME_SUBTREE_WILL_BE_DETACHED
 
     frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
 
@@ -131,7 +131,7 @@ class FrameNavigatedEvent:
     new loader.
     """
 
-    __cdp_event__: ClassVar[str] = "Page.frameNavigated"
+    __cdp_event__: ClassVar[PageEvent] = PageEvent.FRAME_NAVIGATED
 
     frame: Frame
     type: NavigationType
@@ -143,14 +143,14 @@ class DocumentOpenedEvent:
     Fired when opening document to write to.
     """
 
-    __cdp_event__: ClassVar[str] = "Page.documentOpened"
+    __cdp_event__: ClassVar[PageEvent] = PageEvent.DOCUMENT_OPENED
 
     frame: Frame
 
 
 @dataclass(kw_only=True, slots=True)
 class FrameResizedEvent:
-    __cdp_event__: ClassVar[str] = "Page.frameResized"
+    __cdp_event__: ClassVar[PageEvent] = PageEvent.FRAME_RESIZED
 
 
 @dataclass(kw_only=True, slots=True)
@@ -164,7 +164,7 @@ class FrameStartedNavigatingEvent:
     case of a frameset).
     """
 
-    __cdp_event__: ClassVar[str] = "Page.frameStartedNavigating"
+    __cdp_event__: ClassVar[PageEvent] = PageEvent.FRAME_STARTED_NAVIGATING
 
     frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
     url: str
@@ -190,7 +190,7 @@ class FrameRequestedNavigationEvent:
     cancelled after the event is issued.
     """
 
-    __cdp_event__: ClassVar[str] = "Page.frameRequestedNavigation"
+    __cdp_event__: ClassVar[PageEvent] = PageEvent.FRAME_REQUESTED_NAVIGATION
 
     frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
     reason: ClientNavigationReason
@@ -204,7 +204,7 @@ class FrameScheduledNavigationEvent:
     Fired when frame schedules a potential navigation.
     """
 
-    __cdp_event__: ClassVar[str] = "Page.frameScheduledNavigation"
+    __cdp_event__: ClassVar[PageEvent] = PageEvent.FRAME_SCHEDULED_NAVIGATION
 
     frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
     delay: float
@@ -218,7 +218,7 @@ class FrameStartedLoadingEvent:
     Fired when frame has started loading.
     """
 
-    __cdp_event__: ClassVar[str] = "Page.frameStartedLoading"
+    __cdp_event__: ClassVar[PageEvent] = PageEvent.FRAME_STARTED_LOADING
 
     frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
 
@@ -229,7 +229,7 @@ class FrameStoppedLoadingEvent:
     Fired when frame has stopped loading.
     """
 
-    __cdp_event__: ClassVar[str] = "Page.frameStoppedLoading"
+    __cdp_event__: ClassVar[PageEvent] = PageEvent.FRAME_STOPPED_LOADING
 
     frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
 
@@ -241,7 +241,7 @@ class DownloadWillBeginEvent:
     Browser.downloadWillBegin instead.
     """
 
-    __cdp_event__: ClassVar[str] = "Page.downloadWillBegin"
+    __cdp_event__: ClassVar[PageEvent] = PageEvent.DOWNLOAD_WILL_BEGIN
 
     frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
     guid: str
@@ -256,7 +256,7 @@ class DownloadProgressEvent:
     Browser.downloadProgress instead.
     """
 
-    __cdp_event__: ClassVar[str] = "Page.downloadProgress"
+    __cdp_event__: ClassVar[PageEvent] = PageEvent.DOWNLOAD_PROGRESS
 
     guid: str
     total_bytes: float = field(metadata={"cdp_name": "totalBytes"})
@@ -270,7 +270,7 @@ class InterstitialHiddenEvent:
     Fired when interstitial page was hidden
     """
 
-    __cdp_event__: ClassVar[str] = "Page.interstitialHidden"
+    __cdp_event__: ClassVar[PageEvent] = PageEvent.INTERSTITIAL_HIDDEN
 
 
 @dataclass(kw_only=True, slots=True)
@@ -279,7 +279,7 @@ class InterstitialShownEvent:
     Fired when interstitial page was shown
     """
 
-    __cdp_event__: ClassVar[str] = "Page.interstitialShown"
+    __cdp_event__: ClassVar[PageEvent] = PageEvent.INTERSTITIAL_SHOWN
 
 
 @dataclass(kw_only=True, slots=True)
@@ -289,7 +289,7 @@ class JavascriptDialogClosedEvent:
     onbeforeunload) has been closed.
     """
 
-    __cdp_event__: ClassVar[str] = "Page.javascriptDialogClosed"
+    __cdp_event__: ClassVar[PageEvent] = PageEvent.JAVASCRIPT_DIALOG_CLOSED
 
     frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
     result: bool
@@ -303,7 +303,7 @@ class JavascriptDialogOpeningEvent:
     onbeforeunload) is about to open.
     """
 
-    __cdp_event__: ClassVar[str] = "Page.javascriptDialogOpening"
+    __cdp_event__: ClassVar[PageEvent] = PageEvent.JAVASCRIPT_DIALOG_OPENING
 
     url: str
     frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
@@ -322,7 +322,7 @@ class LifecycleEventEvent:
     (including local frames).
     """
 
-    __cdp_event__: ClassVar[str] = "Page.lifecycleEvent"
+    __cdp_event__: ClassVar[PageEvent] = PageEvent.LIFECYCLE_EVENT
 
     frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
     loader_id: network.LoaderId = field(metadata={"cdp_name": "loaderId"})
@@ -339,7 +339,7 @@ class BackForwardCacheNotUsedEvent:
     (non-same-document navigations), when bfcache navigation fails.
     """
 
-    __cdp_event__: ClassVar[str] = "Page.backForwardCacheNotUsed"
+    __cdp_event__: ClassVar[PageEvent] = PageEvent.BACK_FORWARD_CACHE_NOT_USED
 
     loader_id: network.LoaderId = field(metadata={"cdp_name": "loaderId"})
     frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
@@ -356,7 +356,7 @@ class BackForwardCacheNotUsedEvent:
 
 @dataclass(kw_only=True, slots=True)
 class LoadEventFiredEvent:
-    __cdp_event__: ClassVar[str] = "Page.loadEventFired"
+    __cdp_event__: ClassVar[PageEvent] = PageEvent.LOAD_EVENT_FIRED
 
     timestamp: network.MonotonicTime
 
@@ -368,7 +368,7 @@ class NavigatedWithinDocumentEvent:
     anchor navigation.
     """
 
-    __cdp_event__: ClassVar[str] = "Page.navigatedWithinDocument"
+    __cdp_event__: ClassVar[PageEvent] = PageEvent.NAVIGATED_WITHIN_DOCUMENT
 
     frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
     url: str
@@ -383,7 +383,7 @@ class ScreencastFrameEvent:
     Compressed image data requested by the `startScreencast`.
     """
 
-    __cdp_event__: ClassVar[str] = "Page.screencastFrame"
+    __cdp_event__: ClassVar[PageEvent] = PageEvent.SCREENCAST_FRAME
 
     data: str
     metadata: ScreencastFrameMetadata
@@ -396,7 +396,7 @@ class ScreencastVisibilityChangedEvent:
     Fired when the page with currently enabled screencast was shown or hidden `.
     """
 
-    __cdp_event__: ClassVar[str] = "Page.screencastVisibilityChanged"
+    __cdp_event__: ClassVar[PageEvent] = PageEvent.SCREENCAST_VISIBILITY_CHANGED
 
     visible: bool
 
@@ -408,7 +408,7 @@ class WindowOpenEvent:
     submission, etc.
     """
 
-    __cdp_event__: ClassVar[str] = "Page.windowOpen"
+    __cdp_event__: ClassVar[PageEvent] = PageEvent.WINDOW_OPEN
 
     url: str
     window_name: str = field(metadata={"cdp_name": "windowName"})
@@ -422,7 +422,7 @@ class CompilationCacheProducedEvent:
     Issued for every compilation cache generated.
     """
 
-    __cdp_event__: ClassVar[str] = "Page.compilationCacheProduced"
+    __cdp_event__: ClassVar[PageEvent] = PageEvent.COMPILATION_CACHE_PRODUCED
 
     url: str
     data: str

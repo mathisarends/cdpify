@@ -33,7 +33,7 @@ class PlayerPropertiesChangedEvent:
     player properties. A null propValue indicates removal.
     """
 
-    __cdp_event__: ClassVar[str] = "Media.playerPropertiesChanged"
+    __cdp_event__: ClassVar[MediaEvent] = MediaEvent.PLAYER_PROPERTIES_CHANGED
 
     player_id: PlayerId = field(metadata={"cdp_name": "playerId"})
     properties: list[PlayerProperty]
@@ -46,7 +46,7 @@ class PlayerEventsAddedEvent:
     congestion. If batched, events must ALWAYS be in chronological order.
     """
 
-    __cdp_event__: ClassVar[str] = "Media.playerEventsAdded"
+    __cdp_event__: ClassVar[MediaEvent] = MediaEvent.PLAYER_EVENTS_ADDED
 
     player_id: PlayerId = field(metadata={"cdp_name": "playerId"})
     events: list[PlayerEvent]
@@ -58,7 +58,7 @@ class PlayerMessagesLoggedEvent:
     Send a list of any messages that need to be delivered.
     """
 
-    __cdp_event__: ClassVar[str] = "Media.playerMessagesLogged"
+    __cdp_event__: ClassVar[MediaEvent] = MediaEvent.PLAYER_MESSAGES_LOGGED
 
     player_id: PlayerId = field(metadata={"cdp_name": "playerId"})
     messages: list[PlayerMessage]
@@ -70,7 +70,7 @@ class PlayerErrorsRaisedEvent:
     Send a list of any errors that need to be delivered.
     """
 
-    __cdp_event__: ClassVar[str] = "Media.playerErrorsRaised"
+    __cdp_event__: ClassVar[MediaEvent] = MediaEvent.PLAYER_ERRORS_RAISED
 
     player_id: PlayerId = field(metadata={"cdp_name": "playerId"})
     errors: list[PlayerError]
@@ -84,6 +84,6 @@ class PlayerCreatedEvent:
     active player.
     """
 
-    __cdp_event__: ClassVar[str] = "Media.playerCreated"
+    __cdp_event__: ClassVar[MediaEvent] = MediaEvent.PLAYER_CREATED
 
     player: Player

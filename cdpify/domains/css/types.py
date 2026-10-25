@@ -8,13 +8,20 @@ from dataclasses import dataclass, field
 from typing import Literal
 
 from cdpify.domains import dom, page
+from cdpify.shared.enums import CDPStrEnum
 
-type StyleSheetOrigin = Literal["injected", "user-agent", "inspector", "regular"]
-"""
-Stylesheet type: "injected" for stylesheets injected via extension, "user-agent" for
-user-agent stylesheets, "inspector" for stylesheets created by the inspector (i.e. those
-holding the "via inspector" rules), "regular" for regular stylesheets.
-"""
+
+class StyleSheetOrigin(CDPStrEnum):
+    """
+    Stylesheet type: "injected" for stylesheets injected via extension, "user-agent"
+    for user-agent stylesheets, "inspector" for stylesheets created by the inspector
+    (i.e. those holding the "via inspector" rules), "regular" for regular stylesheets.
+    """
+
+    INJECTED = "injected"
+    USER_AGENT = "user-agent"
+    INSPECTOR = "inspector"
+    REGULAR = "regular"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -200,21 +207,21 @@ class CSSRule:
     navigations: list[CSSNavigation] | None = None
 
 
-type CSSRuleType = Literal[
-    "MediaRule",
-    "SupportsRule",
-    "ContainerRule",
-    "LayerRule",
-    "ScopeRule",
-    "StyleRule",
-    "StartingStyleRule",
-    "NavigationRule",
-]
-"""
-Enum indicating the type of a CSS rule, used to represent the order of a style rule's
-ancestors. This list only contains rule types that are collected during the ancestor
-rule collection.
-"""
+class CSSRuleType(CDPStrEnum):
+    """
+    Enum indicating the type of a CSS rule, used to represent the order of a style
+    rule's ancestors. This list only contains rule types that are collected during the
+    ancestor rule collection.
+    """
+
+    MEDIA_RULE = "MediaRule"
+    SUPPORTS_RULE = "SupportsRule"
+    CONTAINER_RULE = "ContainerRule"
+    LAYER_RULE = "LayerRule"
+    SCOPE_RULE = "ScopeRule"
+    STYLE_RULE = "StyleRule"
+    STARTING_STYLE_RULE = "StartingStyleRule"
+    NAVIGATION_RULE = "NavigationRule"
 
 
 @dataclass(kw_only=True, slots=True)

@@ -23,7 +23,7 @@ class MetricsEvent:
     Current values of the metrics.
     """
 
-    __cdp_event__: ClassVar[str] = "Performance.metrics"
+    __cdp_event__: ClassVar[PerformanceEvent] = PerformanceEvent.METRICS
 
     metrics: list[Metric]
     title: str

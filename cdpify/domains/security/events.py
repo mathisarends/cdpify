@@ -31,7 +31,7 @@ class CertificateErrorEvent:
     target should override certificate errors at the same time.
     """
 
-    __cdp_event__: ClassVar[str] = "Security.certificateError"
+    __cdp_event__: ClassVar[SecurityEvent] = SecurityEvent.CERTIFICATE_ERROR
 
     event_id: int = field(metadata={"cdp_name": "eventId"})
     error_type: str = field(metadata={"cdp_name": "errorType"})
@@ -44,7 +44,9 @@ class VisibleSecurityStateChangedEvent:
     The security state of the page changed.
     """
 
-    __cdp_event__: ClassVar[str] = "Security.visibleSecurityStateChanged"
+    __cdp_event__: ClassVar[SecurityEvent] = (
+        SecurityEvent.VISIBLE_SECURITY_STATE_CHANGED
+    )
 
     visible_security_state: VisibleSecurityState = field(
         metadata={"cdp_name": "visibleSecurityState"}
@@ -57,7 +59,7 @@ class SecurityStateChangedEvent:
     The security state of the page changed. No longer being sent.
     """
 
-    __cdp_event__: ClassVar[str] = "Security.securityStateChanged"
+    __cdp_event__: ClassVar[SecurityEvent] = SecurityEvent.SECURITY_STATE_CHANGED
 
     security_state: SecurityState = field(metadata={"cdp_name": "securityState"})
     scheme_is_cryptographic: bool = field(

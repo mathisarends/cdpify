@@ -24,7 +24,7 @@ class AddressFormFilledEvent:
     Emitted when an address form is filled.
     """
 
-    __cdp_event__: ClassVar[str] = "Autofill.addressFormFilled"
+    __cdp_event__: ClassVar[AutofillEvent] = AutofillEvent.ADDRESS_FORM_FILLED
 
     filled_fields: list[FilledField] = field(metadata={"cdp_name": "filledFields"})
     address_ui: AddressUI = field(metadata={"cdp_name": "addressUi"})

@@ -30,14 +30,16 @@ def test_event_without_parameters_only_has_cdp_event_name(
     output = events.generate(simple_domain)
 
     cleared_section = output.split("class ClearedEvent:")[1].strip().splitlines()
-    assert cleared_section == ['__cdp_event__: ClassVar[str] = "Sample.cleared"']
+    assert cleared_section == [
+        "__cdp_event__: ClassVar[SampleEvent] = SampleEvent.CLEARED"
+    ]
 
 
 def test_event_models_declare_cdp_event_name(simple_domain: Domain) -> None:
     output = events.generate(simple_domain)
 
     assert "from typing import ClassVar" in output
-    assert '__cdp_event__: ClassVar[str] = "Sample.nodeAdded"' in output
+    assert "__cdp_event__: ClassVar[SampleEvent] = SampleEvent.NODE_ADDED" in output
 
 
 def test_includes_event_descriptions(simple_domain: Domain) -> None:

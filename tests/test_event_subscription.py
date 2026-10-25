@@ -26,6 +26,31 @@ def _event(value: int, session_id: str | None = None) -> TransportEvent:
 
 
 @pytest.mark.asyncio
+async def test_generated_enum_event_marker_routes_wire_strings() -> None:
+    from cdpify.domains.network import LoadingFailedEvent, ResourceType
+
+    router = EventRouter()
+    async with router.listen(LoadingFailedEvent, session_id=None) as events:
+        assert (
+            await router.dispatch(
+                TransportEvent(
+                    "Network.loadingFailed",
+                    {
+                        "requestId": "R1",
+                        "timestamp": 1.0,
+                        "type": "Fetch",
+                        "errorText": "Failed",
+                    },
+                )
+            )
+            is True
+        )
+
+        event = await events.next(timeout=1.0)
+        assert event.type is ResourceType.FETCH
+
+
+@pytest.mark.asyncio
 async def test_events_before_first_read_are_buffered() -> None:
     router = EventRouter()
     events = router.listen(_Event, session_id=None)

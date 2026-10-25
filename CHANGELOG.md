@@ -7,6 +7,13 @@ Breaking changes are listed first in each release.
 
 ### Breaking changes
 
+- Named protocol enums are now `StrEnum` subclasses instead of `Literal`
+  aliases. Use constants such as `ResourceType.FETCH` and
+  `CookieOperation.SET_COOKIE` in typed code. `decode_cdp` returns enum members,
+  including in nested models and collections. Unknown strings from newer CDP
+  versions remain instances of the corresponding enum with their original
+  `.value`; they are not added to its declared members. Inline enums remain
+  `Literal` annotations.
 - Matching event listeners now share one decoded model per incoming event and
   event class, including `listen_all()`'s `ReceivedEvent.value`. Mutations are
   visible to other listeners. Treat event data as read-only or make a
@@ -79,6 +86,8 @@ Breaking changes are listed first in each release.
 
 ### Changed
 
+- Generated `__cdp_event__` class variables refer to the domain's event enum,
+  e.g. `LoadingFailedEvent.__cdp_event__ is NetworkEvent.LOADING_FAILED`.
 - The root client and session views share the implementation of `listen()`.
 - CI runs tests on Ubuntu, Windows, and macOS with Python 3.12, 3.13, and 3.14,
   including both JSON backends.

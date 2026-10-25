@@ -5,9 +5,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Literal
 
 from cdpify.domains import dom, network
+from cdpify.shared.enums import CDPStrEnum
 
 type RuleSetId = str
 """
@@ -40,21 +40,31 @@ class RuleSet:
     tag: str | None = None
 
 
-type RuleSetErrorType = Literal[
-    "SourceIsNotJsonObject", "InvalidRulesSkipped", "InvalidRulesetLevelTag"
-]
+class RuleSetErrorType(CDPStrEnum):
+    SOURCE_IS_NOT_JSON_OBJECT = "SourceIsNotJsonObject"
+    INVALID_RULES_SKIPPED = "InvalidRulesSkipped"
+    INVALID_RULESET_LEVEL_TAG = "InvalidRulesetLevelTag"
 
-type SpeculationAction = Literal["Prefetch", "Prerender", "PrerenderUntilScript"]
-"""
-The type of preloading attempted. It corresponds to mojom::SpeculationAction (although
-PrefetchWithSubresources is omitted as it isn't being used by clients).
-"""
 
-type SpeculationTargetHint = Literal["Blank", "Self"]
-"""
-Corresponds to mojom::SpeculationTargetHint. See
-https://github.com/WICG/nav-speculation/blob/main/triggers.md#window-name-targeting-hints
-"""
+class SpeculationAction(CDPStrEnum):
+    """
+    The type of preloading attempted. It corresponds to mojom::SpeculationAction
+    (although PrefetchWithSubresources is omitted as it isn't being used by clients).
+    """
+
+    PREFETCH = "Prefetch"
+    PRERENDER = "Prerender"
+    PRERENDER_UNTIL_SCRIPT = "PrerenderUntilScript"
+
+
+class SpeculationTargetHint(CDPStrEnum):
+    """
+    Corresponds to mojom::SpeculationTargetHint. See
+    https://github.com/WICG/nav-speculation/blob/main/triggers.md#window-name-targeting-hints
+    """
+
+    BLANK = "Blank"
+    SELF = "Self"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -100,139 +110,195 @@ starts a prefetch and then upgrades it to prerender. CDP events for them are emi
 separately but they share `PreloadPipelineId`.
 """
 
-type PrerenderFinalStatus = Literal[
-    "Activated",
-    "Destroyed",
-    "LowEndDevice",
-    "InvalidSchemeRedirect",
-    "InvalidSchemeNavigation",
-    "NavigationRequestBlockedByCsp",
-    "MojoBinderPolicy",
-    "RendererProcessCrashed",
-    "RendererProcessKilled",
-    "Download",
-    "TriggerDestroyed",
-    "NavigationNotCommitted",
-    "NavigationBadHttpStatus",
-    "ClientCertRequested",
-    "NavigationRequestNetworkError",
-    "CancelAllHostsForTesting",
-    "DidFailLoad",
-    "Stop",
-    "SslCertificateError",
-    "LoginAuthRequested",
-    "UaChangeRequiresReload",
-    "BlockedByClient",
-    "AudioOutputDeviceRequested",
-    "MixedContent",
-    "TriggerBackgrounded",
-    "MemoryLimitExceeded",
-    "DataSaverEnabled",
-    "TriggerUrlHasEffectiveUrl",
-    "ActivatedBeforeStarted",
-    "InactivePageRestriction",
-    "StartFailed",
-    "TimeoutBackgrounded",
-    "CrossSiteRedirectInInitialNavigation",
-    "CrossSiteNavigationInInitialNavigation",
-    "SameSiteCrossOriginRedirectNotOptInInInitialNavigation",
-    "SameSiteCrossOriginNavigationNotOptInInInitialNavigation",
-    "ActivationNavigationParameterMismatch",
-    "ActivatedInBackground",
-    "EmbedderHostDisallowed",
-    "ActivationNavigationDestroyedBeforeSuccess",
-    "TabClosedByUserGesture",
-    "TabClosedWithoutUserGesture",
-    "PrimaryMainFrameRendererProcessCrashed",
-    "PrimaryMainFrameRendererProcessKilled",
-    "ActivationFramePolicyNotCompatible",
-    "PreloadingDisabled",
-    "BatterySaverEnabled",
-    "ActivatedDuringMainFrameNavigation",
-    "PreloadingUnsupportedByWebContents",
-    "CrossSiteRedirectInMainFrameNavigation",
-    "CrossSiteNavigationInMainFrameNavigation",
-    "SameSiteCrossOriginRedirectNotOptInInMainFrameNavigation",
-    "SameSiteCrossOriginNavigationNotOptInInMainFrameNavigation",
-    "MemoryPressureOnTrigger",
-    "MemoryPressureAfterTriggered",
-    "PrerenderingDisabledByDevTools",
-    "SpeculationRuleRemoved",
-    "ActivatedWithAuxiliaryBrowsingContexts",
-    "MaxNumOfRunningEagerPrerendersExceeded",
-    "MaxNumOfRunningNonEagerPrerendersExceeded",
-    "MaxNumOfRunningEmbedderPrerendersExceeded",
-    "PrerenderingUrlHasEffectiveUrl",
-    "RedirectedPrerenderingUrlHasEffectiveUrl",
-    "ActivationUrlHasEffectiveUrl",
-    "JavaScriptInterfaceAdded",
-    "JavaScriptInterfaceRemoved",
-    "AllPrerenderingCanceled",
-    "WindowClosed",
-    "SlowNetwork",
-    "OtherPrerenderedPageActivated",
-    "V8OptimizerDisabled",
-    "PrerenderFailedDuringPrefetch",
-    "BrowsingDataRemoved",
-    "PrerenderHostReused",
-    "FormSubmitWhenPrerendering",
-    "CrossDocumentRestart",
-]
-"""
-List of FinalStatus reasons for Prerender2.
-"""
 
-type PreloadingStatus = Literal[
-    "Pending", "Running", "Ready", "Success", "Failure", "NotSupported"
-]
-"""
-Preloading status values, see also PreloadingTriggeringOutcome. This status is shared
-by prefetchStatusUpdated and prerenderStatusUpdated.
-"""
+class PrerenderFinalStatus(CDPStrEnum):
+    """
+    List of FinalStatus reasons for Prerender2.
+    """
 
-type PrefetchStatus = Literal[
-    "PrefetchAllowed",
-    "PrefetchFailedIneligibleRedirect",
-    "PrefetchFailedInvalidRedirect",
-    "PrefetchFailedMIMENotSupported",
-    "PrefetchFailedNetError",
-    "PrefetchFailedNon2XX",
-    "PrefetchEvictedAfterBrowsingDataRemoved",
-    "PrefetchEvictedAfterCandidateRemoved",
-    "PrefetchEvictedForNewerPrefetch",
-    "PrefetchHeldback",
-    "PrefetchIneligibleRetryAfter",
-    "PrefetchIsPrivacyDecoy",
-    "PrefetchIsStale",
-    "PrefetchNotEligibleBlockedByConnectionAllowlist",
-    "PrefetchNotEligibleBrowserContextOffTheRecord",
-    "PrefetchNotEligibleCrossOrigin",
-    "PrefetchNotEligibleDataSaverEnabled",
-    "PrefetchNotEligibleExistingProxy",
-    "PrefetchNotEligibleHostIsNonUnique",
-    "PrefetchNotEligibleNonDefaultStoragePartition",
-    "PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy",
-    "PrefetchNotEligibleSchemeIsNotHttps",
-    "PrefetchNotEligibleUserHasCookies",
-    "PrefetchNotEligibleUserHasServiceWorker",
-    "PrefetchNotEligibleUserHasServiceWorkerNoFetchHandler",
-    "PrefetchNotEligibleRedirectFromServiceWorker",
-    "PrefetchNotEligibleRedirectToServiceWorker",
-    "PrefetchNotEligibleBatterySaverEnabled",
-    "PrefetchNotEligiblePreloadingDisabled",
-    "PrefetchNotFinishedInTime",
-    "PrefetchNotStarted",
-    "PrefetchNotUsedCookiesChanged",
-    "PrefetchProxyNotAvailable",
-    "PrefetchResponseUsed",
-    "PrefetchSuccessfulButNotUsed",
-    "PrefetchNotUsedProbeFailed",
-    "PrefetchCancelledOnUserNavigation",
-]
-"""
-TODO(https://crbug.com/1384419): revisit the list of PrefetchStatus and filter out the
-ones that aren't necessary to the developers.
-"""
+    ACTIVATED = "Activated"
+    DESTROYED = "Destroyed"
+    LOW_END_DEVICE = "LowEndDevice"
+    INVALID_SCHEME_REDIRECT = "InvalidSchemeRedirect"
+    INVALID_SCHEME_NAVIGATION = "InvalidSchemeNavigation"
+    NAVIGATION_REQUEST_BLOCKED_BY_CSP = "NavigationRequestBlockedByCsp"
+    MOJO_BINDER_POLICY = "MojoBinderPolicy"
+    RENDERER_PROCESS_CRASHED = "RendererProcessCrashed"
+    RENDERER_PROCESS_KILLED = "RendererProcessKilled"
+    DOWNLOAD = "Download"
+    TRIGGER_DESTROYED = "TriggerDestroyed"
+    NAVIGATION_NOT_COMMITTED = "NavigationNotCommitted"
+    NAVIGATION_BAD_HTTP_STATUS = "NavigationBadHttpStatus"
+    CLIENT_CERT_REQUESTED = "ClientCertRequested"
+    NAVIGATION_REQUEST_NETWORK_ERROR = "NavigationRequestNetworkError"
+    CANCEL_ALL_HOSTS_FOR_TESTING = "CancelAllHostsForTesting"
+    DID_FAIL_LOAD = "DidFailLoad"
+    STOP = "Stop"
+    SSL_CERTIFICATE_ERROR = "SslCertificateError"
+    LOGIN_AUTH_REQUESTED = "LoginAuthRequested"
+    UA_CHANGE_REQUIRES_RELOAD = "UaChangeRequiresReload"
+    BLOCKED_BY_CLIENT = "BlockedByClient"
+    AUDIO_OUTPUT_DEVICE_REQUESTED = "AudioOutputDeviceRequested"
+    MIXED_CONTENT = "MixedContent"
+    TRIGGER_BACKGROUNDED = "TriggerBackgrounded"
+    MEMORY_LIMIT_EXCEEDED = "MemoryLimitExceeded"
+    DATA_SAVER_ENABLED = "DataSaverEnabled"
+    TRIGGER_URL_HAS_EFFECTIVE_URL = "TriggerUrlHasEffectiveUrl"
+    ACTIVATED_BEFORE_STARTED = "ActivatedBeforeStarted"
+    INACTIVE_PAGE_RESTRICTION = "InactivePageRestriction"
+    START_FAILED = "StartFailed"
+    TIMEOUT_BACKGROUNDED = "TimeoutBackgrounded"
+    CROSS_SITE_REDIRECT_IN_INITIAL_NAVIGATION = "CrossSiteRedirectInInitialNavigation"
+    CROSS_SITE_NAVIGATION_IN_INITIAL_NAVIGATION = (
+        "CrossSiteNavigationInInitialNavigation"
+    )
+    SAME_SITE_CROSS_ORIGIN_REDIRECT_NOT_OPT_IN_IN_INITIAL_NAVIGATION = (
+        "SameSiteCrossOriginRedirectNotOptInInInitialNavigation"
+    )
+    SAME_SITE_CROSS_ORIGIN_NAVIGATION_NOT_OPT_IN_IN_INITIAL_NAVIGATION = (
+        "SameSiteCrossOriginNavigationNotOptInInInitialNavigation"
+    )
+    ACTIVATION_NAVIGATION_PARAMETER_MISMATCH = "ActivationNavigationParameterMismatch"
+    ACTIVATED_IN_BACKGROUND = "ActivatedInBackground"
+    EMBEDDER_HOST_DISALLOWED = "EmbedderHostDisallowed"
+    ACTIVATION_NAVIGATION_DESTROYED_BEFORE_SUCCESS = (
+        "ActivationNavigationDestroyedBeforeSuccess"
+    )
+    TAB_CLOSED_BY_USER_GESTURE = "TabClosedByUserGesture"
+    TAB_CLOSED_WITHOUT_USER_GESTURE = "TabClosedWithoutUserGesture"
+    PRIMARY_MAIN_FRAME_RENDERER_PROCESS_CRASHED = (
+        "PrimaryMainFrameRendererProcessCrashed"
+    )
+    PRIMARY_MAIN_FRAME_RENDERER_PROCESS_KILLED = "PrimaryMainFrameRendererProcessKilled"
+    ACTIVATION_FRAME_POLICY_NOT_COMPATIBLE = "ActivationFramePolicyNotCompatible"
+    PRELOADING_DISABLED = "PreloadingDisabled"
+    BATTERY_SAVER_ENABLED = "BatterySaverEnabled"
+    ACTIVATED_DURING_MAIN_FRAME_NAVIGATION = "ActivatedDuringMainFrameNavigation"
+    PRELOADING_UNSUPPORTED_BY_WEB_CONTENTS = "PreloadingUnsupportedByWebContents"
+    CROSS_SITE_REDIRECT_IN_MAIN_FRAME_NAVIGATION = (
+        "CrossSiteRedirectInMainFrameNavigation"
+    )
+    CROSS_SITE_NAVIGATION_IN_MAIN_FRAME_NAVIGATION = (
+        "CrossSiteNavigationInMainFrameNavigation"
+    )
+    SAME_SITE_CROSS_ORIGIN_REDIRECT_NOT_OPT_IN_IN_MAIN_FRAME_NAVIGATION = (
+        "SameSiteCrossOriginRedirectNotOptInInMainFrameNavigation"
+    )
+    SAME_SITE_CROSS_ORIGIN_NAVIGATION_NOT_OPT_IN_IN_MAIN_FRAME_NAVIGATION = (
+        "SameSiteCrossOriginNavigationNotOptInInMainFrameNavigation"
+    )
+    MEMORY_PRESSURE_ON_TRIGGER = "MemoryPressureOnTrigger"
+    MEMORY_PRESSURE_AFTER_TRIGGERED = "MemoryPressureAfterTriggered"
+    PRERENDERING_DISABLED_BY_DEV_TOOLS = "PrerenderingDisabledByDevTools"
+    SPECULATION_RULE_REMOVED = "SpeculationRuleRemoved"
+    ACTIVATED_WITH_AUXILIARY_BROWSING_CONTEXTS = (
+        "ActivatedWithAuxiliaryBrowsingContexts"
+    )
+    MAX_NUM_OF_RUNNING_EAGER_PRERENDERS_EXCEEDED = (
+        "MaxNumOfRunningEagerPrerendersExceeded"
+    )
+    MAX_NUM_OF_RUNNING_NON_EAGER_PRERENDERS_EXCEEDED = (
+        "MaxNumOfRunningNonEagerPrerendersExceeded"
+    )
+    MAX_NUM_OF_RUNNING_EMBEDDER_PRERENDERS_EXCEEDED = (
+        "MaxNumOfRunningEmbedderPrerendersExceeded"
+    )
+    PRERENDERING_URL_HAS_EFFECTIVE_URL = "PrerenderingUrlHasEffectiveUrl"
+    REDIRECTED_PRERENDERING_URL_HAS_EFFECTIVE_URL = (
+        "RedirectedPrerenderingUrlHasEffectiveUrl"
+    )
+    ACTIVATION_URL_HAS_EFFECTIVE_URL = "ActivationUrlHasEffectiveUrl"
+    JAVA_SCRIPT_INTERFACE_ADDED = "JavaScriptInterfaceAdded"
+    JAVA_SCRIPT_INTERFACE_REMOVED = "JavaScriptInterfaceRemoved"
+    ALL_PRERENDERING_CANCELED = "AllPrerenderingCanceled"
+    WINDOW_CLOSED = "WindowClosed"
+    SLOW_NETWORK = "SlowNetwork"
+    OTHER_PRERENDERED_PAGE_ACTIVATED = "OtherPrerenderedPageActivated"
+    V8_OPTIMIZER_DISABLED = "V8OptimizerDisabled"
+    PRERENDER_FAILED_DURING_PREFETCH = "PrerenderFailedDuringPrefetch"
+    BROWSING_DATA_REMOVED = "BrowsingDataRemoved"
+    PRERENDER_HOST_REUSED = "PrerenderHostReused"
+    FORM_SUBMIT_WHEN_PRERENDERING = "FormSubmitWhenPrerendering"
+    CROSS_DOCUMENT_RESTART = "CrossDocumentRestart"
+
+
+class PreloadingStatus(CDPStrEnum):
+    """
+    Preloading status values, see also PreloadingTriggeringOutcome. This status is
+    shared by prefetchStatusUpdated and prerenderStatusUpdated.
+    """
+
+    PENDING = "Pending"
+    RUNNING = "Running"
+    READY = "Ready"
+    SUCCESS = "Success"
+    FAILURE = "Failure"
+    NOT_SUPPORTED = "NotSupported"
+
+
+class PrefetchStatus(CDPStrEnum):
+    """
+    TODO(https://crbug.com/1384419): revisit the list of PrefetchStatus and filter out
+    the ones that aren't necessary to the developers.
+    """
+
+    PREFETCH_ALLOWED = "PrefetchAllowed"
+    PREFETCH_FAILED_INELIGIBLE_REDIRECT = "PrefetchFailedIneligibleRedirect"
+    PREFETCH_FAILED_INVALID_REDIRECT = "PrefetchFailedInvalidRedirect"
+    PREFETCH_FAILED_MIME_NOT_SUPPORTED = "PrefetchFailedMIMENotSupported"
+    PREFETCH_FAILED_NET_ERROR = "PrefetchFailedNetError"
+    PREFETCH_FAILED_NON2_XX = "PrefetchFailedNon2XX"
+    PREFETCH_EVICTED_AFTER_BROWSING_DATA_REMOVED = (
+        "PrefetchEvictedAfterBrowsingDataRemoved"
+    )
+    PREFETCH_EVICTED_AFTER_CANDIDATE_REMOVED = "PrefetchEvictedAfterCandidateRemoved"
+    PREFETCH_EVICTED_FOR_NEWER_PREFETCH = "PrefetchEvictedForNewerPrefetch"
+    PREFETCH_HELDBACK = "PrefetchHeldback"
+    PREFETCH_INELIGIBLE_RETRY_AFTER = "PrefetchIneligibleRetryAfter"
+    PREFETCH_IS_PRIVACY_DECOY = "PrefetchIsPrivacyDecoy"
+    PREFETCH_IS_STALE = "PrefetchIsStale"
+    PREFETCH_NOT_ELIGIBLE_BLOCKED_BY_CONNECTION_ALLOWLIST = (
+        "PrefetchNotEligibleBlockedByConnectionAllowlist"
+    )
+    PREFETCH_NOT_ELIGIBLE_BROWSER_CONTEXT_OFF_THE_RECORD = (
+        "PrefetchNotEligibleBrowserContextOffTheRecord"
+    )
+    PREFETCH_NOT_ELIGIBLE_CROSS_ORIGIN = "PrefetchNotEligibleCrossOrigin"
+    PREFETCH_NOT_ELIGIBLE_DATA_SAVER_ENABLED = "PrefetchNotEligibleDataSaverEnabled"
+    PREFETCH_NOT_ELIGIBLE_EXISTING_PROXY = "PrefetchNotEligibleExistingProxy"
+    PREFETCH_NOT_ELIGIBLE_HOST_IS_NON_UNIQUE = "PrefetchNotEligibleHostIsNonUnique"
+    PREFETCH_NOT_ELIGIBLE_NON_DEFAULT_STORAGE_PARTITION = (
+        "PrefetchNotEligibleNonDefaultStoragePartition"
+    )
+    PREFETCH_NOT_ELIGIBLE_SAME_SITE_CROSS_ORIGIN_PREFETCH_REQUIRED_PROXY = (
+        "PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy"
+    )
+    PREFETCH_NOT_ELIGIBLE_SCHEME_IS_NOT_HTTPS = "PrefetchNotEligibleSchemeIsNotHttps"
+    PREFETCH_NOT_ELIGIBLE_USER_HAS_COOKIES = "PrefetchNotEligibleUserHasCookies"
+    PREFETCH_NOT_ELIGIBLE_USER_HAS_SERVICE_WORKER = (
+        "PrefetchNotEligibleUserHasServiceWorker"
+    )
+    PREFETCH_NOT_ELIGIBLE_USER_HAS_SERVICE_WORKER_NO_FETCH_HANDLER = (
+        "PrefetchNotEligibleUserHasServiceWorkerNoFetchHandler"
+    )
+    PREFETCH_NOT_ELIGIBLE_REDIRECT_FROM_SERVICE_WORKER = (
+        "PrefetchNotEligibleRedirectFromServiceWorker"
+    )
+    PREFETCH_NOT_ELIGIBLE_REDIRECT_TO_SERVICE_WORKER = (
+        "PrefetchNotEligibleRedirectToServiceWorker"
+    )
+    PREFETCH_NOT_ELIGIBLE_BATTERY_SAVER_ENABLED = (
+        "PrefetchNotEligibleBatterySaverEnabled"
+    )
+    PREFETCH_NOT_ELIGIBLE_PRELOADING_DISABLED = "PrefetchNotEligiblePreloadingDisabled"
+    PREFETCH_NOT_FINISHED_IN_TIME = "PrefetchNotFinishedInTime"
+    PREFETCH_NOT_STARTED = "PrefetchNotStarted"
+    PREFETCH_NOT_USED_COOKIES_CHANGED = "PrefetchNotUsedCookiesChanged"
+    PREFETCH_PROXY_NOT_AVAILABLE = "PrefetchProxyNotAvailable"
+    PREFETCH_RESPONSE_USED = "PrefetchResponseUsed"
+    PREFETCH_SUCCESSFUL_BUT_NOT_USED = "PrefetchSuccessfulButNotUsed"
+    PREFETCH_NOT_USED_PROBE_FAILED = "PrefetchNotUsedProbeFailed"
+    PREFETCH_CANCELLED_ON_USER_NAVIGATION = "PrefetchCancelledOnUserNavigation"
 
 
 @dataclass(kw_only=True, slots=True)

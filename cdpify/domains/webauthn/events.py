@@ -27,7 +27,7 @@ class CredentialAddedEvent:
     Triggered when a credential is added to an authenticator.
     """
 
-    __cdp_event__: ClassVar[str] = "WebAuthn.credentialAdded"
+    __cdp_event__: ClassVar[WebAuthnEvent] = WebAuthnEvent.CREDENTIAL_ADDED
 
     authenticator_id: AuthenticatorId = field(metadata={"cdp_name": "authenticatorId"})
     credential: Credential
@@ -40,7 +40,7 @@ class CredentialDeletedEvent:
     PublicKeyCredential.signalUnknownCredential().
     """
 
-    __cdp_event__: ClassVar[str] = "WebAuthn.credentialDeleted"
+    __cdp_event__: ClassVar[WebAuthnEvent] = WebAuthnEvent.CREDENTIAL_DELETED
 
     authenticator_id: AuthenticatorId = field(metadata={"cdp_name": "authenticatorId"})
     credential_id: str = field(metadata={"cdp_name": "credentialId"})
@@ -53,7 +53,7 @@ class CredentialUpdatedEvent:
     PublicKeyCredential.signalCurrentUserDetails().
     """
 
-    __cdp_event__: ClassVar[str] = "WebAuthn.credentialUpdated"
+    __cdp_event__: ClassVar[WebAuthnEvent] = WebAuthnEvent.CREDENTIAL_UPDATED
 
     authenticator_id: AuthenticatorId = field(metadata={"cdp_name": "authenticatorId"})
     credential: Credential
@@ -65,7 +65,7 @@ class CredentialAssertedEvent:
     Triggered when a credential is used in a webauthn assertion.
     """
 
-    __cdp_event__: ClassVar[str] = "WebAuthn.credentialAsserted"
+    __cdp_event__: ClassVar[WebAuthnEvent] = WebAuthnEvent.CREDENTIAL_ASSERTED
 
     authenticator_id: AuthenticatorId = field(metadata={"cdp_name": "authenticatorId"})
     credential: Credential

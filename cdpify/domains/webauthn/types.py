@@ -5,20 +5,35 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Literal
+
+from cdpify.shared.enums import CDPStrEnum
 
 type AuthenticatorId = str
 
-type AuthenticatorProtocol = Literal["u2f", "ctap2"]
 
-type Ctap2Version = Literal["ctap2_0", "ctap2_1", "ctap2_2"]
+class AuthenticatorProtocol(CDPStrEnum):
+    U2F = "u2f"
+    CTAP2 = "ctap2"
 
-type AuthenticatorTransport = Literal[
-    "usb", "nfc", "ble", "cable", "hybrid", "smart-card", "internal"
-]
-"""
-LINT.IfChange(AuthenticatorTransport)
-"""
+
+class Ctap2Version(CDPStrEnum):
+    CTAP2_0 = "ctap2_0"
+    CTAP2_1 = "ctap2_1"
+    CTAP2_2 = "ctap2_2"
+
+
+class AuthenticatorTransport(CDPStrEnum):
+    """
+    LINT.IfChange(AuthenticatorTransport)
+    """
+
+    USB = "usb"
+    NFC = "nfc"
+    BLE = "ble"
+    CABLE = "cable"
+    HYBRID = "hybrid"
+    SMART_CARD = "smart-card"
+    INTERNAL = "internal"
 
 
 @dataclass(kw_only=True, slots=True)

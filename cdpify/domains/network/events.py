@@ -110,7 +110,7 @@ class DataReceivedEvent:
     Fired when data chunk was received over the network.
     """
 
-    __cdp_event__: ClassVar[str] = "Network.dataReceived"
+    __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.DATA_RECEIVED
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
     timestamp: MonotonicTime
@@ -125,7 +125,7 @@ class EventSourceMessageReceivedEvent:
     Fired when EventSource message is received.
     """
 
-    __cdp_event__: ClassVar[str] = "Network.eventSourceMessageReceived"
+    __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.EVENT_SOURCE_MESSAGE_RECEIVED
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
     timestamp: MonotonicTime
@@ -140,7 +140,7 @@ class LoadingFailedEvent:
     Fired when HTTP request has failed to load.
     """
 
-    __cdp_event__: ClassVar[str] = "Network.loadingFailed"
+    __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.LOADING_FAILED
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
     timestamp: MonotonicTime
@@ -161,7 +161,7 @@ class LoadingFinishedEvent:
     Fired when HTTP request has finished loading.
     """
 
-    __cdp_event__: ClassVar[str] = "Network.loadingFinished"
+    __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.LOADING_FINISHED
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
     timestamp: MonotonicTime
@@ -177,7 +177,7 @@ class RequestServedFromCacheEvent:
     Fired if request ended up loading from cache.
     """
 
-    __cdp_event__: ClassVar[str] = "Network.requestServedFromCache"
+    __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.REQUEST_SERVED_FROM_CACHE
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
 
@@ -188,7 +188,7 @@ class RequestWillBeSentEvent:
     Fired when page is about to send HTTP request.
     """
 
-    __cdp_event__: ClassVar[str] = "Network.requestWillBeSent"
+    __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.REQUEST_WILL_BE_SENT
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
     loader_id: LoaderId = field(metadata={"cdp_name": "loaderId"})
@@ -219,7 +219,7 @@ class ResourceChangedPriorityEvent:
     Fired when resource loading priority is changed
     """
 
-    __cdp_event__: ClassVar[str] = "Network.resourceChangedPriority"
+    __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.RESOURCE_CHANGED_PRIORITY
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
     new_priority: ResourcePriority = field(metadata={"cdp_name": "newPriority"})
@@ -232,7 +232,7 @@ class SignedExchangeReceivedEvent:
     Fired when a signed exchange was received over the network
     """
 
-    __cdp_event__: ClassVar[str] = "Network.signedExchangeReceived"
+    __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.SIGNED_EXCHANGE_RECEIVED
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
     info: SignedExchangeInfo
@@ -244,7 +244,7 @@ class ResponseReceivedEvent:
     Fired when HTTP response is available.
     """
 
-    __cdp_event__: ClassVar[str] = "Network.responseReceived"
+    __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.RESPONSE_RECEIVED
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
     loader_id: LoaderId = field(metadata={"cdp_name": "loaderId"})
@@ -263,7 +263,7 @@ class WebSocketClosedEvent:
     Fired when WebSocket is closed.
     """
 
-    __cdp_event__: ClassVar[str] = "Network.webSocketClosed"
+    __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.WEB_SOCKET_CLOSED
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
     timestamp: MonotonicTime
@@ -275,7 +275,7 @@ class WebSocketCreatedEvent:
     Fired upon WebSocket creation.
     """
 
-    __cdp_event__: ClassVar[str] = "Network.webSocketCreated"
+    __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.WEB_SOCKET_CREATED
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
     url: str
@@ -288,7 +288,7 @@ class WebSocketFrameErrorEvent:
     Fired when WebSocket message error occurs.
     """
 
-    __cdp_event__: ClassVar[str] = "Network.webSocketFrameError"
+    __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.WEB_SOCKET_FRAME_ERROR
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
     timestamp: MonotonicTime
@@ -301,7 +301,7 @@ class WebSocketFrameReceivedEvent:
     Fired when WebSocket message is received.
     """
 
-    __cdp_event__: ClassVar[str] = "Network.webSocketFrameReceived"
+    __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.WEB_SOCKET_FRAME_RECEIVED
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
     timestamp: MonotonicTime
@@ -314,7 +314,7 @@ class WebSocketFrameSentEvent:
     Fired when WebSocket message is sent.
     """
 
-    __cdp_event__: ClassVar[str] = "Network.webSocketFrameSent"
+    __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.WEB_SOCKET_FRAME_SENT
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
     timestamp: MonotonicTime
@@ -327,7 +327,9 @@ class WebSocketHandshakeResponseReceivedEvent:
     Fired when WebSocket handshake response becomes available.
     """
 
-    __cdp_event__: ClassVar[str] = "Network.webSocketHandshakeResponseReceived"
+    __cdp_event__: ClassVar[NetworkEvent] = (
+        NetworkEvent.WEB_SOCKET_HANDSHAKE_RESPONSE_RECEIVED
+    )
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
     timestamp: MonotonicTime
@@ -340,7 +342,9 @@ class WebSocketWillSendHandshakeRequestEvent:
     Fired when WebSocket is about to initiate handshake.
     """
 
-    __cdp_event__: ClassVar[str] = "Network.webSocketWillSendHandshakeRequest"
+    __cdp_event__: ClassVar[NetworkEvent] = (
+        NetworkEvent.WEB_SOCKET_WILL_SEND_HANDSHAKE_REQUEST
+    )
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
     timestamp: MonotonicTime
@@ -354,7 +358,7 @@ class WebTransportCreatedEvent:
     Fired upon WebTransport creation.
     """
 
-    __cdp_event__: ClassVar[str] = "Network.webTransportCreated"
+    __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.WEB_TRANSPORT_CREATED
 
     transport_id: RequestId = field(metadata={"cdp_name": "transportId"})
     url: str
@@ -368,7 +372,9 @@ class WebTransportConnectionEstablishedEvent:
     Fired when WebTransport handshake is finished.
     """
 
-    __cdp_event__: ClassVar[str] = "Network.webTransportConnectionEstablished"
+    __cdp_event__: ClassVar[NetworkEvent] = (
+        NetworkEvent.WEB_TRANSPORT_CONNECTION_ESTABLISHED
+    )
 
     transport_id: RequestId = field(metadata={"cdp_name": "transportId"})
     timestamp: MonotonicTime
@@ -380,7 +386,7 @@ class WebTransportClosedEvent:
     Fired when WebTransport is disposed.
     """
 
-    __cdp_event__: ClassVar[str] = "Network.webTransportClosed"
+    __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.WEB_TRANSPORT_CLOSED
 
     transport_id: RequestId = field(metadata={"cdp_name": "transportId"})
     timestamp: MonotonicTime
@@ -392,7 +398,7 @@ class DirectTCPSocketCreatedEvent:
     Fired upon direct_socket.TCPSocket creation.
     """
 
-    __cdp_event__: ClassVar[str] = "Network.directTCPSocketCreated"
+    __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.DIRECT_TCP_SOCKET_CREATED
 
     identifier: RequestId
     remote_addr: str = field(metadata={"cdp_name": "remoteAddr"})
@@ -408,7 +414,7 @@ class DirectTCPSocketOpenedEvent:
     Fired when direct_socket.TCPSocket connection is opened.
     """
 
-    __cdp_event__: ClassVar[str] = "Network.directTCPSocketOpened"
+    __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.DIRECT_TCP_SOCKET_OPENED
 
     identifier: RequestId
     remote_addr: str = field(metadata={"cdp_name": "remoteAddr"})
@@ -424,7 +430,7 @@ class DirectTCPSocketAbortedEvent:
     Fired when direct_socket.TCPSocket is aborted.
     """
 
-    __cdp_event__: ClassVar[str] = "Network.directTCPSocketAborted"
+    __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.DIRECT_TCP_SOCKET_ABORTED
 
     identifier: RequestId
     error_message: ErrorReason = field(metadata={"cdp_name": "errorMessage"})
@@ -437,7 +443,7 @@ class DirectTCPSocketClosedEvent:
     Fired when direct_socket.TCPSocket is closed.
     """
 
-    __cdp_event__: ClassVar[str] = "Network.directTCPSocketClosed"
+    __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.DIRECT_TCP_SOCKET_CLOSED
 
     identifier: RequestId
     timestamp: MonotonicTime
@@ -449,7 +455,7 @@ class DirectTCPSocketChunkSentEvent:
     Fired when data is sent to tcp direct socket stream.
     """
 
-    __cdp_event__: ClassVar[str] = "Network.directTCPSocketChunkSent"
+    __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.DIRECT_TCP_SOCKET_CHUNK_SENT
 
     identifier: RequestId
     data: str
@@ -462,7 +468,9 @@ class DirectTCPSocketChunkReceivedEvent:
     Fired when data is received from tcp direct socket stream.
     """
 
-    __cdp_event__: ClassVar[str] = "Network.directTCPSocketChunkReceived"
+    __cdp_event__: ClassVar[NetworkEvent] = (
+        NetworkEvent.DIRECT_TCP_SOCKET_CHUNK_RECEIVED
+    )
 
     identifier: RequestId
     data: str
@@ -471,7 +479,9 @@ class DirectTCPSocketChunkReceivedEvent:
 
 @dataclass(kw_only=True, slots=True)
 class DirectUDPSocketJoinedMulticastGroupEvent:
-    __cdp_event__: ClassVar[str] = "Network.directUDPSocketJoinedMulticastGroup"
+    __cdp_event__: ClassVar[NetworkEvent] = (
+        NetworkEvent.DIRECT_UDP_SOCKET_JOINED_MULTICAST_GROUP
+    )
 
     identifier: RequestId
     ip_address: str = field(metadata={"cdp_name": "IPAddress"})
@@ -482,7 +492,9 @@ class DirectUDPSocketJoinedMulticastGroupEvent:
 
 @dataclass(kw_only=True, slots=True)
 class DirectUDPSocketLeftMulticastGroupEvent:
-    __cdp_event__: ClassVar[str] = "Network.directUDPSocketLeftMulticastGroup"
+    __cdp_event__: ClassVar[NetworkEvent] = (
+        NetworkEvent.DIRECT_UDP_SOCKET_LEFT_MULTICAST_GROUP
+    )
 
     identifier: RequestId
     ip_address: str = field(metadata={"cdp_name": "IPAddress"})
@@ -497,7 +509,7 @@ class DirectUDPSocketCreatedEvent:
     Fired upon direct_socket.UDPSocket creation.
     """
 
-    __cdp_event__: ClassVar[str] = "Network.directUDPSocketCreated"
+    __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.DIRECT_UDP_SOCKET_CREATED
 
     identifier: RequestId
     options: DirectUDPSocketOptions
@@ -511,7 +523,7 @@ class DirectUDPSocketOpenedEvent:
     Fired when direct_socket.UDPSocket connection is opened.
     """
 
-    __cdp_event__: ClassVar[str] = "Network.directUDPSocketOpened"
+    __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.DIRECT_UDP_SOCKET_OPENED
 
     identifier: RequestId
     local_addr: str = field(metadata={"cdp_name": "localAddr"})
@@ -527,7 +539,7 @@ class DirectUDPSocketAbortedEvent:
     Fired when direct_socket.UDPSocket is aborted.
     """
 
-    __cdp_event__: ClassVar[str] = "Network.directUDPSocketAborted"
+    __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.DIRECT_UDP_SOCKET_ABORTED
 
     identifier: RequestId
     error_message: ErrorReason = field(metadata={"cdp_name": "errorMessage"})
@@ -540,7 +552,7 @@ class DirectUDPSocketClosedEvent:
     Fired when direct_socket.UDPSocket is closed.
     """
 
-    __cdp_event__: ClassVar[str] = "Network.directUDPSocketClosed"
+    __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.DIRECT_UDP_SOCKET_CLOSED
 
     identifier: RequestId
     timestamp: MonotonicTime
@@ -552,7 +564,7 @@ class DirectUDPSocketChunkSentEvent:
     Fired when message is sent to udp direct socket stream.
     """
 
-    __cdp_event__: ClassVar[str] = "Network.directUDPSocketChunkSent"
+    __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.DIRECT_UDP_SOCKET_CHUNK_SENT
 
     identifier: RequestId
     message: DirectUDPMessage
@@ -565,7 +577,9 @@ class DirectUDPSocketChunkReceivedEvent:
     Fired when message is received from udp direct socket stream.
     """
 
-    __cdp_event__: ClassVar[str] = "Network.directUDPSocketChunkReceived"
+    __cdp_event__: ClassVar[NetworkEvent] = (
+        NetworkEvent.DIRECT_UDP_SOCKET_CHUNK_RECEIVED
+    )
 
     identifier: RequestId
     message: DirectUDPMessage
@@ -582,7 +596,7 @@ class RequestWillBeSentExtraInfoEvent:
     request.
     """
 
-    __cdp_event__: ClassVar[str] = "Network.requestWillBeSentExtraInfo"
+    __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.REQUEST_WILL_BE_SENT_EXTRA_INFO
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
     associated_cookies: list[AssociatedCookie] = field(
@@ -613,7 +627,7 @@ class ResponseReceivedExtraInfoEvent:
     or after responseReceived.
     """
 
-    __cdp_event__: ClassVar[str] = "Network.responseReceivedExtraInfo"
+    __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.RESPONSE_RECEIVED_EXTRA_INFO
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
     blocked_cookies: list[BlockedSetCookieWithReason] = field(
@@ -644,7 +658,7 @@ class ResponseReceivedEarlyHintsEvent:
     one responseReceivedEarlyHints may be fired for eached responseReceived event.
     """
 
-    __cdp_event__: ClassVar[str] = "Network.responseReceivedEarlyHints"
+    __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.RESPONSE_RECEIVED_EARLY_HINTS
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
     headers: Headers
@@ -658,7 +672,7 @@ class TrustTokenOperationDoneEvent:
     the corresponding request was sent or after the response was received.
     """
 
-    __cdp_event__: ClassVar[str] = "Network.trustTokenOperationDone"
+    __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.TRUST_TOKEN_OPERATION_DONE
 
     status: Literal[
         "Ok",
@@ -694,7 +708,7 @@ class PolicyUpdatedEvent:
     Fired once security policy has been updated.
     """
 
-    __cdp_event__: ClassVar[str] = "Network.policyUpdated"
+    __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.POLICY_UPDATED
 
 
 @dataclass(kw_only=True, slots=True)
@@ -704,21 +718,23 @@ class ReportingApiReportAddedEvent:
     existing reports.
     """
 
-    __cdp_event__: ClassVar[str] = "Network.reportingApiReportAdded"
+    __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.REPORTING_API_REPORT_ADDED
 
     report: ReportingApiReport
 
 
 @dataclass(kw_only=True, slots=True)
 class ReportingApiReportUpdatedEvent:
-    __cdp_event__: ClassVar[str] = "Network.reportingApiReportUpdated"
+    __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.REPORTING_API_REPORT_UPDATED
 
     report: ReportingApiReport
 
 
 @dataclass(kw_only=True, slots=True)
 class ReportingApiEndpointsChangedForOriginEvent:
-    __cdp_event__: ClassVar[str] = "Network.reportingApiEndpointsChangedForOrigin"
+    __cdp_event__: ClassVar[NetworkEvent] = (
+        NetworkEvent.REPORTING_API_ENDPOINTS_CHANGED_FOR_ORIGIN
+    )
 
     origin: str
     endpoints: list[ReportingApiEndpoint]
@@ -730,7 +746,7 @@ class DeviceBoundSessionsAddedEvent:
     Triggered when the initial set of device bound sessions is added.
     """
 
-    __cdp_event__: ClassVar[str] = "Network.deviceBoundSessionsAdded"
+    __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.DEVICE_BOUND_SESSIONS_ADDED
 
     sessions: list[DeviceBoundSession]
 
@@ -741,7 +757,9 @@ class DeviceBoundSessionEventOccurredEvent:
     Triggered when a device bound session event occurs.
     """
 
-    __cdp_event__: ClassVar[str] = "Network.deviceBoundSessionEventOccurred"
+    __cdp_event__: ClassVar[NetworkEvent] = (
+        NetworkEvent.DEVICE_BOUND_SESSION_EVENT_OCCURRED
+    )
 
     event_id: DeviceBoundSessionEventId = field(metadata={"cdp_name": "eventId"})
     site: str

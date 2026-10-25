@@ -24,7 +24,7 @@ class TracingEvent(StrEnum):
 
 @dataclass(kw_only=True, slots=True)
 class BufferUsageEvent:
-    __cdp_event__: ClassVar[str] = "Tracing.bufferUsage"
+    __cdp_event__: ClassVar[TracingEvent] = TracingEvent.BUFFER_USAGE
 
     percent_full: float | None = field(
         default=None, metadata={"cdp_name": "percentFull"}
@@ -41,7 +41,7 @@ class DataCollectedEvent:
     tracingComplete event.
     """
 
-    __cdp_event__: ClassVar[str] = "Tracing.dataCollected"
+    __cdp_event__: ClassVar[TracingEvent] = TracingEvent.DATA_COLLECTED
 
     value: list[dict[str, Any]]
 
@@ -53,7 +53,7 @@ class TracingCompleteEvent:
     data were delivered via dataCollected events.
     """
 
-    __cdp_event__: ClassVar[str] = "Tracing.tracingComplete"
+    __cdp_event__: ClassVar[TracingEvent] = TracingEvent.TRACING_COMPLETE
 
     data_loss_occurred: bool = field(metadata={"cdp_name": "dataLossOccurred"})
     stream: io.StreamHandle | None = None

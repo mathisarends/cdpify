@@ -5,23 +5,28 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Literal
 
 from cdpify.domains import dom, runtime
+from cdpify.shared.enums import CDPStrEnum
 
-type DOMBreakpointType = Literal[
-    "subtree-modified", "attribute-modified", "node-removed"
-]
-"""
-DOM breakpoint type.
-"""
 
-type CSPViolationType = Literal[
-    "trustedtype-sink-violation", "trustedtype-policy-violation"
-]
-"""
-CSP Violation type.
-"""
+class DOMBreakpointType(CDPStrEnum):
+    """
+    DOM breakpoint type.
+    """
+
+    SUBTREE_MODIFIED = "subtree-modified"
+    ATTRIBUTE_MODIFIED = "attribute-modified"
+    NODE_REMOVED = "node-removed"
+
+
+class CSPViolationType(CDPStrEnum):
+    """
+    CSP Violation type.
+    """
+
+    TRUSTEDTYPE_SINK_VIOLATION = "trustedtype-sink-violation"
+    TRUSTEDTYPE_POLICY_VIOLATION = "trustedtype-policy-violation"
 
 
 @dataclass(kw_only=True, slots=True)

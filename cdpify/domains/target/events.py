@@ -31,7 +31,7 @@ class AttachedToTargetEvent:
     Issued when attached to target because of auto-attach or `attachToTarget` command.
     """
 
-    __cdp_event__: ClassVar[str] = "Target.attachedToTarget"
+    __cdp_event__: ClassVar[TargetEvent] = TargetEvent.ATTACHED_TO_TARGET
 
     session_id: SessionID = field(metadata={"cdp_name": "sessionId"})
     target_info: TargetInfo = field(metadata={"cdp_name": "targetInfo"})
@@ -46,7 +46,7 @@ class DetachedFromTargetEvent:
     attached to it.
     """
 
-    __cdp_event__: ClassVar[str] = "Target.detachedFromTarget"
+    __cdp_event__: ClassVar[TargetEvent] = TargetEvent.DETACHED_FROM_TARGET
 
     session_id: SessionID = field(metadata={"cdp_name": "sessionId"})
     target_id: TargetID | None = field(default=None, metadata={"cdp_name": "targetId"})
@@ -59,7 +59,7 @@ class ReceivedMessageFromTargetEvent:
     `attachedToTarget` event).
     """
 
-    __cdp_event__: ClassVar[str] = "Target.receivedMessageFromTarget"
+    __cdp_event__: ClassVar[TargetEvent] = TargetEvent.RECEIVED_MESSAGE_FROM_TARGET
 
     session_id: SessionID = field(metadata={"cdp_name": "sessionId"})
     message: str
@@ -72,7 +72,7 @@ class TargetCreatedEvent:
     Issued when a possible inspection target is created.
     """
 
-    __cdp_event__: ClassVar[str] = "Target.targetCreated"
+    __cdp_event__: ClassVar[TargetEvent] = TargetEvent.TARGET_CREATED
 
     target_info: TargetInfo = field(metadata={"cdp_name": "targetInfo"})
 
@@ -83,7 +83,7 @@ class TargetDestroyedEvent:
     Issued when a target is destroyed.
     """
 
-    __cdp_event__: ClassVar[str] = "Target.targetDestroyed"
+    __cdp_event__: ClassVar[TargetEvent] = TargetEvent.TARGET_DESTROYED
 
     target_id: TargetID = field(metadata={"cdp_name": "targetId"})
 
@@ -94,7 +94,7 @@ class TargetCrashedEvent:
     Issued when a target has crashed.
     """
 
-    __cdp_event__: ClassVar[str] = "Target.targetCrashed"
+    __cdp_event__: ClassVar[TargetEvent] = TargetEvent.TARGET_CRASHED
 
     target_id: TargetID = field(metadata={"cdp_name": "targetId"})
     status: str
@@ -108,6 +108,6 @@ class TargetInfoChangedEvent:
     `targetCreated` and `targetDestroyed`.
     """
 
-    __cdp_event__: ClassVar[str] = "Target.targetInfoChanged"
+    __cdp_event__: ClassVar[TargetEvent] = TargetEvent.TARGET_INFO_CHANGED
 
     target_info: TargetInfo = field(metadata={"cdp_name": "targetInfo"})

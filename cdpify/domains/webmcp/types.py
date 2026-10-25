@@ -5,9 +5,10 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Literal
+from typing import Any
 
 from cdpify.domains import dom, page, runtime
+from cdpify.shared.enums import CDPStrEnum
 
 
 @dataclass(kw_only=True, slots=True)
@@ -25,10 +26,14 @@ class Annotation:
     autosubmit: bool | None = None
 
 
-type InvocationStatus = Literal["Completed", "Canceled", "Error"]
-"""
-Represents the status of a tool invocation.
-"""
+class InvocationStatus(CDPStrEnum):
+    """
+    Represents the status of a tool invocation.
+    """
+
+    COMPLETED = "Completed"
+    CANCELED = "Canceled"
+    ERROR = "Error"
 
 
 @dataclass(kw_only=True, slots=True)

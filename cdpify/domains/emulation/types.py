@@ -7,6 +7,8 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Literal
 
+from cdpify.shared.enums import CDPStrEnum
+
 
 @dataclass(kw_only=True, slots=True)
 class SafeAreaInsets:
@@ -50,13 +52,17 @@ class MediaFeature:
     value: str
 
 
-type VirtualTimePolicy = Literal["advance", "pause", "pauseIfNetworkFetchesPending"]
-"""
-advance: If the scheduler runs out of immediate work, the virtual time base may fast
-forward to allow the next delayed task (if any) to run; pause: The virtual time base may
-not advance; pauseIfNetworkFetchesPending: The virtual time base may not advance if
-there are any pending resource fetches.
-"""
+class VirtualTimePolicy(CDPStrEnum):
+    """
+    advance: If the scheduler runs out of immediate work, the virtual time base may
+    fast forward to allow the next delayed task (if any) to run; pause: The virtual time
+    base may not advance; pauseIfNetworkFetchesPending: The virtual time base may not
+    advance if there are any pending resource fetches.
+    """
+
+    ADVANCE = "advance"
+    PAUSE = "pause"
+    PAUSE_IF_NETWORK_FETCHES_PENDING = "pauseIfNetworkFetchesPending"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -95,20 +101,20 @@ class UserAgentMetadata:
     )
 
 
-type SensorType = Literal[
-    "absolute-orientation",
-    "accelerometer",
-    "ambient-light",
-    "gravity",
-    "gyroscope",
-    "linear-acceleration",
-    "magnetometer",
-    "relative-orientation",
-]
-"""
-Used to specify sensor types to emulate. See https://w3c.github.io/sensors/#automation
-for more information.
-"""
+class SensorType(CDPStrEnum):
+    """
+    Used to specify sensor types to emulate. See
+    https://w3c.github.io/sensors/#automation for more information.
+    """
+
+    ABSOLUTE_ORIENTATION = "absolute-orientation"
+    ACCELEROMETER = "accelerometer"
+    AMBIENT_LIGHT = "ambient-light"
+    GRAVITY = "gravity"
+    GYROSCOPE = "gyroscope"
+    LINEAR_ACCELERATION = "linear-acceleration"
+    MAGNETOMETER = "magnetometer"
+    RELATIVE_ORIENTATION = "relative-orientation"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -149,9 +155,15 @@ class SensorReading:
     quaternion: SensorReadingQuaternion | None = None
 
 
-type PressureSource = Literal["cpu"]
+class PressureSource(CDPStrEnum):
+    CPU = "cpu"
 
-type PressureState = Literal["nominal", "fair", "serious", "critical"]
+
+class PressureState(CDPStrEnum):
+    NOMINAL = "nominal"
+    FAIR = "fair"
+    SERIOUS = "serious"
+    CRITICAL = "critical"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -195,7 +207,11 @@ class ScreenInfo:
     id: ScreenId
 
 
-type DisabledImageType = Literal["avif", "jxl", "webp"]
-"""
-Enum of image types that can be disabled.
-"""
+class DisabledImageType(CDPStrEnum):
+    """
+    Enum of image types that can be disabled.
+    """
+
+    AVIF = "avif"
+    JXL = "jxl"
+    WEBP = "webp"

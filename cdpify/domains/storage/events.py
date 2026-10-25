@@ -29,7 +29,7 @@ class CacheStorageContentUpdatedEvent:
     A cache's contents have been modified.
     """
 
-    __cdp_event__: ClassVar[str] = "Storage.cacheStorageContentUpdated"
+    __cdp_event__: ClassVar[StorageEvent] = StorageEvent.CACHE_STORAGE_CONTENT_UPDATED
 
     origin: str
     storage_key: str = field(metadata={"cdp_name": "storageKey"})
@@ -43,7 +43,7 @@ class CacheStorageListUpdatedEvent:
     A cache has been added/deleted.
     """
 
-    __cdp_event__: ClassVar[str] = "Storage.cacheStorageListUpdated"
+    __cdp_event__: ClassVar[StorageEvent] = StorageEvent.CACHE_STORAGE_LIST_UPDATED
 
     origin: str
     storage_key: str = field(metadata={"cdp_name": "storageKey"})
@@ -56,7 +56,7 @@ class IndexedDBContentUpdatedEvent:
     The origin's IndexedDB object store has been modified.
     """
 
-    __cdp_event__: ClassVar[str] = "Storage.indexedDBContentUpdated"
+    __cdp_event__: ClassVar[StorageEvent] = StorageEvent.INDEXED_DB_CONTENT_UPDATED
 
     origin: str
     storage_key: str = field(metadata={"cdp_name": "storageKey"})
@@ -71,7 +71,7 @@ class IndexedDBListUpdatedEvent:
     The origin's IndexedDB database list has been modified.
     """
 
-    __cdp_event__: ClassVar[str] = "Storage.indexedDBListUpdated"
+    __cdp_event__: ClassVar[StorageEvent] = StorageEvent.INDEXED_DB_LIST_UPDATED
 
     origin: str
     storage_key: str = field(metadata={"cdp_name": "storageKey"})
@@ -80,14 +80,16 @@ class IndexedDBListUpdatedEvent:
 
 @dataclass(kw_only=True, slots=True)
 class StorageBucketCreatedOrUpdatedEvent:
-    __cdp_event__: ClassVar[str] = "Storage.storageBucketCreatedOrUpdated"
+    __cdp_event__: ClassVar[StorageEvent] = (
+        StorageEvent.STORAGE_BUCKET_CREATED_OR_UPDATED
+    )
 
     bucket_info: StorageBucketInfo = field(metadata={"cdp_name": "bucketInfo"})
 
 
 @dataclass(kw_only=True, slots=True)
 class StorageBucketDeletedEvent:
-    __cdp_event__: ClassVar[str] = "Storage.storageBucketDeleted"
+    __cdp_event__: ClassVar[StorageEvent] = StorageEvent.STORAGE_BUCKET_DELETED
 
     bucket_id: str = field(metadata={"cdp_name": "bucketId"})
 
@@ -98,4 +100,6 @@ class PrivateVerificationTokensUpdatedEvent:
     Private Verification Tokens have been stored or deleted.
     """
 
-    __cdp_event__: ClassVar[str] = "Storage.privateVerificationTokensUpdated"
+    __cdp_event__: ClassVar[StorageEvent] = (
+        StorageEvent.PRIVATE_VERIFICATION_TOKENS_UPDATED
+    )

@@ -5,27 +5,38 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Literal
 
 from cdpify.domains import network
+from cdpify.shared.enums import CDPStrEnum
 
 type CertificateId = int
 """
 An internal certificate ID value.
 """
 
-type MixedContentType = Literal["blockable", "optionally-blockable", "none"]
-"""
-A description of mixed content (HTTP resources on HTTPS pages), as defined by
-https://www.w3.org/TR/mixed-content/#categories
-"""
 
-type SecurityState = Literal[
-    "unknown", "neutral", "insecure", "secure", "info", "insecure-broken"
-]
-"""
-The security level of a page or resource.
-"""
+class MixedContentType(CDPStrEnum):
+    """
+    A description of mixed content (HTTP resources on HTTPS pages), as defined by
+    https://www.w3.org/TR/mixed-content/#categories
+    """
+
+    BLOCKABLE = "blockable"
+    OPTIONALLY_BLOCKABLE = "optionally-blockable"
+    NONE = "none"
+
+
+class SecurityState(CDPStrEnum):
+    """
+    The security level of a page or resource.
+    """
+
+    UNKNOWN = "unknown"
+    NEUTRAL = "neutral"
+    INSECURE = "insecure"
+    SECURE = "secure"
+    INFO = "info"
+    INSECURE_BROKEN = "insecure-broken"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -64,7 +75,9 @@ class CertificateSecurityState:
     obsolete_ssl_signature: bool = field(metadata={"cdp_name": "obsoleteSslSignature"})
 
 
-type SafetyTipStatus = Literal["badReputation", "lookalike"]
+class SafetyTipStatus(CDPStrEnum):
+    BAD_REPUTATION = "badReputation"
+    LOOKALIKE = "lookalike"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -133,8 +146,11 @@ class InsecureContentStatus:
     )
 
 
-type CertificateErrorAction = Literal["continue", "cancel"]
-"""
-The action to take when a certificate error occurs. continue will continue processing
-the request and cancel will cancel the request.
-"""
+class CertificateErrorAction(CDPStrEnum):
+    """
+    The action to take when a certificate error occurs. continue will continue
+    processing the request and cancel will cancel the request.
+    """
+
+    CONTINUE = "continue"
+    CANCEL = "cancel"

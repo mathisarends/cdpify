@@ -2,6 +2,7 @@ import logging
 import sys
 from collections.abc import Callable
 from dataclasses import MISSING, dataclass, fields, is_dataclass
+from enum import StrEnum
 from functools import cache
 from types import UnionType
 from typing import Any, TypeAliasType, Union, get_args, get_origin, get_type_hints
@@ -195,7 +196,29 @@ def _build_decoder(field_type: Any) -> _Decoder:
     if _is_dataclass_type(field_type):
         return _model_decoder(field_type)
 
+    if isinstance(field_type, type) and issubclass(field_type, StrEnum):
+        return _enum_decoder(field_type)
+
     return None
+
+
+class _EnumValues(dict[str, StrEnum]):
+    """Resolve known values in dict's C path and construct unknowns on demand."""
+
+    def __init__(self, enum_type: type[StrEnum]) -> None:
+        super().__init__(
+            (member.value, member) for member in enum_type.__members__.values()
+        )
+        self._enum_type = enum_type
+
+    def __missing__(self, value: str) -> StrEnum:
+        # Do not retain unknown browser values in this process-wide lookup.
+        return self._enum_type(value)
+
+
+@cache
+def _enum_decoder(enum_type: type[StrEnum]) -> Callable[[str], StrEnum]:
+    return _EnumValues(enum_type).__getitem__
 
 
 def _model_decoder(model_type: type) -> Callable[[Any], Any]:

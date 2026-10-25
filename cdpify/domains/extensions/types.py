@@ -5,12 +5,19 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Literal
 
-type StorageArea = Literal["session", "local", "sync", "managed"]
-"""
-Storage areas.
-"""
+from cdpify.shared.enums import CDPStrEnum
+
+
+class StorageArea(CDPStrEnum):
+    """
+    Storage areas.
+    """
+
+    SESSION = "session"
+    LOCAL = "local"
+    SYNC = "sync"
+    MANAGED = "managed"
 
 
 @dataclass(kw_only=True, slots=True)

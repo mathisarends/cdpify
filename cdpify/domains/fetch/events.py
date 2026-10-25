@@ -37,7 +37,7 @@ class RequestPausedEvent:
     `redirectedRequestId` field set.
     """
 
-    __cdp_event__: ClassVar[str] = "Fetch.requestPaused"
+    __cdp_event__: ClassVar[FetchEvent] = FetchEvent.REQUEST_PAUSED
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
     request: network.Request
@@ -70,7 +70,7 @@ class AuthRequiredEvent:
     is paused until client responds with continueWithAuth.
     """
 
-    __cdp_event__: ClassVar[str] = "Fetch.authRequired"
+    __cdp_event__: ClassVar[FetchEvent] = FetchEvent.AUTH_REQUIRED
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
     request: network.Request

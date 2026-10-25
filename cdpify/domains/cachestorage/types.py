@@ -5,21 +5,27 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Literal
 
 from cdpify.domains import storage
+from cdpify.shared.enums import CDPStrEnum
 
 type CacheId = str
 """
 Unique identifier of the Cache object.
 """
 
-type CachedResponseType = Literal[
-    "basic", "cors", "default", "error", "opaqueResponse", "opaqueRedirect"
-]
-"""
-type of HTTP response cached
-"""
+
+class CachedResponseType(CDPStrEnum):
+    """
+    type of HTTP response cached
+    """
+
+    BASIC = "basic"
+    CORS = "cors"
+    DEFAULT = "default"
+    ERROR = "error"
+    OPAQUE_RESPONSE = "opaqueResponse"
+    OPAQUE_REDIRECT = "opaqueRedirect"
 
 
 @dataclass(kw_only=True, slots=True)

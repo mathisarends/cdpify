@@ -25,7 +25,7 @@ class LoadCompleteEvent:
     assistive technology when the web page has finished loading.
     """
 
-    __cdp_event__: ClassVar[str] = "Accessibility.loadComplete"
+    __cdp_event__: ClassVar[AccessibilityEvent] = AccessibilityEvent.LOAD_COMPLETE
 
     root: AXNode
 
@@ -37,6 +37,6 @@ class NodesUpdatedEvent:
     the in tree.
     """
 
-    __cdp_event__: ClassVar[str] = "Accessibility.nodesUpdated"
+    __cdp_event__: ClassVar[AccessibilityEvent] = AccessibilityEvent.NODES_UPDATED
 
     nodes: list[AXNode]

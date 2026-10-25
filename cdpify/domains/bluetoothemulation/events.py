@@ -31,7 +31,9 @@ class GattOperationReceivedEvent:
     happened.
     """
 
-    __cdp_event__: ClassVar[str] = "BluetoothEmulation.gattOperationReceived"
+    __cdp_event__: ClassVar[BluetoothEmulationEvent] = (
+        BluetoothEmulationEvent.GATT_OPERATION_RECEIVED
+    )
 
     address: str
     type: GATTOperationType
@@ -45,7 +47,9 @@ class CharacteristicOperationReceivedEvent:
     exist when |type| is write.
     """
 
-    __cdp_event__: ClassVar[str] = "BluetoothEmulation.characteristicOperationReceived"
+    __cdp_event__: ClassVar[BluetoothEmulationEvent] = (
+        BluetoothEmulationEvent.CHARACTERISTIC_OPERATION_RECEIVED
+    )
 
     characteristic_id: str = field(metadata={"cdp_name": "characteristicId"})
     type: CharacteristicOperationType
@@ -62,7 +66,9 @@ class DescriptorOperationReceivedEvent:
     |descriptorId| happened. |data| is expected to exist when |type| is write.
     """
 
-    __cdp_event__: ClassVar[str] = "BluetoothEmulation.descriptorOperationReceived"
+    __cdp_event__: ClassVar[BluetoothEmulationEvent] = (
+        BluetoothEmulationEvent.DESCRIPTOR_OPERATION_RECEIVED
+    )
 
     descriptor_id: str = field(metadata={"cdp_name": "descriptorId"})
     type: DescriptorOperationType

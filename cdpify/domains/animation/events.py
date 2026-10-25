@@ -26,7 +26,7 @@ class AnimationCanceledEvent:
     Event for when an animation has been cancelled.
     """
 
-    __cdp_event__: ClassVar[str] = "Animation.animationCanceled"
+    __cdp_event__: ClassVar[AnimationEvent] = AnimationEvent.ANIMATION_CANCELED
 
     id: str
 
@@ -37,7 +37,7 @@ class AnimationCreatedEvent:
     Event for each animation that has been created.
     """
 
-    __cdp_event__: ClassVar[str] = "Animation.animationCreated"
+    __cdp_event__: ClassVar[AnimationEvent] = AnimationEvent.ANIMATION_CREATED
 
     id: str
 
@@ -48,7 +48,7 @@ class AnimationStartedEvent:
     Event for animation that has been started.
     """
 
-    __cdp_event__: ClassVar[str] = "Animation.animationStarted"
+    __cdp_event__: ClassVar[AnimationEvent] = AnimationEvent.ANIMATION_STARTED
 
     animation: Animation
 
@@ -59,6 +59,6 @@ class AnimationUpdatedEvent:
     Event for animation that has been updated.
     """
 
-    __cdp_event__: ClassVar[str] = "Animation.animationUpdated"
+    __cdp_event__: ClassVar[AnimationEvent] = AnimationEvent.ANIMATION_UPDATED
 
     animation: Animation

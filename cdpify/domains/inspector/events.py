@@ -23,7 +23,7 @@ class DetachedEvent:
     reason.
     """
 
-    __cdp_event__: ClassVar[str] = "Inspector.detached"
+    __cdp_event__: ClassVar[InspectorEvent] = InspectorEvent.DETACHED
 
     reason: str
 
@@ -34,7 +34,7 @@ class TargetCrashedEvent:
     Fired when debugging target has crashed
     """
 
-    __cdp_event__: ClassVar[str] = "Inspector.targetCrashed"
+    __cdp_event__: ClassVar[InspectorEvent] = InspectorEvent.TARGET_CRASHED
 
 
 @dataclass(kw_only=True, slots=True)
@@ -43,7 +43,7 @@ class TargetReloadedAfterCrashEvent:
     Fired when debugging target has reloaded after crash
     """
 
-    __cdp_event__: ClassVar[str] = "Inspector.targetReloadedAfterCrash"
+    __cdp_event__: ClassVar[InspectorEvent] = InspectorEvent.TARGET_RELOADED_AFTER_CRASH
 
 
 @dataclass(kw_only=True, slots=True)
@@ -53,4 +53,4 @@ class WorkerScriptLoadedEvent:
     evaluated.
     """
 
-    __cdp_event__: ClassVar[str] = "Inspector.workerScriptLoaded"
+    __cdp_event__: ClassVar[InspectorEvent] = InspectorEvent.WORKER_SCRIPT_LOADED

@@ -5,9 +5,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Literal
 
 from cdpify.domains import dom, network, page, runtime
+from cdpify.shared.enums import CDPStrEnum
 
 
 @dataclass(kw_only=True, slots=True)
@@ -42,40 +42,57 @@ class AffectedFrame:
     frame_id: page.FrameId = field(metadata={"cdp_name": "frameId"})
 
 
-type CookieExclusionReason = Literal[
-    "ExcludeSameSiteUnspecifiedTreatedAsLax",
-    "ExcludeSameSiteNoneInsecure",
-    "ExcludeSameSiteLax",
-    "ExcludeSameSiteStrict",
-    "ExcludeDomainNonASCII",
-    "ExcludeThirdPartyPhaseout",
-    "ExcludePortMismatch",
-    "ExcludeSchemeMismatch",
-]
+class CookieExclusionReason(CDPStrEnum):
+    EXCLUDE_SAME_SITE_UNSPECIFIED_TREATED_AS_LAX = (
+        "ExcludeSameSiteUnspecifiedTreatedAsLax"
+    )
+    EXCLUDE_SAME_SITE_NONE_INSECURE = "ExcludeSameSiteNoneInsecure"
+    EXCLUDE_SAME_SITE_LAX = "ExcludeSameSiteLax"
+    EXCLUDE_SAME_SITE_STRICT = "ExcludeSameSiteStrict"
+    EXCLUDE_DOMAIN_NON_ASCII = "ExcludeDomainNonASCII"
+    EXCLUDE_THIRD_PARTY_PHASEOUT = "ExcludeThirdPartyPhaseout"
+    EXCLUDE_PORT_MISMATCH = "ExcludePortMismatch"
+    EXCLUDE_SCHEME_MISMATCH = "ExcludeSchemeMismatch"
 
-type CookieWarningReason = Literal[
-    "WarnSameSiteUnspecifiedCrossSiteContext",
-    "WarnSameSiteNoneInsecure",
-    "WarnSameSiteUnspecifiedLaxAllowUnsafe",
-    "WarnSameSiteStrictLaxDowngradeStrict",
-    "WarnSameSiteStrictCrossDowngradeStrict",
-    "WarnSameSiteStrictCrossDowngradeLax",
-    "WarnSameSiteLaxCrossDowngradeStrict",
-    "WarnSameSiteLaxCrossDowngradeLax",
-    "WarnAttributeValueExceedsMaxSize",
-    "WarnDomainNonASCII",
-    "WarnThirdPartyPhaseout",
-    "WarnCrossSiteRedirectDowngradeChangesInclusion",
-    "WarnDeprecationTrialMetadata",
-    "WarnThirdPartyCookieHeuristic",
-]
 
-type CookieOperation = Literal["SetCookie", "ReadCookie"]
+class CookieWarningReason(CDPStrEnum):
+    WARN_SAME_SITE_UNSPECIFIED_CROSS_SITE_CONTEXT = (
+        "WarnSameSiteUnspecifiedCrossSiteContext"
+    )
+    WARN_SAME_SITE_NONE_INSECURE = "WarnSameSiteNoneInsecure"
+    WARN_SAME_SITE_UNSPECIFIED_LAX_ALLOW_UNSAFE = (
+        "WarnSameSiteUnspecifiedLaxAllowUnsafe"
+    )
+    WARN_SAME_SITE_STRICT_LAX_DOWNGRADE_STRICT = "WarnSameSiteStrictLaxDowngradeStrict"
+    WARN_SAME_SITE_STRICT_CROSS_DOWNGRADE_STRICT = (
+        "WarnSameSiteStrictCrossDowngradeStrict"
+    )
+    WARN_SAME_SITE_STRICT_CROSS_DOWNGRADE_LAX = "WarnSameSiteStrictCrossDowngradeLax"
+    WARN_SAME_SITE_LAX_CROSS_DOWNGRADE_STRICT = "WarnSameSiteLaxCrossDowngradeStrict"
+    WARN_SAME_SITE_LAX_CROSS_DOWNGRADE_LAX = "WarnSameSiteLaxCrossDowngradeLax"
+    WARN_ATTRIBUTE_VALUE_EXCEEDS_MAX_SIZE = "WarnAttributeValueExceedsMaxSize"
+    WARN_DOMAIN_NON_ASCII = "WarnDomainNonASCII"
+    WARN_THIRD_PARTY_PHASEOUT = "WarnThirdPartyPhaseout"
+    WARN_CROSS_SITE_REDIRECT_DOWNGRADE_CHANGES_INCLUSION = (
+        "WarnCrossSiteRedirectDowngradeChangesInclusion"
+    )
+    WARN_DEPRECATION_TRIAL_METADATA = "WarnDeprecationTrialMetadata"
+    WARN_THIRD_PARTY_COOKIE_HEURISTIC = "WarnThirdPartyCookieHeuristic"
 
-type InsightType = Literal["GitHubResource", "GracePeriod", "Heuristics"]
-"""
-Represents the category of insight that a cookie issue falls under.
-"""
+
+class CookieOperation(CDPStrEnum):
+    SET_COOKIE = "SetCookie"
+    READ_COOKIE = "ReadCookie"
+
+
+class InsightType(CDPStrEnum):
+    """
+    Represents the category of insight that a cookie issue falls under.
+    """
+
+    GIT_HUB_RESOURCE = "GitHubResource"
+    GRACE_PERIOD = "GracePeriod"
+    HEURISTICS = "Heuristics"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -117,7 +134,8 @@ class CookieIssueDetails:
     insight: CookieIssueInsight | None = None
 
 
-type PerformanceIssueType = Literal["DocumentCookie"]
+class PerformanceIssueType(CDPStrEnum):
+    DOCUMENT_COOKIE = "DocumentCookie"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -134,40 +152,41 @@ class PerformanceIssueDetails:
     )
 
 
-type MixedContentResolutionStatus = Literal[
-    "MixedContentBlocked", "MixedContentAutomaticallyUpgraded", "MixedContentWarning"
-]
+class MixedContentResolutionStatus(CDPStrEnum):
+    MIXED_CONTENT_BLOCKED = "MixedContentBlocked"
+    MIXED_CONTENT_AUTOMATICALLY_UPGRADED = "MixedContentAutomaticallyUpgraded"
+    MIXED_CONTENT_WARNING = "MixedContentWarning"
 
-type MixedContentResourceType = Literal[
-    "Audio",
-    "Beacon",
-    "CSPReport",
-    "Download",
-    "EventSource",
-    "Favicon",
-    "Font",
-    "Form",
-    "Frame",
-    "Image",
-    "Import",
-    "JSON",
-    "Manifest",
-    "Ping",
-    "PluginData",
-    "PluginResource",
-    "Prefetch",
-    "Resource",
-    "Script",
-    "ServiceWorker",
-    "SharedWorker",
-    "SpeculationRules",
-    "Stylesheet",
-    "Track",
-    "Video",
-    "Worker",
-    "XMLHttpRequest",
-    "XSLT",
-]
+
+class MixedContentResourceType(CDPStrEnum):
+    AUDIO = "Audio"
+    BEACON = "Beacon"
+    CSP_REPORT = "CSPReport"
+    DOWNLOAD = "Download"
+    EVENT_SOURCE = "EventSource"
+    FAVICON = "Favicon"
+    FONT = "Font"
+    FORM = "Form"
+    FRAME = "Frame"
+    IMAGE = "Image"
+    IMPORT = "Import"
+    JSON = "JSON"
+    MANIFEST = "Manifest"
+    PING = "Ping"
+    PLUGIN_DATA = "PluginData"
+    PLUGIN_RESOURCE = "PluginResource"
+    PREFETCH = "Prefetch"
+    RESOURCE = "Resource"
+    SCRIPT = "Script"
+    SERVICE_WORKER = "ServiceWorker"
+    SHARED_WORKER = "SharedWorker"
+    SPECULATION_RULES = "SpeculationRules"
+    STYLESHEET = "Stylesheet"
+    TRACK = "Track"
+    VIDEO = "Video"
+    WORKER = "Worker"
+    XML_HTTP_REQUEST = "XMLHttpRequest"
+    XSLT = "XSLT"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -184,20 +203,28 @@ class MixedContentIssueDetails:
     frame: AffectedFrame | None = None
 
 
-type BlockedByResponseReason = Literal[
-    "CoepFrameResourceNeedsCoepHeader",
-    "CoopSandboxedIFrameCannotNavigateToCoopPage",
-    "CorpNotSameOrigin",
-    "CorpNotSameOriginAfterDefaultedToSameOriginByCoep",
-    "CorpNotSameOriginAfterDefaultedToSameOriginByDip",
-    "CorpNotSameOriginAfterDefaultedToSameOriginByCoepAndDip",
-    "CorpNotSameSite",
-    "SRIMessageSignatureMismatch",
-]
-"""
-Enum indicating the reason a response has been blocked. These reasons are refinements
-of the net error BLOCKED_BY_RESPONSE.
-"""
+class BlockedByResponseReason(CDPStrEnum):
+    """
+    Enum indicating the reason a response has been blocked. These reasons are
+    refinements of the net error BLOCKED_BY_RESPONSE.
+    """
+
+    COEP_FRAME_RESOURCE_NEEDS_COEP_HEADER = "CoepFrameResourceNeedsCoepHeader"
+    COOP_SANDBOXED_I_FRAME_CANNOT_NAVIGATE_TO_COOP_PAGE = (
+        "CoopSandboxedIFrameCannotNavigateToCoopPage"
+    )
+    CORP_NOT_SAME_ORIGIN = "CorpNotSameOrigin"
+    CORP_NOT_SAME_ORIGIN_AFTER_DEFAULTED_TO_SAME_ORIGIN_BY_COEP = (
+        "CorpNotSameOriginAfterDefaultedToSameOriginByCoep"
+    )
+    CORP_NOT_SAME_ORIGIN_AFTER_DEFAULTED_TO_SAME_ORIGIN_BY_DIP = (
+        "CorpNotSameOriginAfterDefaultedToSameOriginByDip"
+    )
+    CORP_NOT_SAME_ORIGIN_AFTER_DEFAULTED_TO_SAME_ORIGIN_BY_COEP_AND_DIP = (
+        "CorpNotSameOriginAfterDefaultedToSameOriginByCoepAndDip"
+    )
+    CORP_NOT_SAME_SITE = "CorpNotSameSite"
+    SRI_MESSAGE_SIGNATURE_MISMATCH = "SRIMessageSignatureMismatch"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -218,9 +245,15 @@ class BlockedByResponseIssueDetails:
     reason: BlockedByResponseReason
 
 
-type HeavyAdResolutionStatus = Literal["HeavyAdBlocked", "HeavyAdWarning"]
+class HeavyAdResolutionStatus(CDPStrEnum):
+    HEAVY_AD_BLOCKED = "HeavyAdBlocked"
+    HEAVY_AD_WARNING = "HeavyAdWarning"
 
-type HeavyAdReason = Literal["NetworkTotalLimit", "CpuTotalLimit", "CpuPeakLimit"]
+
+class HeavyAdReason(CDPStrEnum):
+    NETWORK_TOTAL_LIMIT = "NetworkTotalLimit"
+    CPU_TOTAL_LIMIT = "CpuTotalLimit"
+    CPU_PEAK_LIMIT = "CpuPeakLimit"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -230,15 +263,14 @@ class HeavyAdIssueDetails:
     frame: AffectedFrame
 
 
-type ContentSecurityPolicyViolationType = Literal[
-    "kInlineViolation",
-    "kEvalViolation",
-    "kURLViolation",
-    "kSRIViolation",
-    "kTrustedTypesSinkViolation",
-    "kTrustedTypesPolicyViolation",
-    "kWasmEvalViolation",
-]
+class ContentSecurityPolicyViolationType(CDPStrEnum):
+    K_INLINE_VIOLATION = "kInlineViolation"
+    K_EVAL_VIOLATION = "kEvalViolation"
+    K_URL_VIOLATION = "kURLViolation"
+    K_SRI_VIOLATION = "kSRIViolation"
+    K_TRUSTED_TYPES_SINK_VIOLATION = "kTrustedTypesSinkViolation"
+    K_TRUSTED_TYPES_POLICY_VIOLATION = "kTrustedTypesPolicyViolation"
+    K_WASM_EVAL_VIOLATION = "kWasmEvalViolation"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -270,7 +302,9 @@ class ContentSecurityPolicyIssueDetails:
     )
 
 
-type SharedArrayBufferIssueType = Literal["TransferIssue", "CreationIssue"]
+class SharedArrayBufferIssueType(CDPStrEnum):
+    TRANSFER_ISSUE = "TransferIssue"
+    CREATION_ISSUE = "CreationIssue"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -311,81 +345,100 @@ class CorsIssueDetails:
     )
 
 
-type SharedDictionaryError = Literal[
-    "UseErrorCrossOriginNoCorsRequest",
-    "UseErrorDictionaryLoadFailure",
-    "UseErrorMatchingDictionaryNotUsed",
-    "UseErrorUnexpectedContentDictionaryHeader",
-    "WriteErrorCossOriginNoCorsRequest",
-    "WriteErrorDisallowedBySettings",
-    "WriteErrorExpiredResponse",
-    "WriteErrorFeatureDisabled",
-    "WriteErrorInsufficientResources",
-    "WriteErrorInvalidMatchField",
-    "WriteErrorInvalidStructuredHeader",
-    "WriteErrorInvalidTTLField",
-    "WriteErrorNavigationRequest",
-    "WriteErrorNoMatchField",
-    "WriteErrorNonIntegerTTLField",
-    "WriteErrorNonListMatchDestField",
-    "WriteErrorNonSecureContext",
-    "WriteErrorNonStringIdField",
-    "WriteErrorNonStringInMatchDestList",
-    "WriteErrorInvalidMatchDestList",
-    "WriteErrorNonStringMatchField",
-    "WriteErrorNonTokenTypeField",
-    "WriteErrorRequestAborted",
-    "WriteErrorShuttingDown",
-    "WriteErrorTooLongIdField",
-    "WriteErrorUnsupportedType",
-]
+class SharedDictionaryError(CDPStrEnum):
+    USE_ERROR_CROSS_ORIGIN_NO_CORS_REQUEST = "UseErrorCrossOriginNoCorsRequest"
+    USE_ERROR_DICTIONARY_LOAD_FAILURE = "UseErrorDictionaryLoadFailure"
+    USE_ERROR_MATCHING_DICTIONARY_NOT_USED = "UseErrorMatchingDictionaryNotUsed"
+    USE_ERROR_UNEXPECTED_CONTENT_DICTIONARY_HEADER = (
+        "UseErrorUnexpectedContentDictionaryHeader"
+    )
+    WRITE_ERROR_COSS_ORIGIN_NO_CORS_REQUEST = "WriteErrorCossOriginNoCorsRequest"
+    WRITE_ERROR_DISALLOWED_BY_SETTINGS = "WriteErrorDisallowedBySettings"
+    WRITE_ERROR_EXPIRED_RESPONSE = "WriteErrorExpiredResponse"
+    WRITE_ERROR_FEATURE_DISABLED = "WriteErrorFeatureDisabled"
+    WRITE_ERROR_INSUFFICIENT_RESOURCES = "WriteErrorInsufficientResources"
+    WRITE_ERROR_INVALID_MATCH_FIELD = "WriteErrorInvalidMatchField"
+    WRITE_ERROR_INVALID_STRUCTURED_HEADER = "WriteErrorInvalidStructuredHeader"
+    WRITE_ERROR_INVALID_TTL_FIELD = "WriteErrorInvalidTTLField"
+    WRITE_ERROR_NAVIGATION_REQUEST = "WriteErrorNavigationRequest"
+    WRITE_ERROR_NO_MATCH_FIELD = "WriteErrorNoMatchField"
+    WRITE_ERROR_NON_INTEGER_TTL_FIELD = "WriteErrorNonIntegerTTLField"
+    WRITE_ERROR_NON_LIST_MATCH_DEST_FIELD = "WriteErrorNonListMatchDestField"
+    WRITE_ERROR_NON_SECURE_CONTEXT = "WriteErrorNonSecureContext"
+    WRITE_ERROR_NON_STRING_ID_FIELD = "WriteErrorNonStringIdField"
+    WRITE_ERROR_NON_STRING_IN_MATCH_DEST_LIST = "WriteErrorNonStringInMatchDestList"
+    WRITE_ERROR_INVALID_MATCH_DEST_LIST = "WriteErrorInvalidMatchDestList"
+    WRITE_ERROR_NON_STRING_MATCH_FIELD = "WriteErrorNonStringMatchField"
+    WRITE_ERROR_NON_TOKEN_TYPE_FIELD = "WriteErrorNonTokenTypeField"
+    WRITE_ERROR_REQUEST_ABORTED = "WriteErrorRequestAborted"
+    WRITE_ERROR_SHUTTING_DOWN = "WriteErrorShuttingDown"
+    WRITE_ERROR_TOO_LONG_ID_FIELD = "WriteErrorTooLongIdField"
+    WRITE_ERROR_UNSUPPORTED_TYPE = "WriteErrorUnsupportedType"
 
-type SRIMessageSignatureError = Literal[
-    "MissingSignatureHeader",
-    "MissingSignatureInputHeader",
-    "InvalidSignatureHeader",
-    "InvalidSignatureInputHeader",
-    "SignatureHeaderValueIsNotByteSequence",
-    "SignatureHeaderValueIsParameterized",
-    "SignatureHeaderValueIsIncorrectLength",
-    "SignatureInputHeaderMissingLabel",
-    "SignatureInputHeaderValueNotInnerList",
-    "SignatureInputHeaderValueMissingComponents",
-    "SignatureInputHeaderInvalidComponentType",
-    "SignatureInputHeaderInvalidComponentName",
-    "SignatureInputHeaderInvalidHeaderComponentParameter",
-    "SignatureInputHeaderInvalidDerivedComponentParameter",
-    "SignatureInputHeaderKeyIdLength",
-    "SignatureInputHeaderInvalidParameter",
-    "SignatureInputHeaderMissingRequiredParameters",
-    "ValidationFailedSignatureExpired",
-    "ValidationFailedInvalidLength",
-    "ValidationFailedSignatureMismatch",
-    "ValidationFailedIntegrityMismatch",
-    "SignatureBaseUnknownDerivedComponent",
-    "SignatureBaseMissingHeader",
-    "SignatureBaseInvalidUnencodedDigest",
-    "SignatureBaseUnsupportedComponent",
-]
 
-type UnencodedDigestError = Literal[
-    "MalformedDictionary",
-    "UnknownAlgorithm",
-    "IncorrectDigestType",
-    "IncorrectDigestLength",
-]
+class SRIMessageSignatureError(CDPStrEnum):
+    MISSING_SIGNATURE_HEADER = "MissingSignatureHeader"
+    MISSING_SIGNATURE_INPUT_HEADER = "MissingSignatureInputHeader"
+    INVALID_SIGNATURE_HEADER = "InvalidSignatureHeader"
+    INVALID_SIGNATURE_INPUT_HEADER = "InvalidSignatureInputHeader"
+    SIGNATURE_HEADER_VALUE_IS_NOT_BYTE_SEQUENCE = (
+        "SignatureHeaderValueIsNotByteSequence"
+    )
+    SIGNATURE_HEADER_VALUE_IS_PARAMETERIZED = "SignatureHeaderValueIsParameterized"
+    SIGNATURE_HEADER_VALUE_IS_INCORRECT_LENGTH = "SignatureHeaderValueIsIncorrectLength"
+    SIGNATURE_INPUT_HEADER_MISSING_LABEL = "SignatureInputHeaderMissingLabel"
+    SIGNATURE_INPUT_HEADER_VALUE_NOT_INNER_LIST = (
+        "SignatureInputHeaderValueNotInnerList"
+    )
+    SIGNATURE_INPUT_HEADER_VALUE_MISSING_COMPONENTS = (
+        "SignatureInputHeaderValueMissingComponents"
+    )
+    SIGNATURE_INPUT_HEADER_INVALID_COMPONENT_TYPE = (
+        "SignatureInputHeaderInvalidComponentType"
+    )
+    SIGNATURE_INPUT_HEADER_INVALID_COMPONENT_NAME = (
+        "SignatureInputHeaderInvalidComponentName"
+    )
+    SIGNATURE_INPUT_HEADER_INVALID_HEADER_COMPONENT_PARAMETER = (
+        "SignatureInputHeaderInvalidHeaderComponentParameter"
+    )
+    SIGNATURE_INPUT_HEADER_INVALID_DERIVED_COMPONENT_PARAMETER = (
+        "SignatureInputHeaderInvalidDerivedComponentParameter"
+    )
+    SIGNATURE_INPUT_HEADER_KEY_ID_LENGTH = "SignatureInputHeaderKeyIdLength"
+    SIGNATURE_INPUT_HEADER_INVALID_PARAMETER = "SignatureInputHeaderInvalidParameter"
+    SIGNATURE_INPUT_HEADER_MISSING_REQUIRED_PARAMETERS = (
+        "SignatureInputHeaderMissingRequiredParameters"
+    )
+    VALIDATION_FAILED_SIGNATURE_EXPIRED = "ValidationFailedSignatureExpired"
+    VALIDATION_FAILED_INVALID_LENGTH = "ValidationFailedInvalidLength"
+    VALIDATION_FAILED_SIGNATURE_MISMATCH = "ValidationFailedSignatureMismatch"
+    VALIDATION_FAILED_INTEGRITY_MISMATCH = "ValidationFailedIntegrityMismatch"
+    SIGNATURE_BASE_UNKNOWN_DERIVED_COMPONENT = "SignatureBaseUnknownDerivedComponent"
+    SIGNATURE_BASE_MISSING_HEADER = "SignatureBaseMissingHeader"
+    SIGNATURE_BASE_INVALID_UNENCODED_DIGEST = "SignatureBaseInvalidUnencodedDigest"
+    SIGNATURE_BASE_UNSUPPORTED_COMPONENT = "SignatureBaseUnsupportedComponent"
 
-type ConnectionAllowlistError = Literal[
-    "InvalidHeader",
-    "MoreThanOneList",
-    "ItemNotInnerList",
-    "InvalidAllowlistItemType",
-    "ReportingEndpointNotToken",
-    "InvalidUrlPattern",
-    "IFrameAttributeLoosensEmbeddingRequirement",
-    "InvalidAllowConnectionAllowlistFrom",
-    "EmbeddingRequirementNotSatisfied",
-]
+
+class UnencodedDigestError(CDPStrEnum):
+    MALFORMED_DICTIONARY = "MalformedDictionary"
+    UNKNOWN_ALGORITHM = "UnknownAlgorithm"
+    INCORRECT_DIGEST_TYPE = "IncorrectDigestType"
+    INCORRECT_DIGEST_LENGTH = "IncorrectDigestLength"
+
+
+class ConnectionAllowlistError(CDPStrEnum):
+    INVALID_HEADER = "InvalidHeader"
+    MORE_THAN_ONE_LIST = "MoreThanOneList"
+    ITEM_NOT_INNER_LIST = "ItemNotInnerList"
+    INVALID_ALLOWLIST_ITEM_TYPE = "InvalidAllowlistItemType"
+    REPORTING_ENDPOINT_NOT_TOKEN = "ReportingEndpointNotToken"
+    INVALID_URL_PATTERN = "InvalidUrlPattern"
+    I_FRAME_ATTRIBUTE_LOOSENS_EMBEDDING_REQUIREMENT = (
+        "IFrameAttributeLoosensEmbeddingRequirement"
+    )
+    INVALID_ALLOW_CONNECTION_ALLOWLIST_FROM = "InvalidAllowConnectionAllowlistFrom"
+    EMBEDDING_REQUIREMENT_NOT_SATISFIED = "EmbeddingRequirementNotSatisfied"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -438,30 +491,49 @@ class ConnectionAllowlistIssueDetails:
     request: AffectedRequest
 
 
-type GenericIssueErrorType = Literal[
-    "FormLabelForNameError",
-    "FormDuplicateIdForInputError",
-    "FormInputWithNoLabelError",
-    "FormAutocompleteAttributeEmptyError",
-    "FormEmptyIdAndNameAttributesForInputError",
-    "FormAriaLabelledByToNonExistingIdError",
-    "FormInputAssignedAutocompleteValueToIdOrNameAttributeError",
-    "FormLabelHasNeitherForNorNestedInputError",
-    "FormLabelForMatchesNonExistingIdError",
-    "FormInputHasWrongButWellIntendedAutocompleteValueError",
-    "ResponseWasBlockedByORB",
-    "NavigationEntryMarkedSkippable",
-    "BackUINavigationWouldSkipAd",
-    "AutofillAndManualTextPolicyControlledFeaturesInfo",
-    "AutofillPolicyControlledFeatureInfo",
-    "ManualTextPolicyControlledFeatureInfo",
-    "FormModelContextParameterMissingTitleAndDescription",
-    "FormModelContextMissingToolName",
-    "FormModelContextMissingToolDescription",
-    "FormModelContextRequiredParameterMissingName",
-    "FormModelContextParameterMissingName",
-    "GeolocationPromptWithoutUserGesture",
-]
+class GenericIssueErrorType(CDPStrEnum):
+    FORM_LABEL_FOR_NAME_ERROR = "FormLabelForNameError"
+    FORM_DUPLICATE_ID_FOR_INPUT_ERROR = "FormDuplicateIdForInputError"
+    FORM_INPUT_WITH_NO_LABEL_ERROR = "FormInputWithNoLabelError"
+    FORM_AUTOCOMPLETE_ATTRIBUTE_EMPTY_ERROR = "FormAutocompleteAttributeEmptyError"
+    FORM_EMPTY_ID_AND_NAME_ATTRIBUTES_FOR_INPUT_ERROR = (
+        "FormEmptyIdAndNameAttributesForInputError"
+    )
+    FORM_ARIA_LABELLED_BY_TO_NON_EXISTING_ID_ERROR = (
+        "FormAriaLabelledByToNonExistingIdError"
+    )
+    FORM_INPUT_ASSIGNED_AUTOCOMPLETE_VALUE_TO_ID_OR_NAME_ATTRIBUTE_ERROR = (
+        "FormInputAssignedAutocompleteValueToIdOrNameAttributeError"
+    )
+    FORM_LABEL_HAS_NEITHER_FOR_NOR_NESTED_INPUT_ERROR = (
+        "FormLabelHasNeitherForNorNestedInputError"
+    )
+    FORM_LABEL_FOR_MATCHES_NON_EXISTING_ID_ERROR = (
+        "FormLabelForMatchesNonExistingIdError"
+    )
+    FORM_INPUT_HAS_WRONG_BUT_WELL_INTENDED_AUTOCOMPLETE_VALUE_ERROR = (
+        "FormInputHasWrongButWellIntendedAutocompleteValueError"
+    )
+    RESPONSE_WAS_BLOCKED_BY_ORB = "ResponseWasBlockedByORB"
+    NAVIGATION_ENTRY_MARKED_SKIPPABLE = "NavigationEntryMarkedSkippable"
+    BACK_UI_NAVIGATION_WOULD_SKIP_AD = "BackUINavigationWouldSkipAd"
+    AUTOFILL_AND_MANUAL_TEXT_POLICY_CONTROLLED_FEATURES_INFO = (
+        "AutofillAndManualTextPolicyControlledFeaturesInfo"
+    )
+    AUTOFILL_POLICY_CONTROLLED_FEATURE_INFO = "AutofillPolicyControlledFeatureInfo"
+    MANUAL_TEXT_POLICY_CONTROLLED_FEATURE_INFO = "ManualTextPolicyControlledFeatureInfo"
+    FORM_MODEL_CONTEXT_PARAMETER_MISSING_TITLE_AND_DESCRIPTION = (
+        "FormModelContextParameterMissingTitleAndDescription"
+    )
+    FORM_MODEL_CONTEXT_MISSING_TOOL_NAME = "FormModelContextMissingToolName"
+    FORM_MODEL_CONTEXT_MISSING_TOOL_DESCRIPTION = (
+        "FormModelContextMissingToolDescription"
+    )
+    FORM_MODEL_CONTEXT_REQUIRED_PARAMETER_MISSING_NAME = (
+        "FormModelContextRequiredParameterMissingName"
+    )
+    FORM_MODEL_CONTEXT_PARAMETER_MISSING_NAME = "FormModelContextParameterMissingName"
+    GEOLOCATION_PROMPT_WITHOUT_USER_GESTURE = "GeolocationPromptWithoutUserGesture"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -528,9 +600,9 @@ class CookieDeprecationMetadataIssueDetails:
     operation: CookieOperation
 
 
-type ClientHintIssueReason = Literal[
-    "MetaTagAllowListInvalidOrigin", "MetaTagModifiedHTML"
-]
+class ClientHintIssueReason(CDPStrEnum):
+    META_TAG_ALLOW_LIST_INVALID_ORIGIN = "MetaTagAllowListInvalidOrigin"
+    META_TAG_MODIFIED_HTML = "MetaTagModifiedHTML"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -540,61 +612,61 @@ class FederatedAuthRequestIssueDetails:
     )
 
 
-type FederatedAuthRequestIssueReason = Literal[
-    "ShouldEmbargo",
-    "TooManyRequests",
-    "WellKnownHttpNotFound",
-    "WellKnownNoResponse",
-    "WellKnownBlockedByConnectionAllowlist",
-    "WellKnownInvalidResponse",
-    "WellKnownListEmpty",
-    "WellKnownInvalidContentType",
-    "ConfigNotInWellKnown",
-    "WellKnownTooBig",
-    "ConfigHttpNotFound",
-    "ConfigNoResponse",
-    "ConfigBlockedByConnectionAllowlist",
-    "ConfigInvalidResponse",
-    "ConfigInvalidContentType",
-    "IdpNotPotentiallyTrustworthy",
-    "DisabledInSettings",
-    "DisabledInFlags",
-    "ErrorFetchingSignin",
-    "InvalidSigninResponse",
-    "AccountsHttpNotFound",
-    "AccountsNoResponse",
-    "AccountsBlockedByConnectionAllowlist",
-    "AccountsInvalidResponse",
-    "AccountsListEmpty",
-    "AccountsInvalidContentType",
-    "IdTokenHttpNotFound",
-    "IdTokenNoResponse",
-    "IdTokenBlockedByConnectionAllowlist",
-    "IdTokenInvalidResponse",
-    "IdTokenIdpErrorResponse",
-    "IdTokenCrossSiteIdpErrorResponse",
-    "IdTokenInvalidRequest",
-    "IdTokenInvalidContentType",
-    "ErrorIdToken",
-    "Canceled",
-    "RpPageNotVisible",
-    "SilentMediationFailure",
-    "NotSignedInWithIdp",
-    "MissingTransientUserActivation",
-    "ReplacedByActiveMode",
-    "RelyingPartyOriginIsOpaque",
-    "TypeNotMatching",
-    "UiDismissedNoEmbargo",
-    "CorsError",
-    "SuppressedBySegmentationPlatform",
-    "PopupBlockedByConnectionAllowlist",
-]
-"""
-Represents the failure reason when a federated authentication reason fails. Should be
-updated alongside RequestIdTokenStatus in
-third_party/blink/public/mojom/devtools/inspector_issue.mojom to include all cases
-except for success.
-"""
+class FederatedAuthRequestIssueReason(CDPStrEnum):
+    """
+    Represents the failure reason when a federated authentication reason fails. Should
+    be updated alongside RequestIdTokenStatus in
+    third_party/blink/public/mojom/devtools/inspector_issue.mojom to include all cases
+    except for success.
+    """
+
+    SHOULD_EMBARGO = "ShouldEmbargo"
+    TOO_MANY_REQUESTS = "TooManyRequests"
+    WELL_KNOWN_HTTP_NOT_FOUND = "WellKnownHttpNotFound"
+    WELL_KNOWN_NO_RESPONSE = "WellKnownNoResponse"
+    WELL_KNOWN_BLOCKED_BY_CONNECTION_ALLOWLIST = "WellKnownBlockedByConnectionAllowlist"
+    WELL_KNOWN_INVALID_RESPONSE = "WellKnownInvalidResponse"
+    WELL_KNOWN_LIST_EMPTY = "WellKnownListEmpty"
+    WELL_KNOWN_INVALID_CONTENT_TYPE = "WellKnownInvalidContentType"
+    CONFIG_NOT_IN_WELL_KNOWN = "ConfigNotInWellKnown"
+    WELL_KNOWN_TOO_BIG = "WellKnownTooBig"
+    CONFIG_HTTP_NOT_FOUND = "ConfigHttpNotFound"
+    CONFIG_NO_RESPONSE = "ConfigNoResponse"
+    CONFIG_BLOCKED_BY_CONNECTION_ALLOWLIST = "ConfigBlockedByConnectionAllowlist"
+    CONFIG_INVALID_RESPONSE = "ConfigInvalidResponse"
+    CONFIG_INVALID_CONTENT_TYPE = "ConfigInvalidContentType"
+    IDP_NOT_POTENTIALLY_TRUSTWORTHY = "IdpNotPotentiallyTrustworthy"
+    DISABLED_IN_SETTINGS = "DisabledInSettings"
+    DISABLED_IN_FLAGS = "DisabledInFlags"
+    ERROR_FETCHING_SIGNIN = "ErrorFetchingSignin"
+    INVALID_SIGNIN_RESPONSE = "InvalidSigninResponse"
+    ACCOUNTS_HTTP_NOT_FOUND = "AccountsHttpNotFound"
+    ACCOUNTS_NO_RESPONSE = "AccountsNoResponse"
+    ACCOUNTS_BLOCKED_BY_CONNECTION_ALLOWLIST = "AccountsBlockedByConnectionAllowlist"
+    ACCOUNTS_INVALID_RESPONSE = "AccountsInvalidResponse"
+    ACCOUNTS_LIST_EMPTY = "AccountsListEmpty"
+    ACCOUNTS_INVALID_CONTENT_TYPE = "AccountsInvalidContentType"
+    ID_TOKEN_HTTP_NOT_FOUND = "IdTokenHttpNotFound"
+    ID_TOKEN_NO_RESPONSE = "IdTokenNoResponse"
+    ID_TOKEN_BLOCKED_BY_CONNECTION_ALLOWLIST = "IdTokenBlockedByConnectionAllowlist"
+    ID_TOKEN_INVALID_RESPONSE = "IdTokenInvalidResponse"
+    ID_TOKEN_IDP_ERROR_RESPONSE = "IdTokenIdpErrorResponse"
+    ID_TOKEN_CROSS_SITE_IDP_ERROR_RESPONSE = "IdTokenCrossSiteIdpErrorResponse"
+    ID_TOKEN_INVALID_REQUEST = "IdTokenInvalidRequest"
+    ID_TOKEN_INVALID_CONTENT_TYPE = "IdTokenInvalidContentType"
+    ERROR_ID_TOKEN = "ErrorIdToken"
+    CANCELED = "Canceled"
+    RP_PAGE_NOT_VISIBLE = "RpPageNotVisible"
+    SILENT_MEDIATION_FAILURE = "SilentMediationFailure"
+    NOT_SIGNED_IN_WITH_IDP = "NotSignedInWithIdp"
+    MISSING_TRANSIENT_USER_ACTIVATION = "MissingTransientUserActivation"
+    REPLACED_BY_ACTIVE_MODE = "ReplacedByActiveMode"
+    RELYING_PARTY_ORIGIN_IS_OPAQUE = "RelyingPartyOriginIsOpaque"
+    TYPE_NOT_MATCHING = "TypeNotMatching"
+    UI_DISMISSED_NO_EMBARGO = "UiDismissedNoEmbargo"
+    CORS_ERROR = "CorsError"
+    SUPPRESSED_BY_SEGMENTATION_PLATFORM = "SuppressedBySegmentationPlatform"
+    POPUP_BLOCKED_BY_CONNECTION_ALLOWLIST = "PopupBlockedByConnectionAllowlist"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -604,22 +676,22 @@ class FederatedAuthUserInfoRequestIssueDetails:
     )
 
 
-type FederatedAuthUserInfoRequestIssueReason = Literal[
-    "NotSameOrigin",
-    "NotIframe",
-    "NotPotentiallyTrustworthy",
-    "NoApiPermission",
-    "NotSignedInWithIdp",
-    "NoAccountSharingPermission",
-    "InvalidConfigOrWellKnown",
-    "InvalidAccountsResponse",
-    "NoReturningUserFromFetchedAccounts",
-]
-"""
-Represents the failure reason when a getUserInfo() call fails. Should be updated
-alongside FederatedAuthUserInfoRequestResult in
-third_party/blink/public/mojom/devtools/inspector_issue.mojom.
-"""
+class FederatedAuthUserInfoRequestIssueReason(CDPStrEnum):
+    """
+    Represents the failure reason when a getUserInfo() call fails. Should be updated
+    alongside FederatedAuthUserInfoRequestResult in
+    third_party/blink/public/mojom/devtools/inspector_issue.mojom.
+    """
+
+    NOT_SAME_ORIGIN = "NotSameOrigin"
+    NOT_IFRAME = "NotIframe"
+    NOT_POTENTIALLY_TRUSTWORTHY = "NotPotentiallyTrustworthy"
+    NO_API_PERMISSION = "NoApiPermission"
+    NOT_SIGNED_IN_WITH_IDP = "NotSignedInWithIdp"
+    NO_ACCOUNT_SHARING_PERMISSION = "NoAccountSharingPermission"
+    INVALID_CONFIG_OR_WELL_KNOWN = "InvalidConfigOrWellKnown"
+    INVALID_ACCOUNTS_RESPONSE = "InvalidAccountsResponse"
+    NO_RETURNING_USER_FROM_FETCHED_ACCOUNTS = "NoReturningUserFromFetchedAccounts"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -631,71 +703,87 @@ class EmailVerificationRequestIssueDetails:
     )
 
 
-type EmailVerificationRequestIssueReason = Literal[
-    "InvalidEmail",
-    "DnsFetchFailed",
-    "DnsInvalidRecord",
-    "WellKnownHttpNotFound",
-    "WellKnownNoResponse",
-    "WellKnownInvalidResponse",
-    "WellKnownListEmpty",
-    "WellKnownInvalidContentType",
-    "WellKnownMissingIssuanceEndpoint",
-    "WellKnownIssuanceEndpointCrossOrigin",
-    "WellKnownUnsupportedSigningAlgorithm",
-    "TokenHttpNotFound",
-    "TokenNoResponse",
-    "TokenInvalidResponse",
-    "TokenInvalidContentType",
-    "TokenMalformedSdJwt",
-    "TokenInvalidSdJwt",
-    "KeyBindingSigningFailed",
-    "RpOriginIsOpaque",
-    "WellKnownMissingAccountsEndpoint",
-    "UserLoggedOut",
-    "WellKnownAccountsEndpointCrossOrigin",
-    "AccountsHttpNotFound",
-    "AccountsNoResponse",
-    "AccountsInvalidResponse",
-    "AccountsInvalidContentType",
-    "AccountsEmptyList",
-    "EmailVerificationWellKnownHttpNotFound",
-    "EmailVerificationWellKnownNoResponse",
-    "EmailVerificationWellKnownInvalidResponse",
-    "EmailVerificationWellKnownInvalidContentType",
-    "JwksHttpNotFound",
-    "JwksInvalidResponse",
-    "TokenVerificationSdJwtUnsupportedHeaderAlg",
-    "TokenVerificationSdJwtInvalidTyp",
-    "TokenVerificationSdJwtMissingIss",
-    "TokenVerificationSdJwtMissingIat",
-    "TokenVerificationSdJwtMissingCnf",
-    "TokenVerificationSdJwtMissingEmail",
-    "TokenVerificationSdJwtInvalidIssuedAt",
-    "TokenVerificationSdJwtInvalidIssuer",
-    "TokenVerificationSdJwtJwksMissingKeys",
-    "TokenVerificationSdJwtSignatureFailed",
-    "TokenVerificationSdJwtInvalidEmailVerified",
-    "TokenVerificationSdJwtInvalidEmail",
-    "TokenVerificationSdJwtInvalidHolderKey",
-    "TokenVerificationKbInvalidTyp",
-    "TokenVerificationKbMissingAud",
-    "TokenVerificationKbMissingNonce",
-    "TokenVerificationKbMissingIat",
-    "TokenVerificationKbMissingSdHash",
-    "TokenVerificationKbInvalidIssuedAt",
-    "TokenVerificationKbInvalidAudience",
-    "TokenVerificationKbInvalidNonce",
-    "TokenVerificationKbInvalidSdHash",
-    "TokenVerificationKbMissingCnf",
-    "TokenVerificationKbSignatureFailed",
-    "CrossOriginIframeNotSupported",
-]
-"""
-Represents the failure reason when an email verification request fails. Should be
-updated alongside EmailVerificationRequestResult in
-third_party/blink/public/mojom/devtools/inspector_issue.mojom.
-"""
+class EmailVerificationRequestIssueReason(CDPStrEnum):
+    """
+    Represents the failure reason when an email verification request fails. Should be
+    updated alongside EmailVerificationRequestResult in
+    third_party/blink/public/mojom/devtools/inspector_issue.mojom.
+    """
+
+    INVALID_EMAIL = "InvalidEmail"
+    DNS_FETCH_FAILED = "DnsFetchFailed"
+    DNS_INVALID_RECORD = "DnsInvalidRecord"
+    WELL_KNOWN_HTTP_NOT_FOUND = "WellKnownHttpNotFound"
+    WELL_KNOWN_NO_RESPONSE = "WellKnownNoResponse"
+    WELL_KNOWN_INVALID_RESPONSE = "WellKnownInvalidResponse"
+    WELL_KNOWN_LIST_EMPTY = "WellKnownListEmpty"
+    WELL_KNOWN_INVALID_CONTENT_TYPE = "WellKnownInvalidContentType"
+    WELL_KNOWN_MISSING_ISSUANCE_ENDPOINT = "WellKnownMissingIssuanceEndpoint"
+    WELL_KNOWN_ISSUANCE_ENDPOINT_CROSS_ORIGIN = "WellKnownIssuanceEndpointCrossOrigin"
+    WELL_KNOWN_UNSUPPORTED_SIGNING_ALGORITHM = "WellKnownUnsupportedSigningAlgorithm"
+    TOKEN_HTTP_NOT_FOUND = "TokenHttpNotFound"
+    TOKEN_NO_RESPONSE = "TokenNoResponse"
+    TOKEN_INVALID_RESPONSE = "TokenInvalidResponse"
+    TOKEN_INVALID_CONTENT_TYPE = "TokenInvalidContentType"
+    TOKEN_MALFORMED_SD_JWT = "TokenMalformedSdJwt"
+    TOKEN_INVALID_SD_JWT = "TokenInvalidSdJwt"
+    KEY_BINDING_SIGNING_FAILED = "KeyBindingSigningFailed"
+    RP_ORIGIN_IS_OPAQUE = "RpOriginIsOpaque"
+    WELL_KNOWN_MISSING_ACCOUNTS_ENDPOINT = "WellKnownMissingAccountsEndpoint"
+    USER_LOGGED_OUT = "UserLoggedOut"
+    WELL_KNOWN_ACCOUNTS_ENDPOINT_CROSS_ORIGIN = "WellKnownAccountsEndpointCrossOrigin"
+    ACCOUNTS_HTTP_NOT_FOUND = "AccountsHttpNotFound"
+    ACCOUNTS_NO_RESPONSE = "AccountsNoResponse"
+    ACCOUNTS_INVALID_RESPONSE = "AccountsInvalidResponse"
+    ACCOUNTS_INVALID_CONTENT_TYPE = "AccountsInvalidContentType"
+    ACCOUNTS_EMPTY_LIST = "AccountsEmptyList"
+    EMAIL_VERIFICATION_WELL_KNOWN_HTTP_NOT_FOUND = (
+        "EmailVerificationWellKnownHttpNotFound"
+    )
+    EMAIL_VERIFICATION_WELL_KNOWN_NO_RESPONSE = "EmailVerificationWellKnownNoResponse"
+    EMAIL_VERIFICATION_WELL_KNOWN_INVALID_RESPONSE = (
+        "EmailVerificationWellKnownInvalidResponse"
+    )
+    EMAIL_VERIFICATION_WELL_KNOWN_INVALID_CONTENT_TYPE = (
+        "EmailVerificationWellKnownInvalidContentType"
+    )
+    JWKS_HTTP_NOT_FOUND = "JwksHttpNotFound"
+    JWKS_INVALID_RESPONSE = "JwksInvalidResponse"
+    TOKEN_VERIFICATION_SD_JWT_UNSUPPORTED_HEADER_ALG = (
+        "TokenVerificationSdJwtUnsupportedHeaderAlg"
+    )
+    TOKEN_VERIFICATION_SD_JWT_INVALID_TYP = "TokenVerificationSdJwtInvalidTyp"
+    TOKEN_VERIFICATION_SD_JWT_MISSING_ISS = "TokenVerificationSdJwtMissingIss"
+    TOKEN_VERIFICATION_SD_JWT_MISSING_IAT = "TokenVerificationSdJwtMissingIat"
+    TOKEN_VERIFICATION_SD_JWT_MISSING_CNF = "TokenVerificationSdJwtMissingCnf"
+    TOKEN_VERIFICATION_SD_JWT_MISSING_EMAIL = "TokenVerificationSdJwtMissingEmail"
+    TOKEN_VERIFICATION_SD_JWT_INVALID_ISSUED_AT = (
+        "TokenVerificationSdJwtInvalidIssuedAt"
+    )
+    TOKEN_VERIFICATION_SD_JWT_INVALID_ISSUER = "TokenVerificationSdJwtInvalidIssuer"
+    TOKEN_VERIFICATION_SD_JWT_JWKS_MISSING_KEYS = (
+        "TokenVerificationSdJwtJwksMissingKeys"
+    )
+    TOKEN_VERIFICATION_SD_JWT_SIGNATURE_FAILED = "TokenVerificationSdJwtSignatureFailed"
+    TOKEN_VERIFICATION_SD_JWT_INVALID_EMAIL_VERIFIED = (
+        "TokenVerificationSdJwtInvalidEmailVerified"
+    )
+    TOKEN_VERIFICATION_SD_JWT_INVALID_EMAIL = "TokenVerificationSdJwtInvalidEmail"
+    TOKEN_VERIFICATION_SD_JWT_INVALID_HOLDER_KEY = (
+        "TokenVerificationSdJwtInvalidHolderKey"
+    )
+    TOKEN_VERIFICATION_KB_INVALID_TYP = "TokenVerificationKbInvalidTyp"
+    TOKEN_VERIFICATION_KB_MISSING_AUD = "TokenVerificationKbMissingAud"
+    TOKEN_VERIFICATION_KB_MISSING_NONCE = "TokenVerificationKbMissingNonce"
+    TOKEN_VERIFICATION_KB_MISSING_IAT = "TokenVerificationKbMissingIat"
+    TOKEN_VERIFICATION_KB_MISSING_SD_HASH = "TokenVerificationKbMissingSdHash"
+    TOKEN_VERIFICATION_KB_INVALID_ISSUED_AT = "TokenVerificationKbInvalidIssuedAt"
+    TOKEN_VERIFICATION_KB_INVALID_AUDIENCE = "TokenVerificationKbInvalidAudience"
+    TOKEN_VERIFICATION_KB_INVALID_NONCE = "TokenVerificationKbInvalidNonce"
+    TOKEN_VERIFICATION_KB_INVALID_SD_HASH = "TokenVerificationKbInvalidSdHash"
+    TOKEN_VERIFICATION_KB_MISSING_CNF = "TokenVerificationKbMissingCnf"
+    TOKEN_VERIFICATION_KB_SIGNATURE_FAILED = "TokenVerificationKbSignatureFailed"
+    CROSS_ORIGIN_IFRAME_NOT_SUPPORTED = "CrossOriginIframeNotSupported"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -722,9 +810,9 @@ class FailedRequestInfo:
     )
 
 
-type PartitioningBlobURLInfo = Literal[
-    "BlockedCrossPartitionFetching", "EnforceNoopenerForNavigation"
-]
+class PartitioningBlobURLInfo(CDPStrEnum):
+    BLOCKED_CROSS_PARTITION_FETCHING = "BlockedCrossPartitionFetching"
+    ENFORCE_NOOPENER_FOR_NAVIGATION = "EnforceNoopenerForNavigation"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -735,14 +823,13 @@ class PartitioningBlobURLIssueDetails:
     )
 
 
-type ElementAccessibilityIssueReason = Literal[
-    "DisallowedSelectChild",
-    "DisallowedOptGroupChild",
-    "NonPhrasingContentOptionChild",
-    "InteractiveContentOptionChild",
-    "InteractiveContentLegendChild",
-    "InteractiveContentSummaryDescendant",
-]
+class ElementAccessibilityIssueReason(CDPStrEnum):
+    DISALLOWED_SELECT_CHILD = "DisallowedSelectChild"
+    DISALLOWED_OPT_GROUP_CHILD = "DisallowedOptGroupChild"
+    NON_PHRASING_CONTENT_OPTION_CHILD = "NonPhrasingContentOptionChild"
+    INTERACTIVE_CONTENT_OPTION_CHILD = "InteractiveContentOptionChild"
+    INTERACTIVE_CONTENT_LEGEND_CHILD = "InteractiveContentLegendChild"
+    INTERACTIVE_CONTENT_SUMMARY_DESCENDANT = "InteractiveContentSummaryDescendant"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -760,7 +847,9 @@ class ElementAccessibilityIssueDetails:
     )
 
 
-type StyleSheetLoadingIssueReason = Literal["LateImportRule", "RequestFailed"]
+class StyleSheetLoadingIssueReason(CDPStrEnum):
+    LATE_IMPORT_RULE = "LateImportRule"
+    REQUEST_FAILED = "RequestFailed"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -780,9 +869,11 @@ class StylesheetLoadingIssueDetails:
     )
 
 
-type PropertyRuleIssueReason = Literal[
-    "InvalidSyntax", "InvalidInitialValue", "InvalidInherits", "InvalidName"
-]
+class PropertyRuleIssueReason(CDPStrEnum):
+    INVALID_SYNTAX = "InvalidSyntax"
+    INVALID_INITIAL_VALUE = "InvalidInitialValue"
+    INVALID_INHERITS = "InvalidInherits"
+    INVALID_NAME = "InvalidName"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -803,9 +894,10 @@ class PropertyRuleIssueDetails:
     )
 
 
-type UserReidentificationIssueType = Literal[
-    "BlockedFrameNavigation", "BlockedSubresource", "NoisedCanvasReadback"
-]
+class UserReidentificationIssueType(CDPStrEnum):
+    BLOCKED_FRAME_NAVIGATION = "BlockedFrameNavigation"
+    BLOCKED_SUBRESOURCE = "BlockedSubresource"
+    NOISED_CANVAS_READBACK = "NoisedCanvasReadback"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -822,31 +914,30 @@ class UserReidentificationIssueDetails:
     )
 
 
-type PermissionElementIssueType = Literal[
-    "InvalidType",
-    "FencedFrameDisallowed",
-    "CspFrameAncestorsMissing",
-    "PermissionsPolicyBlocked",
-    "PaddingRightUnsupported",
-    "PaddingBottomUnsupported",
-    "InsetBoxShadowUnsupported",
-    "RequestInProgress",
-    "UntrustedEvent",
-    "RegistrationFailed",
-    "TypeNotSupported",
-    "InvalidTypeActivation",
-    "SecurityChecksFailed",
-    "ActivationDisabled",
-    "GeolocationDeprecated",
-    "InvalidDisplayStyle",
-    "NonOpaqueColor",
-    "LowContrast",
-    "FontSizeTooSmall",
-    "FontSizeTooLarge",
-    "InvalidSizeValue",
-    "NonSecureContext",
-    "MissingTransientUserActivation",
-]
+class PermissionElementIssueType(CDPStrEnum):
+    INVALID_TYPE = "InvalidType"
+    FENCED_FRAME_DISALLOWED = "FencedFrameDisallowed"
+    CSP_FRAME_ANCESTORS_MISSING = "CspFrameAncestorsMissing"
+    PERMISSIONS_POLICY_BLOCKED = "PermissionsPolicyBlocked"
+    PADDING_RIGHT_UNSUPPORTED = "PaddingRightUnsupported"
+    PADDING_BOTTOM_UNSUPPORTED = "PaddingBottomUnsupported"
+    INSET_BOX_SHADOW_UNSUPPORTED = "InsetBoxShadowUnsupported"
+    REQUEST_IN_PROGRESS = "RequestInProgress"
+    UNTRUSTED_EVENT = "UntrustedEvent"
+    REGISTRATION_FAILED = "RegistrationFailed"
+    TYPE_NOT_SUPPORTED = "TypeNotSupported"
+    INVALID_TYPE_ACTIVATION = "InvalidTypeActivation"
+    SECURITY_CHECKS_FAILED = "SecurityChecksFailed"
+    ACTIVATION_DISABLED = "ActivationDisabled"
+    GEOLOCATION_DEPRECATED = "GeolocationDeprecated"
+    INVALID_DISPLAY_STYLE = "InvalidDisplayStyle"
+    NON_OPAQUE_COLOR = "NonOpaqueColor"
+    LOW_CONTRAST = "LowContrast"
+    FONT_SIZE_TOO_SMALL = "FontSizeTooSmall"
+    FONT_SIZE_TOO_LARGE = "FontSizeTooLarge"
+    INVALID_SIZE_VALUE = "InvalidSizeValue"
+    NON_SECURE_CONTEXT = "NonSecureContext"
+    MISSING_TRANSIENT_USER_ACTIVATION = "MissingTransientUserActivation"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -875,13 +966,12 @@ class PermissionElementIssueDetails:
     )
 
 
-type WebInstallIssueReason = Literal[
-    "ManifestParsingOrNetworkError",
-    "StartUrlInvalid",
-    "ManifestMissingNameOrShortName",
-    "ManifestMissingId",
-    "NoManifest",
-]
+class WebInstallIssueReason(CDPStrEnum):
+    MANIFEST_PARSING_OR_NETWORK_ERROR = "ManifestParsingOrNetworkError"
+    START_URL_INVALID = "StartUrlInvalid"
+    MANIFEST_MISSING_NAME_OR_SHORT_NAME = "ManifestMissingNameOrShortName"
+    MANIFEST_MISSING_ID = "ManifestMissingId"
+    NO_MANIFEST = "NoManifest"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -920,43 +1010,44 @@ class LazyLoadImageIssueDetails:
     frame_id: page.FrameId = field(metadata={"cdp_name": "frameId"})
 
 
-type InspectorIssueCode = Literal[
-    "CookieIssue",
-    "MixedContentIssue",
-    "BlockedByResponseIssue",
-    "HeavyAdIssue",
-    "ContentSecurityPolicyIssue",
-    "SharedArrayBufferIssue",
-    "CorsIssue",
-    "QuirksModeIssue",
-    "PartitioningBlobURLIssue",
-    "NavigatorUserAgentIssue",
-    "GenericIssue",
-    "DeprecationIssue",
-    "ClientHintIssue",
-    "FederatedAuthRequestIssue",
-    "BounceTrackingIssue",
-    "CookieDeprecationMetadataIssue",
-    "StylesheetLoadingIssue",
-    "FederatedAuthUserInfoRequestIssue",
-    "PropertyRuleIssue",
-    "SharedDictionaryIssue",
-    "ElementAccessibilityIssue",
-    "SRIMessageSignatureIssue",
-    "UnencodedDigestIssue",
-    "ConnectionAllowlistIssue",
-    "UserReidentificationIssue",
-    "PermissionElementIssue",
-    "PerformanceIssue",
-    "SelectivePermissionsInterventionIssue",
-    "EmailVerificationRequestIssue",
-    "LazyLoadImageIssue",
-    "WebInstallIssue",
-]
-"""
-A unique identifier for the type of issue. Each type may use one of the optional fields
-in InspectorIssueDetails to convey more specific information about the kind of issue.
-"""
+class InspectorIssueCode(CDPStrEnum):
+    """
+    A unique identifier for the type of issue. Each type may use one of the optional
+    fields in InspectorIssueDetails to convey more specific information about the kind
+    of issue.
+    """
+
+    COOKIE_ISSUE = "CookieIssue"
+    MIXED_CONTENT_ISSUE = "MixedContentIssue"
+    BLOCKED_BY_RESPONSE_ISSUE = "BlockedByResponseIssue"
+    HEAVY_AD_ISSUE = "HeavyAdIssue"
+    CONTENT_SECURITY_POLICY_ISSUE = "ContentSecurityPolicyIssue"
+    SHARED_ARRAY_BUFFER_ISSUE = "SharedArrayBufferIssue"
+    CORS_ISSUE = "CorsIssue"
+    QUIRKS_MODE_ISSUE = "QuirksModeIssue"
+    PARTITIONING_BLOB_URL_ISSUE = "PartitioningBlobURLIssue"
+    NAVIGATOR_USER_AGENT_ISSUE = "NavigatorUserAgentIssue"
+    GENERIC_ISSUE = "GenericIssue"
+    DEPRECATION_ISSUE = "DeprecationIssue"
+    CLIENT_HINT_ISSUE = "ClientHintIssue"
+    FEDERATED_AUTH_REQUEST_ISSUE = "FederatedAuthRequestIssue"
+    BOUNCE_TRACKING_ISSUE = "BounceTrackingIssue"
+    COOKIE_DEPRECATION_METADATA_ISSUE = "CookieDeprecationMetadataIssue"
+    STYLESHEET_LOADING_ISSUE = "StylesheetLoadingIssue"
+    FEDERATED_AUTH_USER_INFO_REQUEST_ISSUE = "FederatedAuthUserInfoRequestIssue"
+    PROPERTY_RULE_ISSUE = "PropertyRuleIssue"
+    SHARED_DICTIONARY_ISSUE = "SharedDictionaryIssue"
+    ELEMENT_ACCESSIBILITY_ISSUE = "ElementAccessibilityIssue"
+    SRI_MESSAGE_SIGNATURE_ISSUE = "SRIMessageSignatureIssue"
+    UNENCODED_DIGEST_ISSUE = "UnencodedDigestIssue"
+    CONNECTION_ALLOWLIST_ISSUE = "ConnectionAllowlistIssue"
+    USER_REIDENTIFICATION_ISSUE = "UserReidentificationIssue"
+    PERMISSION_ELEMENT_ISSUE = "PermissionElementIssue"
+    PERFORMANCE_ISSUE = "PerformanceIssue"
+    SELECTIVE_PERMISSIONS_INTERVENTION_ISSUE = "SelectivePermissionsInterventionIssue"
+    EMAIL_VERIFICATION_REQUEST_ISSUE = "EmailVerificationRequestIssue"
+    LAZY_LOAD_IMAGE_ISSUE = "LazyLoadImageIssue"
+    WEB_INSTALL_ISSUE = "WebInstallIssue"
 
 
 @dataclass(kw_only=True, slots=True)

@@ -5,28 +5,48 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Literal
 
-type LoginState = Literal["SignIn", "SignUp"]
-"""
-Whether this is a sign-up or sign-in action for this account, i.e. whether this account
-has ever been used to sign in to this RP before.
-"""
+from cdpify.shared.enums import CDPStrEnum
 
-type DialogType = Literal["AccountChooser", "AutoReauthn", "ConfirmIdpLogin", "Error"]
-"""
-The types of FedCM dialogs.
-"""
 
-type DialogButton = Literal["ConfirmIdpLoginContinue", "ErrorGotIt", "ErrorMoreDetails"]
-"""
-The buttons on the FedCM dialog.
-"""
+class LoginState(CDPStrEnum):
+    """
+    Whether this is a sign-up or sign-in action for this account, i.e. whether this
+    account has ever been used to sign in to this RP before.
+    """
 
-type AccountUrlType = Literal["TermsOfService", "PrivacyPolicy"]
-"""
-The URLs that each account has
-"""
+    SIGN_IN = "SignIn"
+    SIGN_UP = "SignUp"
+
+
+class DialogType(CDPStrEnum):
+    """
+    The types of FedCM dialogs.
+    """
+
+    ACCOUNT_CHOOSER = "AccountChooser"
+    AUTO_REAUTHN = "AutoReauthn"
+    CONFIRM_IDP_LOGIN = "ConfirmIdpLogin"
+    ERROR = "Error"
+
+
+class DialogButton(CDPStrEnum):
+    """
+    The buttons on the FedCM dialog.
+    """
+
+    CONFIRM_IDP_LOGIN_CONTINUE = "ConfirmIdpLoginContinue"
+    ERROR_GOT_IT = "ErrorGotIt"
+    ERROR_MORE_DETAILS = "ErrorMoreDetails"
+
+
+class AccountUrlType(CDPStrEnum):
+    """
+    The URLs that each account has
+    """
+
+    TERMS_OF_SERVICE = "TermsOfService"
+    PRIVACY_POLICY = "PrivacyPolicy"
 
 
 @dataclass(kw_only=True, slots=True)

@@ -39,7 +39,7 @@ class ContextCreatedEvent:
     Notifies that a new BaseAudioContext has been created.
     """
 
-    __cdp_event__: ClassVar[str] = "WebAudio.contextCreated"
+    __cdp_event__: ClassVar[WebAudioEvent] = WebAudioEvent.CONTEXT_CREATED
 
     context: BaseAudioContext
 
@@ -50,7 +50,7 @@ class ContextWillBeDestroyedEvent:
     Notifies that an existing BaseAudioContext will be destroyed.
     """
 
-    __cdp_event__: ClassVar[str] = "WebAudio.contextWillBeDestroyed"
+    __cdp_event__: ClassVar[WebAudioEvent] = WebAudioEvent.CONTEXT_WILL_BE_DESTROYED
 
     context_id: GraphObjectId = field(metadata={"cdp_name": "contextId"})
 
@@ -62,7 +62,7 @@ class ContextChangedEvent:
     same)..
     """
 
-    __cdp_event__: ClassVar[str] = "WebAudio.contextChanged"
+    __cdp_event__: ClassVar[WebAudioEvent] = WebAudioEvent.CONTEXT_CHANGED
 
     context: BaseAudioContext
 
@@ -73,7 +73,7 @@ class AudioListenerCreatedEvent:
     Notifies that the construction of an AudioListener has finished.
     """
 
-    __cdp_event__: ClassVar[str] = "WebAudio.audioListenerCreated"
+    __cdp_event__: ClassVar[WebAudioEvent] = WebAudioEvent.AUDIO_LISTENER_CREATED
 
     listener: AudioListener
 
@@ -84,7 +84,9 @@ class AudioListenerWillBeDestroyedEvent:
     Notifies that a new AudioListener has been created.
     """
 
-    __cdp_event__: ClassVar[str] = "WebAudio.audioListenerWillBeDestroyed"
+    __cdp_event__: ClassVar[WebAudioEvent] = (
+        WebAudioEvent.AUDIO_LISTENER_WILL_BE_DESTROYED
+    )
 
     context_id: GraphObjectId = field(metadata={"cdp_name": "contextId"})
     listener_id: GraphObjectId = field(metadata={"cdp_name": "listenerId"})
@@ -96,7 +98,7 @@ class AudioNodeCreatedEvent:
     Notifies that a new AudioNode has been created.
     """
 
-    __cdp_event__: ClassVar[str] = "WebAudio.audioNodeCreated"
+    __cdp_event__: ClassVar[WebAudioEvent] = WebAudioEvent.AUDIO_NODE_CREATED
 
     node: AudioNode
 
@@ -107,7 +109,7 @@ class AudioNodeWillBeDestroyedEvent:
     Notifies that an existing AudioNode has been destroyed.
     """
 
-    __cdp_event__: ClassVar[str] = "WebAudio.audioNodeWillBeDestroyed"
+    __cdp_event__: ClassVar[WebAudioEvent] = WebAudioEvent.AUDIO_NODE_WILL_BE_DESTROYED
 
     context_id: GraphObjectId = field(metadata={"cdp_name": "contextId"})
     node_id: GraphObjectId = field(metadata={"cdp_name": "nodeId"})
@@ -119,7 +121,7 @@ class AudioParamCreatedEvent:
     Notifies that a new AudioParam has been created.
     """
 
-    __cdp_event__: ClassVar[str] = "WebAudio.audioParamCreated"
+    __cdp_event__: ClassVar[WebAudioEvent] = WebAudioEvent.AUDIO_PARAM_CREATED
 
     param: AudioParam
 
@@ -130,7 +132,7 @@ class AudioParamWillBeDestroyedEvent:
     Notifies that an existing AudioParam has been destroyed.
     """
 
-    __cdp_event__: ClassVar[str] = "WebAudio.audioParamWillBeDestroyed"
+    __cdp_event__: ClassVar[WebAudioEvent] = WebAudioEvent.AUDIO_PARAM_WILL_BE_DESTROYED
 
     context_id: GraphObjectId = field(metadata={"cdp_name": "contextId"})
     node_id: GraphObjectId = field(metadata={"cdp_name": "nodeId"})
@@ -143,7 +145,7 @@ class NodesConnectedEvent:
     Notifies that two AudioNodes are connected.
     """
 
-    __cdp_event__: ClassVar[str] = "WebAudio.nodesConnected"
+    __cdp_event__: ClassVar[WebAudioEvent] = WebAudioEvent.NODES_CONNECTED
 
     context_id: GraphObjectId = field(metadata={"cdp_name": "contextId"})
     source_id: GraphObjectId = field(metadata={"cdp_name": "sourceId"})
@@ -163,7 +165,7 @@ class NodesDisconnectedEvent:
     means all the outgoing connections from the source are disconnected.
     """
 
-    __cdp_event__: ClassVar[str] = "WebAudio.nodesDisconnected"
+    __cdp_event__: ClassVar[WebAudioEvent] = WebAudioEvent.NODES_DISCONNECTED
 
     context_id: GraphObjectId = field(metadata={"cdp_name": "contextId"})
     source_id: GraphObjectId = field(metadata={"cdp_name": "sourceId"})
@@ -182,7 +184,7 @@ class NodeParamConnectedEvent:
     Notifies that an AudioNode is connected to an AudioParam.
     """
 
-    __cdp_event__: ClassVar[str] = "WebAudio.nodeParamConnected"
+    __cdp_event__: ClassVar[WebAudioEvent] = WebAudioEvent.NODE_PARAM_CONNECTED
 
     context_id: GraphObjectId = field(metadata={"cdp_name": "contextId"})
     source_id: GraphObjectId = field(metadata={"cdp_name": "sourceId"})
@@ -198,7 +200,7 @@ class NodeParamDisconnectedEvent:
     Notifies that an AudioNode is disconnected to an AudioParam.
     """
 
-    __cdp_event__: ClassVar[str] = "WebAudio.nodeParamDisconnected"
+    __cdp_event__: ClassVar[WebAudioEvent] = WebAudioEvent.NODE_PARAM_DISCONNECTED
 
     context_id: GraphObjectId = field(metadata={"cdp_name": "contextId"})
     source_id: GraphObjectId = field(metadata={"cdp_name": "sourceId"})

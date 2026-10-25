@@ -19,6 +19,6 @@ class AuditsEvent(StrEnum):
 
 @dataclass(kw_only=True, slots=True)
 class IssueAddedEvent:
-    __cdp_event__: ClassVar[str] = "Audits.issueAdded"
+    __cdp_event__: ClassVar[AuditsEvent] = AuditsEvent.ISSUE_ADDED
 
     issue: InspectorIssue

@@ -10,6 +10,14 @@ from cdpify import domains
 from cdpify.codec import _compile_model, decode_cdp, encode_cdp
 from cdpify.domains.accessibility import AXNode
 from cdpify.domains.dom.commands import GetOuterHTMLParams
+from cdpify.domains.network import (
+    BlockedReason,
+    CorsError,
+    EventSourceMessageReceivedEvent,
+    LoadingFailedEvent,
+    NetworkEvent,
+    ResourceType,
+)
 from cdpify.domains.page.events import LifecycleEventEvent
 from cdpify.domains.target.commands import SetDiscoverTargetsParams
 from cdpify.domains.target.types import FilterEntry
@@ -21,6 +29,40 @@ class _Sample:
 
 
 class TestGeneratedModels:
+    def test_loading_failed_decodes_named_enums_and_nested_enum_fields(self) -> None:
+        payload = {
+            "requestId": "R1",
+            "timestamp": 1.0,
+            "type": "Fetch",
+            "errorText": "Failed",
+            "blockedReason": "mixed-content",
+            "corsErrorStatus": {"corsError": "DisallowedByMode", "failedParameter": ""},
+        }
+
+        event = decode_cdp(LoadingFailedEvent, payload)
+
+        assert event.__cdp_event__ is NetworkEvent.LOADING_FAILED
+        assert event.type is ResourceType.FETCH
+        assert event.blocked_reason is BlockedReason.MIXED_CONTENT
+        assert event.cors_error_status.cors_error is CorsError.DISALLOWED_BY_MODE
+        assert encode_cdp(event) == payload
+
+    def test_event_source_keeps_server_defined_event_names_as_strings(self) -> None:
+        payload = {
+            "requestId": "R1",
+            "timestamp": 1.0,
+            "eventName": "custom-server-event",
+            "eventId": "42",
+            "data": "hello",
+        }
+
+        event = decode_cdp(EventSourceMessageReceivedEvent, payload)
+
+        assert event.__cdp_event__ is NetworkEvent.EVENT_SOURCE_MESSAGE_RECEIVED
+        assert event.event_name == "custom-server-event"
+        assert type(event.event_name) is str
+        assert encode_cdp(event) == payload
+
     def test_command_models_do_not_carry_session_metadata(self) -> None:
         params = GetOuterHTMLParams(backend_node_id=7)
 

@@ -7,6 +7,10 @@ from typing import {{ typing_names | join(", ") }}
 {% endif %}
 
 {{ dataclass_import }}
+{% if has_enums %}
+
+from cdpify.shared.enums import CDPStrEnum
+{% endif %}
 {% if cross_domain_modules %}
 {{ cross_domain_modules | map("prefix_domain_import") | join("\n") }}
 {% endif %}
@@ -20,6 +24,12 @@ class {{ definition.name }}:
 {{ definition.docstring }}
 {% endif %}
     {{ definition.fields | map(attribute="declaration") | join("\n    ") }}
+{% elif definition.kind == "enum" %}
+class {{ definition.name }}(CDPStrEnum):
+{% if definition.docstring %}
+{{ definition.docstring }}
+{% endif %}
+    {{ definition.members | map(attribute="assignment") | join("\n    ") }}
 {% else %}
 type {{ definition.name }} = {{ definition.annotation }}
 {% if definition.docstring %}

@@ -5,36 +5,57 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Literal
 
-type CentralState = Literal["absent", "powered-off", "powered-on"]
-"""
-Indicates the various states of Central.
-"""
+from cdpify.shared.enums import CDPStrEnum
 
-type GATTOperationType = Literal["connection", "discovery"]
-"""
-Indicates the various types of GATT event.
-"""
 
-type CharacteristicWriteType = Literal[
-    "write-default-deprecated", "write-with-response", "write-without-response"
-]
-"""
-Indicates the various types of characteristic write.
-"""
+class CentralState(CDPStrEnum):
+    """
+    Indicates the various states of Central.
+    """
 
-type CharacteristicOperationType = Literal[
-    "read", "write", "subscribe-to-notifications", "unsubscribe-from-notifications"
-]
-"""
-Indicates the various types of characteristic operation.
-"""
+    ABSENT = "absent"
+    POWERED_OFF = "powered-off"
+    POWERED_ON = "powered-on"
 
-type DescriptorOperationType = Literal["read", "write"]
-"""
-Indicates the various types of descriptor operation.
-"""
+
+class GATTOperationType(CDPStrEnum):
+    """
+    Indicates the various types of GATT event.
+    """
+
+    CONNECTION = "connection"
+    DISCOVERY = "discovery"
+
+
+class CharacteristicWriteType(CDPStrEnum):
+    """
+    Indicates the various types of characteristic write.
+    """
+
+    WRITE_DEFAULT_DEPRECATED = "write-default-deprecated"
+    WRITE_WITH_RESPONSE = "write-with-response"
+    WRITE_WITHOUT_RESPONSE = "write-without-response"
+
+
+class CharacteristicOperationType(CDPStrEnum):
+    """
+    Indicates the various types of characteristic operation.
+    """
+
+    READ = "read"
+    WRITE = "write"
+    SUBSCRIBE_TO_NOTIFICATIONS = "subscribe-to-notifications"
+    UNSUBSCRIBE_FROM_NOTIFICATIONS = "unsubscribe-from-notifications"
+
+
+class DescriptorOperationType(CDPStrEnum):
+    """
+    Indicates the various types of descriptor operation.
+    """
+
+    READ = "read"
+    WRITE = "write"
 
 
 @dataclass(kw_only=True, slots=True)

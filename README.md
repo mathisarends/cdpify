@@ -95,6 +95,26 @@ asyncio.run(main())
 Domains are available as lazy properties on `CdpClient`. Parameters use
 Python's `snake_case`; `cdpify` handles conversion to and from CDP's wire format.
 
+Named protocol enums use `StrEnum`, so typed code can use constants such as
+`ResourceType.FETCH` or `CookieOperation.SET_COOKIE`. Decoded responses and
+events contain enum members, including in nested models and lists:
+
+```python
+from cdpify.domains.network import LoadingFailedEvent, NetworkEvent, ResourceType
+
+async for event in client.listen(LoadingFailedEvent):
+    assert event.__cdp_event__ is NetworkEvent.LOADING_FAILED
+    if event.type is ResourceType.FETCH:
+        print(event.error_text)
+```
+
+Enum members work as strings and expose the original protocol value through
+`.value`. Unknown values from newer Chrome versions are preserved as members
+of the same enum without changing its declared constants or iteration.
+Anonymous enum annotations such as `Literal["jpeg", "png"]` still accept direct
+strings. Open string fields, including EventSource's server-defined
+`event_name`, remain strings.
+
 ## Supported domains
 
 The generated client currently includes all 59 domains from the bundled CDP

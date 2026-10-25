@@ -23,7 +23,9 @@ class ServiceWorkerEvent(StrEnum):
 
 @dataclass(kw_only=True, slots=True)
 class WorkerErrorReportedEvent:
-    __cdp_event__: ClassVar[str] = "ServiceWorker.workerErrorReported"
+    __cdp_event__: ClassVar[ServiceWorkerEvent] = (
+        ServiceWorkerEvent.WORKER_ERROR_REPORTED
+    )
 
     error_message: ServiceWorkerErrorMessage = field(
         metadata={"cdp_name": "errorMessage"}
@@ -32,13 +34,17 @@ class WorkerErrorReportedEvent:
 
 @dataclass(kw_only=True, slots=True)
 class WorkerRegistrationUpdatedEvent:
-    __cdp_event__: ClassVar[str] = "ServiceWorker.workerRegistrationUpdated"
+    __cdp_event__: ClassVar[ServiceWorkerEvent] = (
+        ServiceWorkerEvent.WORKER_REGISTRATION_UPDATED
+    )
 
     registrations: list[ServiceWorkerRegistration]
 
 
 @dataclass(kw_only=True, slots=True)
 class WorkerVersionUpdatedEvent:
-    __cdp_event__: ClassVar[str] = "ServiceWorker.workerVersionUpdated"
+    __cdp_event__: ClassVar[ServiceWorkerEvent] = (
+        ServiceWorkerEvent.WORKER_VERSION_UPDATED
+    )
 
     versions: list[ServiceWorkerVersion]

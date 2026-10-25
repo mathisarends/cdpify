@@ -25,7 +25,7 @@ class SinksUpdatedEvent:
     software surface that you can cast to.
     """
 
-    __cdp_event__: ClassVar[str] = "Cast.sinksUpdated"
+    __cdp_event__: ClassVar[CastEvent] = CastEvent.SINKS_UPDATED
 
     sinks: list[Sink]
 
@@ -37,6 +37,6 @@ class IssueUpdatedEvent:
     is empty if there is no issue.
     """
 
-    __cdp_event__: ClassVar[str] = "Cast.issueUpdated"
+    __cdp_event__: ClassVar[CastEvent] = CastEvent.ISSUE_UPDATED
 
     issue_message: str = field(metadata={"cdp_name": "issueMessage"})

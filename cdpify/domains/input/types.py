@@ -5,7 +5,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Literal
+
+from cdpify.shared.enums import CDPStrEnum
 
 
 @dataclass(kw_only=True, slots=True)
@@ -27,9 +28,20 @@ class TouchPoint:
     id: float | None = None
 
 
-type GestureSourceType = Literal["default", "touch", "mouse"]
+class GestureSourceType(CDPStrEnum):
+    DEFAULT = "default"
+    TOUCH = "touch"
+    MOUSE = "mouse"
 
-type MouseButton = Literal["none", "left", "middle", "right", "back", "forward"]
+
+class MouseButton(CDPStrEnum):
+    NONE = "none"
+    LEFT = "left"
+    MIDDLE = "middle"
+    RIGHT = "right"
+    BACK = "back"
+    FORWARD = "forward"
+
 
 type TimeSinceEpoch = float
 """

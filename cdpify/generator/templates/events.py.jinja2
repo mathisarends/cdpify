@@ -28,7 +28,7 @@ class {{ model.name }}:
 {% if model.docstring %}
 {{ model.docstring }}
 {% endif %}
-    __cdp_event__: ClassVar[str] = "{{ model.event_name }}"
+    __cdp_event__: ClassVar[{{ domain_name }}Event] = {{ domain_name }}Event.{{ model.event_member }}
 {% if model.fields %}
 
     {{ model.fields | map(attribute="declaration") | join("\n    ") }}

@@ -8,6 +8,7 @@ from dataclasses import dataclass, field
 from typing import Literal
 
 from cdpify.domains import dom
+from cdpify.shared.enums import CDPStrEnum
 
 
 @dataclass(kw_only=True, slots=True)
@@ -161,7 +162,10 @@ class BoxStyle:
     )
 
 
-type ContrastAlgorithm = Literal["aa", "aaa", "apca"]
+class ContrastAlgorithm(CDPStrEnum):
+    AA = "aa"
+    AAA = "aaa"
+    APCA = "apca"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -265,7 +269,11 @@ class HighlightConfig:
     )
 
 
-type ColorFormat = Literal["rgb", "hsl", "hwb", "hex"]
+class ColorFormat(CDPStrEnum):
+    RGB = "rgb"
+    HSL = "hsl"
+    HWB = "hwb"
+    HEX = "hex"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -327,10 +335,15 @@ class HingeConfig:
     )
 
 
-type DisplayCutoutShape = Literal["pill", "notch", "circle", "rectangle"]
-"""
-Supported display cutout shapes.
-"""
+class DisplayCutoutShape(CDPStrEnum):
+    """
+    Supported display cutout shapes.
+    """
+
+    PILL = "pill"
+    NOTCH = "notch"
+    CIRCLE = "circle"
+    RECTANGLE = "rectangle"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -404,9 +417,11 @@ class IsolationModeHighlightConfig:
     )
 
 
-type InspectMode = Literal[
-    "searchForNode", "searchForUAShadowDOM", "captureAreaScreenshot", "none"
-]
+class InspectMode(CDPStrEnum):
+    SEARCH_FOR_NODE = "searchForNode"
+    SEARCH_FOR_UA_SHADOW_DOM = "searchForUAShadowDOM"
+    CAPTURE_AREA_SCREENSHOT = "captureAreaScreenshot"
+    NONE = "none"
 
 
 @dataclass(kw_only=True, slots=True)

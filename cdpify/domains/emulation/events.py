@@ -25,7 +25,7 @@ class VirtualTimeBudgetExpiredEvent:
     has run out.
     """
 
-    __cdp_event__: ClassVar[str] = "Emulation.virtualTimeBudgetExpired"
+    __cdp_event__: ClassVar[EmulationEvent] = EmulationEvent.VIRTUAL_TIME_BUDGET_EXPIRED
 
 
 @dataclass(kw_only=True, slots=True)
@@ -36,7 +36,9 @@ class ScreenOrientationLockChangedEvent:
     emulated device orientation accordingly.
     """
 
-    __cdp_event__: ClassVar[str] = "Emulation.screenOrientationLockChanged"
+    __cdp_event__: ClassVar[EmulationEvent] = (
+        EmulationEvent.SCREEN_ORIENTATION_LOCK_CHANGED
+    )
 
     locked: bool
     orientation: ScreenOrientation | None = None

@@ -5,9 +5,10 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Literal
+from typing import Any
 
 from cdpify.domains import network, page
+from cdpify.shared.enums import CDPStrEnum
 
 type NodeId = int
 """
@@ -37,80 +38,104 @@ class BackendNode:
     backend_node_id: BackendNodeId = field(metadata={"cdp_name": "backendNodeId"})
 
 
-type PseudoType = Literal[
-    "first-line",
-    "first-letter",
-    "checkmark",
-    "before",
-    "after",
-    "expand-icon",
-    "picker-icon",
-    "interest-button",
-    "marker",
-    "backdrop",
-    "column",
-    "selection",
-    "search-text",
-    "target-text",
-    "spelling-error",
-    "grammar-error",
-    "highlight",
-    "first-line-inherited",
-    "scroll-marker",
-    "scroll-marker-group",
-    "scroll-button",
-    "scrollbar",
-    "scrollbar-thumb",
-    "scrollbar-button",
-    "scrollbar-track",
-    "scrollbar-track-piece",
-    "scrollbar-corner",
-    "resizer",
-    "input-list-button",
-    "view-transition",
-    "view-transition-group",
-    "view-transition-image-pair",
-    "view-transition-group-children",
-    "view-transition-old",
-    "view-transition-new",
-    "placeholder",
-    "file-selector-button",
-    "details-content",
-    "picker",
-    "select-listbox",
-    "permission-icon",
-    "overscroll-area-parent",
-    "overscroll-backdrop",
-    "skeleton",
-]
-"""
-Pseudo element type.
-"""
+class PseudoType(CDPStrEnum):
+    """
+    Pseudo element type.
+    """
 
-type ShadowRootType = Literal["user-agent", "open", "closed"]
-"""
-Shadow root type.
-"""
+    FIRST_LINE = "first-line"
+    FIRST_LETTER = "first-letter"
+    CHECKMARK = "checkmark"
+    BEFORE = "before"
+    AFTER = "after"
+    EXPAND_ICON = "expand-icon"
+    PICKER_ICON = "picker-icon"
+    INTEREST_BUTTON = "interest-button"
+    MARKER = "marker"
+    BACKDROP = "backdrop"
+    COLUMN = "column"
+    SELECTION = "selection"
+    SEARCH_TEXT = "search-text"
+    TARGET_TEXT = "target-text"
+    SPELLING_ERROR = "spelling-error"
+    GRAMMAR_ERROR = "grammar-error"
+    HIGHLIGHT = "highlight"
+    FIRST_LINE_INHERITED = "first-line-inherited"
+    SCROLL_MARKER = "scroll-marker"
+    SCROLL_MARKER_GROUP = "scroll-marker-group"
+    SCROLL_BUTTON = "scroll-button"
+    SCROLLBAR = "scrollbar"
+    SCROLLBAR_THUMB = "scrollbar-thumb"
+    SCROLLBAR_BUTTON = "scrollbar-button"
+    SCROLLBAR_TRACK = "scrollbar-track"
+    SCROLLBAR_TRACK_PIECE = "scrollbar-track-piece"
+    SCROLLBAR_CORNER = "scrollbar-corner"
+    RESIZER = "resizer"
+    INPUT_LIST_BUTTON = "input-list-button"
+    VIEW_TRANSITION = "view-transition"
+    VIEW_TRANSITION_GROUP = "view-transition-group"
+    VIEW_TRANSITION_IMAGE_PAIR = "view-transition-image-pair"
+    VIEW_TRANSITION_GROUP_CHILDREN = "view-transition-group-children"
+    VIEW_TRANSITION_OLD = "view-transition-old"
+    VIEW_TRANSITION_NEW = "view-transition-new"
+    PLACEHOLDER = "placeholder"
+    FILE_SELECTOR_BUTTON = "file-selector-button"
+    DETAILS_CONTENT = "details-content"
+    PICKER = "picker"
+    SELECT_LISTBOX = "select-listbox"
+    PERMISSION_ICON = "permission-icon"
+    OVERSCROLL_AREA_PARENT = "overscroll-area-parent"
+    OVERSCROLL_BACKDROP = "overscroll-backdrop"
+    SKELETON = "skeleton"
 
-type CompatibilityMode = Literal["QuirksMode", "LimitedQuirksMode", "NoQuirksMode"]
-"""
-Document compatibility mode.
-"""
 
-type PhysicalAxes = Literal["Horizontal", "Vertical", "Both"]
-"""
-ContainerSelector physical axes
-"""
+class ShadowRootType(CDPStrEnum):
+    """
+    Shadow root type.
+    """
 
-type LogicalAxes = Literal["Inline", "Block", "Both"]
-"""
-ContainerSelector logical axes
-"""
+    USER_AGENT = "user-agent"
+    OPEN = "open"
+    CLOSED = "closed"
 
-type ScrollOrientation = Literal["horizontal", "vertical"]
-"""
-Physical scroll orientation
-"""
+
+class CompatibilityMode(CDPStrEnum):
+    """
+    Document compatibility mode.
+    """
+
+    QUIRKS_MODE = "QuirksMode"
+    LIMITED_QUIRKS_MODE = "LimitedQuirksMode"
+    NO_QUIRKS_MODE = "NoQuirksMode"
+
+
+class PhysicalAxes(CDPStrEnum):
+    """
+    ContainerSelector physical axes
+    """
+
+    HORIZONTAL = "Horizontal"
+    VERTICAL = "Vertical"
+    BOTH = "Both"
+
+
+class LogicalAxes(CDPStrEnum):
+    """
+    ContainerSelector logical axes
+    """
+
+    INLINE = "Inline"
+    BLOCK = "Block"
+    BOTH = "Both"
+
+
+class ScrollOrientation(CDPStrEnum):
+    """
+    Physical scroll orientation
+    """
+
+    HORIZONTAL = "horizontal"
+    VERTICAL = "vertical"
 
 
 @dataclass(kw_only=True, slots=True)

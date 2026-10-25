@@ -23,6 +23,6 @@ class EntryAddedEvent:
     Issued when new message was logged.
     """
 
-    __cdp_event__: ClassVar[str] = "Log.entryAdded"
+    __cdp_event__: ClassVar[LogEvent] = LogEvent.ENTRY_ADDED
 
     entry: LogEntry

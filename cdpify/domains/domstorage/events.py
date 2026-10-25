@@ -22,7 +22,7 @@ class DOMStorageEvent(StrEnum):
 
 @dataclass(kw_only=True, slots=True)
 class DomStorageItemAddedEvent:
-    __cdp_event__: ClassVar[str] = "DOMStorage.domStorageItemAdded"
+    __cdp_event__: ClassVar[DOMStorageEvent] = DOMStorageEvent.DOM_STORAGE_ITEM_ADDED
 
     storage_id: StorageId = field(metadata={"cdp_name": "storageId"})
     key: str
@@ -31,7 +31,7 @@ class DomStorageItemAddedEvent:
 
 @dataclass(kw_only=True, slots=True)
 class DomStorageItemRemovedEvent:
-    __cdp_event__: ClassVar[str] = "DOMStorage.domStorageItemRemoved"
+    __cdp_event__: ClassVar[DOMStorageEvent] = DOMStorageEvent.DOM_STORAGE_ITEM_REMOVED
 
     storage_id: StorageId = field(metadata={"cdp_name": "storageId"})
     key: str
@@ -39,7 +39,7 @@ class DomStorageItemRemovedEvent:
 
 @dataclass(kw_only=True, slots=True)
 class DomStorageItemUpdatedEvent:
-    __cdp_event__: ClassVar[str] = "DOMStorage.domStorageItemUpdated"
+    __cdp_event__: ClassVar[DOMStorageEvent] = DOMStorageEvent.DOM_STORAGE_ITEM_UPDATED
 
     storage_id: StorageId = field(metadata={"cdp_name": "storageId"})
     key: str
@@ -49,6 +49,6 @@ class DomStorageItemUpdatedEvent:
 
 @dataclass(kw_only=True, slots=True)
 class DomStorageItemsClearedEvent:
-    __cdp_event__: ClassVar[str] = "DOMStorage.domStorageItemsCleared"
+    __cdp_event__: ClassVar[DOMStorageEvent] = DOMStorageEvent.DOM_STORAGE_ITEMS_CLEARED
 
     storage_id: StorageId = field(metadata={"cdp_name": "storageId"})

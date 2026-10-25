@@ -5,7 +5,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Literal
+
+from cdpify.shared.enums import CDPStrEnum
 
 
 @dataclass(kw_only=True, slots=True)
@@ -26,7 +27,10 @@ class FileHandler:
     display_name: str = field(metadata={"cdp_name": "displayName"})
 
 
-type DisplayMode = Literal["standalone", "browser"]
-"""
-If user prefers opening the app in browser or an app window.
-"""
+class DisplayMode(CDPStrEnum):
+    """
+    If user prefers opening the app in browser or an app window.
+    """
+
+    STANDALONE = "standalone"
+    BROWSER = "browser"

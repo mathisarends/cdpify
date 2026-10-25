@@ -5,9 +5,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Literal
 
 from cdpify.domains import target
+from cdpify.shared.enums import CDPStrEnum
 
 type RegistrationID = str
 
@@ -23,13 +23,20 @@ class ServiceWorkerRegistration:
     is_deleted: bool = field(metadata={"cdp_name": "isDeleted"})
 
 
-type ServiceWorkerVersionRunningStatus = Literal[
-    "stopped", "starting", "running", "stopping"
-]
+class ServiceWorkerVersionRunningStatus(CDPStrEnum):
+    STOPPED = "stopped"
+    STARTING = "starting"
+    RUNNING = "running"
+    STOPPING = "stopping"
 
-type ServiceWorkerVersionStatus = Literal[
-    "new", "installing", "installed", "activating", "activated", "redundant"
-]
+
+class ServiceWorkerVersionStatus(CDPStrEnum):
+    NEW = "new"
+    INSTALLING = "installing"
+    INSTALLED = "installed"
+    ACTIVATING = "activating"
+    ACTIVATED = "activated"
+    REDUNDANT = "redundant"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -58,14 +65,13 @@ class ServiceWorkerRouterCondition:
     )
 
 
-type ServiceWorkerRouterSourceType = Literal[
-    "cache",
-    "fetchEvent",
-    "network",
-    "raceNetworkAndFetchHandler",
-    "raceNetworkAndCache",
-    "sourceDict",
-]
+class ServiceWorkerRouterSourceType(CDPStrEnum):
+    CACHE = "cache"
+    FETCH_EVENT = "fetchEvent"
+    NETWORK = "network"
+    RACE_NETWORK_AND_FETCH_HANDLER = "raceNetworkAndFetchHandler"
+    RACE_NETWORK_AND_CACHE = "raceNetworkAndCache"
+    SOURCE_DICT = "sourceDict"
 
 
 @dataclass(kw_only=True, slots=True)

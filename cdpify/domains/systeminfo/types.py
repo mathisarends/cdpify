@@ -5,7 +5,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Literal
+from typing import Any
+
+from cdpify.shared.enums import CDPStrEnum
 
 
 @dataclass(kw_only=True, slots=True)
@@ -61,15 +63,24 @@ class VideoEncodeAcceleratorCapability:
     )
 
 
-type SubsamplingFormat = Literal["yuv420", "yuv422", "yuv444"]
-"""
-YUV subsampling type of the pixels of a given image.
-"""
+class SubsamplingFormat(CDPStrEnum):
+    """
+    YUV subsampling type of the pixels of a given image.
+    """
 
-type ImageType = Literal["jpeg", "webp", "unknown"]
-"""
-Image format of a given image.
-"""
+    YUV420 = "yuv420"
+    YUV422 = "yuv422"
+    YUV444 = "yuv444"
+
+
+class ImageType(CDPStrEnum):
+    """
+    Image format of a given image.
+    """
+
+    JPEG = "jpeg"
+    WEBP = "webp"
+    UNKNOWN = "unknown"
 
 
 @dataclass(kw_only=True, slots=True)

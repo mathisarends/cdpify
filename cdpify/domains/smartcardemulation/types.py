@@ -5,64 +5,83 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Literal
 
-type ResultCode = Literal[
-    "success",
-    "removed-card",
-    "reset-card",
-    "unpowered-card",
-    "unresponsive-card",
-    "unsupported-card",
-    "reader-unavailable",
-    "sharing-violation",
-    "not-transacted",
-    "no-smartcard",
-    "proto-mismatch",
-    "system-cancelled",
-    "not-ready",
-    "cancelled",
-    "insufficient-buffer",
-    "invalid-handle",
-    "invalid-parameter",
-    "invalid-value",
-    "no-memory",
-    "timeout",
-    "unknown-reader",
-    "unsupported-feature",
-    "no-readers-available",
-    "service-stopped",
-    "no-service",
-    "comm-error",
-    "internal-error",
-    "server-too-busy",
-    "unexpected",
-    "shutdown",
-    "unknown-card",
-    "unknown",
-]
-"""
-Indicates the PC/SC error code. This maps to: PC/SC Lite:
-https://pcsclite.apdu.fr/api/group__ErrorCodes.html Microsoft:
-https://learn.microsoft.com/en-us/windows/win32/secauthn/authentication-return-values
-"""
+from cdpify.shared.enums import CDPStrEnum
 
-type ShareMode = Literal["shared", "exclusive", "direct"]
-"""
-Maps to the |SCARD_SHARE_*| values.
-"""
 
-type Disposition = Literal["leave-card", "reset-card", "unpower-card", "eject-card"]
-"""
-Indicates what the reader should do with the card.
-"""
+class ResultCode(CDPStrEnum):
+    """
+    Indicates the PC/SC error code. This maps to: PC/SC Lite:
+    https://pcsclite.apdu.fr/api/group__ErrorCodes.html Microsoft:
+    https://learn.microsoft.com/en-us/windows/win32/secauthn/authentication-return-values
+    """
 
-type ConnectionState = Literal[
-    "absent", "present", "swallowed", "powered", "negotiable", "specific"
-]
-"""
-Maps to |SCARD_*| connection state values.
-"""
+    SUCCESS = "success"
+    REMOVED_CARD = "removed-card"
+    RESET_CARD = "reset-card"
+    UNPOWERED_CARD = "unpowered-card"
+    UNRESPONSIVE_CARD = "unresponsive-card"
+    UNSUPPORTED_CARD = "unsupported-card"
+    READER_UNAVAILABLE = "reader-unavailable"
+    SHARING_VIOLATION = "sharing-violation"
+    NOT_TRANSACTED = "not-transacted"
+    NO_SMARTCARD = "no-smartcard"
+    PROTO_MISMATCH = "proto-mismatch"
+    SYSTEM_CANCELLED = "system-cancelled"
+    NOT_READY = "not-ready"
+    CANCELLED = "cancelled"
+    INSUFFICIENT_BUFFER = "insufficient-buffer"
+    INVALID_HANDLE = "invalid-handle"
+    INVALID_PARAMETER = "invalid-parameter"
+    INVALID_VALUE = "invalid-value"
+    NO_MEMORY = "no-memory"
+    TIMEOUT = "timeout"
+    UNKNOWN_READER = "unknown-reader"
+    UNSUPPORTED_FEATURE = "unsupported-feature"
+    NO_READERS_AVAILABLE = "no-readers-available"
+    SERVICE_STOPPED = "service-stopped"
+    NO_SERVICE = "no-service"
+    COMM_ERROR = "comm-error"
+    INTERNAL_ERROR = "internal-error"
+    SERVER_TOO_BUSY = "server-too-busy"
+    UNEXPECTED = "unexpected"
+    SHUTDOWN = "shutdown"
+    UNKNOWN_CARD = "unknown-card"
+    UNKNOWN = "unknown"
+
+
+class ShareMode(CDPStrEnum):
+    """
+    Maps to the |SCARD_SHARE_*| values.
+    """
+
+    SHARED = "shared"
+    EXCLUSIVE = "exclusive"
+    DIRECT = "direct"
+
+
+class Disposition(CDPStrEnum):
+    """
+    Indicates what the reader should do with the card.
+    """
+
+    LEAVE_CARD = "leave-card"
+    RESET_CARD = "reset-card"
+    UNPOWER_CARD = "unpower-card"
+    EJECT_CARD = "eject-card"
+
+
+class ConnectionState(CDPStrEnum):
+    """
+    Maps to |SCARD_*| connection state values.
+    """
+
+    ABSENT = "absent"
+    PRESENT = "present"
+    SWALLOWED = "swallowed"
+    POWERED = "powered"
+    NEGOTIABLE = "negotiable"
+    SPECIFIC = "specific"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -95,10 +114,14 @@ class ProtocolSet:
     raw: bool | None = None
 
 
-type Protocol = Literal["t0", "t1", "raw"]
-"""
-Maps to the |SCARD_PROTOCOL_*| values.
-"""
+class Protocol(CDPStrEnum):
+    """
+    Maps to the |SCARD_PROTOCOL_*| values.
+    """
+
+    T0 = "t0"
+    T1 = "t1"
+    RAW = "raw"
 
 
 @dataclass(kw_only=True, slots=True)

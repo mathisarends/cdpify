@@ -5,9 +5,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Literal
 
 from cdpify.domains import dom, page
+from cdpify.shared.enums import CDPStrEnum
 
 
 @dataclass(kw_only=True, slots=True)
@@ -53,11 +53,14 @@ class AddressUI:
     address_fields: list[AddressFields] = field(metadata={"cdp_name": "addressFields"})
 
 
-type FillingStrategy = Literal["autocompleteAttribute", "autofillInferred"]
-"""
-Specified whether a filled field was done so by using the html autocomplete attribute
-or autofill heuristics.
-"""
+class FillingStrategy(CDPStrEnum):
+    """
+    Specified whether a filled field was done so by using the html autocomplete
+    attribute or autofill heuristics.
+    """
+
+    AUTOCOMPLETE_ATTRIBUTE = "autocompleteAttribute"
+    AUTOFILL_INFERRED = "autofillInferred"
 
 
 @dataclass(kw_only=True, slots=True)

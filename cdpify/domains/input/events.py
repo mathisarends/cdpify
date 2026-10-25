@@ -24,6 +24,6 @@ class DragInterceptedEvent:
     `Input.dispatchDragEvent` to restore normal drag and drop behavior.
     """
 
-    __cdp_event__: ClassVar[str] = "Input.dragIntercepted"
+    __cdp_event__: ClassVar[InputEvent] = InputEvent.DRAG_INTERCEPTED
 
     data: DragData

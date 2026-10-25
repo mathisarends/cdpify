@@ -35,7 +35,7 @@ class BindingCalledEvent:
     Notification is issued every time when binding is called.
     """
 
-    __cdp_event__: ClassVar[str] = "Runtime.bindingCalled"
+    __cdp_event__: ClassVar[RuntimeEvent] = RuntimeEvent.BINDING_CALLED
 
     name: str
     payload: str
@@ -50,7 +50,7 @@ class ConsoleAPICalledEvent:
     Issued when console API was called.
     """
 
-    __cdp_event__: ClassVar[str] = "Runtime.consoleAPICalled"
+    __cdp_event__: ClassVar[RuntimeEvent] = RuntimeEvent.CONSOLE_API_CALLED
 
     type: Literal[
         "log",
@@ -89,7 +89,7 @@ class ExceptionRevokedEvent:
     Issued when unhandled exception was revoked.
     """
 
-    __cdp_event__: ClassVar[str] = "Runtime.exceptionRevoked"
+    __cdp_event__: ClassVar[RuntimeEvent] = RuntimeEvent.EXCEPTION_REVOKED
 
     reason: str
     exception_id: int = field(metadata={"cdp_name": "exceptionId"})
@@ -101,7 +101,7 @@ class ExceptionThrownEvent:
     Issued when exception was thrown and unhandled.
     """
 
-    __cdp_event__: ClassVar[str] = "Runtime.exceptionThrown"
+    __cdp_event__: ClassVar[RuntimeEvent] = RuntimeEvent.EXCEPTION_THROWN
 
     timestamp: Timestamp
     exception_details: ExceptionDetails = field(
@@ -115,7 +115,7 @@ class ExecutionContextCreatedEvent:
     Issued when new execution context is created.
     """
 
-    __cdp_event__: ClassVar[str] = "Runtime.executionContextCreated"
+    __cdp_event__: ClassVar[RuntimeEvent] = RuntimeEvent.EXECUTION_CONTEXT_CREATED
 
     context: ExecutionContextDescription
 
@@ -126,7 +126,7 @@ class ExecutionContextDestroyedEvent:
     Issued when execution context is destroyed.
     """
 
-    __cdp_event__: ClassVar[str] = "Runtime.executionContextDestroyed"
+    __cdp_event__: ClassVar[RuntimeEvent] = RuntimeEvent.EXECUTION_CONTEXT_DESTROYED
 
     execution_context_id: ExecutionContextId = field(
         metadata={"cdp_name": "executionContextId"}
@@ -142,7 +142,7 @@ class ExecutionContextsClearedEvent:
     Issued when all executionContexts were cleared in browser
     """
 
-    __cdp_event__: ClassVar[str] = "Runtime.executionContextsCleared"
+    __cdp_event__: ClassVar[RuntimeEvent] = RuntimeEvent.EXECUTION_CONTEXTS_CLEARED
 
 
 @dataclass(kw_only=True, slots=True)
@@ -152,7 +152,7 @@ class InspectRequestedEvent:
     command line API call).
     """
 
-    __cdp_event__: ClassVar[str] = "Runtime.inspectRequested"
+    __cdp_event__: ClassVar[RuntimeEvent] = RuntimeEvent.INSPECT_REQUESTED
 
     object: RemoteObject
     hints: dict[str, Any]

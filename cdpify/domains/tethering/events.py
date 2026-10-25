@@ -19,7 +19,7 @@ class AcceptedEvent:
     Informs that port was successfully bound and got a specified connection id.
     """
 
-    __cdp_event__: ClassVar[str] = "Tethering.accepted"
+    __cdp_event__: ClassVar[TetheringEvent] = TetheringEvent.ACCEPTED
 
     port: int
     connection_id: str = field(metadata={"cdp_name": "connectionId"})

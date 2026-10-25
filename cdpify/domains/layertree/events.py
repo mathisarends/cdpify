@@ -23,7 +23,7 @@ class LayerTreeEvent(StrEnum):
 
 @dataclass(kw_only=True, slots=True)
 class LayerPaintedEvent:
-    __cdp_event__: ClassVar[str] = "LayerTree.layerPainted"
+    __cdp_event__: ClassVar[LayerTreeEvent] = LayerTreeEvent.LAYER_PAINTED
 
     layer_id: LayerId = field(metadata={"cdp_name": "layerId"})
     clip: dom.Rect
@@ -31,6 +31,6 @@ class LayerPaintedEvent:
 
 @dataclass(kw_only=True, slots=True)
 class LayerTreeDidChangeEvent:
-    __cdp_event__: ClassVar[str] = "LayerTree.layerTreeDidChange"
+    __cdp_event__: ClassVar[LayerTreeEvent] = LayerTreeEvent.LAYER_TREE_DID_CHANGE
 
     layers: list[Layer] | None = None

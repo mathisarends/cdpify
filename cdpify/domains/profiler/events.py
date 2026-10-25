@@ -24,7 +24,7 @@ class ProfilerEvent(StrEnum):
 
 @dataclass(kw_only=True, slots=True)
 class ConsoleProfileFinishedEvent:
-    __cdp_event__: ClassVar[str] = "Profiler.consoleProfileFinished"
+    __cdp_event__: ClassVar[ProfilerEvent] = ProfilerEvent.CONSOLE_PROFILE_FINISHED
 
     id: str
     location: debugger.Location
@@ -38,7 +38,7 @@ class ConsoleProfileStartedEvent:
     Sent when new profile recording is started using console.profile() call.
     """
 
-    __cdp_event__: ClassVar[str] = "Profiler.consoleProfileStarted"
+    __cdp_event__: ClassVar[ProfilerEvent] = ProfilerEvent.CONSOLE_PROFILE_STARTED
 
     id: str
     location: debugger.Location
@@ -54,7 +54,7 @@ class PreciseCoverageDeltaUpdateEvent:
     example, trigger collection of coverage data immediately at a certain point in time.
     """
 
-    __cdp_event__: ClassVar[str] = "Profiler.preciseCoverageDeltaUpdate"
+    __cdp_event__: ClassVar[ProfilerEvent] = ProfilerEvent.PRECISE_COVERAGE_DELTA_UPDATE
 
     timestamp: float
     occasion: str

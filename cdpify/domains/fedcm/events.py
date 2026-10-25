@@ -21,7 +21,7 @@ class FedCmEvent(StrEnum):
 
 @dataclass(kw_only=True, slots=True)
 class DialogShownEvent:
-    __cdp_event__: ClassVar[str] = "FedCm.dialogShown"
+    __cdp_event__: ClassVar[FedCmEvent] = FedCmEvent.DIALOG_SHOWN
 
     dialog_id: str = field(metadata={"cdp_name": "dialogId"})
     dialog_type: DialogType = field(metadata={"cdp_name": "dialogType"})
@@ -37,6 +37,6 @@ class DialogClosedEvent:
     below.
     """
 
-    __cdp_event__: ClassVar[str] = "FedCm.dialogClosed"
+    __cdp_event__: ClassVar[FedCmEvent] = FedCmEvent.DIALOG_CLOSED
 
     dialog_id: str = field(metadata={"cdp_name": "dialogId"})

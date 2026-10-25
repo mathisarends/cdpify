@@ -30,7 +30,7 @@ class ToolsAddedEvent:
     Event fired when new tools are added.
     """
 
-    __cdp_event__: ClassVar[str] = "WebMCP.toolsAdded"
+    __cdp_event__: ClassVar[WebMCPEvent] = WebMCPEvent.TOOLS_ADDED
 
     tools: list[Tool]
 
@@ -41,7 +41,7 @@ class ToolsRemovedEvent:
     Event fired when tools are removed.
     """
 
-    __cdp_event__: ClassVar[str] = "WebMCP.toolsRemoved"
+    __cdp_event__: ClassVar[WebMCPEvent] = WebMCPEvent.TOOLS_REMOVED
 
     tools: list[RemovedTool]
 
@@ -52,7 +52,7 @@ class ToolInvokedEvent:
     Event fired when a tool invocation starts.
     """
 
-    __cdp_event__: ClassVar[str] = "WebMCP.toolInvoked"
+    __cdp_event__: ClassVar[WebMCPEvent] = WebMCPEvent.TOOL_INVOKED
 
     tool_name: str = field(metadata={"cdp_name": "toolName"})
     frame_id: page.FrameId = field(metadata={"cdp_name": "frameId"})
@@ -66,7 +66,7 @@ class ToolRespondedEvent:
     Event fired when a tool invocation completes or fails.
     """
 
-    __cdp_event__: ClassVar[str] = "WebMCP.toolResponded"
+    __cdp_event__: ClassVar[WebMCPEvent] = WebMCPEvent.TOOL_RESPONDED
 
     invocation_id: str = field(metadata={"cdp_name": "invocationId"})
     status: InvocationStatus

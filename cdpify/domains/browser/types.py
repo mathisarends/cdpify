@@ -5,16 +5,23 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Literal
+
+from cdpify.shared.enums import CDPStrEnum
 
 type BrowserContextID = str
 
 type WindowID = int
 
-type WindowState = Literal["normal", "minimized", "maximized", "fullscreen"]
-"""
-The state of the browser window.
-"""
+
+class WindowState(CDPStrEnum):
+    """
+    The state of the browser window.
+    """
+
+    NORMAL = "normal"
+    MINIMIZED = "minimized"
+    MAXIMIZED = "maximized"
+    FULLSCREEN = "fullscreen"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -32,49 +39,52 @@ class Bounds:
     )
 
 
-type PermissionType = Literal[
-    "ar",
-    "audioCapture",
-    "automaticFullscreen",
-    "backgroundFetch",
-    "backgroundSync",
-    "cameraPanTiltZoom",
-    "capturedSurfaceControl",
-    "clipboardReadWrite",
-    "clipboardSanitizedWrite",
-    "displayCapture",
-    "durableStorage",
-    "geolocation",
-    "handTracking",
-    "idleDetection",
-    "keyboardLock",
-    "localFonts",
-    "localNetwork",
-    "localNetworkAccess",
-    "loopbackNetwork",
-    "midi",
-    "midiSysex",
-    "nfc",
-    "notifications",
-    "paymentHandler",
-    "periodicBackgroundSync",
-    "pointerLock",
-    "protectedMediaIdentifier",
-    "sensors",
-    "smartCard",
-    "speakerSelection",
-    "storageAccess",
-    "topLevelStorageAccess",
-    "videoCapture",
-    "vr",
-    "wakeLockScreen",
-    "wakeLockSystem",
-    "webAppInstallation",
-    "webPrinting",
-    "windowManagement",
-]
+class PermissionType(CDPStrEnum):
+    AR = "ar"
+    AUDIO_CAPTURE = "audioCapture"
+    AUTOMATIC_FULLSCREEN = "automaticFullscreen"
+    BACKGROUND_FETCH = "backgroundFetch"
+    BACKGROUND_SYNC = "backgroundSync"
+    CAMERA_PAN_TILT_ZOOM = "cameraPanTiltZoom"
+    CAPTURED_SURFACE_CONTROL = "capturedSurfaceControl"
+    CLIPBOARD_READ_WRITE = "clipboardReadWrite"
+    CLIPBOARD_SANITIZED_WRITE = "clipboardSanitizedWrite"
+    DISPLAY_CAPTURE = "displayCapture"
+    DURABLE_STORAGE = "durableStorage"
+    GEOLOCATION = "geolocation"
+    HAND_TRACKING = "handTracking"
+    IDLE_DETECTION = "idleDetection"
+    KEYBOARD_LOCK = "keyboardLock"
+    LOCAL_FONTS = "localFonts"
+    LOCAL_NETWORK = "localNetwork"
+    LOCAL_NETWORK_ACCESS = "localNetworkAccess"
+    LOOPBACK_NETWORK = "loopbackNetwork"
+    MIDI = "midi"
+    MIDI_SYSEX = "midiSysex"
+    NFC = "nfc"
+    NOTIFICATIONS = "notifications"
+    PAYMENT_HANDLER = "paymentHandler"
+    PERIODIC_BACKGROUND_SYNC = "periodicBackgroundSync"
+    POINTER_LOCK = "pointerLock"
+    PROTECTED_MEDIA_IDENTIFIER = "protectedMediaIdentifier"
+    SENSORS = "sensors"
+    SMART_CARD = "smartCard"
+    SPEAKER_SELECTION = "speakerSelection"
+    STORAGE_ACCESS = "storageAccess"
+    TOP_LEVEL_STORAGE_ACCESS = "topLevelStorageAccess"
+    VIDEO_CAPTURE = "videoCapture"
+    VR = "vr"
+    WAKE_LOCK_SCREEN = "wakeLockScreen"
+    WAKE_LOCK_SYSTEM = "wakeLockSystem"
+    WEB_APP_INSTALLATION = "webAppInstallation"
+    WEB_PRINTING = "webPrinting"
+    WINDOW_MANAGEMENT = "windowManagement"
 
-type PermissionSetting = Literal["granted", "denied", "prompt"]
+
+class PermissionSetting(CDPStrEnum):
+    GRANTED = "granted"
+    DENIED = "denied"
+    PROMPT = "prompt"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -100,10 +110,14 @@ class PermissionDescriptor:
     )
 
 
-type BrowserCommandId = Literal["openTabSearch", "closeTabSearch", "openGlic"]
-"""
-Browser command ids used by executeBrowserCommand.
-"""
+class BrowserCommandId(CDPStrEnum):
+    """
+    Browser command ids used by executeBrowserCommand.
+    """
+
+    OPEN_TAB_SEARCH = "openTabSearch"
+    CLOSE_TAB_SEARCH = "closeTabSearch"
+    OPEN_GLIC = "openGlic"
 
 
 @dataclass(kw_only=True, slots=True)

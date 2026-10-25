@@ -5,47 +5,73 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Literal
+
+from cdpify.shared.enums import CDPStrEnum
 
 type GraphObjectId = str
 """
 An unique ID for a graph object (AudioContext, AudioNode, AudioParam) in Web Audio API
 """
 
-type ContextType = Literal["realtime", "offline"]
-"""
-Enum of BaseAudioContext types
-"""
 
-type ContextState = Literal["suspended", "running", "closed", "interrupted"]
-"""
-Enum of AudioContextState from the spec
-"""
+class ContextType(CDPStrEnum):
+    """
+    Enum of BaseAudioContext types
+    """
+
+    REALTIME = "realtime"
+    OFFLINE = "offline"
+
+
+class ContextState(CDPStrEnum):
+    """
+    Enum of AudioContextState from the spec
+    """
+
+    SUSPENDED = "suspended"
+    RUNNING = "running"
+    CLOSED = "closed"
+    INTERRUPTED = "interrupted"
+
 
 type NodeType = str
 """
 Enum of AudioNode types
 """
 
-type ChannelCountMode = Literal["clamped-max", "explicit", "max"]
-"""
-Enum of AudioNode::ChannelCountMode from the spec
-"""
 
-type ChannelInterpretation = Literal["discrete", "speakers"]
-"""
-Enum of AudioNode::ChannelInterpretation from the spec
-"""
+class ChannelCountMode(CDPStrEnum):
+    """
+    Enum of AudioNode::ChannelCountMode from the spec
+    """
+
+    CLAMPED_MAX = "clamped-max"
+    EXPLICIT = "explicit"
+    MAX = "max"
+
+
+class ChannelInterpretation(CDPStrEnum):
+    """
+    Enum of AudioNode::ChannelInterpretation from the spec
+    """
+
+    DISCRETE = "discrete"
+    SPEAKERS = "speakers"
+
 
 type ParamType = str
 """
 Enum of AudioParam types
 """
 
-type AutomationRate = Literal["a-rate", "k-rate"]
-"""
-Enum of AudioParam::AutomationRate from the spec
-"""
+
+class AutomationRate(CDPStrEnum):
+    """
+    Enum of AudioParam::AutomationRate from the spec
+    """
+
+    A_RATE = "a-rate"
+    K_RATE = "k-rate"
 
 
 @dataclass(kw_only=True, slots=True)

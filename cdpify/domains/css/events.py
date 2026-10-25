@@ -32,7 +32,7 @@ class FontsUpdatedEvent:
     successfully loaded web font.
     """
 
-    __cdp_event__: ClassVar[str] = "CSS.fontsUpdated"
+    __cdp_event__: ClassVar[CSSEvent] = CSSEvent.FONTS_UPDATED
 
     font: FontFace | None = None
 
@@ -45,7 +45,7 @@ class MediaQueryResultChangedEvent:
     features.
     """
 
-    __cdp_event__: ClassVar[str] = "CSS.mediaQueryResultChanged"
+    __cdp_event__: ClassVar[CSSEvent] = CSSEvent.MEDIA_QUERY_RESULT_CHANGED
 
 
 @dataclass(kw_only=True, slots=True)
@@ -54,7 +54,7 @@ class StyleSheetAddedEvent:
     Fired whenever an active document stylesheet is added.
     """
 
-    __cdp_event__: ClassVar[str] = "CSS.styleSheetAdded"
+    __cdp_event__: ClassVar[CSSEvent] = CSSEvent.STYLE_SHEET_ADDED
 
     header: CSSStyleSheetHeader
 
@@ -65,7 +65,7 @@ class StyleSheetChangedEvent:
     Fired whenever a stylesheet is changed as a result of the client operation.
     """
 
-    __cdp_event__: ClassVar[str] = "CSS.styleSheetChanged"
+    __cdp_event__: ClassVar[CSSEvent] = CSSEvent.STYLE_SHEET_CHANGED
 
     style_sheet_id: dom.StyleSheetId = field(metadata={"cdp_name": "styleSheetId"})
 
@@ -76,13 +76,13 @@ class StyleSheetRemovedEvent:
     Fired whenever an active document stylesheet is removed.
     """
 
-    __cdp_event__: ClassVar[str] = "CSS.styleSheetRemoved"
+    __cdp_event__: ClassVar[CSSEvent] = CSSEvent.STYLE_SHEET_REMOVED
 
     style_sheet_id: dom.StyleSheetId = field(metadata={"cdp_name": "styleSheetId"})
 
 
 @dataclass(kw_only=True, slots=True)
 class ComputedStyleUpdatedEvent:
-    __cdp_event__: ClassVar[str] = "CSS.computedStyleUpdated"
+    __cdp_event__: ClassVar[CSSEvent] = CSSEvent.COMPUTED_STYLE_UPDATED
 
     node_id: dom.NodeId = field(metadata={"cdp_name": "nodeId"})

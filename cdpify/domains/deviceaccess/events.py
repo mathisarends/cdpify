@@ -25,7 +25,9 @@ class DeviceRequestPromptedEvent:
     selectPrompt or cancelPrompt command.
     """
 
-    __cdp_event__: ClassVar[str] = "DeviceAccess.deviceRequestPrompted"
+    __cdp_event__: ClassVar[DeviceAccessEvent] = (
+        DeviceAccessEvent.DEVICE_REQUEST_PROMPTED
+    )
 
     id: RequestId
     devices: list[PromptDevice]

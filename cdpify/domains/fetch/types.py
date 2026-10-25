@@ -8,6 +8,7 @@ from dataclasses import dataclass, field
 from typing import Literal
 
 from cdpify.domains import network
+from cdpify.shared.enums import CDPStrEnum
 
 type RequestId = str
 """
@@ -15,12 +16,16 @@ Unique request identifier. Note that this does not identify individual HTTP requ
 that are part of a network request.
 """
 
-type RequestStage = Literal["Request", "Response"]
-"""
-Stages of the request to handle. Request will intercept before the request is sent.
-Response will intercept after the response is received (but before response body is
-received).
-"""
+
+class RequestStage(CDPStrEnum):
+    """
+    Stages of the request to handle. Request will intercept before the request is sent.
+    Response will intercept after the response is received (but before response body is
+    received).
+    """
+
+    REQUEST = "Request"
+    RESPONSE = "Response"
 
 
 @dataclass(kw_only=True, slots=True)

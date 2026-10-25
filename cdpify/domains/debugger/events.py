@@ -33,7 +33,7 @@ class BreakpointResolvedEvent:
     favor of `resolvedBreakpoints` in the `scriptParsed` event.
     """
 
-    __cdp_event__: ClassVar[str] = "Debugger.breakpointResolved"
+    __cdp_event__: ClassVar[DebuggerEvent] = DebuggerEvent.BREAKPOINT_RESOLVED
 
     breakpoint_id: BreakpointId = field(metadata={"cdp_name": "breakpointId"})
     location: Location
@@ -46,7 +46,7 @@ class PausedEvent:
     criteria.
     """
 
-    __cdp_event__: ClassVar[str] = "Debugger.paused"
+    __cdp_event__: ClassVar[DebuggerEvent] = DebuggerEvent.PAUSED
 
     call_frames: list[CallFrame] = field(metadata={"cdp_name": "callFrames"})
     reason: Literal[
@@ -85,7 +85,7 @@ class ResumedEvent:
     Fired when the virtual machine resumed execution.
     """
 
-    __cdp_event__: ClassVar[str] = "Debugger.resumed"
+    __cdp_event__: ClassVar[DebuggerEvent] = DebuggerEvent.RESUMED
 
 
 @dataclass(kw_only=True, slots=True)
@@ -94,7 +94,7 @@ class ScriptFailedToParseEvent:
     Fired when virtual machine fails to parse the script.
     """
 
-    __cdp_event__: ClassVar[str] = "Debugger.scriptFailedToParse"
+    __cdp_event__: ClassVar[DebuggerEvent] = DebuggerEvent.SCRIPT_FAILED_TO_PARSE
 
     script_id: runtime.ScriptId = field(metadata={"cdp_name": "scriptId"})
     url: str
@@ -137,7 +137,7 @@ class ScriptParsedEvent:
     and uncollected scripts upon enabling debugger.
     """
 
-    __cdp_event__: ClassVar[str] = "Debugger.scriptParsed"
+    __cdp_event__: ClassVar[DebuggerEvent] = DebuggerEvent.SCRIPT_PARSED
 
     script_id: runtime.ScriptId = field(metadata={"cdp_name": "scriptId"})
     url: str

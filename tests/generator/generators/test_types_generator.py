@@ -37,10 +37,14 @@ def test_array_alias_keeps_item_type() -> None:
     assert "from cdpify.domains import page" in output
 
 
-def test_renders_enum_as_literal(simple_domain: Domain) -> None:
+def test_renders_named_enum_as_str_enum(simple_domain: Domain) -> None:
     output = types.generate(simple_domain)
-    assert 'type Color = Literal["red", "green", "blue"]' in output
-    assert "from typing import" in output and "Literal" in output
+    assert "from cdpify.shared.enums import CDPStrEnum" in output
+    assert "class Color(CDPStrEnum):" in output
+    assert 'RED = "red"' in output
+    assert 'GREEN = "green"' in output
+    assert 'BLUE = "blue"' in output
+    assert "Literal" not in output
 
 
 def test_renders_object_as_dataclass(simple_domain: Domain) -> None:
@@ -54,7 +58,7 @@ def test_renders_object_as_dataclass(simple_domain: Domain) -> None:
     assert "metadata=" not in output
 
 
-def test_alias_docstring_follows_the_assignment() -> None:
+def test_alias_and_enum_docstrings_are_attached_to_their_definitions() -> None:
     domain = Domain(
         domain="Page",
         types=[
@@ -70,7 +74,48 @@ def test_alias_docstring_follows_the_assignment() -> None:
     output = types.generate(domain)
 
     assert 'type FrameId = str\n"""\nUnique frame identifier.\n"""' in output
-    assert 'type Kind = Literal["a", "b"]\n"""\nFrame kind.\n"""' in output
+    assert 'class Kind(CDPStrEnum):\n    """\n    Frame kind.\n    """' in output
+
+
+def test_enum_names_are_valid_and_collisions_preserve_every_value() -> None:
+    domain = Domain(
+        domain="Sample",
+        types=[
+            TypeDefinition(
+                id="Kind",
+                type="string",
+                enum=["user-agent", "user_agent", "2d", "", "None"],
+            )
+        ],
+    )
+    namespace = {}
+
+    exec(types.generate(domain), namespace)
+    kind = namespace["Kind"]
+
+    assert kind.USER_AGENT.value == "user-agent"
+    assert kind.USER_AGENT_2.value == "user_agent"
+    assert kind.VALUE_2D.value == "2d"
+    assert kind.EMPTY.value == ""
+    assert kind.NONE.value == "None"
+    assert len(kind) == 5
+
+
+def test_inline_enums_remain_literals() -> None:
+    domain = Domain(
+        domain="Sample",
+        types=[
+            TypeDefinition(
+                id="Image",
+                type="object",
+                properties=[
+                    Parameter(name="format", type="string", enum=["png", "jpeg"]),
+                ],
+            )
+        ],
+    )
+
+    assert 'format: Literal["png", "jpeg"]' in types.generate(domain)
 
 
 def test_includes_descriptions_as_docstrings(simple_domain: Domain) -> None:

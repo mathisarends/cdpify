@@ -5,28 +5,29 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Literal
 
 from cdpify.domains import network
+from cdpify.shared.enums import CDPStrEnum
 
 type SerializedStorageKey = str
 
-type StorageType = Literal[
-    "cookies",
-    "file_systems",
-    "indexeddb",
-    "local_storage",
-    "shader_cache",
-    "websql",
-    "service_workers",
-    "cache_storage",
-    "storage_buckets",
-    "all",
-    "other",
-]
-"""
-Enum of possible storage types.
-"""
+
+class StorageType(CDPStrEnum):
+    """
+    Enum of possible storage types.
+    """
+
+    COOKIES = "cookies"
+    FILE_SYSTEMS = "file_systems"
+    INDEXEDDB = "indexeddb"
+    LOCAL_STORAGE = "local_storage"
+    SHADER_CACHE = "shader_cache"
+    WEBSQL = "websql"
+    SERVICE_WORKERS = "service_workers"
+    CACHE_STORAGE = "cache_storage"
+    STORAGE_BUCKETS = "storage_buckets"
+    ALL = "all"
+    OTHER = "other"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -75,7 +76,9 @@ class PrivateVerificationTokensIssuerConfig:
     redeemer_origins: list[str] = field(metadata={"cdp_name": "redeemerOrigins"})
 
 
-type StorageBucketsDurability = Literal["relaxed", "strict"]
+class StorageBucketsDurability(CDPStrEnum):
+    RELAXED = "relaxed"
+    STRICT = "strict"
 
 
 @dataclass(kw_only=True, slots=True)

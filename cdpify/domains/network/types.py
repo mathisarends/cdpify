@@ -8,31 +8,34 @@ from dataclasses import dataclass, field
 from typing import Any, Literal
 
 from cdpify.domains import io, network, runtime, security
+from cdpify.shared.enums import CDPStrEnum
 
-type ResourceType = Literal[
-    "Document",
-    "Stylesheet",
-    "Image",
-    "Media",
-    "Font",
-    "Script",
-    "TextTrack",
-    "XHR",
-    "Fetch",
-    "Prefetch",
-    "EventSource",
-    "WebSocket",
-    "Manifest",
-    "SignedExchange",
-    "Ping",
-    "CSPViolationReport",
-    "Preflight",
-    "FedCM",
-    "Other",
-]
-"""
-Resource type as it was perceived by the rendering engine.
-"""
+
+class ResourceType(CDPStrEnum):
+    """
+    Resource type as it was perceived by the rendering engine.
+    """
+
+    DOCUMENT = "Document"
+    STYLESHEET = "Stylesheet"
+    IMAGE = "Image"
+    MEDIA = "Media"
+    FONT = "Font"
+    SCRIPT = "Script"
+    TEXT_TRACK = "TextTrack"
+    XHR = "XHR"
+    FETCH = "Fetch"
+    PREFETCH = "Prefetch"
+    EVENT_SOURCE = "EventSource"
+    WEB_SOCKET = "WebSocket"
+    MANIFEST = "Manifest"
+    SIGNED_EXCHANGE = "SignedExchange"
+    PING = "Ping"
+    CSP_VIOLATION_REPORT = "CSPViolationReport"
+    PREFLIGHT = "Preflight"
+    FED_CM = "FedCM"
+    OTHER = "Other"
+
 
 type LoaderId = str
 """
@@ -45,25 +48,27 @@ Unique network request identifier. Note that this does not identify individual H
 requests that are part of a network request.
 """
 
-type ErrorReason = Literal[
-    "Failed",
-    "Aborted",
-    "TimedOut",
-    "AccessDenied",
-    "ConnectionClosed",
-    "ConnectionReset",
-    "ConnectionRefused",
-    "ConnectionAborted",
-    "ConnectionFailed",
-    "NameNotResolved",
-    "InternetDisconnected",
-    "AddressUnreachable",
-    "BlockedByClient",
-    "BlockedByResponse",
-]
-"""
-Network level fetch failure reason.
-"""
+
+class ErrorReason(CDPStrEnum):
+    """
+    Network level fetch failure reason.
+    """
+
+    FAILED = "Failed"
+    ABORTED = "Aborted"
+    TIMED_OUT = "TimedOut"
+    ACCESS_DENIED = "AccessDenied"
+    CONNECTION_CLOSED = "ConnectionClosed"
+    CONNECTION_RESET = "ConnectionReset"
+    CONNECTION_REFUSED = "ConnectionRefused"
+    CONNECTION_ABORTED = "ConnectionAborted"
+    CONNECTION_FAILED = "ConnectionFailed"
+    NAME_NOT_RESOLVED = "NameNotResolved"
+    INTERNET_DISCONNECTED = "InternetDisconnected"
+    ADDRESS_UNREACHABLE = "AddressUnreachable"
+    BLOCKED_BY_CLIENT = "BlockedByClient"
+    BLOCKED_BY_RESPONSE = "BlockedByResponse"
+
 
 type TimeSinceEpoch = float
 """
@@ -80,39 +85,55 @@ type Headers = dict[str, Any]
 Request / response headers as keys / values of JSON object.
 """
 
-type ConnectionType = Literal[
-    "none",
-    "cellular2g",
-    "cellular3g",
-    "cellular4g",
-    "bluetooth",
-    "ethernet",
-    "wifi",
-    "wimax",
-    "other",
-]
-"""
-The underlying connection technology that the browser is supposedly using.
-"""
 
-type CookieSameSite = Literal["Strict", "Lax", "None"]
-"""
-Represents the cookie's 'SameSite' status:
-https://tools.ietf.org/html/draft-west-first-party-cookies
-"""
+class ConnectionType(CDPStrEnum):
+    """
+    The underlying connection technology that the browser is supposedly using.
+    """
 
-type CookiePriority = Literal["Low", "Medium", "High"]
-"""
-Represents the cookie's 'Priority' status:
-https://tools.ietf.org/html/draft-west-cookie-priority-00
-"""
+    NONE = "none"
+    CELLULAR2G = "cellular2g"
+    CELLULAR3G = "cellular3g"
+    CELLULAR4G = "cellular4g"
+    BLUETOOTH = "bluetooth"
+    ETHERNET = "ethernet"
+    WIFI = "wifi"
+    WIMAX = "wimax"
+    OTHER = "other"
 
-type CookieSourceScheme = Literal["Unset", "NonSecure", "Secure"]
-"""
-Represents the source scheme of the origin that originally set the cookie. A value of
-"Unset" allows protocol clients to emulate legacy cookie scope for the scheme. This is a
-temporary ability and it will be removed in the future.
-"""
+
+class CookieSameSite(CDPStrEnum):
+    """
+    Represents the cookie's 'SameSite' status:
+    https://tools.ietf.org/html/draft-west-first-party-cookies
+    """
+
+    STRICT = "Strict"
+    LAX = "Lax"
+    NONE = "None"
+
+
+class CookiePriority(CDPStrEnum):
+    """
+    Represents the cookie's 'Priority' status:
+    https://tools.ietf.org/html/draft-west-cookie-priority-00
+    """
+
+    LOW = "Low"
+    MEDIUM = "Medium"
+    HIGH = "High"
+
+
+class CookieSourceScheme(CDPStrEnum):
+    """
+    Represents the source scheme of the origin that originally set the cookie. A value
+    of "Unset" allows protocol clients to emulate legacy cookie scope for the scheme.
+    This is a temporary ability and it will be removed in the future.
+    """
+
+    UNSET = "Unset"
+    NON_SECURE = "NonSecure"
+    SECURE = "Secure"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -150,21 +171,28 @@ class ResourceTiming:
     receive_headers_end: float = field(metadata={"cdp_name": "receiveHeadersEnd"})
 
 
-type ResourcePriority = Literal["VeryLow", "Low", "Medium", "High", "VeryHigh"]
-"""
-Loading priority of a resource request.
-"""
+class ResourcePriority(CDPStrEnum):
+    """
+    Loading priority of a resource request.
+    """
 
-type RenderBlockingBehavior = Literal[
-    "Blocking",
-    "InBodyParserBlocking",
-    "NonBlocking",
-    "NonBlockingDynamic",
-    "PotentiallyBlocking",
-]
-"""
-The render-blocking behavior of a resource request.
-"""
+    VERY_LOW = "VeryLow"
+    LOW = "Low"
+    MEDIUM = "Medium"
+    HIGH = "High"
+    VERY_HIGH = "VeryHigh"
+
+
+class RenderBlockingBehavior(CDPStrEnum):
+    """
+    The render-blocking behavior of a resource request.
+    """
+
+    BLOCKING = "Blocking"
+    IN_BODY_PARSER_BLOCKING = "InBodyParserBlocking"
+    NON_BLOCKING = "NonBlocking"
+    NON_BLOCKING_DYNAMIC = "NonBlockingDynamic"
+    POTENTIALLY_BLOCKING = "PotentiallyBlocking"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -270,68 +298,80 @@ class SecurityDetails:
     encrypted_client_hello: bool = field(metadata={"cdp_name": "encryptedClientHello"})
 
 
-type CertificateTransparencyCompliance = Literal[
-    "unknown", "not-compliant", "compliant"
-]
-"""
-Whether the request complied with Certificate Transparency policy.
-"""
+class CertificateTransparencyCompliance(CDPStrEnum):
+    """
+    Whether the request complied with Certificate Transparency policy.
+    """
 
-type BlockedReason = Literal[
-    "other",
-    "csp",
-    "mixed-content",
-    "origin",
-    "inspector",
-    "integrity",
-    "subresource-filter",
-    "content-type",
-    "coep-frame-resource-needs-coep-header",
-    "coop-sandboxed-iframe-cannot-navigate-to-coop-page",
-    "corp-not-same-origin",
-    "corp-not-same-origin-after-defaulted-to-same-origin-by-coep",
-    "corp-not-same-origin-after-defaulted-to-same-origin-by-dip",
-    "corp-not-same-origin-after-defaulted-to-same-origin-by-coep-and-dip",
-    "corp-not-same-site",
-    "sri-message-signature-mismatch",
-]
-"""
-The reason why request was blocked.
-"""
+    UNKNOWN = "unknown"
+    NOT_COMPLIANT = "not-compliant"
+    COMPLIANT = "compliant"
 
-type CorsError = Literal[
-    "DisallowedByMode",
-    "InvalidResponse",
-    "WildcardOriginNotAllowed",
-    "MissingAllowOriginHeader",
-    "MultipleAllowOriginValues",
-    "InvalidAllowOriginValue",
-    "AllowOriginMismatch",
-    "InvalidAllowCredentials",
-    "CorsDisabledScheme",
-    "PreflightInvalidStatus",
-    "PreflightDisallowedRedirect",
-    "PreflightWildcardOriginNotAllowed",
-    "PreflightMissingAllowOriginHeader",
-    "PreflightMultipleAllowOriginValues",
-    "PreflightInvalidAllowOriginValue",
-    "PreflightAllowOriginMismatch",
-    "PreflightInvalidAllowCredentials",
-    "PreflightMissingAllowExternal",
-    "PreflightInvalidAllowExternal",
-    "InvalidAllowMethodsPreflightResponse",
-    "InvalidAllowHeadersPreflightResponse",
-    "MethodDisallowedByPreflightResponse",
-    "HeaderDisallowedByPreflightResponse",
-    "RedirectContainsCredentials",
-    "InsecureLocalNetwork",
-    "InvalidLocalNetworkAccess",
-    "NoCorsRedirectModeNotFollow",
-    "LocalNetworkAccessPermissionDenied",
-]
-"""
-The reason why request was blocked.
-"""
+
+class BlockedReason(CDPStrEnum):
+    """
+    The reason why request was blocked.
+    """
+
+    OTHER = "other"
+    CSP = "csp"
+    MIXED_CONTENT = "mixed-content"
+    ORIGIN = "origin"
+    INSPECTOR = "inspector"
+    INTEGRITY = "integrity"
+    SUBRESOURCE_FILTER = "subresource-filter"
+    CONTENT_TYPE = "content-type"
+    COEP_FRAME_RESOURCE_NEEDS_COEP_HEADER = "coep-frame-resource-needs-coep-header"
+    COOP_SANDBOXED_IFRAME_CANNOT_NAVIGATE_TO_COOP_PAGE = (
+        "coop-sandboxed-iframe-cannot-navigate-to-coop-page"
+    )
+    CORP_NOT_SAME_ORIGIN = "corp-not-same-origin"
+    CORP_NOT_SAME_ORIGIN_AFTER_DEFAULTED_TO_SAME_ORIGIN_BY_COEP = (
+        "corp-not-same-origin-after-defaulted-to-same-origin-by-coep"
+    )
+    CORP_NOT_SAME_ORIGIN_AFTER_DEFAULTED_TO_SAME_ORIGIN_BY_DIP = (
+        "corp-not-same-origin-after-defaulted-to-same-origin-by-dip"
+    )
+    CORP_NOT_SAME_ORIGIN_AFTER_DEFAULTED_TO_SAME_ORIGIN_BY_COEP_AND_DIP = (
+        "corp-not-same-origin-after-defaulted-to-same-origin-by-coep-and-dip"
+    )
+    CORP_NOT_SAME_SITE = "corp-not-same-site"
+    SRI_MESSAGE_SIGNATURE_MISMATCH = "sri-message-signature-mismatch"
+
+
+class CorsError(CDPStrEnum):
+    """
+    The reason why request was blocked.
+    """
+
+    DISALLOWED_BY_MODE = "DisallowedByMode"
+    INVALID_RESPONSE = "InvalidResponse"
+    WILDCARD_ORIGIN_NOT_ALLOWED = "WildcardOriginNotAllowed"
+    MISSING_ALLOW_ORIGIN_HEADER = "MissingAllowOriginHeader"
+    MULTIPLE_ALLOW_ORIGIN_VALUES = "MultipleAllowOriginValues"
+    INVALID_ALLOW_ORIGIN_VALUE = "InvalidAllowOriginValue"
+    ALLOW_ORIGIN_MISMATCH = "AllowOriginMismatch"
+    INVALID_ALLOW_CREDENTIALS = "InvalidAllowCredentials"
+    CORS_DISABLED_SCHEME = "CorsDisabledScheme"
+    PREFLIGHT_INVALID_STATUS = "PreflightInvalidStatus"
+    PREFLIGHT_DISALLOWED_REDIRECT = "PreflightDisallowedRedirect"
+    PREFLIGHT_WILDCARD_ORIGIN_NOT_ALLOWED = "PreflightWildcardOriginNotAllowed"
+    PREFLIGHT_MISSING_ALLOW_ORIGIN_HEADER = "PreflightMissingAllowOriginHeader"
+    PREFLIGHT_MULTIPLE_ALLOW_ORIGIN_VALUES = "PreflightMultipleAllowOriginValues"
+    PREFLIGHT_INVALID_ALLOW_ORIGIN_VALUE = "PreflightInvalidAllowOriginValue"
+    PREFLIGHT_ALLOW_ORIGIN_MISMATCH = "PreflightAllowOriginMismatch"
+    PREFLIGHT_INVALID_ALLOW_CREDENTIALS = "PreflightInvalidAllowCredentials"
+    PREFLIGHT_MISSING_ALLOW_EXTERNAL = "PreflightMissingAllowExternal"
+    PREFLIGHT_INVALID_ALLOW_EXTERNAL = "PreflightInvalidAllowExternal"
+    INVALID_ALLOW_METHODS_PREFLIGHT_RESPONSE = "InvalidAllowMethodsPreflightResponse"
+    INVALID_ALLOW_HEADERS_PREFLIGHT_RESPONSE = "InvalidAllowHeadersPreflightResponse"
+    METHOD_DISALLOWED_BY_PREFLIGHT_RESPONSE = "MethodDisallowedByPreflightResponse"
+    HEADER_DISALLOWED_BY_PREFLIGHT_RESPONSE = "HeaderDisallowedByPreflightResponse"
+    REDIRECT_CONTAINS_CREDENTIALS = "RedirectContainsCredentials"
+    INSECURE_LOCAL_NETWORK = "InsecureLocalNetwork"
+    INVALID_LOCAL_NETWORK_ACCESS = "InvalidLocalNetworkAccess"
+    NO_CORS_REDIRECT_MODE_NOT_FOLLOW = "NoCorsRedirectModeNotFollow"
+    LOCAL_NETWORK_ACCESS_PERMISSION_DENIED = "LocalNetworkAccessPermissionDenied"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -340,12 +380,15 @@ class CorsErrorStatus:
     failed_parameter: str = field(metadata={"cdp_name": "failedParameter"})
 
 
-type ServiceWorkerResponseSource = Literal[
-    "cache-storage", "http-cache", "fallback-code", "network"
-]
-"""
-Source of serviceworker response.
-"""
+class ServiceWorkerResponseSource(CDPStrEnum):
+    """
+    Source of serviceworker response.
+    """
+
+    CACHE_STORAGE = "cache-storage"
+    HTTP_CACHE = "http-cache"
+    FALLBACK_CODE = "fallback-code"
+    NETWORK = "network"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -363,32 +406,37 @@ class TrustTokenParams:
     issuers: list[str] | None = None
 
 
-type TrustTokenOperationType = Literal["Issuance", "Redemption", "Signing"]
+class TrustTokenOperationType(CDPStrEnum):
+    ISSUANCE = "Issuance"
+    REDEMPTION = "Redemption"
+    SIGNING = "Signing"
 
-type AlternateProtocolUsage = Literal[
-    "alternativeJobWonWithoutRace",
-    "alternativeJobWonRace",
-    "mainJobWonRace",
-    "mappingMissing",
-    "broken",
-    "dnsAlpnH3JobWonWithoutRace",
-    "dnsAlpnH3JobWonRace",
-    "unspecifiedReason",
-]
-"""
-The reason why Chrome uses a specific transport protocol for HTTP semantics.
-"""
 
-type ServiceWorkerRouterSource = Literal[
-    "network",
-    "cache",
-    "fetch-event",
-    "race-network-and-fetch-handler",
-    "race-network-and-cache",
-]
-"""
-Source of service worker router.
-"""
+class AlternateProtocolUsage(CDPStrEnum):
+    """
+    The reason why Chrome uses a specific transport protocol for HTTP semantics.
+    """
+
+    ALTERNATIVE_JOB_WON_WITHOUT_RACE = "alternativeJobWonWithoutRace"
+    ALTERNATIVE_JOB_WON_RACE = "alternativeJobWonRace"
+    MAIN_JOB_WON_RACE = "mainJobWonRace"
+    MAPPING_MISSING = "mappingMissing"
+    BROKEN = "broken"
+    DNS_ALPN_H3_JOB_WON_WITHOUT_RACE = "dnsAlpnH3JobWonWithoutRace"
+    DNS_ALPN_H3_JOB_WON_RACE = "dnsAlpnH3JobWonRace"
+    UNSPECIFIED_REASON = "unspecifiedReason"
+
+
+class ServiceWorkerRouterSource(CDPStrEnum):
+    """
+    Source of service worker router.
+    """
+
+    NETWORK = "network"
+    CACHE = "cache"
+    FETCH_EVENT = "fetch-event"
+    RACE_NETWORK_AND_FETCH_HANDLER = "race-network-and-fetch-handler"
+    RACE_NETWORK_AND_CACHE = "race-network-and-cache"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -579,67 +627,73 @@ class Cookie:
     )
 
 
-type SetCookieBlockedReason = Literal[
-    "SecureOnly",
-    "SameSiteStrict",
-    "SameSiteLax",
-    "SameSiteUnspecifiedTreatedAsLax",
-    "SameSiteNoneInsecure",
-    "UserPreferences",
-    "ThirdPartyPhaseout",
-    "SyntaxError",
-    "SchemeNotSupported",
-    "OverwriteSecure",
-    "InvalidDomain",
-    "InvalidPrefix",
-    "UnknownError",
-    "SchemefulSameSiteStrict",
-    "SchemefulSameSiteLax",
-    "SchemefulSameSiteUnspecifiedTreatedAsLax",
-    "NameValuePairExceedsMaxSize",
-    "DisallowedCharacter",
-    "NoCookieContent",
-]
-"""
-Types of reasons why a cookie may not be stored from a response.
-"""
+class SetCookieBlockedReason(CDPStrEnum):
+    """
+    Types of reasons why a cookie may not be stored from a response.
+    """
 
-type CookieBlockedReason = Literal[
-    "SecureOnly",
-    "NotOnPath",
-    "DomainMismatch",
-    "SameSiteStrict",
-    "SameSiteLax",
-    "SameSiteUnspecifiedTreatedAsLax",
-    "SameSiteNoneInsecure",
-    "UserPreferences",
-    "ThirdPartyPhaseout",
-    "UnknownError",
-    "SchemefulSameSiteStrict",
-    "SchemefulSameSiteLax",
-    "SchemefulSameSiteUnspecifiedTreatedAsLax",
-    "NameValuePairExceedsMaxSize",
-    "PortMismatch",
-    "SchemeMismatch",
-    "AnonymousContext",
-]
-"""
-Types of reasons why a cookie may not be sent with a request.
-"""
+    SECURE_ONLY = "SecureOnly"
+    SAME_SITE_STRICT = "SameSiteStrict"
+    SAME_SITE_LAX = "SameSiteLax"
+    SAME_SITE_UNSPECIFIED_TREATED_AS_LAX = "SameSiteUnspecifiedTreatedAsLax"
+    SAME_SITE_NONE_INSECURE = "SameSiteNoneInsecure"
+    USER_PREFERENCES = "UserPreferences"
+    THIRD_PARTY_PHASEOUT = "ThirdPartyPhaseout"
+    SYNTAX_ERROR = "SyntaxError"
+    SCHEME_NOT_SUPPORTED = "SchemeNotSupported"
+    OVERWRITE_SECURE = "OverwriteSecure"
+    INVALID_DOMAIN = "InvalidDomain"
+    INVALID_PREFIX = "InvalidPrefix"
+    UNKNOWN_ERROR = "UnknownError"
+    SCHEMEFUL_SAME_SITE_STRICT = "SchemefulSameSiteStrict"
+    SCHEMEFUL_SAME_SITE_LAX = "SchemefulSameSiteLax"
+    SCHEMEFUL_SAME_SITE_UNSPECIFIED_TREATED_AS_LAX = (
+        "SchemefulSameSiteUnspecifiedTreatedAsLax"
+    )
+    NAME_VALUE_PAIR_EXCEEDS_MAX_SIZE = "NameValuePairExceedsMaxSize"
+    DISALLOWED_CHARACTER = "DisallowedCharacter"
+    NO_COOKIE_CONTENT = "NoCookieContent"
 
-type CookieExemptionReason = Literal[
-    "None",
-    "UserSetting",
-    "EnterprisePolicy",
-    "StorageAccess",
-    "TopLevelStorageAccess",
-    "Scheme",
-    "SameSiteNoneCookiesInSandbox",
-]
-"""
-Types of reasons why a cookie should have been blocked by 3PCD but is exempted for the
-request.
-"""
+
+class CookieBlockedReason(CDPStrEnum):
+    """
+    Types of reasons why a cookie may not be sent with a request.
+    """
+
+    SECURE_ONLY = "SecureOnly"
+    NOT_ON_PATH = "NotOnPath"
+    DOMAIN_MISMATCH = "DomainMismatch"
+    SAME_SITE_STRICT = "SameSiteStrict"
+    SAME_SITE_LAX = "SameSiteLax"
+    SAME_SITE_UNSPECIFIED_TREATED_AS_LAX = "SameSiteUnspecifiedTreatedAsLax"
+    SAME_SITE_NONE_INSECURE = "SameSiteNoneInsecure"
+    USER_PREFERENCES = "UserPreferences"
+    THIRD_PARTY_PHASEOUT = "ThirdPartyPhaseout"
+    UNKNOWN_ERROR = "UnknownError"
+    SCHEMEFUL_SAME_SITE_STRICT = "SchemefulSameSiteStrict"
+    SCHEMEFUL_SAME_SITE_LAX = "SchemefulSameSiteLax"
+    SCHEMEFUL_SAME_SITE_UNSPECIFIED_TREATED_AS_LAX = (
+        "SchemefulSameSiteUnspecifiedTreatedAsLax"
+    )
+    NAME_VALUE_PAIR_EXCEEDS_MAX_SIZE = "NameValuePairExceedsMaxSize"
+    PORT_MISMATCH = "PortMismatch"
+    SCHEME_MISMATCH = "SchemeMismatch"
+    ANONYMOUS_CONTEXT = "AnonymousContext"
+
+
+class CookieExemptionReason(CDPStrEnum):
+    """
+    Types of reasons why a cookie should have been blocked by 3PCD but is exempted for
+    the request.
+    """
+
+    NONE = "None"
+    USER_SETTING = "UserSetting"
+    ENTERPRISE_POLICY = "EnterprisePolicy"
+    STORAGE_ACCESS = "StorageAccess"
+    TOP_LEVEL_STORAGE_ACCESS = "TopLevelStorageAccess"
+    SCHEME = "Scheme"
+    SAME_SITE_NONE_COOKIES_IN_SANDBOX = "SameSiteNoneCookiesInSandbox"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -768,17 +822,17 @@ class SignedExchangeHeader:
     header_integrity: str = field(metadata={"cdp_name": "headerIntegrity"})
 
 
-type SignedExchangeErrorField = Literal[
-    "signatureSig",
-    "signatureIntegrity",
-    "signatureCertUrl",
-    "signatureCertSha256",
-    "signatureValidityUrl",
-    "signatureTimestamps",
-]
-"""
-Field type for a signed exchange related error.
-"""
+class SignedExchangeErrorField(CDPStrEnum):
+    """
+    Field type for a signed exchange related error.
+    """
+
+    SIGNATURE_SIG = "signatureSig"
+    SIGNATURE_INTEGRITY = "signatureIntegrity"
+    SIGNATURE_CERT_URL = "signatureCertUrl"
+    SIGNATURE_CERT_SHA256 = "signatureCertSha256"
+    SIGNATURE_VALIDITY_URL = "signatureValidityUrl"
+    SIGNATURE_TIMESTAMPS = "signatureTimestamps"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -836,7 +890,9 @@ class BlockPattern:
     block: bool
 
 
-type DirectSocketDnsQueryType = Literal["ipv4", "ipv6"]
+class DirectSocketDnsQueryType(CDPStrEnum):
+    IPV4 = "ipv4"
+    IPV6 = "ipv6"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -889,15 +945,19 @@ class DirectUDPMessage:
     remote_port: int | None = field(default=None, metadata={"cdp_name": "remotePort"})
 
 
-type LocalNetworkAccessRequestPolicy = Literal[
-    "Allow",
-    "BlockFromInsecureToMorePrivate",
-    "WarnFromInsecureToMorePrivate",
-    "PermissionBlock",
-    "PermissionWarn",
-]
+class LocalNetworkAccessRequestPolicy(CDPStrEnum):
+    ALLOW = "Allow"
+    BLOCK_FROM_INSECURE_TO_MORE_PRIVATE = "BlockFromInsecureToMorePrivate"
+    WARN_FROM_INSECURE_TO_MORE_PRIVATE = "WarnFromInsecureToMorePrivate"
+    PERMISSION_BLOCK = "PermissionBlock"
+    PERMISSION_WARN = "PermissionWarn"
 
-type IPAddressSpace = Literal["Loopback", "Local", "Public", "Unknown"]
+
+class IPAddressSpace(CDPStrEnum):
+    LOOPBACK = "Loopback"
+    LOCAL = "Local"
+    PUBLIC = "Public"
+    UNKNOWN = "Unknown"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -966,15 +1026,14 @@ class AdProvenance:
     )
 
 
-type CrossOriginOpenerPolicyValue = Literal[
-    "SameOrigin",
-    "SameOriginAllowPopups",
-    "RestrictProperties",
-    "UnsafeNone",
-    "SameOriginPlusCoep",
-    "RestrictPropertiesPlusCoep",
-    "NoopenerAllowPopups",
-]
+class CrossOriginOpenerPolicyValue(CDPStrEnum):
+    SAME_ORIGIN = "SameOrigin"
+    SAME_ORIGIN_ALLOW_POPUPS = "SameOriginAllowPopups"
+    RESTRICT_PROPERTIES = "RestrictProperties"
+    UNSAFE_NONE = "UnsafeNone"
+    SAME_ORIGIN_PLUS_COEP = "SameOriginPlusCoep"
+    RESTRICT_PROPERTIES_PLUS_COEP = "RestrictPropertiesPlusCoep"
+    NOOPENER_ALLOW_POPUPS = "NoopenerAllowPopups"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -991,7 +1050,10 @@ class CrossOriginOpenerPolicyStatus:
     )
 
 
-type CrossOriginEmbedderPolicyValue = Literal["None", "Credentialless", "RequireCorp"]
+class CrossOriginEmbedderPolicyValue(CDPStrEnum):
+    NONE = "None"
+    CREDENTIALLESS = "Credentialless"
+    REQUIRE_CORP = "RequireCorp"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -1008,7 +1070,9 @@ class CrossOriginEmbedderPolicyStatus:
     )
 
 
-type ContentSecurityPolicySource = Literal["HTTP", "Meta"]
+class ContentSecurityPolicySource(CDPStrEnum):
+    HTTP = "HTTP"
+    META = "Meta"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -1025,10 +1089,16 @@ class SecurityIsolationStatus:
     csp: list[ContentSecurityPolicyStatus] | None = None
 
 
-type ReportStatus = Literal["Queued", "Pending", "MarkedForRemoval", "Success"]
-"""
-The status of a Reporting API report.
-"""
+class ReportStatus(CDPStrEnum):
+    """
+    The status of a Reporting API report.
+    """
+
+    QUEUED = "Queued"
+    PENDING = "Pending"
+    MARKED_FOR_REMOVAL = "MarkedForRemoval"
+    SUCCESS = "Success"
+
 
 type ReportId = str
 
@@ -1151,89 +1221,114 @@ type DeviceBoundSessionEventId = str
 A unique identifier for a device bound session event.
 """
 
-type DeviceBoundSessionFetchResult = Literal[
-    "Success",
-    "SigningKeyGenerationError",
-    "AttestationKeyGenerationError",
-    "SigningError",
-    "TransientSigningError",
-    "ServerRequestedTermination",
-    "InvalidSessionId",
-    "InvalidChallenge",
-    "TooManyChallenges",
-    "InvalidFetcherUrl",
-    "InvalidRefreshUrl",
-    "TransientHttpError",
-    "ScopeOriginSameSiteMismatch",
-    "RefreshUrlSameSiteMismatch",
-    "MismatchedSessionId",
-    "MissingScope",
-    "NoCredentials",
-    "SubdomainRegistrationWellKnownUnavailable",
-    "SubdomainRegistrationUnauthorized",
-    "SubdomainRegistrationWellKnownMalformed",
-    "SessionProviderWellKnownUnavailable",
-    "RelyingPartyWellKnownUnavailable",
-    "FederatedKeyThumbprintMismatch",
-    "InvalidFederatedSessionUrl",
-    "InvalidFederatedKey",
-    "TooManyRelyingOriginLabels",
-    "BoundCookieSetForbidden",
-    "NetError",
-    "ProxyError",
-    "EmptySessionConfig",
-    "InvalidCredentialsConfig",
-    "InvalidCredentialsType",
-    "InvalidCredentialsEmptyName",
-    "InvalidCredentialsCookie",
-    "PersistentHttpError",
-    "RegistrationAttemptedChallenge",
-    "InvalidScopeOrigin",
-    "ScopeOriginContainsPath",
-    "RefreshInitiatorNotString",
-    "RefreshInitiatorInvalidHostPattern",
-    "InvalidScopeSpecification",
-    "MissingScopeSpecificationType",
-    "EmptyScopeSpecificationDomain",
-    "EmptyScopeSpecificationPath",
-    "InvalidScopeSpecificationType",
-    "InvalidScopeIncludeSite",
-    "MissingScopeIncludeSite",
-    "FederatedNotAuthorizedByProvider",
-    "FederatedNotAuthorizedByRelyingParty",
-    "SessionProviderWellKnownMalformed",
-    "SessionProviderWellKnownHasProviderOrigin",
-    "RelyingPartyWellKnownMalformed",
-    "RelyingPartyWellKnownHasRelyingOrigins",
-    "InvalidFederatedSessionProviderSessionMissing",
-    "InvalidFederatedSessionWrongProviderOrigin",
-    "InvalidCredentialsCookieCreationTime",
-    "InvalidCredentialsCookieName",
-    "InvalidCredentialsCookieParsing",
-    "InvalidCredentialsCookieUnpermittedAttribute",
-    "InvalidCredentialsCookieInvalidDomain",
-    "InvalidCredentialsCookiePrefix",
-    "InvalidScopeRulePath",
-    "InvalidScopeRuleHostPattern",
-    "ScopeRuleOriginScopedHostPatternMismatch",
-    "ScopeRuleSiteScopedHostPatternMismatch",
-    "SigningQuotaExceeded",
-    "InvalidConfigJson",
-    "InvalidFederatedSessionProviderFailedToRestoreKey",
-    "FailedToUnwrapKey",
-    "SessionDeletedDuringRefresh",
-    "CrossOriginRegistrationSiteNotIncluded",
-    "InvalidPreProvisionedKeyInitiatorMissing",
-    "PreProvisionedKeyAccessNotGranted",
-    "PreProvisionedKeyNotFound",
-    "AttestationCertificationError",
-    "AttestationSigningError",
-    "FederatedRegistrationRedirected",
-]
-"""
-A fetch result for a device bound session creation or refresh.
-LINT.IfChange(DeviceBoundSessionFetchResult)
-"""
+
+class DeviceBoundSessionFetchResult(CDPStrEnum):
+    """
+    A fetch result for a device bound session creation or refresh.
+    LINT.IfChange(DeviceBoundSessionFetchResult)
+    """
+
+    SUCCESS = "Success"
+    SIGNING_KEY_GENERATION_ERROR = "SigningKeyGenerationError"
+    ATTESTATION_KEY_GENERATION_ERROR = "AttestationKeyGenerationError"
+    SIGNING_ERROR = "SigningError"
+    TRANSIENT_SIGNING_ERROR = "TransientSigningError"
+    SERVER_REQUESTED_TERMINATION = "ServerRequestedTermination"
+    INVALID_SESSION_ID = "InvalidSessionId"
+    INVALID_CHALLENGE = "InvalidChallenge"
+    TOO_MANY_CHALLENGES = "TooManyChallenges"
+    INVALID_FETCHER_URL = "InvalidFetcherUrl"
+    INVALID_REFRESH_URL = "InvalidRefreshUrl"
+    TRANSIENT_HTTP_ERROR = "TransientHttpError"
+    SCOPE_ORIGIN_SAME_SITE_MISMATCH = "ScopeOriginSameSiteMismatch"
+    REFRESH_URL_SAME_SITE_MISMATCH = "RefreshUrlSameSiteMismatch"
+    MISMATCHED_SESSION_ID = "MismatchedSessionId"
+    MISSING_SCOPE = "MissingScope"
+    NO_CREDENTIALS = "NoCredentials"
+    SUBDOMAIN_REGISTRATION_WELL_KNOWN_UNAVAILABLE = (
+        "SubdomainRegistrationWellKnownUnavailable"
+    )
+    SUBDOMAIN_REGISTRATION_UNAUTHORIZED = "SubdomainRegistrationUnauthorized"
+    SUBDOMAIN_REGISTRATION_WELL_KNOWN_MALFORMED = (
+        "SubdomainRegistrationWellKnownMalformed"
+    )
+    SESSION_PROVIDER_WELL_KNOWN_UNAVAILABLE = "SessionProviderWellKnownUnavailable"
+    RELYING_PARTY_WELL_KNOWN_UNAVAILABLE = "RelyingPartyWellKnownUnavailable"
+    FEDERATED_KEY_THUMBPRINT_MISMATCH = "FederatedKeyThumbprintMismatch"
+    INVALID_FEDERATED_SESSION_URL = "InvalidFederatedSessionUrl"
+    INVALID_FEDERATED_KEY = "InvalidFederatedKey"
+    TOO_MANY_RELYING_ORIGIN_LABELS = "TooManyRelyingOriginLabels"
+    BOUND_COOKIE_SET_FORBIDDEN = "BoundCookieSetForbidden"
+    NET_ERROR = "NetError"
+    PROXY_ERROR = "ProxyError"
+    EMPTY_SESSION_CONFIG = "EmptySessionConfig"
+    INVALID_CREDENTIALS_CONFIG = "InvalidCredentialsConfig"
+    INVALID_CREDENTIALS_TYPE = "InvalidCredentialsType"
+    INVALID_CREDENTIALS_EMPTY_NAME = "InvalidCredentialsEmptyName"
+    INVALID_CREDENTIALS_COOKIE = "InvalidCredentialsCookie"
+    PERSISTENT_HTTP_ERROR = "PersistentHttpError"
+    REGISTRATION_ATTEMPTED_CHALLENGE = "RegistrationAttemptedChallenge"
+    INVALID_SCOPE_ORIGIN = "InvalidScopeOrigin"
+    SCOPE_ORIGIN_CONTAINS_PATH = "ScopeOriginContainsPath"
+    REFRESH_INITIATOR_NOT_STRING = "RefreshInitiatorNotString"
+    REFRESH_INITIATOR_INVALID_HOST_PATTERN = "RefreshInitiatorInvalidHostPattern"
+    INVALID_SCOPE_SPECIFICATION = "InvalidScopeSpecification"
+    MISSING_SCOPE_SPECIFICATION_TYPE = "MissingScopeSpecificationType"
+    EMPTY_SCOPE_SPECIFICATION_DOMAIN = "EmptyScopeSpecificationDomain"
+    EMPTY_SCOPE_SPECIFICATION_PATH = "EmptyScopeSpecificationPath"
+    INVALID_SCOPE_SPECIFICATION_TYPE = "InvalidScopeSpecificationType"
+    INVALID_SCOPE_INCLUDE_SITE = "InvalidScopeIncludeSite"
+    MISSING_SCOPE_INCLUDE_SITE = "MissingScopeIncludeSite"
+    FEDERATED_NOT_AUTHORIZED_BY_PROVIDER = "FederatedNotAuthorizedByProvider"
+    FEDERATED_NOT_AUTHORIZED_BY_RELYING_PARTY = "FederatedNotAuthorizedByRelyingParty"
+    SESSION_PROVIDER_WELL_KNOWN_MALFORMED = "SessionProviderWellKnownMalformed"
+    SESSION_PROVIDER_WELL_KNOWN_HAS_PROVIDER_ORIGIN = (
+        "SessionProviderWellKnownHasProviderOrigin"
+    )
+    RELYING_PARTY_WELL_KNOWN_MALFORMED = "RelyingPartyWellKnownMalformed"
+    RELYING_PARTY_WELL_KNOWN_HAS_RELYING_ORIGINS = (
+        "RelyingPartyWellKnownHasRelyingOrigins"
+    )
+    INVALID_FEDERATED_SESSION_PROVIDER_SESSION_MISSING = (
+        "InvalidFederatedSessionProviderSessionMissing"
+    )
+    INVALID_FEDERATED_SESSION_WRONG_PROVIDER_ORIGIN = (
+        "InvalidFederatedSessionWrongProviderOrigin"
+    )
+    INVALID_CREDENTIALS_COOKIE_CREATION_TIME = "InvalidCredentialsCookieCreationTime"
+    INVALID_CREDENTIALS_COOKIE_NAME = "InvalidCredentialsCookieName"
+    INVALID_CREDENTIALS_COOKIE_PARSING = "InvalidCredentialsCookieParsing"
+    INVALID_CREDENTIALS_COOKIE_UNPERMITTED_ATTRIBUTE = (
+        "InvalidCredentialsCookieUnpermittedAttribute"
+    )
+    INVALID_CREDENTIALS_COOKIE_INVALID_DOMAIN = "InvalidCredentialsCookieInvalidDomain"
+    INVALID_CREDENTIALS_COOKIE_PREFIX = "InvalidCredentialsCookiePrefix"
+    INVALID_SCOPE_RULE_PATH = "InvalidScopeRulePath"
+    INVALID_SCOPE_RULE_HOST_PATTERN = "InvalidScopeRuleHostPattern"
+    SCOPE_RULE_ORIGIN_SCOPED_HOST_PATTERN_MISMATCH = (
+        "ScopeRuleOriginScopedHostPatternMismatch"
+    )
+    SCOPE_RULE_SITE_SCOPED_HOST_PATTERN_MISMATCH = (
+        "ScopeRuleSiteScopedHostPatternMismatch"
+    )
+    SIGNING_QUOTA_EXCEEDED = "SigningQuotaExceeded"
+    INVALID_CONFIG_JSON = "InvalidConfigJson"
+    INVALID_FEDERATED_SESSION_PROVIDER_FAILED_TO_RESTORE_KEY = (
+        "InvalidFederatedSessionProviderFailedToRestoreKey"
+    )
+    FAILED_TO_UNWRAP_KEY = "FailedToUnwrapKey"
+    SESSION_DELETED_DURING_REFRESH = "SessionDeletedDuringRefresh"
+    CROSS_ORIGIN_REGISTRATION_SITE_NOT_INCLUDED = (
+        "CrossOriginRegistrationSiteNotIncluded"
+    )
+    INVALID_PRE_PROVISIONED_KEY_INITIATOR_MISSING = (
+        "InvalidPreProvisionedKeyInitiatorMissing"
+    )
+    PRE_PROVISIONED_KEY_ACCESS_NOT_GRANTED = "PreProvisionedKeyAccessNotGranted"
+    PRE_PROVISIONED_KEY_NOT_FOUND = "PreProvisionedKeyNotFound"
+    ATTESTATION_CERTIFICATION_ERROR = "AttestationCertificationError"
+    ATTESTATION_SIGNING_ERROR = "AttestationSigningError"
+    FEDERATED_REGISTRATION_REDIRECTED = "FederatedRegistrationRedirected"
 
 
 @dataclass(kw_only=True, slots=True)

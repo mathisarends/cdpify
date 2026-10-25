@@ -29,7 +29,9 @@ class RecordingStateChangedEvent:
     Called when the recording state for the service has been updated.
     """
 
-    __cdp_event__: ClassVar[str] = "BackgroundService.recordingStateChanged"
+    __cdp_event__: ClassVar[BackgroundServiceEvent] = (
+        BackgroundServiceEvent.RECORDING_STATE_CHANGED
+    )
 
     is_recording: bool = field(metadata={"cdp_name": "isRecording"})
     service: ServiceName
@@ -42,7 +44,9 @@ class BackgroundServiceEventReceivedEvent:
     afterwards if enabled and recording.
     """
 
-    __cdp_event__: ClassVar[str] = "BackgroundService.backgroundServiceEventReceived"
+    __cdp_event__: ClassVar[BackgroundServiceEvent] = (
+        BackgroundServiceEvent.BACKGROUND_SERVICE_EVENT_RECEIVED
+    )
 
     background_service_event: BackgroundServiceEventType = field(
         metadata={"cdp_name": "backgroundServiceEvent"}

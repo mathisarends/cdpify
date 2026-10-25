@@ -39,14 +39,14 @@ class RuleSetUpdatedEvent:
     Upsert. Currently, it is only emitted when a rule set added.
     """
 
-    __cdp_event__: ClassVar[str] = "Preload.ruleSetUpdated"
+    __cdp_event__: ClassVar[PreloadEvent] = PreloadEvent.RULE_SET_UPDATED
 
     rule_set: RuleSet = field(metadata={"cdp_name": "ruleSet"})
 
 
 @dataclass(kw_only=True, slots=True)
 class RuleSetRemovedEvent:
-    __cdp_event__: ClassVar[str] = "Preload.ruleSetRemoved"
+    __cdp_event__: ClassVar[PreloadEvent] = PreloadEvent.RULE_SET_REMOVED
 
     id: RuleSetId
 
@@ -57,7 +57,7 @@ class PreloadEnabledStateUpdatedEvent:
     Fired when a preload enabled state is updated.
     """
 
-    __cdp_event__: ClassVar[str] = "Preload.preloadEnabledStateUpdated"
+    __cdp_event__: ClassVar[PreloadEvent] = PreloadEvent.PRELOAD_ENABLED_STATE_UPDATED
 
     disabled_by_preference: bool = field(metadata={"cdp_name": "disabledByPreference"})
     disabled_by_data_saver: bool = field(metadata={"cdp_name": "disabledByDataSaver"})
@@ -78,7 +78,7 @@ class PrefetchStatusUpdatedEvent:
     Fired when a prefetch attempt is updated.
     """
 
-    __cdp_event__: ClassVar[str] = "Preload.prefetchStatusUpdated"
+    __cdp_event__: ClassVar[PreloadEvent] = PreloadEvent.PREFETCH_STATUS_UPDATED
 
     key: PreloadingAttemptKey
     pipeline_id: PreloadPipelineId = field(metadata={"cdp_name": "pipelineId"})
@@ -97,7 +97,7 @@ class PrerenderStatusUpdatedEvent:
     Fired when a prerender attempt is updated.
     """
 
-    __cdp_event__: ClassVar[str] = "Preload.prerenderStatusUpdated"
+    __cdp_event__: ClassVar[PreloadEvent] = PreloadEvent.PRERENDER_STATUS_UPDATED
 
     key: PreloadingAttemptKey
     pipeline_id: PreloadPipelineId = field(metadata={"cdp_name": "pipelineId"})
@@ -122,7 +122,9 @@ class PreloadingAttemptSourcesUpdatedEvent:
     Send a list of sources for all preloading attempts in a document.
     """
 
-    __cdp_event__: ClassVar[str] = "Preload.preloadingAttemptSourcesUpdated"
+    __cdp_event__: ClassVar[PreloadEvent] = (
+        PreloadEvent.PRELOADING_ATTEMPT_SOURCES_UPDATED
+    )
 
     loader_id: network.LoaderId = field(metadata={"cdp_name": "loaderId"})
     preloading_attempt_sources: list[PreloadingAttemptSource] = field(

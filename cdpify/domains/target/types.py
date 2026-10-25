@@ -5,9 +5,10 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Literal
+from typing import Any
 
 from cdpify.domains import browser, page
+from cdpify.shared.enums import CDPStrEnum
 
 type TargetID = str
 
@@ -68,7 +69,12 @@ class RemoteLocation:
     port: int
 
 
-type WindowState = Literal["normal", "minimized", "maximized", "fullscreen"]
-"""
-The state of the target window.
-"""
+class WindowState(CDPStrEnum):
+    """
+    The state of the target window.
+    """
+
+    NORMAL = "normal"
+    MINIMIZED = "minimized"
+    MAXIMIZED = "maximized"
+    FULLSCREEN = "fullscreen"

@@ -22,7 +22,7 @@ class DownloadWillBeginEvent:
     Fired when page is about to start a download.
     """
 
-    __cdp_event__: ClassVar[str] = "Browser.downloadWillBegin"
+    __cdp_event__: ClassVar[BrowserEvent] = BrowserEvent.DOWNLOAD_WILL_BEGIN
 
     frame_id: page.FrameId = field(metadata={"cdp_name": "frameId"})
     guid: str
@@ -36,7 +36,7 @@ class DownloadProgressEvent:
     Fired when download makes progress. Last call has |done| == true.
     """
 
-    __cdp_event__: ClassVar[str] = "Browser.downloadProgress"
+    __cdp_event__: ClassVar[BrowserEvent] = BrowserEvent.DOWNLOAD_PROGRESS
 
     guid: str
     total_bytes: float = field(metadata={"cdp_name": "totalBytes"})
