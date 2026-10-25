@@ -202,3 +202,19 @@ async def test_message_loop_skips_malformed_messages(
 
     assert [event.method for event in events] == ["Page.loadEventFired"]
     assert "Dropping malformed CDP message" in caplog.text
+
+
+@pytest.mark.asyncio
+async def test_event_without_params_has_empty_params() -> None:
+    transport = WebSocketTransport("ws://example")
+    transport._ws = _ScriptedWebSocket(  # type: ignore[assignment]
+        [
+            json.dumps({"method": "Page.loadEventFired", "params": None}),
+            json.dumps({"method": "Page.domContentEventFired"}),
+        ]
+    )
+
+    await transport._run_message_loop()
+    events = [event async for event in transport.events()]
+
+    assert [event.params for event in events] == [{}, {}]

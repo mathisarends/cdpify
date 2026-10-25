@@ -73,6 +73,8 @@ Breaking changes are listed first in each release.
   instead of silently leaving nested values as plain dicts.
 - A malformed message from the browser no longer closes the WebSocket
   connection. The message is logged and skipped.
+- Events sent with `"params": null` are delivered with empty params instead of
+  being dropped as malformed.
 - Event listeners (`listen()`, `listen_all()`, `CDPSession.listen()`) now end
   when the transport event stream ends or the client disconnects. Previously
   they waited forever unless a `timeout` was set. Events that were already

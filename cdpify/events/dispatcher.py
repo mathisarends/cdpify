@@ -92,6 +92,6 @@ async def _invoke_handler(handler: _EventHandler, event: RawCDPEvent) -> bool:
     try:
         await handler(event)
         return True
-    except Exception as e:
-        logger.exception(f"Event handler error: {e}")
+    except Exception:
+        logger.exception("Event handler %r failed", handler)
         return False

@@ -96,4 +96,5 @@ async def test_dispatch_continues_when_handler_raises(
 
     assert handled is True
     assert calls == ["healthy"]
-    assert "Event handler error: boom" in caplog.text
+    assert "failed" in caplog.text
+    assert "RuntimeError: boom" in caplog.text

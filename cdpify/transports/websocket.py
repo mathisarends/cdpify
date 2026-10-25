@@ -1,4 +1,5 @@
 import asyncio
+import itertools
 import json
 import logging
 from collections.abc import AsyncIterator
@@ -28,7 +29,7 @@ class WebSocketTransport:
         self._default_timeout = default_timeout
 
         self._ws: ClientConnection | None = None
-        self._next_message_id = 0
+        self._message_ids = itertools.count()
         self._pending_requests: dict[int, asyncio.Future[dict[str, Any]]] = {}
         self._message_loop_task: asyncio.Task[None] | None = None
         self._event_queue: asyncio.Queue[TransportEvent | None] = asyncio.Queue()
@@ -91,8 +92,7 @@ class WebSocketTransport:
             raise CDPConnectionError("Not connected")
 
         request_timeout = self._default_timeout if timeout is None else timeout
-        message_id = self._next_message_id
-        self._next_message_id += 1
+        message_id = next(self._message_ids)
 
         message = _build_message(message_id, method, params, session_id)
         future = _create_pending_request(self._pending_requests, message_id)
@@ -166,7 +166,7 @@ class WebSocketTransport:
         self._event_queue.put_nowait(
             TransportEvent(
                 method=message["method"],
-                params=dict(message.get("params", {})),
+                params=message.get("params") or {},
                 session_id=message.get("sessionId"),
             )
         )
@@ -253,6 +253,6 @@ def _create_pending_request(
     pending_requests: dict[int, asyncio.Future[dict[str, Any]]],
     message_id: int,
 ) -> asyncio.Future[dict[str, Any]]:
-    future: asyncio.Future[dict[str, Any]] = asyncio.Future()
+    future = asyncio.get_running_loop().create_future()
     pending_requests[message_id] = future
     return future
