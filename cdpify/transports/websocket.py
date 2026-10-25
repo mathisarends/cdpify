@@ -40,6 +40,7 @@ class WebSocketTransport:
         self._message_ids = itertools.count()
         self._pending_requests: dict[int, asyncio.Future[dict[str, Any]]] = {}
         self._message_loop_task: asyncio.Task[None] | None = None
+        self._shutdown_task: asyncio.Task[None] | None = None
         self._event_queue = EventQueue[TransportEvent](max_queue_size)
         self._event_handler: EventHandler | None = None
         self._event_stream_closed = False
@@ -68,6 +69,8 @@ class WebSocketTransport:
         await self.disconnect()
 
     async def connect(self) -> None:
+        if self._shutdown_task is not None:
+            await asyncio.shield(self._shutdown_task)
         if self.is_connected:
             raise CDPConnectionError("Already connected")
 
@@ -82,22 +85,34 @@ class WebSocketTransport:
             raise CDPConnectionError(f"Connection failed: {error}") from error
 
         self._is_shutting_down = False
+        self._shutdown_task = None
         self._event_queue = EventQueue(self._max_queue_size)
         self._event_stream_closed = False
         self._message_loop_task = asyncio.create_task(self._run_message_loop())
         logger.info("Connected")
 
     async def disconnect(self) -> None:
-        if self._is_shutting_down:
-            return
+        """Wait for shared cleanup, even if another caller or the peer started it."""
+        await asyncio.shield(self._start_shutdown(stop_message_loop=True))
 
-        self._is_shutting_down = True
+    def _start_shutdown(self, *, stop_message_loop: bool) -> asyncio.Task[None]:
+        if self._shutdown_task is None:
+            self._is_shutting_down = True
+            self._shutdown_task = asyncio.create_task(
+                self._shutdown(stop_message_loop=stop_message_loop)
+            )
+        return self._shutdown_task
+
+    async def _shutdown(self, *, stop_message_loop: bool) -> None:
         logger.info("Disconnecting...")
 
-        await self._stop_message_loop()
-        self._cancel_pending_requests()
-        await self._close_websocket()
-        await self._finish_event_stream()
+        try:
+            if stop_message_loop:
+                await self._stop_message_loop()
+            self._cancel_pending_requests()
+            await self._close_websocket()
+        finally:
+            await self._finish_event_stream()
 
         logger.info("Disconnected")
 
@@ -162,10 +177,9 @@ class WebSocketTransport:
             logger.exception("Message loop error")
         finally:
             if not self._is_shutting_down:
-                self._is_shutting_down = True
-                self._cancel_pending_requests()
-                await self._close_websocket()
-                await self._finish_event_stream()
+                # This receive loop is already ending: cleanup must not cancel
+                # or wait for it while it waits for cleanup in turn.
+                await asyncio.shield(self._start_shutdown(stop_message_loop=False))
 
     async def _process_message(self, raw: str | bytes) -> None:
         message = orjson.loads(raw) if orjson is not None else json.loads(raw)

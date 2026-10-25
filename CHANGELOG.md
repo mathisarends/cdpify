@@ -101,6 +101,9 @@ Breaking changes are listed first in each release.
 
 ### Fixed
 
+- Concurrent disconnects and browser-initiated closure now wait for the same
+  cleanup. Cancelling a disconnect waiter no longer interrupts socket cleanup
+  or masks cancellation with an error when detaching the event callback.
 - Bounded event streams close even when their buffers are full, preserving
   buffered events on disconnect. Explicit subscription closure releases pending
   events immediately. Subscriptions from an earlier connection stay closed

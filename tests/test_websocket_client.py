@@ -2,12 +2,14 @@ import asyncio
 import json
 from dataclasses import dataclass
 from typing import ClassVar
+from unittest.mock import AsyncMock
 
 import pytest
 from websockets.asyncio.server import ServerConnection, serve
 
 from cdpify import CdpClient
 from cdpify.exceptions import CDPConnectionError, CDPStreamClosedError
+from cdpify.transports import websocket as websocket_module
 
 
 @dataclass
@@ -104,3 +106,61 @@ async def test_failed_callback_connection_closes_existing_subscriptions(
     with pytest.raises(CDPStreamClosedError):
         await events.next(timeout=1.0)
     await asyncio.wait_for(client.disconnect(), timeout=1.0)
+
+
+class _ClosingWebSocket:
+    def __init__(self) -> None:
+        self.peer_closed = asyncio.Event()
+        self.closing = asyncio.Event()
+        self.finish_close = asyncio.Event()
+        self.close_calls = 0
+
+    async def __aiter__(self):
+        await self.peer_closed.wait()
+        if False:
+            yield ""
+
+    async def close(self) -> None:
+        self.close_calls += 1
+        self.closing.set()
+        await self.finish_close.wait()
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("browser_closes", [False, True])
+@pytest.mark.parametrize("cancel_waiter", [False, True])
+async def test_disconnect_waits_for_shared_cleanup(
+    monkeypatch: pytest.MonkeyPatch, browser_closes: bool, cancel_waiter: bool
+) -> None:
+    socket = _ClosingWebSocket()
+    monkeypatch.setattr(websocket_module, "connect", AsyncMock(return_value=socket))
+    client = CdpClient("ws://example")
+    await client.connect()
+    events = client.listen(_Event)
+    if browser_closes:
+        socket.peer_closed.set()
+        await asyncio.wait_for(socket.closing.wait(), timeout=1.0)
+
+    first = asyncio.create_task(client.disconnect())
+    await asyncio.wait_for(socket.closing.wait(), timeout=1.0)
+    second = asyncio.create_task(client.disconnect())
+    await asyncio.sleep(0)
+
+    try:
+        assert not first.done()
+        assert not second.done()
+        if cancel_waiter:
+            first.cancel()
+            with pytest.raises(asyncio.CancelledError):
+                await first
+            assert not second.done()
+    finally:
+        socket.finish_close.set()
+        await asyncio.gather(first, second, return_exceptions=True)
+
+    await second
+    assert not client.is_connected
+    assert socket.close_calls == 1
+    with pytest.raises(CDPStreamClosedError):
+        await events.next(timeout=1.0)
+    await client.disconnect()

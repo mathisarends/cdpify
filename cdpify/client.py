@@ -41,6 +41,7 @@ class CdpClient(DomainAccessors, EventSource):
         self._executor = BoundCommandExecutor(transport)
         EventSource.__init__(self, EventRouter(max_queue_size=max_queue_size), None)
         self._event_loop_task: asyncio.Task[None] | None = None
+        self._disconnect_task: asyncio.Task[None] | None = None
 
     @property
     def transport(self) -> Transport:
@@ -60,6 +61,9 @@ class CdpClient(DomainAccessors, EventSource):
     async def connect(self) -> None:
         if self.is_connected:
             raise CDPConnectionError("Already connected")
+        if self._disconnect_task is not None:
+            await asyncio.shield(self._disconnect_task)
+        self._disconnect_task = None
         self._event_router.open()
         callback_transport = (
             self._transport if isinstance(self._transport, CallbackTransport) else None
@@ -77,6 +81,12 @@ class CdpClient(DomainAccessors, EventSource):
             self._event_loop_task = asyncio.create_task(self._run_event_loop())
 
     async def disconnect(self) -> None:
+        """Close once; cancellation of a waiter does not interrupt cleanup."""
+        if self._disconnect_task is None:
+            self._disconnect_task = asyncio.create_task(self._disconnect())
+        await asyncio.shield(self._disconnect_task)
+
+    async def _disconnect(self) -> None:
         await self._stop_event_loop()
         try:
             await self._transport.disconnect()
