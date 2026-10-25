@@ -6,7 +6,6 @@ Erledigte Aufgaben sind entfernt; Änderungen und API-Brüche stehen in `CHANGEL
 
 ## Offene Umsetzungspunkte
 
-- [ ] Gemeinsame Implementierung der Listener-Methoden von Client und Session.
 - [ ] Direkte Event-Zustellung als optionale Transport-Fähigkeit.
 - [ ] Optionales `cdpify[orjson]` mit JSON-Fallback, Tests und CI-Integration.
 

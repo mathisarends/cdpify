@@ -1,12 +1,13 @@
 from typing import Any
 
 from cdpify.domains import DomainAccessors
-from cdpify.events import EventRouter, EventSubscription
+from cdpify.events import EventRouter
+from cdpify.events.source import EventSource
 from cdpify.executor import BoundCommandExecutor
 from cdpify.transport import Transport
 
 
-class CdpSession(DomainAccessors):
+class CdpSession(DomainAccessors, EventSource):
     """An immutable view of the CDP domains bound to one target session."""
 
     def __init__(
@@ -18,8 +19,8 @@ class CdpSession(DomainAccessors):
         if not session_id:
             raise ValueError("session_id must not be empty")
 
-        self._session_id = session_id
-        self._event_router = event_router
+        EventSource.__init__(self, event_router, session_id)
+        self._session_id: str = session_id
         self._executor = BoundCommandExecutor(transport, session_id)
 
     @property
@@ -36,24 +37,4 @@ class CdpSession(DomainAccessors):
             method=method,
             params=params,
             timeout=timeout,
-        )
-
-    def listen[T](
-        self,
-        event_type: type[T],
-        *,
-        timeout: float | None = None,
-        event_name: str | None = None,
-        max_queue_size: int | None = None,
-    ) -> EventSubscription[T]:
-        """Subscribe to events emitted by this session only.
-
-        Accepts the same arguments as :meth:`cdpify.CdpClient.listen`.
-        """
-        return self._event_router.listen(
-            event_type,
-            session_id=self._session_id,
-            timeout=timeout,
-            event_name=event_name,
-            max_queue_size=max_queue_size,
         )

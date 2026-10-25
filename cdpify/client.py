@@ -4,6 +4,7 @@ from typing import Any, Self
 
 from cdpify.domains import DomainAccessors
 from cdpify.events import EventRouter, EventSubscription, ReceivedEvent
+from cdpify.events.source import EventSource
 from cdpify.executor import BoundCommandExecutor
 from cdpify.session import CdpSession
 from cdpify.transport import Transport, TransportEvent
@@ -11,7 +12,7 @@ from cdpify.transport import Transport, TransportEvent
 logger = logging.getLogger(__name__)
 
 
-class CdpClient(DomainAccessors):
+class CdpClient(DomainAccessors, EventSource):
     def __init__(
         self,
         url: str | None = None,
@@ -37,7 +38,7 @@ class CdpClient(DomainAccessors):
 
         self._transport = transport
         self._executor = BoundCommandExecutor(transport)
-        self._event_router = EventRouter(max_queue_size=max_queue_size)
+        EventSource.__init__(self, EventRouter(max_queue_size=max_queue_size), None)
         self._event_loop_task: asyncio.Task[None] | None = None
 
     @property
@@ -82,29 +83,6 @@ class CdpClient(DomainAccessors):
             params=params,
             session_id=session_id,
             timeout=timeout,
-        )
-
-    def listen[T](
-        self,
-        event_type: type[T],
-        *,
-        timeout: float | None = None,
-        event_name: str | None = None,
-        max_queue_size: int | None = None,
-    ) -> EventSubscription[T]:
-        """Subscribe to events emitted by the root CDP connection only.
-
-        ``event_type`` is a generated event class such as
-        ``RequestWillBeSentEvent``; its CDP name is read from ``__cdp_event__``.
-        Pass ``event_name`` to listen with a custom dataclass instead. ``timeout``
-        limits how long each read waits for the next event.
-        """
-        return self._event_router.listen(
-            event_type,
-            session_id=None,
-            timeout=timeout,
-            event_name=event_name,
-            max_queue_size=max_queue_size,
         )
 
     def listen_all[T](
