@@ -76,7 +76,7 @@ async def test_await_response_raises_command_error_with_method() -> None:
 async def test_process_message_exposes_transport_event() -> None:
     transport = WebSocketTransport("ws://example")
 
-    await transport._process_message(
+    transport._process_message(
         json.dumps(
             {
                 "method": "Runtime.consoleAPICalled",
@@ -168,6 +168,37 @@ async def test_process_message_warns_for_unknown_payload(
     transport = WebSocketTransport("ws://example")
 
     with caplog.at_level("WARNING"):
-        await transport._process_message(json.dumps({"foo": "bar"}))
+        transport._process_message(json.dumps({"foo": "bar"}))
 
     assert "Unknown CDP message format" in caplog.text
+
+
+class _ScriptedWebSocket(_FakeWebSocket):
+    def __init__(self, messages: list[str]) -> None:
+        super().__init__()
+        self._messages = messages
+
+    async def __aiter__(self):
+        for message in self._messages:
+            yield message
+
+
+@pytest.mark.asyncio
+async def test_message_loop_skips_malformed_messages(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    transport = WebSocketTransport("ws://example")
+    transport._ws = _ScriptedWebSocket(  # type: ignore[assignment]
+        [
+            "not json",
+            "null",
+            json.dumps({"method": "Page.loadEventFired", "params": {}}),
+        ]
+    )
+
+    with caplog.at_level("ERROR"):
+        await transport._run_message_loop()
+    events = [event async for event in transport.events()]
+
+    assert [event.method for event in events] == ["Page.loadEventFired"]
+    assert "Dropping malformed CDP message" in caplog.text

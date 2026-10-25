@@ -56,6 +56,8 @@ Breaking changes are listed first in each release.
 
 ### Fixed
 
+- A malformed message from the browser no longer closes the WebSocket
+  connection. The message is logged and skipped.
 - Event listeners (`listen()`, `listen_all()`, `CDPSession.listen()`) now end
   when the transport event stream ends or the client disconnects. Previously
   they waited forever unless a `timeout` was set. Events that were already

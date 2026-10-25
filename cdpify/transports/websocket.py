@@ -124,7 +124,12 @@ class WebSocketTransport:
             async for raw_message in connection:
                 if self._is_shutting_down:
                     break
-                await self._process_message(raw_message)
+                try:
+                    self._process_message(raw_message)
+                except Exception:
+                    logger.exception(
+                        "Dropping malformed CDP message: %.200r", raw_message
+                    )
         except websockets.exceptions.ConnectionClosed:
             logger.info("Connection closed")
         except asyncio.CancelledError:
@@ -139,7 +144,7 @@ class WebSocketTransport:
                 await self._close_websocket()
                 self._finish_event_stream()
 
-    async def _process_message(self, raw: str | bytes) -> None:
+    def _process_message(self, raw: str | bytes) -> None:
         message = json.loads(raw)
 
         if "id" in message:
