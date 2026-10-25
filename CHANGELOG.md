@@ -56,6 +56,8 @@ Breaking changes are listed first in each release.
 
 ### Fixed
 
+- `decode_cdp` now decodes nested models behind `type X = ...` aliases instead
+  of leaving them as plain dicts.
 - A malformed message from the browser no longer closes the WebSocket
   connection. The message is logged and skipped.
 - Event listeners (`listen()`, `listen_all()`, `CDPSession.listen()`) now end
@@ -67,5 +69,8 @@ Breaking changes are listed first in each release.
 
 ### Performance
 
+- `decode_cdp` builds a converter per field once per model instead of
+  inspecting type annotations for every value. Decoding typical Network
+  events is 4–7× faster (`ResponseReceivedEvent`: 56 µs → 7 µs).
 - `import cdpify` loads CDP domains lazily on first access. Import time drops
   from ~790 ms to ~85 ms.

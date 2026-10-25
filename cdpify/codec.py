@@ -1,9 +1,10 @@
 import logging
 import sys
+from collections.abc import Callable
 from dataclasses import MISSING, dataclass, fields, is_dataclass
 from functools import cache
 from types import UnionType
-from typing import Any, Union, get_args, get_origin, get_type_hints
+from typing import Any, TypeAliasType, Union, get_args, get_origin, get_type_hints
 
 logger = logging.getLogger(__name__)
 
@@ -11,11 +12,15 @@ _CDP_ENABLED_METADATA_KEY = "cdp"
 _CDP_NAME_METADATA_KEY = "cdp_name"
 
 
+# Converts a non-None wire value; ``None`` means the value is used as is.
+_Decoder = Callable[[Any], Any] | None
+
+
 @dataclass(frozen=True, slots=True)
 class _FieldPlan:
     name: str
     cdp_name: str
-    annotation: Any
+    decoder: _Decoder
     init: bool
     required: bool
     wire_enabled: bool
@@ -24,8 +29,8 @@ class _FieldPlan:
 @dataclass(frozen=True, slots=True)
 class _ModelPlan:
     fields: tuple[_FieldPlan, ...]
-    fields_by_cdp_name: dict[str, _FieldPlan]
-    init_field_names: frozenset[str]
+    decodable_fields: dict[str, _FieldPlan]
+    required_names: frozenset[str]
 
 
 def encode_cdp(model: Any) -> dict[str, Any]:
@@ -50,35 +55,31 @@ def decode_cdp[T](
 ) -> T:
     """Construct a generated CDP dataclass from its wire representation."""
     plan = _compile_model(model_type)
-    converted: dict[str, Any] = {}
+    values: dict[str, Any] = {}
 
     for cdp_name, value in data.items():
-        model_field = plan.fields_by_cdp_name.get(cdp_name)
+        model_field = plan.decodable_fields.get(cdp_name)
         if model_field is None:
             continue
-        converted[model_field.name] = _decode_value(value, model_field.annotation)
+        if value is not None and model_field.decoder is not None:
+            value = model_field.decoder(value)
+        values[model_field.name] = value
 
-    missing = [
-        model_field.name
-        for model_field in plan.fields
-        if model_field.init
-        and model_field.required
-        and model_field.name not in converted
-    ]
-    if missing:
+    if not values.keys() >= plan.required_names:
+        missing = [
+            model_field.name
+            for model_field in plan.fields
+            if model_field.name in plan.required_names
+            and model_field.name not in values
+        ]
         logger.warning(
             "CDP spec mismatch for %s. Missing fields: %s. Data keys: %s",
             model_type.__name__,
             missing,
             list(data.keys()),
         )
-        converted.update(dict.fromkeys(missing))
+        values.update(dict.fromkeys(missing))
 
-    values = {
-        name: value
-        for name, value in converted.items()
-        if name in plan.init_field_names
-    }
     return model_type(**values)
 
 
@@ -92,7 +93,7 @@ def _compile_model(model_type: type) -> _ModelPlan:
         _FieldPlan(
             name=model_field.name,
             cdp_name=model_field.metadata.get(_CDP_NAME_METADATA_KEY, model_field.name),
-            annotation=resolved_types.get(model_field.name, Any),
+            decoder=_build_decoder(resolved_types.get(model_field.name, Any)),
             init=model_field.init,
             required=(
                 model_field.default is MISSING
@@ -104,13 +105,15 @@ def _compile_model(model_type: type) -> _ModelPlan:
     )
     return _ModelPlan(
         fields=field_plans,
-        fields_by_cdp_name={
+        decodable_fields={
             field_plan.cdp_name: field_plan
             for field_plan in field_plans
-            if field_plan.wire_enabled
+            if field_plan.wire_enabled and field_plan.init
         },
-        init_field_names=frozenset(
-            field_plan.name for field_plan in field_plans if field_plan.init
+        required_names=frozenset(
+            field_plan.name
+            for field_plan in field_plans
+            if field_plan.init and field_plan.required
         ),
     )
 
@@ -148,32 +151,52 @@ def _encode_value(value: Any) -> Any:
     return value
 
 
-def _decode_value(value: Any, field_type: Any) -> Any:
-    if value is None or field_type is Any:
-        return value
+def _build_decoder(field_type: Any) -> _Decoder:
+    """Build a converter for one annotation once, instead of per value."""
+    if field_type is Any:
+        return None
+    if isinstance(field_type, TypeAliasType):
+        return _build_decoder(field_type.__value__)
 
     origin = get_origin(field_type)
     args = get_args(field_type)
 
     if origin in (Union, UnionType):
-        candidates = tuple(arg for arg in args if arg is not type(None))
+        candidates = [arg for arg in args if arg is not type(None)]
         if len(candidates) == 1:
-            return _decode_value(value, candidates[0])
-        for candidate in candidates:
-            if isinstance(value, dict) and _is_dataclass_type(candidate):
-                return decode_cdp(candidate, value)
-        return value
+            return _build_decoder(candidates[0])
+        model_type = next(filter(_is_dataclass_type, candidates), None)
+        return None if model_type is None else _model_decoder(model_type)
 
     if origin is list and args:
-        return [_decode_value(item, args[0]) for item in value]
+        item_decoder = _build_decoder(args[0])
+        if item_decoder is None:
+            return None
+        return lambda value: [
+            None if item is None else item_decoder(item) for item in value
+        ]
 
     if origin is dict and len(args) == 2:
-        return {key: _decode_value(item, args[1]) for key, item in value.items()}
+        item_decoder = _build_decoder(args[1])
+        if item_decoder is None:
+            return None
+        return lambda value: {
+            key: None if item is None else item_decoder(item)
+            for key, item in value.items()
+        }
 
-    if isinstance(value, dict) and _is_dataclass_type(field_type):
-        return decode_cdp(field_type, value)
+    if _is_dataclass_type(field_type):
+        return _model_decoder(field_type)
 
-    return value
+    return None
+
+
+def _model_decoder(model_type: type) -> Callable[[Any], Any]:
+    # Resolved lazily so recursive models (e.g. a StackTrace parent) work.
+    def decode(value: Any) -> Any:
+        return decode_cdp(model_type, value) if isinstance(value, dict) else value
+
+    return decode
 
 
 def _is_dataclass_type(field_type: Any) -> bool:
