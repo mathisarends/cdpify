@@ -101,6 +101,8 @@ Breaking changes are listed first in each release.
 
 ### Fixed
 
+- A connection closing while a command is being sent now raises
+  `CDPConnectionError` and does not leave an unobserved response-future exception.
 - Concurrent disconnects and browser-initiated closure now wait for the same
   cleanup. Cancelling a disconnect waiter no longer interrupts socket cleanup
   or masks cancellation with an error when detaching the event callback.

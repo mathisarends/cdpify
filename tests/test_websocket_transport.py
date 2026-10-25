@@ -1,8 +1,10 @@
 import asyncio
+import gc
 import json
 from unittest.mock import AsyncMock
 
 import pytest
+from websockets.exceptions import ConnectionClosedOK
 
 from cdpify.exceptions import (
     CDPCommandError,
@@ -337,3 +339,41 @@ async def test_reconnect_resets_buffer_without_migrating_old_readers(
     assert [event.params["value"] async for event in old_events] == [3]
     assert [event.params["value"] async for event in transport.events()] == [4]
     await transport.disconnect()
+
+
+@pytest.mark.asyncio
+async def test_disconnect_during_send_handles_error_without_future_leak() -> None:
+    class SendingSocket(_FakeWebSocket):
+        def __init__(self) -> None:
+            super().__init__()
+            self.sending = asyncio.Event()
+            self.finished = asyncio.Event()
+
+        async def send(self, payload: str) -> None:
+            self.sending.set()
+            await self.finished.wait()
+            raise ConnectionClosedOK(None, None)
+
+        async def close(self) -> None:
+            self.finished.set()
+
+    loop = asyncio.get_running_loop()
+    previous_handler = loop.get_exception_handler()
+    errors = []
+    loop.set_exception_handler(lambda loop, context: errors.append(context))
+    transport = WebSocketTransport("ws://example")
+    socket = SendingSocket()
+    transport._ws = socket  # type: ignore[assignment]
+    command = asyncio.create_task(transport.execute("Runtime.evaluate"))
+    try:
+        await asyncio.wait_for(socket.sending.wait(), timeout=1.0)
+        await transport.disconnect()
+        with pytest.raises(CDPConnectionError):
+            await command
+        del command
+        gc.collect()
+        await asyncio.sleep(0)
+        assert transport._pending_requests == {}
+        assert errors == []
+    finally:
+        loop.set_exception_handler(previous_handler)

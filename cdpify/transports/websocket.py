@@ -142,6 +142,12 @@ class WebSocketTransport:
             )
         finally:
             self._pending_requests.pop(message_id, None)
+            if not future.done():
+                future.cancel()
+            elif not future.cancelled():
+                # Disconnect can fail the response future while send() is still
+                # waiting. Observe that failure even if sending raises first.
+                future.exception()
 
     async def events(self) -> AsyncIterator[TransportEvent]:
         if self._event_handler is not None:
@@ -258,7 +264,10 @@ class WebSocketTransport:
             if orjson is not None
             else json.dumps(message)
         )
-        await connection.send(payload)
+        try:
+            await connection.send(payload)
+        except websockets.exceptions.ConnectionClosed as error:
+            raise CDPConnectionError("Connection closed while sending") from error
 
     async def _await_response(
         self,
