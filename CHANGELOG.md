@@ -58,6 +58,8 @@ Breaking changes are listed first in each release.
 
 - `decode_cdp` now decodes nested models behind `type X = ...` aliases instead
   of leaving them as plain dicts.
+- `decode_cdp` logs a warning when a field annotation cannot be resolved,
+  instead of silently leaving nested values as plain dicts.
 - A malformed message from the browser no longer closes the WebSocket
   connection. The message is logged and skipped.
 - Event listeners (`listen()`, `listen_all()`, `CDPSession.listen()`) now end

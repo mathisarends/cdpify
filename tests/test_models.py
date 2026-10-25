@@ -1,8 +1,13 @@
 """Runtime behavior shared by generated CDP models and events."""
 
-from dataclasses import dataclass, field
+import importlib
+import pkgutil
+from dataclasses import dataclass, field, is_dataclass
 
-from cdpify.codec import decode_cdp, encode_cdp
+import pytest
+
+from cdpify import domains
+from cdpify.codec import _compile_model, decode_cdp, encode_cdp
 from cdpify.domains.accessibility import AXNode
 from cdpify.domains.dom.commands import GetOuterHTMLParams
 from cdpify.domains.page.events import LifecycleEventEvent
@@ -57,3 +62,29 @@ class TestAcronymFieldNames:
             "backendNodeId": 7,
             "includeShadowDOM": True,
         }
+
+
+def _generated_models() -> list[type]:
+    models = []
+    for module_info in pkgutil.walk_packages(domains.__path__, "cdpify.domains."):
+        module = importlib.import_module(module_info.name)
+        models.extend(
+            value
+            for value in vars(module).values()
+            if isinstance(value, type)
+            and is_dataclass(value)
+            and value.__module__ == module.__name__
+        )
+    return models
+
+
+def test_every_generated_model_has_resolvable_field_types(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    models = _generated_models()
+
+    for model in models:
+        _compile_model(model)
+
+    assert len(models) > 1000
+    assert "Cannot resolve type" not in caplog.text

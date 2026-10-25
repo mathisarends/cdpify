@@ -135,7 +135,14 @@ def _resolve_field_types(model_type: type) -> dict[str, Any]:
             continue
         try:
             resolved[model_field.name] = eval(annotation, globalns)
-        except Exception:
+        except Exception as error:
+            logger.warning(
+                "Cannot resolve type %r of %s.%s (%s); nested values stay raw",
+                annotation,
+                model_type.__qualname__,
+                model_field.name,
+                error,
+            )
             resolved[model_field.name] = Any
 
     return resolved

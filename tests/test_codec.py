@@ -159,3 +159,19 @@ def test_primitive_fields_need_no_decoder() -> None:
     decoders = {field_plan.name: field_plan.decoder for field_plan in plan.fields}
     assert decoders["values"] is None
     assert decoders["child"] is not None
+
+
+@dataclass
+class _UnresolvableHint:
+    value: "DoesNotExist" = field(metadata={"cdp_name": "value"})  # noqa: F821
+
+
+def test_warns_when_a_field_type_cannot_be_resolved(
+    caplog: pytest.LogCaptureFixture,
+) -> None:
+    model = decode_cdp(_UnresolvableHint, {"value": {"raw": True}})
+
+    assert model.value == {"raw": True}
+    assert "Cannot resolve type 'DoesNotExist' of _UnresolvableHint.value" in (
+        caplog.text
+    )
