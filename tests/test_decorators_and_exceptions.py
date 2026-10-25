@@ -1,9 +1,11 @@
+import inspect
+
 import pytest
 
 import cdpify
 from cdpify import exceptions
 from cdpify.exceptions import CDPCommandError, CDPTimeoutError
-from cdpify.shared.decorators import deprecated
+from cdpify.shared.decorators import _Deprecated, deprecated
 
 
 def test_command_error_from_empty_response_uses_defaults() -> None:
@@ -49,30 +51,43 @@ def test_old_exception_names_are_deprecated_aliases(
     assert alias is getattr(exceptions, new_name)
 
 
-def test_deprecated_sync_function_logs_warning(
-    caplog: pytest.LogCaptureFixture,
+_IMPLEMENTATIONS = pytest.mark.parametrize(
+    "deprecated_impl", [deprecated, _Deprecated], ids=["active", "fallback"]
+)
+
+
+@_IMPLEMENTATIONS
+def test_deprecated_function_warns_at_call_site(
+    deprecated_impl: type[_Deprecated],
 ) -> None:
-    @deprecated()
+    @deprecated_impl("old_fn is deprecated")
     def old_fn(value: int) -> int:
         return value + 1
 
-    with caplog.at_level("WARNING"):
+    with pytest.deprecated_call(match="old_fn is deprecated") as record:
         result = old_fn(1)
 
     assert result == 2
-    assert "old_fn is deprecated" in caplog.text
+    assert record[0].filename == __file__
+    assert old_fn.__deprecated__ == "old_fn is deprecated"
 
 
+@_IMPLEMENTATIONS
 @pytest.mark.asyncio
-async def test_deprecated_async_function_logs_warning(
-    caplog: pytest.LogCaptureFixture,
+async def test_deprecated_coroutine_function_stays_awaitable(
+    deprecated_impl: type[_Deprecated],
 ) -> None:
-    @deprecated()
+    @deprecated_impl("old_async_fn is deprecated")
     async def old_async_fn(value: int) -> int:
         return value + 2
 
-    with caplog.at_level("WARNING"):
+    assert inspect.iscoroutinefunction(old_async_fn)
+    with pytest.deprecated_call(match="old_async_fn is deprecated"):
         result = await old_async_fn(1)
 
     assert result == 3
-    assert "old_async_fn is deprecated" in caplog.text
+
+
+def test_deprecated_requires_a_message() -> None:
+    with pytest.raises(TypeError):
+        _Deprecated(lambda: None)  # type: ignore[arg-type]

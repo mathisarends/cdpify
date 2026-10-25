@@ -43,7 +43,7 @@ class DOMSnapshot:
             params=None,
         )
 
-    @deprecated()
+    @deprecated("DOMSnapshot.getSnapshot is deprecated")
     async def get_snapshot(
         self,
         *,

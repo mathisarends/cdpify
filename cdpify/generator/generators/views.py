@@ -70,7 +70,7 @@ class MethodView:
     return_type: str
     command_member: str
     docstring: str | None = None
-    deprecated: bool = False
+    deprecation: str | None = None
     params_model: str | None = None
     constructor_args: str = ""
     result_model: str | None = None

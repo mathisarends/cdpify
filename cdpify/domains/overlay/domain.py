@@ -159,7 +159,7 @@ class Overlay:
             params=None,
         )
 
-    @deprecated()
+    @deprecated("Overlay.highlightFrame is deprecated")
     async def highlight_frame(
         self,
         *,
@@ -478,7 +478,7 @@ class Overlay:
             params=encode_cdp(params),
         )
 
-    @deprecated()
+    @deprecated("Overlay.setShowHitTestBorders is deprecated")
     async def set_show_hit_test_borders(
         self,
         *,
@@ -494,7 +494,7 @@ class Overlay:
             params=encode_cdp(params),
         )
 
-    @deprecated()
+    @deprecated("Overlay.setShowWebVitals is deprecated")
     async def set_show_web_vitals(
         self,
         *,

@@ -104,7 +104,7 @@ class Page:
     def __init__(self, executor: CommandExecutor) -> None:
         self._executor = executor
 
-    @deprecated()
+    @deprecated("Page.addScriptToEvaluateOnLoad is deprecated")
     async def add_script_to_evaluate_on_load(
         self,
         *,
@@ -202,7 +202,7 @@ class Page:
         )
         return decode_cdp(CaptureSnapshotResult, result)
 
-    @deprecated()
+    @deprecated("Page.clearDeviceMetricsOverride is deprecated")
     async def clear_device_metrics_override(
         self,
     ) -> None:
@@ -214,7 +214,7 @@ class Page:
             params=None,
         )
 
-    @deprecated()
+    @deprecated("Page.clearDeviceOrientationOverride is deprecated")
     async def clear_device_orientation_override(
         self,
     ) -> None:
@@ -226,7 +226,7 @@ class Page:
             params=None,
         )
 
-    @deprecated()
+    @deprecated("Page.clearGeolocationOverride is deprecated")
     async def clear_geolocation_override(
         self,
     ) -> None:
@@ -262,7 +262,7 @@ class Page:
         )
         return decode_cdp(CreateIsolatedWorldResult, result)
 
-    @deprecated()
+    @deprecated("Page.deleteCookie is deprecated")
     async def delete_cookie(
         self,
         *,
@@ -335,7 +335,7 @@ class Page:
         )
         return decode_cdp(GetInstallabilityErrorsResult, result)
 
-    @deprecated()
+    @deprecated("Page.getManifestIcons is deprecated")
     async def get_manifest_icons(
         self,
     ) -> GetManifestIconsResult:
@@ -624,7 +624,7 @@ class Page:
             params=encode_cdp(params),
         )
 
-    @deprecated()
+    @deprecated("Page.removeScriptToEvaluateOnLoad is deprecated")
     async def remove_script_to_evaluate_on_load(
         self,
         *,
@@ -758,7 +758,7 @@ class Page:
         )
         return decode_cdp(GetOriginTrialsResult, result)
 
-    @deprecated()
+    @deprecated("Page.setDeviceMetricsOverride is deprecated")
     async def set_device_metrics_override(
         self,
         *,
@@ -800,7 +800,7 @@ class Page:
             params=encode_cdp(params),
         )
 
-    @deprecated()
+    @deprecated("Page.setDeviceOrientationOverride is deprecated")
     async def set_device_orientation_override(
         self,
         *,
@@ -867,7 +867,7 @@ class Page:
             params=encode_cdp(params),
         )
 
-    @deprecated()
+    @deprecated("Page.setDownloadBehavior is deprecated")
     async def set_download_behavior(
         self,
         *,
@@ -886,7 +886,7 @@ class Page:
             params=encode_cdp(params),
         )
 
-    @deprecated()
+    @deprecated("Page.setGeolocationOverride is deprecated")
     async def set_geolocation_override(
         self,
         *,
@@ -922,7 +922,7 @@ class Page:
             params=encode_cdp(params),
         )
 
-    @deprecated()
+    @deprecated("Page.setTouchEmulationEnabled is deprecated")
     async def set_touch_emulation_enabled(
         self,
         *,

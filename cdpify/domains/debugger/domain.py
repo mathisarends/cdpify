@@ -224,7 +224,7 @@ class Debugger:
         )
         return decode_cdp(NextWasmDisassemblyChunkResult, result)
 
-    @deprecated()
+    @deprecated("Debugger.getWasmBytecode is deprecated")
     async def get_wasm_bytecode(
         self,
         *,
@@ -268,7 +268,7 @@ class Debugger:
             params=None,
         )
 
-    @deprecated()
+    @deprecated("Debugger.pauseOnAsyncCall is deprecated")
     async def pause_on_async_call(
         self,
         *,
@@ -569,7 +569,7 @@ class Debugger:
             params=encode_cdp(params),
         )
 
-    @deprecated()
+    @deprecated("Debugger.setScriptSource is deprecated")
     async def set_script_source(
         self,
         *,

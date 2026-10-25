@@ -80,7 +80,7 @@ class Network:
     def __init__(self, executor: CommandExecutor) -> None:
         self._executor = executor
 
-    @deprecated()
+    @deprecated("Network.canClearBrowserCache is deprecated")
     async def can_clear_browser_cache(
         self,
     ) -> CanClearBrowserCacheResult:
@@ -93,7 +93,7 @@ class Network:
         )
         return decode_cdp(CanClearBrowserCacheResult, result)
 
-    @deprecated()
+    @deprecated("Network.canClearBrowserCookies is deprecated")
     async def can_clear_browser_cookies(
         self,
     ) -> CanClearBrowserCookiesResult:
@@ -106,7 +106,7 @@ class Network:
         )
         return decode_cdp(CanClearBrowserCookiesResult, result)
 
-    @deprecated()
+    @deprecated("Network.canEmulateNetworkConditions is deprecated")
     async def can_emulate_network_conditions(
         self,
     ) -> CanEmulateNetworkConditionsResult:
@@ -175,7 +175,7 @@ class Network:
             params=None,
         )
 
-    @deprecated()
+    @deprecated("Network.emulateNetworkConditions is deprecated")
     async def emulate_network_conditions(
         self,
         *,
@@ -305,7 +305,7 @@ class Network:
             params=encode_cdp(params),
         )
 
-    @deprecated()
+    @deprecated("Network.getAllCookies is deprecated")
     async def get_all_cookies(
         self,
     ) -> GetAllCookiesResult:

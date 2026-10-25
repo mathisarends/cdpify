@@ -37,6 +37,12 @@ Breaking changes are listed first in each release.
 
   The CDP name comes from the new `__cdp_event__` class variable on generated
   event classes. For custom dataclasses pass `event_name="Domain.event"`.
+- Calling a deprecated CDP command emits a `DeprecationWarning` instead of
+  logging a warning on every call. Python's default filters show it once per
+  call site; use `warnings.filterwarnings` or `-W` to change that. The
+  decorator is now `warnings.deprecated` (PEP 702) on Python 3.13+, so IDEs and
+  type checkers mark deprecated commands. `cdpify.shared.decorators.deprecated`
+  requires a message: `@deprecated("...")` instead of `@deprecated()`.
 
 ### Added
 

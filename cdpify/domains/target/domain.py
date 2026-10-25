@@ -285,7 +285,7 @@ class Target:
         )
         return decode_cdp(GetTargetsResult, result)
 
-    @deprecated()
+    @deprecated("Target.sendMessageToTarget is deprecated")
     async def send_message_to_target(
         self,
         *,

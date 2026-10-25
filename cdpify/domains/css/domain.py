@@ -580,7 +580,7 @@ class CSS:
         )
         return decode_cdp(SetMediaTextResult, result)
 
-    @deprecated()
+    @deprecated("CSS.setContainerQueryText is deprecated")
     async def set_container_query_text(
         self,
         *,

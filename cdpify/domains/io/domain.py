@@ -63,7 +63,7 @@ class IO:
         )
         return decode_cdp(ReadResult, result)
 
-    @deprecated()
+    @deprecated("IO.resolveBlob is deprecated")
     async def resolve_blob(
         self,
         *,

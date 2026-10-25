@@ -337,7 +337,7 @@ class DOM:
         )
         return decode_cdp(GetDocumentResult, result)
 
-    @deprecated()
+    @deprecated("DOM.getFlattenedDocument is deprecated")
     async def get_flattened_document(
         self,
         *,

@@ -15,7 +15,9 @@ from cdpify.generator.schemas import Command, Domain, Parameter
 
 def generate(domain: Domain) -> str:
     ctx = GenerationContext()
-    methods = tuple(_build_method(command, ctx) for command in domain.commands)
+    methods = tuple(
+        _build_method(command, domain.domain, ctx) for command in domain.commands
+    )
 
     if ctx.cross_domain_modules:
         ctx.use_typing("TYPE_CHECKING")
@@ -51,7 +53,9 @@ def _command_imports(domain: Domain) -> tuple[str, ...]:
     return (f"{domain.domain}Command", *sorted(model_names))
 
 
-def _build_method(command: Command, ctx: GenerationContext) -> MethodView:
+def _build_method(
+    command: Command, domain_name: str, ctx: GenerationContext
+) -> MethodView:
     parameters = tuple(
         _build_parameter_view(parameter, ctx) for parameter in command.parameters
     )
@@ -80,7 +84,11 @@ def _build_method(command: Command, ctx: GenerationContext) -> MethodView:
             if command.description
             else None
         ),
-        deprecated=command.deprecated,
+        deprecation=(
+            f"{domain_name}.{command.name} is deprecated"
+            if command.deprecated
+            else None
+        ),
         params_model=params_model,
         constructor_args=constructor_args,
         result_model=result_model,

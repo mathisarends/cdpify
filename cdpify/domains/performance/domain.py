@@ -48,7 +48,7 @@ class Performance:
             params=encode_cdp(params),
         )
 
-    @deprecated()
+    @deprecated("Performance.setTimeDomain is deprecated")
     async def set_time_domain(
         self,
         *,

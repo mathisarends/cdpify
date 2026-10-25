@@ -57,7 +57,7 @@ class Storage:
     def __init__(self, executor: CommandExecutor) -> None:
         self._executor = executor
 
-    @deprecated()
+    @deprecated("Storage.getStorageKeyForFrame is deprecated")
     async def get_storage_key_for_frame(
         self,
         *,

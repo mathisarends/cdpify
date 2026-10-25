@@ -91,7 +91,7 @@ class DOMDebugger:
             params=encode_cdp(params),
         )
 
-    @deprecated()
+    @deprecated("DOMDebugger.removeInstrumentationBreakpoint is deprecated")
     async def remove_instrumentation_breakpoint(
         self,
         *,
@@ -171,7 +171,7 @@ class DOMDebugger:
             params=encode_cdp(params),
         )
 
-    @deprecated()
+    @deprecated("DOMDebugger.setInstrumentationBreakpoint is deprecated")
     async def set_instrumentation_breakpoint(
         self,
         *,

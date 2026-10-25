@@ -50,7 +50,7 @@ class HeadlessExperimental:
         )
         return decode_cdp(BeginFrameResult, result)
 
-    @deprecated()
+    @deprecated("HeadlessExperimental.disable is deprecated")
     async def disable(
         self,
     ) -> None:
@@ -62,7 +62,7 @@ class HeadlessExperimental:
             params=None,
         )
 
-    @deprecated()
+    @deprecated("HeadlessExperimental.enable is deprecated")
     async def enable(
         self,
     ) -> None:

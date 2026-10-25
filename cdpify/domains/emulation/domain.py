@@ -87,7 +87,7 @@ class Emulation:
     def __init__(self, executor: CommandExecutor) -> None:
         self._executor = executor
 
-    @deprecated()
+    @deprecated("Emulation.canEmulate is deprecated")
     async def can_emulate(
         self,
     ) -> CanEmulateResult:
@@ -587,7 +587,7 @@ class Emulation:
             params=None,
         )
 
-    @deprecated()
+    @deprecated("Emulation.setNavigatorOverrides is deprecated")
     async def set_navigator_overrides(
         self,
         *,
@@ -707,7 +707,7 @@ class Emulation:
             params=encode_cdp(params),
         )
 
-    @deprecated()
+    @deprecated("Emulation.setVisibleSize is deprecated")
     async def set_visible_size(
         self,
         *,

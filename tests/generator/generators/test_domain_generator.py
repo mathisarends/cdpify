@@ -50,7 +50,9 @@ def test_deprecated_command_gets_decorator(simple_domain: Domain) -> None:
     assert "from cdpify.shared.decorators import deprecated" in output
     legacy_block = output.split("async def legacy_op")[0]
     # The decorator must appear directly above the deprecated method
-    assert legacy_block.rstrip().endswith("@deprecated()")
+    assert legacy_block.rstrip().endswith(
+        '@deprecated("Sample.legacyOp is deprecated")'
+    )
 
 
 def test_no_deprecated_import_when_no_deprecated_commands() -> None:

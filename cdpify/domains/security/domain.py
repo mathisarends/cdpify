@@ -60,7 +60,7 @@ class Security:
             params=encode_cdp(params),
         )
 
-    @deprecated()
+    @deprecated("Security.handleCertificateError is deprecated")
     async def handle_certificate_error(
         self,
         *,
@@ -77,7 +77,7 @@ class Security:
             params=encode_cdp(params),
         )
 
-    @deprecated()
+    @deprecated("Security.setOverrideCertificateErrors is deprecated")
     async def set_override_certificate_errors(
         self,
         *,

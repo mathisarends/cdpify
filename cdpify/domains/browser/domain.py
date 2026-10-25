@@ -80,7 +80,7 @@ class Browser:
             params=encode_cdp(params),
         )
 
-    @deprecated()
+    @deprecated("Browser.grantPermissions is deprecated")
     async def grant_permissions(
         self,
         *,
