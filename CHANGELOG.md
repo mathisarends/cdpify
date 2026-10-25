@@ -57,6 +57,7 @@ Breaking changes are listed first in each release.
 
 ### Changed
 
+- CI runs tests on Ubuntu, Windows, and macOS with Python 3.12, 3.13, and 3.14.
 - `CDPTimeoutError` also inherits from the built-in `TimeoutError`, so
   `except TimeoutError` catches command timeouts.
 - Docstrings of generated type aliases follow the alias, so IDEs and Sphinx
