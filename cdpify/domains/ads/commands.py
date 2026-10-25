@@ -20,7 +20,7 @@ class AdsCommand(StrEnum):
 
 @dataclass(kw_only=True, slots=True)
 class GetAdMetricsResult:
-    metrics: AdMetrics = field(metadata={"cdp_name": "metrics"})
+    metrics: AdMetrics
 
 
 @dataclass(kw_only=True, slots=True)

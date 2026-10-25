@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from enum import StrEnum
 from typing import ClassVar
 
@@ -28,7 +28,7 @@ class AnimationCanceledEvent:
 
     __cdp_event__: ClassVar[str] = "Animation.animationCanceled"
 
-    id: str = field(metadata={"cdp_name": "id"})
+    id: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -39,7 +39,7 @@ class AnimationCreatedEvent:
 
     __cdp_event__: ClassVar[str] = "Animation.animationCreated"
 
-    id: str = field(metadata={"cdp_name": "id"})
+    id: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -50,7 +50,7 @@ class AnimationStartedEvent:
 
     __cdp_event__: ClassVar[str] = "Animation.animationStarted"
 
-    animation: Animation = field(metadata={"cdp_name": "animation"})
+    animation: Animation
 
 
 @dataclass(kw_only=True, slots=True)
@@ -61,4 +61,4 @@ class AnimationUpdatedEvent:
 
     __cdp_event__: ClassVar[str] = "Animation.animationUpdated"
 
-    animation: Animation = field(metadata={"cdp_name": "animation"})
+    animation: Animation

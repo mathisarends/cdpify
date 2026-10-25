@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from enum import StrEnum
 from typing import ClassVar
 
@@ -26,10 +26,10 @@ class ProfilerEvent(StrEnum):
 class ConsoleProfileFinishedEvent:
     __cdp_event__: ClassVar[str] = "Profiler.consoleProfileFinished"
 
-    id: str = field(metadata={"cdp_name": "id"})
-    location: debugger.Location = field(metadata={"cdp_name": "location"})
-    profile: Profile = field(metadata={"cdp_name": "profile"})
-    title: str | None = field(default=None, metadata={"cdp_name": "title"})
+    id: str
+    location: debugger.Location
+    profile: Profile
+    title: str | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -40,9 +40,9 @@ class ConsoleProfileStartedEvent:
 
     __cdp_event__: ClassVar[str] = "Profiler.consoleProfileStarted"
 
-    id: str = field(metadata={"cdp_name": "id"})
-    location: debugger.Location = field(metadata={"cdp_name": "location"})
-    title: str | None = field(default=None, metadata={"cdp_name": "title"})
+    id: str
+    location: debugger.Location
+    title: str | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -56,6 +56,6 @@ class PreciseCoverageDeltaUpdateEvent:
 
     __cdp_event__: ClassVar[str] = "Profiler.preciseCoverageDeltaUpdate"
 
-    timestamp: float = field(metadata={"cdp_name": "timestamp"})
-    occasion: str = field(metadata={"cdp_name": "occasion"})
-    result: list[ScriptCoverage] = field(metadata={"cdp_name": "result"})
+    timestamp: float
+    occasion: str
+    result: list[ScriptCoverage]

@@ -7,10 +7,10 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Literal
 
+type PressureLevel = Literal["moderate", "critical"]
 """
 Memory pressure level.
 """
-type PressureLevel = Literal["moderate", "critical"]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -19,9 +19,9 @@ class SamplingProfileNode:
     Heap profile sample.
     """
 
-    size: float = field(metadata={"cdp_name": "size"})
-    total: float = field(metadata={"cdp_name": "total"})
-    stack: list[str] = field(metadata={"cdp_name": "stack"})
+    size: float
+    total: float
+    stack: list[str]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -30,8 +30,8 @@ class SamplingProfile:
     Array of heap profile samples.
     """
 
-    samples: list[SamplingProfileNode] = field(metadata={"cdp_name": "samples"})
-    modules: list[Module] = field(metadata={"cdp_name": "modules"})
+    samples: list[SamplingProfileNode]
+    modules: list[Module]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -40,10 +40,10 @@ class Module:
     Executable module information
     """
 
-    name: str = field(metadata={"cdp_name": "name"})
-    uuid: str = field(metadata={"cdp_name": "uuid"})
+    name: str
+    uuid: str
     base_address: str = field(metadata={"cdp_name": "baseAddress"})
-    size: float = field(metadata={"cdp_name": "size"})
+    size: float
 
 
 @dataclass(kw_only=True, slots=True)
@@ -52,5 +52,5 @@ class DOMCounter:
     DOM object counter data.
     """
 
-    name: str = field(metadata={"cdp_name": "name"})
-    count: int = field(metadata={"cdp_name": "count"})
+    name: str
+    count: int

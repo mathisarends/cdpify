@@ -25,7 +25,7 @@ class DomStorageItemAddedEvent:
     __cdp_event__: ClassVar[str] = "DOMStorage.domStorageItemAdded"
 
     storage_id: StorageId = field(metadata={"cdp_name": "storageId"})
-    key: str = field(metadata={"cdp_name": "key"})
+    key: str
     new_value: str = field(metadata={"cdp_name": "newValue"})
 
 
@@ -34,7 +34,7 @@ class DomStorageItemRemovedEvent:
     __cdp_event__: ClassVar[str] = "DOMStorage.domStorageItemRemoved"
 
     storage_id: StorageId = field(metadata={"cdp_name": "storageId"})
-    key: str = field(metadata={"cdp_name": "key"})
+    key: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -42,7 +42,7 @@ class DomStorageItemUpdatedEvent:
     __cdp_event__: ClassVar[str] = "DOMStorage.domStorageItemUpdated"
 
     storage_id: StorageId = field(metadata={"cdp_name": "storageId"})
-    key: str = field(metadata={"cdp_name": "key"})
+    key: str
     old_value: str = field(metadata={"cdp_name": "oldValue"})
     new_value: str = field(metadata={"cdp_name": "newValue"})
 

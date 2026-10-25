@@ -25,7 +25,7 @@ class StartObservingParams:
     Enables event updates for the service.
     """
 
-    service: ServiceName = field(metadata={"cdp_name": "service"})
+    service: ServiceName
 
 
 @dataclass(kw_only=True, slots=True)
@@ -34,7 +34,7 @@ class StopObservingParams:
     Disables event updates for the service.
     """
 
-    service: ServiceName = field(metadata={"cdp_name": "service"})
+    service: ServiceName
 
 
 @dataclass(kw_only=True, slots=True)
@@ -44,7 +44,7 @@ class SetRecordingParams:
     """
 
     should_record: bool = field(metadata={"cdp_name": "shouldRecord"})
-    service: ServiceName = field(metadata={"cdp_name": "service"})
+    service: ServiceName
 
 
 @dataclass(kw_only=True, slots=True)
@@ -53,4 +53,4 @@ class ClearEventsParams:
     Clears all stored data for the service.
     """
 
-    service: ServiceName = field(metadata={"cdp_name": "service"})
+    service: ServiceName

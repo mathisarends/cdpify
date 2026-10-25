@@ -34,8 +34,8 @@ class TriggerParams:
     frame_id: page.FrameId | None = field(
         default=None, metadata={"cdp_name": "frameId"}
     )
-    card: CreditCard | None = field(default=None, metadata={"cdp_name": "card"})
-    address: Address | None = field(default=None, metadata={"cdp_name": "address"})
+    card: CreditCard | None = None
+    address: Address | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -44,4 +44,4 @@ class SetAddressesParams:
     Set addresses so that developers can verify their forms implementation.
     """
 
-    addresses: list[Address] = field(metadata={"cdp_name": "addresses"})
+    addresses: list[Address]

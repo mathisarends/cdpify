@@ -7,11 +7,6 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Literal
 
-"""
-Indicates the PC/SC error code. This maps to: PC/SC Lite:
-https://pcsclite.apdu.fr/api/group__ErrorCodes.html Microsoft:
-https://learn.microsoft.com/en-us/windows/win32/secauthn/authentication-return-values
-"""
 type ResultCode = Literal[
     "success",
     "removed-card",
@@ -46,23 +41,28 @@ type ResultCode = Literal[
     "unknown-card",
     "unknown",
 ]
+"""
+Indicates the PC/SC error code. This maps to: PC/SC Lite:
+https://pcsclite.apdu.fr/api/group__ErrorCodes.html Microsoft:
+https://learn.microsoft.com/en-us/windows/win32/secauthn/authentication-return-values
+"""
 
+type ShareMode = Literal["shared", "exclusive", "direct"]
 """
 Maps to the |SCARD_SHARE_*| values.
 """
-type ShareMode = Literal["shared", "exclusive", "direct"]
 
+type Disposition = Literal["leave-card", "reset-card", "unpower-card", "eject-card"]
 """
 Indicates what the reader should do with the card.
 """
-type Disposition = Literal["leave-card", "reset-card", "unpower-card", "eject-card"]
 
-"""
-Maps to |SCARD_*| connection state values.
-"""
 type ConnectionState = Literal[
     "absent", "present", "swallowed", "powered", "negotiable", "specific"
 ]
+"""
+Maps to |SCARD_*| connection state values.
+"""
 
 
 @dataclass(kw_only=True, slots=True)
@@ -71,17 +71,17 @@ class ReaderStateFlags:
     Maps to the |SCARD_STATE_*| flags.
     """
 
-    unaware: bool | None = field(default=None, metadata={"cdp_name": "unaware"})
-    ignore: bool | None = field(default=None, metadata={"cdp_name": "ignore"})
-    changed: bool | None = field(default=None, metadata={"cdp_name": "changed"})
-    unknown: bool | None = field(default=None, metadata={"cdp_name": "unknown"})
-    unavailable: bool | None = field(default=None, metadata={"cdp_name": "unavailable"})
-    empty: bool | None = field(default=None, metadata={"cdp_name": "empty"})
-    present: bool | None = field(default=None, metadata={"cdp_name": "present"})
-    exclusive: bool | None = field(default=None, metadata={"cdp_name": "exclusive"})
-    inuse: bool | None = field(default=None, metadata={"cdp_name": "inuse"})
-    mute: bool | None = field(default=None, metadata={"cdp_name": "mute"})
-    unpowered: bool | None = field(default=None, metadata={"cdp_name": "unpowered"})
+    unaware: bool | None = None
+    ignore: bool | None = None
+    changed: bool | None = None
+    unknown: bool | None = None
+    unavailable: bool | None = None
+    empty: bool | None = None
+    present: bool | None = None
+    exclusive: bool | None = None
+    inuse: bool | None = None
+    mute: bool | None = None
+    unpowered: bool | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -90,27 +90,27 @@ class ProtocolSet:
     Maps to the |SCARD_PROTOCOL_*| flags.
     """
 
-    t0: bool | None = field(default=None, metadata={"cdp_name": "t0"})
-    t1: bool | None = field(default=None, metadata={"cdp_name": "t1"})
-    raw: bool | None = field(default=None, metadata={"cdp_name": "raw"})
+    t0: bool | None = None
+    t1: bool | None = None
+    raw: bool | None = None
 
 
+type Protocol = Literal["t0", "t1", "raw"]
 """
 Maps to the |SCARD_PROTOCOL_*| values.
 """
-type Protocol = Literal["t0", "t1", "raw"]
 
 
 @dataclass(kw_only=True, slots=True)
 class ReaderStateIn:
-    reader: str = field(metadata={"cdp_name": "reader"})
+    reader: str
     current_state: ReaderStateFlags = field(metadata={"cdp_name": "currentState"})
     current_insertion_count: int = field(metadata={"cdp_name": "currentInsertionCount"})
 
 
 @dataclass(kw_only=True, slots=True)
 class ReaderStateOut:
-    reader: str = field(metadata={"cdp_name": "reader"})
+    reader: str
     event_state: ReaderStateFlags = field(metadata={"cdp_name": "eventState"})
     event_count: int = field(metadata={"cdp_name": "eventCount"})
-    atr: str = field(metadata={"cdp_name": "atr"})
+    atr: str

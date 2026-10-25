@@ -63,10 +63,8 @@ class SecurityStateChangedEvent:
     scheme_is_cryptographic: bool = field(
         metadata={"cdp_name": "schemeIsCryptographic"}
     )
-    explanations: list[SecurityStateExplanation] = field(
-        metadata={"cdp_name": "explanations"}
-    )
+    explanations: list[SecurityStateExplanation]
     insecure_content_status: InsecureContentStatus = field(
         metadata={"cdp_name": "insecureContentStatus"}
     )
-    summary: str | None = field(default=None, metadata={"cdp_name": "summary"})
+    summary: str | None = None

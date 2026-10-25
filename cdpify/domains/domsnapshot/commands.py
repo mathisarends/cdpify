@@ -82,5 +82,5 @@ class CaptureSnapshotParams:
 
 @dataclass(kw_only=True, slots=True)
 class CaptureSnapshotResult:
-    documents: list[DocumentSnapshot] = field(metadata={"cdp_name": "documents"})
-    strings: list[str] = field(metadata={"cdp_name": "strings"})
+    documents: list[DocumentSnapshot]
+    strings: list[str]

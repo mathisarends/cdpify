@@ -65,7 +65,7 @@ class ContinueToLocationParams:
     Continues execution until specific location is reached.
     """
 
-    location: Location = field(metadata={"cdp_name": "location"})
+    location: Location
     target_call_frames: Literal["any", "current"] | None = field(
         default=None, metadata={"cdp_name": "targetCallFrames"}
     )
@@ -95,12 +95,12 @@ class EvaluateOnCallFrameParams:
     """
 
     call_frame_id: CallFrameId = field(metadata={"cdp_name": "callFrameId"})
-    expression: str = field(metadata={"cdp_name": "expression"})
+    expression: str
     object_group: str | None = field(default=None, metadata={"cdp_name": "objectGroup"})
     include_command_line_api: bool | None = field(
         default=None, metadata={"cdp_name": "includeCommandLineAPI"}
     )
-    silent: bool | None = field(default=None, metadata={"cdp_name": "silent"})
+    silent: bool | None = None
     return_by_value: bool | None = field(
         default=None, metadata={"cdp_name": "returnByValue"}
     )
@@ -110,15 +110,13 @@ class EvaluateOnCallFrameParams:
     throw_on_side_effect: bool | None = field(
         default=None, metadata={"cdp_name": "throwOnSideEffect"}
     )
-    timeout: runtime.TimeDelta | None = field(
-        default=None, metadata={"cdp_name": "timeout"}
-    )
+    timeout: runtime.TimeDelta | None = None
     scope_number: int | None = field(default=None, metadata={"cdp_name": "scopeNumber"})
 
 
 @dataclass(kw_only=True, slots=True)
 class EvaluateOnCallFrameResult:
-    result: runtime.RemoteObject = field(metadata={"cdp_name": "result"})
+    result: runtime.RemoteObject
     exception_details: runtime.ExceptionDetails | None = field(
         default=None, metadata={"cdp_name": "exceptionDetails"}
     )
@@ -131,8 +129,8 @@ class GetPossibleBreakpointsParams:
     locations should be the same.
     """
 
-    start: Location = field(metadata={"cdp_name": "start"})
-    end: Location | None = field(default=None, metadata={"cdp_name": "end"})
+    start: Location
+    end: Location | None = None
     restrict_to_function: bool | None = field(
         default=None, metadata={"cdp_name": "restrictToFunction"}
     )
@@ -140,7 +138,7 @@ class GetPossibleBreakpointsParams:
 
 @dataclass(kw_only=True, slots=True)
 class GetPossibleBreakpointsResult:
-    locations: list[BreakLocation] = field(metadata={"cdp_name": "locations"})
+    locations: list[BreakLocation]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -155,7 +153,7 @@ class GetScriptSourceParams:
 @dataclass(kw_only=True, slots=True)
 class GetScriptSourceResult:
     script_source: str = field(metadata={"cdp_name": "scriptSource"})
-    bytecode: str | None = field(default=None, metadata={"cdp_name": "bytecode"})
+    bytecode: str | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -170,7 +168,7 @@ class DisassembleWasmModuleResult:
     function_body_offsets: list[int] = field(
         metadata={"cdp_name": "functionBodyOffsets"}
     )
-    chunk: WasmDisassemblyChunk = field(metadata={"cdp_name": "chunk"})
+    chunk: WasmDisassemblyChunk
 
 
 @dataclass(kw_only=True, slots=True)
@@ -186,7 +184,7 @@ class NextWasmDisassemblyChunkParams:
 
 @dataclass(kw_only=True, slots=True)
 class NextWasmDisassemblyChunkResult:
-    chunk: WasmDisassemblyChunk = field(metadata={"cdp_name": "chunk"})
+    chunk: WasmDisassemblyChunk
 
 
 @dataclass(kw_only=True, slots=True)
@@ -200,7 +198,7 @@ class GetWasmBytecodeParams:
 
 @dataclass(kw_only=True, slots=True)
 class GetWasmBytecodeResult:
-    bytecode: str = field(metadata={"cdp_name": "bytecode"})
+    bytecode: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -248,9 +246,7 @@ class RestartFrameParams:
     """
 
     call_frame_id: CallFrameId = field(metadata={"cdp_name": "callFrameId"})
-    mode: Literal["StepInto"] | None = field(
-        default=None, metadata={"cdp_name": "mode"}
-    )
+    mode: Literal["StepInto"] | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -282,7 +278,7 @@ class SearchInContentParams:
     """
 
     script_id: runtime.ScriptId = field(metadata={"cdp_name": "scriptId"})
-    query: str = field(metadata={"cdp_name": "query"})
+    query: str
     case_sensitive: bool | None = field(
         default=None, metadata={"cdp_name": "caseSensitive"}
     )
@@ -291,7 +287,7 @@ class SearchInContentParams:
 
 @dataclass(kw_only=True, slots=True)
 class SearchInContentResult:
-    result: list[SearchMatch] = field(metadata={"cdp_name": "result"})
+    result: list[SearchMatch]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -324,7 +320,7 @@ class SetBlackboxPatternsParams:
     'step out' if unsuccessful.
     """
 
-    patterns: list[str] = field(metadata={"cdp_name": "patterns"})
+    patterns: list[str]
     skip_anonymous: bool | None = field(
         default=None, metadata={"cdp_name": "skipAnonymous"}
     )
@@ -340,7 +336,7 @@ class SetBlackboxedRangesParams:
     """
 
     script_id: runtime.ScriptId = field(metadata={"cdp_name": "scriptId"})
-    positions: list[ScriptPosition] = field(metadata={"cdp_name": "positions"})
+    positions: list[ScriptPosition]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -349,8 +345,8 @@ class SetBreakpointParams:
     Sets JavaScript breakpoint at a given location.
     """
 
-    location: Location = field(metadata={"cdp_name": "location"})
-    condition: str | None = field(default=None, metadata={"cdp_name": "condition"})
+    location: Location
+    condition: str | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -367,9 +363,7 @@ class SetInstrumentationBreakpointParams:
 
     instrumentation: Literal[
         "beforeScriptExecution", "beforeScriptWithSourceMapExecution"
-    ] = field(  # noqa: E501
-        metadata={"cdp_name": "instrumentation"},
-    )
+    ]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -388,19 +382,19 @@ class SetBreakpointByUrlParams:
     """
 
     line_number: int = field(metadata={"cdp_name": "lineNumber"})
-    url: str | None = field(default=None, metadata={"cdp_name": "url"})
+    url: str | None = None
     url_regex: str | None = field(default=None, metadata={"cdp_name": "urlRegex"})
     script_hash: str | None = field(default=None, metadata={"cdp_name": "scriptHash"})
     column_number: int | None = field(
         default=None, metadata={"cdp_name": "columnNumber"}
     )
-    condition: str | None = field(default=None, metadata={"cdp_name": "condition"})
+    condition: str | None = None
 
 
 @dataclass(kw_only=True, slots=True)
 class SetBreakpointByUrlResult:
     breakpoint_id: BreakpointId = field(metadata={"cdp_name": "breakpointId"})
-    locations: list[Location] = field(metadata={"cdp_name": "locations"})
+    locations: list[Location]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -412,7 +406,7 @@ class SetBreakpointOnFunctionCallParams:
     """
 
     object_id: runtime.RemoteObjectId = field(metadata={"cdp_name": "objectId"})
-    condition: str | None = field(default=None, metadata={"cdp_name": "condition"})
+    condition: str | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -426,7 +420,7 @@ class SetBreakpointsActiveParams:
     Activates / deactivates all breakpoints on the page.
     """
 
-    active: bool = field(metadata={"cdp_name": "active"})
+    active: bool
 
 
 @dataclass(kw_only=True, slots=True)
@@ -437,9 +431,7 @@ class SetPauseOnExceptionsParams:
     is `none`.
     """
 
-    state: Literal["none", "caught", "uncaught", "all"] = field(
-        metadata={"cdp_name": "state"}
-    )
+    state: Literal["none", "caught", "uncaught", "all"]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -486,9 +478,7 @@ class SetScriptSourceResult:
         "BlockedByActiveGenerator",
         "BlockedByActiveFunction",
         "BlockedByTopLevelEsModuleChange",
-    ] = field(  # noqa: E501
-        metadata={"cdp_name": "status"},
-    )
+    ]
     exception_details: runtime.ExceptionDetails | None = field(
         default=None, metadata={"cdp_name": "exceptionDetails"}
     )
@@ -500,7 +490,7 @@ class SetSkipAllPausesParams:
     Makes page not interrupt on any pauses (breakpoint, exception, dom exception etc).
     """
 
-    skip: bool = field(metadata={"cdp_name": "skip"})
+    skip: bool
 
 
 @dataclass(kw_only=True, slots=True)

@@ -93,7 +93,7 @@ class GetStatusChangeRequestedEvent:
     request_id: str = field(metadata={"cdp_name": "requestId"})
     context_id: int = field(metadata={"cdp_name": "contextId"})
     reader_states: list[ReaderStateIn] = field(metadata={"cdp_name": "readerStates"})
-    timeout: int | None = field(default=None, metadata={"cdp_name": "timeout"})
+    timeout: int | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -124,7 +124,7 @@ class ConnectRequestedEvent:
 
     request_id: str = field(metadata={"cdp_name": "requestId"})
     context_id: int = field(metadata={"cdp_name": "contextId"})
-    reader: str = field(metadata={"cdp_name": "reader"})
+    reader: str
     share_mode: ShareMode = field(metadata={"cdp_name": "shareMode"})
     preferred_protocols: ProtocolSet = field(
         metadata={"cdp_name": "preferredProtocols"}
@@ -143,8 +143,8 @@ class DisconnectRequestedEvent:
     __cdp_event__: ClassVar[str] = "SmartCardEmulation.disconnectRequested"
 
     request_id: str = field(metadata={"cdp_name": "requestId"})
-    handle: int = field(metadata={"cdp_name": "handle"})
-    disposition: Disposition = field(metadata={"cdp_name": "disposition"})
+    handle: int
+    disposition: Disposition
 
 
 @dataclass(kw_only=True, slots=True)
@@ -159,9 +159,9 @@ class TransmitRequestedEvent:
     __cdp_event__: ClassVar[str] = "SmartCardEmulation.transmitRequested"
 
     request_id: str = field(metadata={"cdp_name": "requestId"})
-    handle: int = field(metadata={"cdp_name": "handle"})
-    data: str = field(metadata={"cdp_name": "data"})
-    protocol: Protocol | None = field(default=None, metadata={"cdp_name": "protocol"})
+    handle: int
+    data: str
+    protocol: Protocol | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -176,9 +176,9 @@ class ControlRequestedEvent:
     __cdp_event__: ClassVar[str] = "SmartCardEmulation.controlRequested"
 
     request_id: str = field(metadata={"cdp_name": "requestId"})
-    handle: int = field(metadata={"cdp_name": "handle"})
+    handle: int
     control_code: int = field(metadata={"cdp_name": "controlCode"})
-    data: str = field(metadata={"cdp_name": "data"})
+    data: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -193,7 +193,7 @@ class GetAttribRequestedEvent:
     __cdp_event__: ClassVar[str] = "SmartCardEmulation.getAttribRequested"
 
     request_id: str = field(metadata={"cdp_name": "requestId"})
-    handle: int = field(metadata={"cdp_name": "handle"})
+    handle: int
     attrib_id: int = field(metadata={"cdp_name": "attribId"})
 
 
@@ -209,9 +209,9 @@ class SetAttribRequestedEvent:
     __cdp_event__: ClassVar[str] = "SmartCardEmulation.setAttribRequested"
 
     request_id: str = field(metadata={"cdp_name": "requestId"})
-    handle: int = field(metadata={"cdp_name": "handle"})
+    handle: int
     attrib_id: int = field(metadata={"cdp_name": "attribId"})
-    data: str = field(metadata={"cdp_name": "data"})
+    data: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -226,7 +226,7 @@ class StatusRequestedEvent:
     __cdp_event__: ClassVar[str] = "SmartCardEmulation.statusRequested"
 
     request_id: str = field(metadata={"cdp_name": "requestId"})
-    handle: int = field(metadata={"cdp_name": "handle"})
+    handle: int
 
 
 @dataclass(kw_only=True, slots=True)
@@ -241,7 +241,7 @@ class BeginTransactionRequestedEvent:
     __cdp_event__: ClassVar[str] = "SmartCardEmulation.beginTransactionRequested"
 
     request_id: str = field(metadata={"cdp_name": "requestId"})
-    handle: int = field(metadata={"cdp_name": "handle"})
+    handle: int
 
 
 @dataclass(kw_only=True, slots=True)
@@ -256,5 +256,5 @@ class EndTransactionRequestedEvent:
     __cdp_event__: ClassVar[str] = "SmartCardEmulation.endTransactionRequested"
 
     request_id: str = field(metadata={"cdp_name": "requestId"})
-    handle: int = field(metadata={"cdp_name": "handle"})
-    disposition: Disposition = field(metadata={"cdp_name": "disposition"})
+    handle: int
+    disposition: Disposition

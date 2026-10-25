@@ -49,8 +49,8 @@ class AttributeModifiedEvent:
     __cdp_event__: ClassVar[str] = "DOM.attributeModified"
 
     node_id: NodeId = field(metadata={"cdp_name": "nodeId"})
-    name: str = field(metadata={"cdp_name": "name"})
-    value: str = field(metadata={"cdp_name": "value"})
+    name: str
+    value: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -76,7 +76,7 @@ class AttributeRemovedEvent:
     __cdp_event__: ClassVar[str] = "DOM.attributeRemoved"
 
     node_id: NodeId = field(metadata={"cdp_name": "nodeId"})
-    name: str = field(metadata={"cdp_name": "name"})
+    name: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -113,7 +113,7 @@ class ChildNodeInsertedEvent:
 
     parent_node_id: NodeId = field(metadata={"cdp_name": "parentNodeId"})
     previous_node_id: NodeId = field(metadata={"cdp_name": "previousNodeId"})
-    node: Node = field(metadata={"cdp_name": "node"})
+    node: Node
 
 
 @dataclass(kw_only=True, slots=True)
@@ -245,7 +245,7 @@ class SetChildNodesEvent:
     __cdp_event__: ClassVar[str] = "DOM.setChildNodes"
 
     parent_id: NodeId = field(metadata={"cdp_name": "parentId"})
-    nodes: list[Node] = field(metadata={"cdp_name": "nodes"})
+    nodes: list[Node]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -269,4 +269,4 @@ class ShadowRootPushedEvent:
     __cdp_event__: ClassVar[str] = "DOM.shadowRootPushed"
 
     host_id: NodeId = field(metadata={"cdp_name": "hostId"})
-    root: Node = field(metadata={"cdp_name": "root"})
+    root: Node

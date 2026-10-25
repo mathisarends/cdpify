@@ -32,7 +32,7 @@ class RecordingStateChangedEvent:
     __cdp_event__: ClassVar[str] = "BackgroundService.recordingStateChanged"
 
     is_recording: bool = field(metadata={"cdp_name": "isRecording"})
-    service: ServiceName = field(metadata={"cdp_name": "service"})
+    service: ServiceName
 
 
 @dataclass(kw_only=True, slots=True)

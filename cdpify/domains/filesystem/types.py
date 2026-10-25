@@ -11,15 +11,15 @@ from cdpify.domains import network, storage
 
 @dataclass(kw_only=True, slots=True)
 class File:
-    name: str = field(metadata={"cdp_name": "name"})
+    name: str
     last_modified: network.TimeSinceEpoch = field(metadata={"cdp_name": "lastModified"})
-    size: float = field(metadata={"cdp_name": "size"})
-    type: str = field(metadata={"cdp_name": "type"})
+    size: float
+    type: str
 
 
 @dataclass(kw_only=True, slots=True)
 class Directory:
-    name: str = field(metadata={"cdp_name": "name"})
+    name: str
     nested_directories: list[str] = field(metadata={"cdp_name": "nestedDirectories"})
     nested_files: list[File] = field(metadata={"cdp_name": "nestedFiles"})
 

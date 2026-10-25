@@ -26,7 +26,7 @@ class CloseParams:
     Close the stream, discard any temporary backing storage.
     """
 
-    handle: StreamHandle = field(metadata={"cdp_name": "handle"})
+    handle: StreamHandle
 
 
 @dataclass(kw_only=True, slots=True)
@@ -35,9 +35,9 @@ class ReadParams:
     Read a chunk of the stream
     """
 
-    handle: StreamHandle = field(metadata={"cdp_name": "handle"})
-    offset: int | None = field(default=None, metadata={"cdp_name": "offset"})
-    size: int | None = field(default=None, metadata={"cdp_name": "size"})
+    handle: StreamHandle
+    offset: int | None = None
+    size: int | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -45,8 +45,8 @@ class ReadResult:
     base64_encoded: bool | None = field(
         default=None, metadata={"cdp_name": "base64Encoded"}
     )
-    data: str = field(metadata={"cdp_name": "data"})
-    eof: bool = field(metadata={"cdp_name": "eof"})
+    data: str
+    eof: bool
 
 
 @dataclass(kw_only=True, slots=True)
@@ -60,4 +60,4 @@ class ResolveBlobParams:
 
 @dataclass(kw_only=True, slots=True)
 class ResolveBlobResult:
-    uuid: str = field(metadata={"cdp_name": "uuid"})
+    uuid: str

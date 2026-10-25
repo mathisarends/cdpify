@@ -26,4 +26,4 @@ class GetDirectoryParams:
 
 @dataclass(kw_only=True, slots=True)
 class GetDirectoryResult:
-    directory: Directory = field(metadata={"cdp_name": "directory"})
+    directory: Directory

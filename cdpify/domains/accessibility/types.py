@@ -9,14 +9,11 @@ from typing import Any, Literal
 
 from cdpify.domains import dom, page
 
+AXNodeId = str
 """
 Unique accessibility node identifier.
 """
-AXNodeId = str
 
-"""
-Enum of possible property types.
-"""
 type AXValueType = Literal[
     "boolean",
     "tristate",
@@ -36,18 +33,17 @@ type AXValueType = Literal[
     "internalRole",
     "valueUndefined",
 ]
+"""
+Enum of possible property types.
+"""
 
-"""
-Enum of possible property sources.
-"""
 type AXValueSourceType = Literal[
     "attribute", "implicit", "style", "contents", "placeholder", "relatedElement"
 ]
+"""
+Enum of possible property sources.
+"""
 
-"""
-Enum of possible native property sources (as a subtype of a particular
-AXValueSourceType).
-"""
 type AXValueNativeSourceType = Literal[
     "description",
     "figcaption",
@@ -60,6 +56,10 @@ type AXValueNativeSourceType = Literal[
     "title",
     "other",
 ]
+"""
+Enum of possible native property sources (as a subtype of a particular
+AXValueSourceType).
+"""
 
 
 @dataclass(kw_only=True, slots=True)
@@ -68,20 +68,20 @@ class AXValueSource:
     A single source for a computed AX property.
     """
 
-    type: AXValueSourceType = field(metadata={"cdp_name": "type"})
-    value: AXValue | None = field(default=None, metadata={"cdp_name": "value"})
-    attribute: str | None = field(default=None, metadata={"cdp_name": "attribute"})
+    type: AXValueSourceType
+    value: AXValue | None = None
+    attribute: str | None = None
     attribute_value: AXValue | None = field(
         default=None, metadata={"cdp_name": "attributeValue"}
     )
-    superseded: bool | None = field(default=None, metadata={"cdp_name": "superseded"})
+    superseded: bool | None = None
     native_source: AXValueNativeSourceType | None = field(
         default=None, metadata={"cdp_name": "nativeSource"}
     )
     native_source_value: AXValue | None = field(
         default=None, metadata={"cdp_name": "nativeSourceValue"}
     )
-    invalid: bool | None = field(default=None, metadata={"cdp_name": "invalid"})
+    invalid: bool | None = None
     invalid_reason: str | None = field(
         default=None, metadata={"cdp_name": "invalidReason"}
     )
@@ -92,14 +92,14 @@ class AXRelatedNode:
     backend_dom_node_id: dom.BackendNodeId | None = field(
         default=None, metadata={"cdp_name": "backendDOMNodeId"}
     )
-    idref: str | None = field(default=None, metadata={"cdp_name": "idref"})
-    text: str | None = field(default=None, metadata={"cdp_name": "text"})
+    idref: str | None = None
+    text: str | None = None
 
 
 @dataclass(kw_only=True, slots=True)
 class AXProperty:
-    name: AXPropertyName = field(metadata={"cdp_name": "name"})
-    value: AXValue = field(metadata={"cdp_name": "value"})
+    name: AXPropertyName
+    value: AXValue
 
 
 @dataclass(kw_only=True, slots=True)
@@ -108,24 +108,14 @@ class AXValue:
     A single computed AX property.
     """
 
-    type: AXValueType = field(metadata={"cdp_name": "type"})
-    value: Any | None = field(default=None, metadata={"cdp_name": "value"})
+    type: AXValueType
+    value: Any | None = None
     related_nodes: list[AXRelatedNode] | None = field(
         default=None, metadata={"cdp_name": "relatedNodes"}
     )
-    sources: list[AXValueSource] | None = field(
-        default=None, metadata={"cdp_name": "sources"}
-    )
+    sources: list[AXValueSource] | None = None
 
 
-"""
-Values of AXProperty name: - from 'busy' to 'roledescription': states which apply to
-every AX node - from 'live' to 'root': attributes which apply to nodes in live regions -
-from 'autocomplete' to 'valuetext': attributes which apply to widgets - from 'checked'
-to 'selected': states which apply to widgets - from 'activedescendant' to 'owns':
-relationships between elements other than parent/child/sibling - from
-'activeFullscreenElement' to 'uninteresting': reasons why this noode is hidden
-"""
 type AXPropertyName = Literal[
     "actions",
     "busy",
@@ -186,6 +176,14 @@ type AXPropertyName = Literal[
     "inactiveCarouselTabContent",
     "uninteresting",
 ]
+"""
+Values of AXProperty name: - from 'busy' to 'roledescription': states which apply to
+every AX node - from 'live' to 'root': attributes which apply to nodes in live regions -
+from 'autocomplete' to 'valuetext': attributes which apply to widgets - from 'checked'
+to 'selected': states which apply to widgets - from 'activedescendant' to 'owns':
+relationships between elements other than parent/child/sibling - from
+'activeFullscreenElement' to 'uninteresting': reasons why this noode is hidden
+"""
 
 
 @dataclass(kw_only=True, slots=True)
@@ -195,22 +193,18 @@ class AXNode:
     """
 
     node_id: AXNodeId = field(metadata={"cdp_name": "nodeId"})
-    ignored: bool = field(metadata={"cdp_name": "ignored"})
+    ignored: bool
     ignored_reasons: list[AXProperty] | None = field(
         default=None, metadata={"cdp_name": "ignoredReasons"}
     )
-    role: AXValue | None = field(default=None, metadata={"cdp_name": "role"})
+    role: AXValue | None = None
     chrome_role: AXValue | None = field(
         default=None, metadata={"cdp_name": "chromeRole"}
     )
-    name: AXValue | None = field(default=None, metadata={"cdp_name": "name"})
-    description: AXValue | None = field(
-        default=None, metadata={"cdp_name": "description"}
-    )
-    value: AXValue | None = field(default=None, metadata={"cdp_name": "value"})
-    properties: list[AXProperty] | None = field(
-        default=None, metadata={"cdp_name": "properties"}
-    )
+    name: AXValue | None = None
+    description: AXValue | None = None
+    value: AXValue | None = None
+    properties: list[AXProperty] | None = None
     parent_id: AXNodeId | None = field(default=None, metadata={"cdp_name": "parentId"})
     child_ids: list[AXNodeId] | None = field(
         default=None, metadata={"cdp_name": "childIds"}

@@ -15,10 +15,10 @@ class ProfileNode:
     Profile node. Holds callsite information, execution statistics and child nodes.
     """
 
-    id: int = field(metadata={"cdp_name": "id"})
+    id: int
     call_frame: runtime.CallFrame = field(metadata={"cdp_name": "callFrame"})
     hit_count: int | None = field(default=None, metadata={"cdp_name": "hitCount"})
-    children: list[int] | None = field(default=None, metadata={"cdp_name": "children"})
+    children: list[int] | None = None
     deopt_reason: str | None = field(default=None, metadata={"cdp_name": "deoptReason"})
     position_ticks: list[PositionTickInfo] | None = field(
         default=None, metadata={"cdp_name": "positionTicks"}
@@ -31,10 +31,10 @@ class Profile:
     Profile.
     """
 
-    nodes: list[ProfileNode] = field(metadata={"cdp_name": "nodes"})
+    nodes: list[ProfileNode]
     start_time: float = field(metadata={"cdp_name": "startTime"})
     end_time: float = field(metadata={"cdp_name": "endTime"})
-    samples: list[int] | None = field(default=None, metadata={"cdp_name": "samples"})
+    samples: list[int] | None = None
     time_deltas: list[int] | None = field(
         default=None, metadata={"cdp_name": "timeDeltas"}
     )
@@ -46,8 +46,8 @@ class PositionTickInfo:
     Specifies a number of samples attributed to a certain source position.
     """
 
-    line: int = field(metadata={"cdp_name": "line"})
-    ticks: int = field(metadata={"cdp_name": "ticks"})
+    line: int
+    ticks: int
 
 
 @dataclass(kw_only=True, slots=True)
@@ -58,7 +58,7 @@ class CoverageRange:
 
     start_offset: int = field(metadata={"cdp_name": "startOffset"})
     end_offset: int = field(metadata={"cdp_name": "endOffset"})
-    count: int = field(metadata={"cdp_name": "count"})
+    count: int
 
 
 @dataclass(kw_only=True, slots=True)
@@ -68,7 +68,7 @@ class FunctionCoverage:
     """
 
     function_name: str = field(metadata={"cdp_name": "functionName"})
-    ranges: list[CoverageRange] = field(metadata={"cdp_name": "ranges"})
+    ranges: list[CoverageRange]
     is_block_coverage: bool = field(metadata={"cdp_name": "isBlockCoverage"})
 
 
@@ -79,5 +79,5 @@ class ScriptCoverage:
     """
 
     script_id: runtime.ScriptId = field(metadata={"cdp_name": "scriptId"})
-    url: str = field(metadata={"cdp_name": "url"})
-    functions: list[FunctionCoverage] = field(metadata={"cdp_name": "functions"})
+    url: str
+    functions: list[FunctionCoverage]

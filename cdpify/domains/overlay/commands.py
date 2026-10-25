@@ -86,7 +86,7 @@ class GetHighlightObjectForTestParams:
 
 @dataclass(kw_only=True, slots=True)
 class GetHighlightObjectForTestResult:
-    highlight: dict[str, Any] = field(metadata={"cdp_name": "highlight"})
+    highlight: dict[str, Any]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -100,7 +100,7 @@ class GetGridHighlightObjectsForTestParams:
 
 @dataclass(kw_only=True, slots=True)
 class GetGridHighlightObjectsForTestResult:
-    highlights: dict[str, Any] = field(metadata={"cdp_name": "highlights"})
+    highlights: dict[str, Any]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -114,7 +114,7 @@ class GetSourceOrderHighlightObjectForTestParams:
 
 @dataclass(kw_only=True, slots=True)
 class GetSourceOrderHighlightObjectForTestResult:
-    highlight: dict[str, Any] = field(metadata={"cdp_name": "highlight"})
+    highlight: dict[str, Any]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -149,7 +149,7 @@ class HighlightNodeParams:
     object_id: runtime.RemoteObjectId | None = field(
         default=None, metadata={"cdp_name": "objectId"}
     )
-    selector: str | None = field(default=None, metadata={"cdp_name": "selector"})
+    selector: str | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -159,8 +159,8 @@ class HighlightQuadParams:
     viewport.
     """
 
-    quad: dom.Quad = field(metadata={"cdp_name": "quad"})
-    color: dom.RGBA | None = field(default=None, metadata={"cdp_name": "color"})
+    quad: dom.Quad
+    color: dom.RGBA | None = None
     outline_color: dom.RGBA | None = field(
         default=None, metadata={"cdp_name": "outlineColor"}
     )
@@ -175,11 +175,11 @@ class HighlightRectParams:
     crbug.com/437807128).
     """
 
-    x: int = field(metadata={"cdp_name": "x"})
-    y: int = field(metadata={"cdp_name": "y"})
-    width: int = field(metadata={"cdp_name": "width"})
-    height: int = field(metadata={"cdp_name": "height"})
-    color: dom.RGBA | None = field(default=None, metadata={"cdp_name": "color"})
+    x: int
+    y: int
+    width: int
+    height: int
+    color: dom.RGBA | None = None
     outline_color: dom.RGBA | None = field(
         default=None, metadata={"cdp_name": "outlineColor"}
     )
@@ -212,7 +212,7 @@ class SetInspectModeParams:
     selection.
     """
 
-    mode: InspectMode = field(metadata={"cdp_name": "mode"})
+    mode: InspectMode
     highlight_config: HighlightConfig | None = field(
         default=None, metadata={"cdp_name": "highlightConfig"}
     )
@@ -224,12 +224,12 @@ class SetShowAdHighlightsParams:
     Highlights owner element of all frames detected to be ads.
     """
 
-    show: bool = field(metadata={"cdp_name": "show"})
+    show: bool
 
 
 @dataclass(kw_only=True, slots=True)
 class SetPausedInDebuggerMessageParams:
-    message: str | None = field(default=None, metadata={"cdp_name": "message"})
+    message: str | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -238,7 +238,7 @@ class SetShowDebugBordersParams:
     Requests that backend shows debug borders on layers
     """
 
-    show: bool = field(metadata={"cdp_name": "show"})
+    show: bool
 
 
 @dataclass(kw_only=True, slots=True)
@@ -247,7 +247,7 @@ class SetShowFPSCounterParams:
     Requests that backend shows the FPS counter
     """
 
-    show: bool = field(metadata={"cdp_name": "show"})
+    show: bool
 
 
 @dataclass(kw_only=True, slots=True)
@@ -295,7 +295,7 @@ class SetShowPaintRectsParams:
     Requests that backend shows paint rectangles
     """
 
-    result: bool = field(metadata={"cdp_name": "result"})
+    result: bool
 
 
 @dataclass(kw_only=True, slots=True)
@@ -304,7 +304,7 @@ class SetShowLayoutShiftRegionsParams:
     Requests that backend shows layout shift regions
     """
 
-    result: bool = field(metadata={"cdp_name": "result"})
+    result: bool
 
 
 @dataclass(kw_only=True, slots=True)
@@ -313,7 +313,7 @@ class SetShowScrollBottleneckRectsParams:
     Requests that backend shows scroll bottleneck rects
     """
 
-    show: bool = field(metadata={"cdp_name": "show"})
+    show: bool
 
 
 @dataclass(kw_only=True, slots=True)
@@ -322,7 +322,7 @@ class SetShowHitTestBordersParams:
     Deprecated, no longer has any effect.
     """
 
-    show: bool = field(metadata={"cdp_name": "show"})
+    show: bool
 
 
 @dataclass(kw_only=True, slots=True)
@@ -331,7 +331,7 @@ class SetShowWebVitalsParams:
     Deprecated, no longer has any effect.
     """
 
-    show: bool = field(metadata={"cdp_name": "show"})
+    show: bool
 
 
 @dataclass(kw_only=True, slots=True)
@@ -340,7 +340,7 @@ class SetShowViewportSizeOnResizeParams:
     Paints viewport size upon main frame resize.
     """
 
-    show: bool = field(metadata={"cdp_name": "show"})
+    show: bool
 
 
 @dataclass(kw_only=True, slots=True)

@@ -7,10 +7,10 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any, Literal
 
+MemoryDumpConfig = dict[str, Any]
 """
 Configuration for memory dump. Used only when "memory-infra" category is enabled.
 """
-MemoryDumpConfig = dict[str, Any]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -53,23 +53,24 @@ class TraceConfig:
     )
 
 
+type StreamFormat = Literal["json", "proto"]
 """
 Data format of a trace. Can be either the legacy JSON format or the protocol buffer
 format. Note that the JSON format will be deprecated soon.
 """
-type StreamFormat = Literal["json", "proto"]
 
+type StreamCompression = Literal["none", "gzip"]
 """
 Compression type to use for traces returned via streams.
 """
-type StreamCompression = Literal["none", "gzip"]
 
+type MemoryDumpLevelOfDetail = Literal["background", "light", "detailed"]
 """
 Details exposed when memory request explicitly declared. Keep consistent with
 memory_dump_request_args.h and memory_instrumentation.mojom
 """
-type MemoryDumpLevelOfDetail = Literal["background", "light", "detailed"]
 
+type TracingBackend = Literal["auto", "chrome", "system"]
 """
 Backend type to use for tracing. `chrome` uses the Chrome-integrated tracing service
 and is supported on all platforms. `system` is only supported on Chrome OS and uses the
@@ -77,4 +78,3 @@ Perfetto system tracing service. `auto` chooses `system` when the perfettoConfig
 provided to Tracing.start specifies at least one non-Chrome data source; otherwise uses
 `chrome`.
 """
-type TracingBackend = Literal["auto", "chrome", "system"]

@@ -6,7 +6,11 @@ from cdpify.generator.generators.utils import (
     resolve_type,
     to_identifier,
 )
-from cdpify.generator.generators.views import FieldView, TypeDefinitionView
+from cdpify.generator.generators.views import (
+    FieldView,
+    TypeDefinitionView,
+    dataclass_import,
+)
 from cdpify.generator.rendering import render_template
 from cdpify.generator.schemas import Domain, Parameter, TypeDefinition
 
@@ -26,6 +30,7 @@ def generate(domain: Domain) -> str:
         typing_names=ctx.sorted_typing_names,
         cross_domain_modules=ctx.cross_domain_modules,
         definitions=definitions,
+        dataclass_import=dataclass_import(definitions),
     )
 
 

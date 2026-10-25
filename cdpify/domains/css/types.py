@@ -9,12 +9,12 @@ from typing import Literal
 
 from cdpify.domains import dom, page
 
+type StyleSheetOrigin = Literal["injected", "user-agent", "inspector", "regular"]
 """
 Stylesheet type: "injected" for stylesheets injected via extension, "user-agent" for
 user-agent stylesheets, "inspector" for stylesheets created by the inspector (i.e. those
 holding the "via inspector" rules), "regular" for regular stylesheets.
 """
-type StyleSheetOrigin = Literal["injected", "user-agent", "inspector", "regular"]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -27,7 +27,7 @@ class PseudoElementMatches:
     pseudo_identifier: str | None = field(
         default=None, metadata={"cdp_name": "pseudoIdentifier"}
     )
-    matches: list[RuleMatch] = field(metadata={"cdp_name": "matches"})
+    matches: list[RuleMatch]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -36,8 +36,8 @@ class CSSAnimationStyle:
     CSS style coming from animations with the name of the animation.
     """
 
-    name: str | None = field(default=None, metadata={"cdp_name": "name"})
-    style: CSSStyle = field(metadata={"cdp_name": "style"})
+    name: str | None = None
+    style: CSSStyle
 
 
 @dataclass(kw_only=True, slots=True)
@@ -83,7 +83,7 @@ class RuleMatch:
     Match data for a CSS rule.
     """
 
-    rule: CSSRule = field(metadata={"cdp_name": "rule"})
+    rule: CSSRule
     matching_selectors: list[int] = field(metadata={"cdp_name": "matchingSelectors"})
 
 
@@ -93,11 +93,9 @@ class Value:
     Data for a simple selector (these are delimited by commas in a selector list).
     """
 
-    text: str = field(metadata={"cdp_name": "text"})
-    range: SourceRange | None = field(default=None, metadata={"cdp_name": "range"})
-    specificity: Specificity | None = field(
-        default=None, metadata={"cdp_name": "specificity"}
-    )
+    text: str
+    range: SourceRange | None = None
+    specificity: Specificity | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -106,10 +104,10 @@ class SpecificityComponent:
     Contribution of an individual simple selector to specificity.
     """
 
-    text: str = field(metadata={"cdp_name": "text"})
-    a: int = field(metadata={"cdp_name": "a"})
-    b: int = field(metadata={"cdp_name": "b"})
-    c: int = field(metadata={"cdp_name": "c"})
+    text: str
+    a: int
+    b: int
+    c: int
 
 
 @dataclass(kw_only=True, slots=True)
@@ -118,12 +116,10 @@ class Specificity:
     Specificity: https://drafts.csswg.org/selectors/#specificity-rules
     """
 
-    a: int = field(metadata={"cdp_name": "a"})
-    b: int = field(metadata={"cdp_name": "b"})
-    c: int = field(metadata={"cdp_name": "c"})
-    components: list[SpecificityComponent] | None = field(
-        default=None, metadata={"cdp_name": "components"}
-    )
+    a: int
+    b: int
+    c: int
+    components: list[SpecificityComponent] | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -132,8 +128,8 @@ class SelectorList:
     Selector list data.
     """
 
-    selectors: list[Value] = field(metadata={"cdp_name": "selectors"})
-    text: str = field(metadata={"cdp_name": "text"})
+    selectors: list[Value]
+    text: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -148,12 +144,12 @@ class CSSStyleSheetHeader:
     source_map_url: str | None = field(
         default=None, metadata={"cdp_name": "sourceMapURL"}
     )
-    origin: StyleSheetOrigin = field(metadata={"cdp_name": "origin"})
-    title: str = field(metadata={"cdp_name": "title"})
+    origin: StyleSheetOrigin
+    title: str
     owner_node: dom.BackendNodeId | None = field(
         default=None, metadata={"cdp_name": "ownerNode"}
     )
-    disabled: bool = field(metadata={"cdp_name": "disabled"})
+    disabled: bool
     has_source_url: bool | None = field(
         default=None, metadata={"cdp_name": "hasSourceURL"}
     )
@@ -162,7 +158,7 @@ class CSSStyleSheetHeader:
     is_constructed: bool = field(metadata={"cdp_name": "isConstructed"})
     start_line: float = field(metadata={"cdp_name": "startLine"})
     start_column: float = field(metadata={"cdp_name": "startColumn"})
-    length: float = field(metadata={"cdp_name": "length"})
+    length: float
     end_line: float = field(metadata={"cdp_name": "endLine"})
     end_column: float = field(metadata={"cdp_name": "endColumn"})
     loading_failed: bool | None = field(
@@ -183,36 +179,27 @@ class CSSRule:
     nesting_selectors: list[str] | None = field(
         default=None, metadata={"cdp_name": "nestingSelectors"}
     )
-    origin: StyleSheetOrigin = field(metadata={"cdp_name": "origin"})
-    style: CSSStyle = field(metadata={"cdp_name": "style"})
+    origin: StyleSheetOrigin
+    style: CSSStyle
     origin_tree_scope_node_id: dom.BackendNodeId | None = field(
         default=None, metadata={"cdp_name": "originTreeScopeNodeId"}
     )
-    media: list[CSSMedia] | None = field(default=None, metadata={"cdp_name": "media"})
+    media: list[CSSMedia] | None = None
     container_queries: list[CSSContainerQuery] | None = field(
         default=None, metadata={"cdp_name": "containerQueries"}
     )
-    supports: list[CSSSupports] | None = field(
-        default=None, metadata={"cdp_name": "supports"}
-    )
-    layers: list[CSSLayer] | None = field(default=None, metadata={"cdp_name": "layers"})
-    scopes: list[CSSScope] | None = field(default=None, metadata={"cdp_name": "scopes"})
+    supports: list[CSSSupports] | None = None
+    layers: list[CSSLayer] | None = None
+    scopes: list[CSSScope] | None = None
     rule_types: list[CSSRuleType] | None = field(
         default=None, metadata={"cdp_name": "ruleTypes"}
     )
     starting_styles: list[CSSStartingStyle] | None = field(
         default=None, metadata={"cdp_name": "startingStyles"}
     )
-    navigations: list[CSSNavigation] | None = field(
-        default=None, metadata={"cdp_name": "navigations"}
-    )
+    navigations: list[CSSNavigation] | None = None
 
 
-"""
-Enum indicating the type of a CSS rule, used to represent the order of a style rule's
-ancestors. This list only contains rule types that are collected during the ancestor
-rule collection.
-"""
 type CSSRuleType = Literal[
     "MediaRule",
     "SupportsRule",
@@ -223,6 +210,11 @@ type CSSRuleType = Literal[
     "StartingStyleRule",
     "NavigationRule",
 ]
+"""
+Enum indicating the type of a CSS rule, used to represent the order of a style rule's
+ancestors. This list only contains rule types that are collected during the ancestor
+rule collection.
+"""
 
 
 @dataclass(kw_only=True, slots=True)
@@ -234,7 +226,7 @@ class RuleUsage:
     style_sheet_id: dom.StyleSheetId = field(metadata={"cdp_name": "styleSheetId"})
     start_offset: float = field(metadata={"cdp_name": "startOffset"})
     end_offset: float = field(metadata={"cdp_name": "endOffset"})
-    used: bool = field(metadata={"cdp_name": "used"})
+    used: bool
 
 
 @dataclass(kw_only=True, slots=True)
@@ -251,15 +243,15 @@ class SourceRange:
 
 @dataclass(kw_only=True, slots=True)
 class ShorthandEntry:
-    name: str = field(metadata={"cdp_name": "name"})
-    value: str = field(metadata={"cdp_name": "value"})
-    important: bool | None = field(default=None, metadata={"cdp_name": "important"})
+    name: str
+    value: str
+    important: bool | None = None
 
 
 @dataclass(kw_only=True, slots=True)
 class CSSComputedStyleProperty:
-    name: str = field(metadata={"cdp_name": "name"})
-    value: str = field(metadata={"cdp_name": "value"})
+    name: str
+    value: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -281,7 +273,7 @@ class CSSStyle:
         metadata={"cdp_name": "shorthandEntries"}
     )
     css_text: str | None = field(default=None, metadata={"cdp_name": "cssText"})
-    range: SourceRange | None = field(default=None, metadata={"cdp_name": "range"})
+    range: SourceRange | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -290,14 +282,14 @@ class CSSProperty:
     CSS property declaration data.
     """
 
-    name: str = field(metadata={"cdp_name": "name"})
-    value: str = field(metadata={"cdp_name": "value"})
-    important: bool | None = field(default=None, metadata={"cdp_name": "important"})
-    implicit: bool | None = field(default=None, metadata={"cdp_name": "implicit"})
-    text: str | None = field(default=None, metadata={"cdp_name": "text"})
+    name: str
+    value: str
+    important: bool | None = None
+    implicit: bool | None = None
+    text: str | None = None
     parsed_ok: bool | None = field(default=None, metadata={"cdp_name": "parsedOk"})
-    disabled: bool | None = field(default=None, metadata={"cdp_name": "disabled"})
-    range: SourceRange | None = field(default=None, metadata={"cdp_name": "range"})
+    disabled: bool | None = None
+    range: SourceRange | None = None
     longhand_properties: list[CSSProperty] | None = field(
         default=None, metadata={"cdp_name": "longhandProperties"}
     )
@@ -309,12 +301,10 @@ class CSSMedia:
     CSS media rule descriptor.
     """
 
-    text: str = field(metadata={"cdp_name": "text"})
-    source: Literal["mediaRule", "importRule", "linkedSheet", "inlineSheet"] = field(
-        metadata={"cdp_name": "source"}
-    )
+    text: str
+    source: Literal["mediaRule", "importRule", "linkedSheet", "inlineSheet"]
     source_url: str | None = field(default=None, metadata={"cdp_name": "sourceURL"})
-    range: SourceRange | None = field(default=None, metadata={"cdp_name": "range"})
+    range: SourceRange | None = None
     style_sheet_id: dom.StyleSheetId | None = field(
         default=None, metadata={"cdp_name": "styleSheetId"}
     )
@@ -329,10 +319,8 @@ class MediaQuery:
     Media query descriptor.
     """
 
-    expressions: list[MediaQueryExpression] = field(
-        metadata={"cdp_name": "expressions"}
-    )
-    active: bool = field(metadata={"cdp_name": "active"})
+    expressions: list[MediaQueryExpression]
+    active: bool
 
 
 @dataclass(kw_only=True, slots=True)
@@ -341,9 +329,9 @@ class MediaQueryExpression:
     Media query expression descriptor.
     """
 
-    value: float = field(metadata={"cdp_name": "value"})
-    unit: str = field(metadata={"cdp_name": "unit"})
-    feature: str = field(metadata={"cdp_name": "feature"})
+    value: float
+    unit: str
+    feature: str
     value_range: SourceRange | None = field(
         default=None, metadata={"cdp_name": "valueRange"}
     )
@@ -358,12 +346,12 @@ class CSSContainerQuery:
     CSS container query rule descriptor.
     """
 
-    text: str = field(metadata={"cdp_name": "text"})
-    range: SourceRange | None = field(default=None, metadata={"cdp_name": "range"})
+    text: str
+    range: SourceRange | None = None
     style_sheet_id: dom.StyleSheetId | None = field(
         default=None, metadata={"cdp_name": "styleSheetId"}
     )
-    name: str | None = field(default=None, metadata={"cdp_name": "name"})
+    name: str | None = None
     physical_axes: dom.PhysicalAxes | None = field(
         default=None, metadata={"cdp_name": "physicalAxes"}
     )
@@ -385,9 +373,9 @@ class CSSSupports:
     CSS Supports at-rule descriptor.
     """
 
-    text: str = field(metadata={"cdp_name": "text"})
-    active: bool = field(metadata={"cdp_name": "active"})
-    range: SourceRange | None = field(default=None, metadata={"cdp_name": "range"})
+    text: str
+    active: bool
+    range: SourceRange | None = None
     style_sheet_id: dom.StyleSheetId | None = field(
         default=None, metadata={"cdp_name": "styleSheetId"}
     )
@@ -399,9 +387,9 @@ class CSSNavigation:
     CSS Navigation at-rule descriptor.
     """
 
-    text: str = field(metadata={"cdp_name": "text"})
-    active: bool | None = field(default=None, metadata={"cdp_name": "active"})
-    range: SourceRange | None = field(default=None, metadata={"cdp_name": "range"})
+    text: str
+    active: bool | None = None
+    range: SourceRange | None = None
     style_sheet_id: dom.StyleSheetId | None = field(
         default=None, metadata={"cdp_name": "styleSheetId"}
     )
@@ -413,8 +401,8 @@ class CSSScope:
     CSS Scope at-rule descriptor.
     """
 
-    text: str = field(metadata={"cdp_name": "text"})
-    range: SourceRange | None = field(default=None, metadata={"cdp_name": "range"})
+    text: str
+    range: SourceRange | None = None
     style_sheet_id: dom.StyleSheetId | None = field(
         default=None, metadata={"cdp_name": "styleSheetId"}
     )
@@ -426,8 +414,8 @@ class CSSLayer:
     CSS Layer at-rule descriptor.
     """
 
-    text: str = field(metadata={"cdp_name": "text"})
-    range: SourceRange | None = field(default=None, metadata={"cdp_name": "range"})
+    text: str
+    range: SourceRange | None = None
     style_sheet_id: dom.StyleSheetId | None = field(
         default=None, metadata={"cdp_name": "styleSheetId"}
     )
@@ -439,7 +427,7 @@ class CSSStartingStyle:
     CSS Starting Style at-rule descriptor.
     """
 
-    range: SourceRange | None = field(default=None, metadata={"cdp_name": "range"})
+    range: SourceRange | None = None
     style_sheet_id: dom.StyleSheetId | None = field(
         default=None, metadata={"cdp_name": "styleSheetId"}
     )
@@ -451,11 +439,11 @@ class CSSLayerData:
     CSS Layer data.
     """
 
-    name: str = field(metadata={"cdp_name": "name"})
+    name: str
     sub_layers: list[CSSLayerData] | None = field(
         default=None, metadata={"cdp_name": "subLayers"}
     )
-    order: float = field(metadata={"cdp_name": "order"})
+    order: float
 
 
 @dataclass(kw_only=True, slots=True)
@@ -476,8 +464,8 @@ class FontVariationAxis:
     Information about font variation axes for variable fonts
     """
 
-    tag: str = field(metadata={"cdp_name": "tag"})
-    name: str = field(metadata={"cdp_name": "name"})
+    tag: str
+    name: str
     min_value: float = field(metadata={"cdp_name": "minValue"})
     max_value: float = field(metadata={"cdp_name": "maxValue"})
     default_value: float = field(metadata={"cdp_name": "defaultValue"})
@@ -498,7 +486,7 @@ class FontFace:
     font_stretch: str = field(metadata={"cdp_name": "fontStretch"})
     font_display: str = field(metadata={"cdp_name": "fontDisplay"})
     unicode_range: str = field(metadata={"cdp_name": "unicodeRange"})
-    src: str = field(metadata={"cdp_name": "src"})
+    src: str
     platform_font_family: str = field(metadata={"cdp_name": "platformFontFamily"})
     font_variation_axes: list[FontVariationAxis] | None = field(
         default=None, metadata={"cdp_name": "fontVariationAxes"}
@@ -514,8 +502,8 @@ class CSSTryRule:
     style_sheet_id: dom.StyleSheetId | None = field(
         default=None, metadata={"cdp_name": "styleSheetId"}
     )
-    origin: StyleSheetOrigin = field(metadata={"cdp_name": "origin"})
-    style: CSSStyle = field(metadata={"cdp_name": "style"})
+    origin: StyleSheetOrigin
+    style: CSSStyle
 
 
 @dataclass(kw_only=True, slots=True)
@@ -524,13 +512,13 @@ class CSSPositionTryRule:
     CSS @position-try rule representation.
     """
 
-    name: Value = field(metadata={"cdp_name": "name"})
+    name: Value
     style_sheet_id: dom.StyleSheetId | None = field(
         default=None, metadata={"cdp_name": "styleSheetId"}
     )
-    origin: StyleSheetOrigin = field(metadata={"cdp_name": "origin"})
-    style: CSSStyle = field(metadata={"cdp_name": "style"})
-    active: bool = field(metadata={"cdp_name": "active"})
+    origin: StyleSheetOrigin
+    style: CSSStyle
+    active: bool
 
 
 @dataclass(kw_only=True, slots=True)
@@ -540,7 +528,7 @@ class CSSKeyframesRule:
     """
 
     animation_name: Value = field(metadata={"cdp_name": "animationName"})
-    keyframes: list[CSSKeyframeRule] = field(metadata={"cdp_name": "keyframes"})
+    keyframes: list[CSSKeyframeRule]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -553,8 +541,8 @@ class CSSPropertyRegistration:
     initial_value: Value | None = field(
         default=None, metadata={"cdp_name": "initialValue"}
     )
-    inherits: bool = field(metadata={"cdp_name": "inherits"})
-    syntax: str = field(metadata={"cdp_name": "syntax"})
+    inherits: bool
+    syntax: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -565,9 +553,7 @@ class CSSAtRule:
 
     type: Literal[
         "font-face", "font-feature-values", "font-palette-values", "counter-style"
-    ] = field(  # noqa: E501
-        metadata={"cdp_name": "type"},
-    )
+    ]
     subsection: (
         Literal[
             "swash",
@@ -578,16 +564,13 @@ class CSSAtRule:
             "character-variant",
         ]
         | None
-    ) = field(  # noqa: E501
-        default=None,
-        metadata={"cdp_name": "subsection"},
-    )
-    name: Value | None = field(default=None, metadata={"cdp_name": "name"})
+    ) = None
+    name: Value | None = None
     style_sheet_id: dom.StyleSheetId | None = field(
         default=None, metadata={"cdp_name": "styleSheetId"}
     )
-    origin: StyleSheetOrigin = field(metadata={"cdp_name": "origin"})
-    style: CSSStyle = field(metadata={"cdp_name": "style"})
+    origin: StyleSheetOrigin
+    style: CSSStyle
 
 
 @dataclass(kw_only=True, slots=True)
@@ -599,9 +582,9 @@ class CSSPropertyRule:
     style_sheet_id: dom.StyleSheetId | None = field(
         default=None, metadata={"cdp_name": "styleSheetId"}
     )
-    origin: StyleSheetOrigin = field(metadata={"cdp_name": "origin"})
+    origin: StyleSheetOrigin
     property_name: Value = field(metadata={"cdp_name": "propertyName"})
-    style: CSSStyle = field(metadata={"cdp_name": "style"})
+    style: CSSStyle
 
 
 @dataclass(kw_only=True, slots=True)
@@ -610,8 +593,8 @@ class CSSFunctionParameter:
     CSS function argument representation.
     """
 
-    name: str = field(metadata={"cdp_name": "name"})
-    type: str = field(metadata={"cdp_name": "type"})
+    name: str
+    type: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -620,17 +603,13 @@ class CSSFunctionConditionNode:
     CSS function conditional block representation.
     """
 
-    media: CSSMedia | None = field(default=None, metadata={"cdp_name": "media"})
+    media: CSSMedia | None = None
     container_queries: CSSContainerQuery | None = field(
         default=None, metadata={"cdp_name": "containerQueries"}
     )
-    supports: CSSSupports | None = field(
-        default=None, metadata={"cdp_name": "supports"}
-    )
-    navigation: CSSNavigation | None = field(
-        default=None, metadata={"cdp_name": "navigation"}
-    )
-    children: list[CSSFunctionNode] = field(metadata={"cdp_name": "children"})
+    supports: CSSSupports | None = None
+    navigation: CSSNavigation | None = None
+    children: list[CSSFunctionNode]
     condition_text: str = field(metadata={"cdp_name": "conditionText"})
 
 
@@ -640,10 +619,8 @@ class CSSFunctionNode:
     Section of the body of a CSS function rule.
     """
 
-    condition: CSSFunctionConditionNode | None = field(
-        default=None, metadata={"cdp_name": "condition"}
-    )
-    style: CSSStyle | None = field(default=None, metadata={"cdp_name": "style"})
+    condition: CSSFunctionConditionNode | None = None
+    style: CSSStyle | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -652,13 +629,13 @@ class CSSFunctionRule:
     CSS function at-rule representation.
     """
 
-    name: Value = field(metadata={"cdp_name": "name"})
+    name: Value
     style_sheet_id: dom.StyleSheetId | None = field(
         default=None, metadata={"cdp_name": "styleSheetId"}
     )
-    origin: StyleSheetOrigin = field(metadata={"cdp_name": "origin"})
-    parameters: list[CSSFunctionParameter] = field(metadata={"cdp_name": "parameters"})
-    children: list[CSSFunctionNode] = field(metadata={"cdp_name": "children"})
+    origin: StyleSheetOrigin
+    parameters: list[CSSFunctionParameter]
+    children: list[CSSFunctionNode]
     origin_tree_scope_node_id: dom.BackendNodeId | None = field(
         default=None, metadata={"cdp_name": "originTreeScopeNodeId"}
     )
@@ -673,9 +650,9 @@ class CSSKeyframeRule:
     style_sheet_id: dom.StyleSheetId | None = field(
         default=None, metadata={"cdp_name": "styleSheetId"}
     )
-    origin: StyleSheetOrigin = field(metadata={"cdp_name": "origin"})
+    origin: StyleSheetOrigin
     key_text: Value = field(metadata={"cdp_name": "keyText"})
-    style: CSSStyle = field(metadata={"cdp_name": "style"})
+    style: CSSStyle
 
 
 @dataclass(kw_only=True, slots=True)
@@ -685,5 +662,5 @@ class StyleDeclarationEdit:
     """
 
     style_sheet_id: dom.StyleSheetId = field(metadata={"cdp_name": "styleSheetId"})
-    range: SourceRange = field(metadata={"cdp_name": "range"})
-    text: str = field(metadata={"cdp_name": "text"})
+    range: SourceRange
+    text: str

@@ -46,7 +46,7 @@ class AddVirtualAuthenticatorParams:
     Creates and adds a virtual authenticator.
     """
 
-    options: VirtualAuthenticatorOptions = field(metadata={"cdp_name": "options"})
+    options: VirtualAuthenticatorOptions
 
 
 @dataclass(kw_only=True, slots=True)
@@ -85,7 +85,7 @@ class AddCredentialParams:
     """
 
     authenticator_id: AuthenticatorId = field(metadata={"cdp_name": "authenticatorId"})
-    credential: Credential = field(metadata={"cdp_name": "credential"})
+    credential: Credential
 
 
 @dataclass(kw_only=True, slots=True)
@@ -101,7 +101,7 @@ class GetCredentialParams:
 
 @dataclass(kw_only=True, slots=True)
 class GetCredentialResult:
-    credential: Credential = field(metadata={"cdp_name": "credential"})
+    credential: Credential
 
 
 @dataclass(kw_only=True, slots=True)
@@ -115,7 +115,7 @@ class GetCredentialsParams:
 
 @dataclass(kw_only=True, slots=True)
 class GetCredentialsResult:
-    credentials: list[Credential] = field(metadata={"cdp_name": "credentials"})
+    credentials: list[Credential]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -156,7 +156,7 @@ class SetAutomaticPresenceSimulationParams:
     """
 
     authenticator_id: AuthenticatorId = field(metadata={"cdp_name": "authenticatorId"})
-    enabled: bool = field(metadata={"cdp_name": "enabled"})
+    enabled: bool
 
 
 @dataclass(kw_only=True, slots=True)

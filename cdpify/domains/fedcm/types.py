@@ -7,26 +7,26 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Literal
 
+type LoginState = Literal["SignIn", "SignUp"]
 """
 Whether this is a sign-up or sign-in action for this account, i.e. whether this account
 has ever been used to sign in to this RP before.
 """
-type LoginState = Literal["SignIn", "SignUp"]
 
+type DialogType = Literal["AccountChooser", "AutoReauthn", "ConfirmIdpLogin", "Error"]
 """
 The types of FedCM dialogs.
 """
-type DialogType = Literal["AccountChooser", "AutoReauthn", "ConfirmIdpLogin", "Error"]
 
+type DialogButton = Literal["ConfirmIdpLoginContinue", "ErrorGotIt", "ErrorMoreDetails"]
 """
 The buttons on the FedCM dialog.
 """
-type DialogButton = Literal["ConfirmIdpLoginContinue", "ErrorGotIt", "ErrorMoreDetails"]
 
+type AccountUrlType = Literal["TermsOfService", "PrivacyPolicy"]
 """
 The URLs that each account has
 """
-type AccountUrlType = Literal["TermsOfService", "PrivacyPolicy"]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -36,8 +36,8 @@ class Account:
     """
 
     account_id: str = field(metadata={"cdp_name": "accountId"})
-    email: str = field(metadata={"cdp_name": "email"})
-    name: str = field(metadata={"cdp_name": "name"})
+    email: str
+    name: str
     given_name: str = field(metadata={"cdp_name": "givenName"})
     picture_url: str = field(metadata={"cdp_name": "pictureUrl"})
     idp_config_url: str = field(metadata={"cdp_name": "idpConfigUrl"})

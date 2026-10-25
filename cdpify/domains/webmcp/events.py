@@ -32,7 +32,7 @@ class ToolsAddedEvent:
 
     __cdp_event__: ClassVar[str] = "WebMCP.toolsAdded"
 
-    tools: list[Tool] = field(metadata={"cdp_name": "tools"})
+    tools: list[Tool]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -43,7 +43,7 @@ class ToolsRemovedEvent:
 
     __cdp_event__: ClassVar[str] = "WebMCP.toolsRemoved"
 
-    tools: list[RemovedTool] = field(metadata={"cdp_name": "tools"})
+    tools: list[RemovedTool]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -57,7 +57,7 @@ class ToolInvokedEvent:
     tool_name: str = field(metadata={"cdp_name": "toolName"})
     frame_id: page.FrameId = field(metadata={"cdp_name": "frameId"})
     invocation_id: str = field(metadata={"cdp_name": "invocationId"})
-    input: str = field(metadata={"cdp_name": "input"})
+    input: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -69,9 +69,7 @@ class ToolRespondedEvent:
     __cdp_event__: ClassVar[str] = "WebMCP.toolResponded"
 
     invocation_id: str = field(metadata={"cdp_name": "invocationId"})
-    status: InvocationStatus = field(metadata={"cdp_name": "status"})
-    output: Any | None = field(default=None, metadata={"cdp_name": "output"})
+    status: InvocationStatus
+    output: Any | None = None
     error_text: str | None = field(default=None, metadata={"cdp_name": "errorText"})
-    exception: runtime.RemoteObject | None = field(
-        default=None, metadata={"cdp_name": "exception"}
-    )
+    exception: runtime.RemoteObject | None = None

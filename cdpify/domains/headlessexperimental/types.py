@@ -14,10 +14,8 @@ class ScreenshotParams:
     Encoding options for a screenshot.
     """
 
-    format: Literal["jpeg", "png", "webp"] | None = field(
-        default=None, metadata={"cdp_name": "format"}
-    )
-    quality: int | None = field(default=None, metadata={"cdp_name": "quality"})
+    format: Literal["jpeg", "png", "webp"] | None = None
+    quality: int | None = None
     optimize_for_speed: bool | None = field(
         default=None, metadata={"cdp_name": "optimizeForSpeed"}
     )

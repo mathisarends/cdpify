@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from enum import StrEnum
 from typing import ClassVar
 
@@ -27,5 +27,5 @@ class DeviceRequestPromptedEvent:
 
     __cdp_event__: ClassVar[str] = "DeviceAccess.deviceRequestPrompted"
 
-    id: RequestId = field(metadata={"cdp_name": "id"})
-    devices: list[PromptDevice] = field(metadata={"cdp_name": "devices"})
+    id: RequestId
+    devices: list[PromptDevice]

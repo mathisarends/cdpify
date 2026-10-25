@@ -25,8 +25,8 @@ class DownloadWillBeginEvent:
     __cdp_event__: ClassVar[str] = "Browser.downloadWillBegin"
 
     frame_id: page.FrameId = field(metadata={"cdp_name": "frameId"})
-    guid: str = field(metadata={"cdp_name": "guid"})
-    url: str = field(metadata={"cdp_name": "url"})
+    guid: str
+    url: str
     suggested_filename: str = field(metadata={"cdp_name": "suggestedFilename"})
 
 
@@ -38,10 +38,8 @@ class DownloadProgressEvent:
 
     __cdp_event__: ClassVar[str] = "Browser.downloadProgress"
 
-    guid: str = field(metadata={"cdp_name": "guid"})
+    guid: str
     total_bytes: float = field(metadata={"cdp_name": "totalBytes"})
     received_bytes: float = field(metadata={"cdp_name": "receivedBytes"})
-    state: Literal["inProgress", "completed", "canceled"] = field(
-        metadata={"cdp_name": "state"}
-    )
+    state: Literal["inProgress", "completed", "canceled"]
     file_path: str | None = field(default=None, metadata={"cdp_name": "filePath"})

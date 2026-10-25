@@ -21,7 +21,7 @@ class HeapProfilerEvent(StrEnum):
 class AddHeapSnapshotChunkEvent:
     __cdp_event__: ClassVar[str] = "HeapProfiler.addHeapSnapshotChunk"
 
-    chunk: str = field(metadata={"cdp_name": "chunk"})
+    chunk: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -48,16 +48,16 @@ class LastSeenObjectIdEvent:
     __cdp_event__: ClassVar[str] = "HeapProfiler.lastSeenObjectId"
 
     last_seen_object_id: int = field(metadata={"cdp_name": "lastSeenObjectId"})
-    timestamp: float = field(metadata={"cdp_name": "timestamp"})
+    timestamp: float
 
 
 @dataclass(kw_only=True, slots=True)
 class ReportHeapSnapshotProgressEvent:
     __cdp_event__: ClassVar[str] = "HeapProfiler.reportHeapSnapshotProgress"
 
-    done: int = field(metadata={"cdp_name": "done"})
-    total: int = field(metadata={"cdp_name": "total"})
-    finished: bool | None = field(default=None, metadata={"cdp_name": "finished"})
+    done: int
+    total: int
+    finished: bool | None = None
 
 
 @dataclass(kw_only=True, slots=True)

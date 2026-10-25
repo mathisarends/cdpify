@@ -143,10 +143,8 @@ class LineStyle:
     Style information for drawing a line.
     """
 
-    color: dom.RGBA | None = field(default=None, metadata={"cdp_name": "color"})
-    pattern: Literal["dashed", "dotted"] | None = field(
-        default=None, metadata={"cdp_name": "pattern"}
-    )
+    color: dom.RGBA | None = None
+    pattern: Literal["dashed", "dotted"] | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -320,7 +318,7 @@ class HingeConfig:
     Configuration for dual screen hinge
     """
 
-    rect: dom.Rect = field(metadata={"cdp_name": "rect"})
+    rect: dom.Rect
     content_color: dom.RGBA | None = field(
         default=None, metadata={"cdp_name": "contentColor"}
     )
@@ -329,10 +327,10 @@ class HingeConfig:
     )
 
 
+type DisplayCutoutShape = Literal["pill", "notch", "circle", "rectangle"]
 """
 Supported display cutout shapes.
 """
-type DisplayCutoutShape = Literal["pill", "notch", "circle", "rectangle"]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -341,16 +339,16 @@ class DisplayCutoutConfig:
     Configuration for a display cutout.
     """
 
-    rect: dom.Rect = field(metadata={"cdp_name": "rect"})
-    shape: DisplayCutoutShape = field(metadata={"cdp_name": "shape"})
+    rect: dom.Rect
+    shape: DisplayCutoutShape
     border_radius: int | None = field(
         default=None, metadata={"cdp_name": "borderRadius"}
     )
     upper_radius: int | None = field(default=None, metadata={"cdp_name": "upperRadius"})
     lower_radius: int | None = field(default=None, metadata={"cdp_name": "lowerRadius"})
-    cx: int | None = field(default=None, metadata={"cdp_name": "cx"})
-    cy: int | None = field(default=None, metadata={"cdp_name": "cy"})
-    radius: int | None = field(default=None, metadata={"cdp_name": "radius"})
+    cx: int | None = None
+    cy: int | None = None
+    radius: int | None = None
     content_color: dom.RGBA | None = field(
         default=None, metadata={"cdp_name": "contentColor"}
     )

@@ -31,7 +31,7 @@ class TriggerActionParams:
     Runs an extension default action.
     """
 
-    id: str = field(metadata={"cdp_name": "id"})
+    id: str
     target_id: str = field(metadata={"cdp_name": "targetId"})
 
 
@@ -42,7 +42,7 @@ class LoadUnpackedParams:
     flags. Returns extension ID once the extension has been installed.
     """
 
-    path: str = field(metadata={"cdp_name": "path"})
+    path: str
     enable_in_incognito: bool | None = field(
         default=None, metadata={"cdp_name": "enableInIncognito"}
     )
@@ -50,12 +50,12 @@ class LoadUnpackedParams:
 
 @dataclass(kw_only=True, slots=True)
 class LoadUnpackedResult:
-    id: str = field(metadata={"cdp_name": "id"})
+    id: str
 
 
 @dataclass(kw_only=True, slots=True)
 class GetExtensionsResult:
-    extensions: list[ExtensionInfo] = field(metadata={"cdp_name": "extensions"})
+    extensions: list[ExtensionInfo]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -64,7 +64,7 @@ class UninstallParams:
     Uninstalls an unpacked extension (others not supported) from the profile.
     """
 
-    id: str = field(metadata={"cdp_name": "id"})
+    id: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -74,14 +74,14 @@ class GetStorageItemsParams:
     specified, these are used to filter the result.
     """
 
-    id: str = field(metadata={"cdp_name": "id"})
+    id: str
     storage_area: StorageArea = field(metadata={"cdp_name": "storageArea"})
-    keys: list[str] | None = field(default=None, metadata={"cdp_name": "keys"})
+    keys: list[str] | None = None
 
 
 @dataclass(kw_only=True, slots=True)
 class GetStorageItemsResult:
-    data: dict[str, Any] = field(metadata={"cdp_name": "data"})
+    data: dict[str, Any]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -90,9 +90,9 @@ class RemoveStorageItemsParams:
     Removes `keys` from extension storage in the given `storageArea`.
     """
 
-    id: str = field(metadata={"cdp_name": "id"})
+    id: str
     storage_area: StorageArea = field(metadata={"cdp_name": "storageArea"})
-    keys: list[str] = field(metadata={"cdp_name": "keys"})
+    keys: list[str]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -101,7 +101,7 @@ class ClearStorageItemsParams:
     Clears extension storage in the given `storageArea`.
     """
 
-    id: str = field(metadata={"cdp_name": "id"})
+    id: str
     storage_area: StorageArea = field(metadata={"cdp_name": "storageArea"})
 
 
@@ -112,6 +112,6 @@ class SetStorageItemsParams:
     `values` will be merged with existing values in the storage area.
     """
 
-    id: str = field(metadata={"cdp_name": "id"})
+    id: str
     storage_area: StorageArea = field(metadata={"cdp_name": "storageArea"})
-    values: dict[str, Any] = field(metadata={"cdp_name": "values"})
+    values: dict[str, Any]

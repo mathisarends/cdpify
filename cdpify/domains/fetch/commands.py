@@ -36,9 +36,7 @@ class EnableParams:
     calls one of failRequest, fulfillRequest or continueRequest/continueWithAuth.
     """
 
-    patterns: list[RequestPattern] | None = field(
-        default=None, metadata={"cdp_name": "patterns"}
-    )
+    patterns: list[RequestPattern] | None = None
     handle_auth_requests: bool | None = field(
         default=None, metadata={"cdp_name": "handleAuthRequests"}
     )
@@ -68,7 +66,7 @@ class FulfillRequestParams:
     binary_response_headers: str | None = field(
         default=None, metadata={"cdp_name": "binaryResponseHeaders"}
     )
-    body: str | None = field(default=None, metadata={"cdp_name": "body"})
+    body: str | None = None
     response_phrase: str | None = field(
         default=None, metadata={"cdp_name": "responsePhrase"}
     )
@@ -81,12 +79,10 @@ class ContinueRequestParams:
     """
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
-    url: str | None = field(default=None, metadata={"cdp_name": "url"})
-    method: str | None = field(default=None, metadata={"cdp_name": "method"})
+    url: str | None = None
+    method: str | None = None
     post_data: str | None = field(default=None, metadata={"cdp_name": "postData"})
-    headers: list[HeaderEntry] | None = field(
-        default=None, metadata={"cdp_name": "headers"}
-    )
+    headers: list[HeaderEntry] | None = None
     intercept_response: bool | None = field(
         default=None, metadata={"cdp_name": "interceptResponse"}
     )
@@ -145,7 +141,7 @@ class GetResponseBodyParams:
 
 @dataclass(kw_only=True, slots=True)
 class GetResponseBodyResult:
-    body: str = field(metadata={"cdp_name": "body"})
+    body: str
     base64_encoded: bool = field(metadata={"cdp_name": "base64Encoded"})
 
 
@@ -166,4 +162,4 @@ class TakeResponseBodyAsStreamParams:
 
 @dataclass(kw_only=True, slots=True)
 class TakeResponseBodyAsStreamResult:
-    stream: io.StreamHandle = field(metadata={"cdp_name": "stream"})
+    stream: io.StreamHandle

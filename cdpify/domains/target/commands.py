@@ -57,7 +57,7 @@ class AttachToTargetParams:
     """
 
     target_id: TargetID = field(metadata={"cdp_name": "targetId"})
-    flatten: bool | None = field(default=None, metadata={"cdp_name": "flatten"})
+    flatten: bool | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -81,7 +81,7 @@ class CloseTargetParams:
 
 @dataclass(kw_only=True, slots=True)
 class CloseTargetResult:
-    success: bool = field(metadata={"cdp_name": "success"})
+    success: bool
 
 
 @dataclass(kw_only=True, slots=True)
@@ -144,11 +144,11 @@ class CreateTargetParams:
     Creates a new page.
     """
 
-    url: str = field(metadata={"cdp_name": "url"})
-    left: int | None = field(default=None, metadata={"cdp_name": "left"})
-    top: int | None = field(default=None, metadata={"cdp_name": "top"})
-    width: int | None = field(default=None, metadata={"cdp_name": "width"})
-    height: int | None = field(default=None, metadata={"cdp_name": "height"})
+    url: str
+    left: int | None = None
+    top: int | None = None
+    width: int | None = None
+    height: int | None = None
     window_state: WindowState | None = field(
         default=None, metadata={"cdp_name": "windowState"}
     )
@@ -159,10 +159,10 @@ class CreateTargetParams:
         default=None, metadata={"cdp_name": "enableBeginFrameControl"}
     )
     new_window: bool | None = field(default=None, metadata={"cdp_name": "newWindow"})
-    background: bool | None = field(default=None, metadata={"cdp_name": "background"})
+    background: bool | None = None
     for_tab: bool | None = field(default=None, metadata={"cdp_name": "forTab"})
-    hidden: bool | None = field(default=None, metadata={"cdp_name": "hidden"})
-    focus: bool | None = field(default=None, metadata={"cdp_name": "focus"})
+    hidden: bool | None = None
+    focus: bool | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -214,7 +214,7 @@ class GetTargetsParams:
     Retrieves a list of available targets.
     """
 
-    filter: TargetFilter | None = field(default=None, metadata={"cdp_name": "filter"})
+    filter: TargetFilter | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -229,7 +229,7 @@ class SendMessageToTargetParams:
     instead; see commands attachToTarget, setAutoAttach, and crbug.com/991325.
     """
 
-    message: str = field(metadata={"cdp_name": "message"})
+    message: str
     session_id: SessionID | None = field(
         default=None, metadata={"cdp_name": "sessionId"}
     )
@@ -252,8 +252,8 @@ class SetAutoAttachParams:
     wait_for_debugger_on_start: bool = field(
         metadata={"cdp_name": "waitForDebuggerOnStart"}
     )
-    flatten: bool | None = field(default=None, metadata={"cdp_name": "flatten"})
-    filter: TargetFilter | None = field(default=None, metadata={"cdp_name": "filter"})
+    flatten: bool | None = None
+    filter: TargetFilter | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -270,7 +270,7 @@ class AutoAttachRelatedParams:
     wait_for_debugger_on_start: bool = field(
         metadata={"cdp_name": "waitForDebuggerOnStart"}
     )
-    filter: TargetFilter | None = field(default=None, metadata={"cdp_name": "filter"})
+    filter: TargetFilter | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -280,8 +280,8 @@ class SetDiscoverTargetsParams:
     `targetCreated/targetInfoChanged/targetDestroyed` events.
     """
 
-    discover: bool = field(metadata={"cdp_name": "discover"})
-    filter: TargetFilter | None = field(default=None, metadata={"cdp_name": "filter"})
+    discover: bool
+    filter: TargetFilter | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -291,7 +291,7 @@ class SetRemoteLocationsParams:
     set to `true`.
     """
 
-    locations: list[RemoteLocation] = field(metadata={"cdp_name": "locations"})
+    locations: list[RemoteLocation]
 
 
 @dataclass(kw_only=True, slots=True)

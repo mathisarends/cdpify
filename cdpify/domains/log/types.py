@@ -30,18 +30,12 @@ class LogEntry:
         "intervention",
         "recommendation",
         "other",
-    ] = field(  # noqa: E501
-        metadata={"cdp_name": "source"},
-    )
-    level: Literal["verbose", "info", "warning", "error"] = field(
-        metadata={"cdp_name": "level"}
-    )
-    text: str = field(metadata={"cdp_name": "text"})
-    category: Literal["cors"] | None = field(
-        default=None, metadata={"cdp_name": "category"}
-    )
-    timestamp: runtime.Timestamp = field(metadata={"cdp_name": "timestamp"})
-    url: str | None = field(default=None, metadata={"cdp_name": "url"})
+    ]
+    level: Literal["verbose", "info", "warning", "error"]
+    text: str
+    category: Literal["cors"] | None = None
+    timestamp: runtime.Timestamp
+    url: str | None = None
     line_number: int | None = field(default=None, metadata={"cdp_name": "lineNumber"})
     stack_trace: runtime.StackTrace | None = field(
         default=None, metadata={"cdp_name": "stackTrace"}
@@ -50,9 +44,7 @@ class LogEntry:
         default=None, metadata={"cdp_name": "networkRequestId"}
     )
     worker_id: str | None = field(default=None, metadata={"cdp_name": "workerId"})
-    args: list[runtime.RemoteObject] | None = field(
-        default=None, metadata={"cdp_name": "args"}
-    )
+    args: list[runtime.RemoteObject] | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -69,7 +61,5 @@ class ViolationSetting:
         "discouragedAPIUse",
         "handler",
         "recurringHandler",
-    ] = field(  # noqa: E501
-        metadata={"cdp_name": "name"},
-    )
-    threshold: float = field(metadata={"cdp_name": "threshold"})
+    ]
+    threshold: float

@@ -24,7 +24,7 @@ class StorageId:
     is_local_storage: bool = field(metadata={"cdp_name": "isLocalStorage"})
 
 
+Item = list[str]
 """
 DOM Storage item.
 """
-Item = list[str]

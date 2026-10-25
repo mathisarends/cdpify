@@ -34,7 +34,7 @@ class FontsUpdatedEvent:
 
     __cdp_event__: ClassVar[str] = "CSS.fontsUpdated"
 
-    font: FontFace | None = field(default=None, metadata={"cdp_name": "font"})
+    font: FontFace | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -56,7 +56,7 @@ class StyleSheetAddedEvent:
 
     __cdp_event__: ClassVar[str] = "CSS.styleSheetAdded"
 
-    header: CSSStyleSheetHeader = field(metadata={"cdp_name": "header"})
+    header: CSSStyleSheetHeader
 
 
 @dataclass(kw_only=True, slots=True)

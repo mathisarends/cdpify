@@ -11,19 +11,19 @@ from cdpify.domains import browser, page
 
 TargetID = str
 
+SessionID = str
 """
 Unique identifier of attached debugging session.
 """
-SessionID = str
 
 
 @dataclass(kw_only=True, slots=True)
 class TargetInfo:
     target_id: TargetID = field(metadata={"cdp_name": "targetId"})
-    type: str = field(metadata={"cdp_name": "type"})
-    title: str = field(metadata={"cdp_name": "title"})
-    url: str = field(metadata={"cdp_name": "url"})
-    attached: bool = field(metadata={"cdp_name": "attached"})
+    type: str
+    title: str
+    url: str
+    attached: bool
     parent_id: TargetID | None = field(default=None, metadata={"cdp_name": "parentId"})
     opener_id: TargetID | None = field(default=None, metadata={"cdp_name": "openerId"})
     can_access_opener: bool = field(metadata={"cdp_name": "canAccessOpener"})
@@ -36,7 +36,7 @@ class TargetInfo:
     browser_context_id: browser.BrowserContextID | None = field(
         default=None, metadata={"cdp_name": "browserContextId"}
     )
-    subtype: str | None = field(default=None, metadata={"cdp_name": "subtype"})
+    subtype: str | None = None
     embedder_data: dict[str, Any] | None = field(
         default=None, metadata={"cdp_name": "embedderData"}
     )
@@ -48,10 +48,11 @@ class FilterEntry:
     A filter used by target query/discovery/auto-attach operations.
     """
 
-    exclude: bool | None = field(default=None, metadata={"cdp_name": "exclude"})
-    type: str | None = field(default=None, metadata={"cdp_name": "type"})
+    exclude: bool | None = None
+    type: str | None = None
 
 
+TargetFilter = list[FilterEntry]
 """
 The entries in TargetFilter are matched sequentially against targets and the first
 entry that matches determines if the target is included or not, depending on the value
@@ -59,16 +60,15 @@ of `exclude` field in the entry. If filter is not specified, the one assumed is 
 "browser", exclude: true}, {type: "tab", exclude: true}, {}] (i.e. include everything
 but `browser` and `tab`).
 """
-TargetFilter = list[FilterEntry]
 
 
 @dataclass(kw_only=True, slots=True)
 class RemoteLocation:
-    host: str = field(metadata={"cdp_name": "host"})
-    port: int = field(metadata={"cdp_name": "port"})
+    host: str
+    port: int
 
 
+type WindowState = Literal["normal", "minimized", "maximized", "fullscreen"]
 """
 The state of the target window.
 """
-type WindowState = Literal["normal", "minimized", "maximized", "fullscreen"]

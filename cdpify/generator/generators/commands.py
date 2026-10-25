@@ -7,7 +7,12 @@ from cdpify.generator.generators.utils import (
     to_identifier,
     to_pascal_case,
 )
-from cdpify.generator.generators.views import EnumMemberView, FieldView, ModelView
+from cdpify.generator.generators.views import (
+    EnumMemberView,
+    FieldView,
+    ModelView,
+    dataclass_import,
+)
 from cdpify.generator.rendering import render_template
 from cdpify.generator.schemas import Command, Domain, Parameter
 
@@ -39,6 +44,7 @@ def generate(domain: Domain) -> str:
             for command in domain.commands
         ),
         models=models,
+        dataclass_import=dataclass_import(models),
     )
 
 

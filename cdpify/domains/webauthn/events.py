@@ -30,7 +30,7 @@ class CredentialAddedEvent:
     __cdp_event__: ClassVar[str] = "WebAuthn.credentialAdded"
 
     authenticator_id: AuthenticatorId = field(metadata={"cdp_name": "authenticatorId"})
-    credential: Credential = field(metadata={"cdp_name": "credential"})
+    credential: Credential
 
 
 @dataclass(kw_only=True, slots=True)
@@ -56,7 +56,7 @@ class CredentialUpdatedEvent:
     __cdp_event__: ClassVar[str] = "WebAuthn.credentialUpdated"
 
     authenticator_id: AuthenticatorId = field(metadata={"cdp_name": "authenticatorId"})
-    credential: Credential = field(metadata={"cdp_name": "credential"})
+    credential: Credential
 
 
 @dataclass(kw_only=True, slots=True)
@@ -68,4 +68,4 @@ class CredentialAssertedEvent:
     __cdp_event__: ClassVar[str] = "WebAuthn.credentialAsserted"
 
     authenticator_id: AuthenticatorId = field(metadata={"cdp_name": "authenticatorId"})
-    credential: Credential = field(metadata={"cdp_name": "credential"})
+    credential: Credential

@@ -9,10 +9,10 @@ from typing import Any, Literal
 
 from cdpify.domains import dom
 
+PlayerId = str
 """
 Players will get an ID that is unique within the agent context.
 """
-PlayerId = str
 
 Timestamp = float
 
@@ -23,10 +23,8 @@ class PlayerMessage:
     Have one type per entry in MediaLogRecord::Type Corresponds to kMessage
     """
 
-    level: Literal["error", "warning", "info", "debug"] = field(
-        metadata={"cdp_name": "level"}
-    )
-    message: str = field(metadata={"cdp_name": "message"})
+    level: Literal["error", "warning", "info", "debug"]
+    message: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -35,8 +33,8 @@ class PlayerProperty:
     Corresponds to kMediaPropertyChange
     """
 
-    name: str = field(metadata={"cdp_name": "name"})
-    value: str = field(metadata={"cdp_name": "value"})
+    name: str
+    value: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -45,8 +43,8 @@ class PlayerEvent:
     Corresponds to kMediaEventTriggered
     """
 
-    timestamp: Timestamp = field(metadata={"cdp_name": "timestamp"})
-    value: str = field(metadata={"cdp_name": "value"})
+    timestamp: Timestamp
+    value: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -56,8 +54,8 @@ class PlayerErrorSourceLocation:
     from chromium c++ implementation code, not js.
     """
 
-    file: str = field(metadata={"cdp_name": "file"})
-    line: int = field(metadata={"cdp_name": "line"})
+    file: str
+    line: int
 
 
 @dataclass(kw_only=True, slots=True)
@@ -67,10 +65,10 @@ class PlayerError:
     """
 
     error_type: str = field(metadata={"cdp_name": "errorType"})
-    code: int = field(metadata={"cdp_name": "code"})
-    stack: list[PlayerErrorSourceLocation] = field(metadata={"cdp_name": "stack"})
-    cause: list[PlayerError] = field(metadata={"cdp_name": "cause"})
-    data: dict[str, Any] = field(metadata={"cdp_name": "data"})
+    code: int
+    stack: list[PlayerErrorSourceLocation]
+    cause: list[PlayerError]
+    data: dict[str, Any]
 
 
 @dataclass(kw_only=True, slots=True)

@@ -13,21 +13,21 @@ type AuthenticatorProtocol = Literal["u2f", "ctap2"]
 
 type Ctap2Version = Literal["ctap2_0", "ctap2_1", "ctap2_2"]
 
-"""
-LINT.IfChange(AuthenticatorTransport)
-"""
 type AuthenticatorTransport = Literal[
     "usb", "nfc", "ble", "cable", "hybrid", "smart-card", "internal"
 ]
+"""
+LINT.IfChange(AuthenticatorTransport)
+"""
 
 
 @dataclass(kw_only=True, slots=True)
 class VirtualAuthenticatorOptions:
-    protocol: AuthenticatorProtocol = field(metadata={"cdp_name": "protocol"})
+    protocol: AuthenticatorProtocol
     ctap2_version: Ctap2Version | None = field(
         default=None, metadata={"cdp_name": "ctap2Version"}
     )
-    transport: AuthenticatorTransport = field(metadata={"cdp_name": "transport"})
+    transport: AuthenticatorTransport
     has_resident_key: bool | None = field(
         default=None, metadata={"cdp_name": "hasResidentKey"}
     )

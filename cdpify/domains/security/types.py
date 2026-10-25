@@ -9,23 +9,23 @@ from typing import Literal
 
 from cdpify.domains import network
 
+CertificateId = int
 """
 An internal certificate ID value.
 """
-CertificateId = int
 
+type MixedContentType = Literal["blockable", "optionally-blockable", "none"]
 """
 A description of mixed content (HTTP resources on HTTPS pages), as defined by
 https://www.w3.org/TR/mixed-content/#categories
 """
-type MixedContentType = Literal["blockable", "optionally-blockable", "none"]
 
-"""
-The security level of a page or resource.
-"""
 type SecurityState = Literal[
     "unknown", "neutral", "insecure", "secure", "info", "insecure-broken"
 ]
+"""
+The security level of a page or resource.
+"""
 
 
 @dataclass(kw_only=True, slots=True)
@@ -34,16 +34,16 @@ class CertificateSecurityState:
     Details about the security state of the page certificate.
     """
 
-    protocol: str = field(metadata={"cdp_name": "protocol"})
+    protocol: str
     key_exchange: str = field(metadata={"cdp_name": "keyExchange"})
     key_exchange_group: str | None = field(
         default=None, metadata={"cdp_name": "keyExchangeGroup"}
     )
-    cipher: str = field(metadata={"cdp_name": "cipher"})
-    mac: str | None = field(default=None, metadata={"cdp_name": "mac"})
-    certificate: list[str] = field(metadata={"cdp_name": "certificate"})
+    cipher: str
+    mac: str | None = None
+    certificate: list[str]
     subject_name: str = field(metadata={"cdp_name": "subjectName"})
-    issuer: str = field(metadata={"cdp_name": "issuer"})
+    issuer: str
     valid_from: network.TimeSinceEpoch = field(metadata={"cdp_name": "validFrom"})
     valid_to: network.TimeSinceEpoch = field(metadata={"cdp_name": "validTo"})
     certificate_network_error: str | None = field(
@@ -98,16 +98,14 @@ class SecurityStateExplanation:
     """
 
     security_state: SecurityState = field(metadata={"cdp_name": "securityState"})
-    title: str = field(metadata={"cdp_name": "title"})
-    summary: str = field(metadata={"cdp_name": "summary"})
-    description: str = field(metadata={"cdp_name": "description"})
+    title: str
+    summary: str
+    description: str
     mixed_content_type: MixedContentType = field(
         metadata={"cdp_name": "mixedContentType"}
     )
-    certificate: list[str] = field(metadata={"cdp_name": "certificate"})
-    recommendations: list[str] | None = field(
-        default=None, metadata={"cdp_name": "recommendations"}
-    )
+    certificate: list[str]
+    recommendations: list[str] | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -135,8 +133,8 @@ class InsecureContentStatus:
     )
 
 
+type CertificateErrorAction = Literal["continue", "cancel"]
 """
 The action to take when a certificate error occurs. continue will continue processing
 the request and cancel will cancel the request.
 """
-type CertificateErrorAction = Literal["continue", "cancel"]

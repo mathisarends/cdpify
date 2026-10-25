@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from enum import StrEnum
 from typing import ClassVar
 
@@ -26,4 +26,4 @@ class DragInterceptedEvent:
 
     __cdp_event__: ClassVar[str] = "Input.dragIntercepted"
 
-    data: DragData = field(metadata={"cdp_name": "data"})
+    data: DragData

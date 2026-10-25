@@ -21,7 +21,7 @@ class SystemInfoCommand(StrEnum):
 
 @dataclass(kw_only=True, slots=True)
 class GetInfoResult:
-    gpu: GPUInfo = field(metadata={"cdp_name": "gpu"})
+    gpu: GPUInfo
     model_name: str = field(metadata={"cdp_name": "modelName"})
     model_version: str = field(metadata={"cdp_name": "modelVersion"})
     command_line: str = field(metadata={"cdp_name": "commandLine"})

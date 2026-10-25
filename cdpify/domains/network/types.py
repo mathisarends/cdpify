@@ -9,9 +9,6 @@ from typing import Any, Literal
 
 from cdpify.domains import io, network, runtime, security
 
-"""
-Resource type as it was perceived by the rendering engine.
-"""
 type ResourceType = Literal[
     "Document",
     "Stylesheet",
@@ -33,21 +30,21 @@ type ResourceType = Literal[
     "FedCM",
     "Other",
 ]
+"""
+Resource type as it was perceived by the rendering engine.
+"""
 
+LoaderId = str
 """
 Unique loader identifier.
 """
-LoaderId = str
 
+RequestId = str
 """
 Unique network request identifier. Note that this does not identify individual HTTP
 requests that are part of a network request.
 """
-RequestId = str
 
-"""
-Network level fetch failure reason.
-"""
 type ErrorReason = Literal[
     "Failed",
     "Aborted",
@@ -64,25 +61,25 @@ type ErrorReason = Literal[
     "BlockedByClient",
     "BlockedByResponse",
 ]
+"""
+Network level fetch failure reason.
+"""
 
+TimeSinceEpoch = float
 """
 UTC time in seconds, counted from January 1, 1970.
 """
-TimeSinceEpoch = float
 
+MonotonicTime = float
 """
 Monotonically increasing time in seconds since an arbitrary point in the past.
 """
-MonotonicTime = float
 
+Headers = dict[str, Any]
 """
 Request / response headers as keys / values of JSON object.
 """
-Headers = dict[str, Any]
 
-"""
-The underlying connection technology that the browser is supposedly using.
-"""
 type ConnectionType = Literal[
     "none",
     "cellular2g",
@@ -94,25 +91,28 @@ type ConnectionType = Literal[
     "wimax",
     "other",
 ]
+"""
+The underlying connection technology that the browser is supposedly using.
+"""
 
+type CookieSameSite = Literal["Strict", "Lax", "None"]
 """
 Represents the cookie's 'SameSite' status:
 https://tools.ietf.org/html/draft-west-first-party-cookies
 """
-type CookieSameSite = Literal["Strict", "Lax", "None"]
 
+type CookiePriority = Literal["Low", "Medium", "High"]
 """
 Represents the cookie's 'Priority' status:
 https://tools.ietf.org/html/draft-west-cookie-priority-00
 """
-type CookiePriority = Literal["Low", "Medium", "High"]
 
+type CookieSourceScheme = Literal["Unset", "NonSecure", "Secure"]
 """
 Represents the source scheme of the origin that originally set the cookie. A value of
 "Unset" allows protocol clients to emulate legacy cookie scope for the scheme. This is a
 temporary ability and it will be removed in the future.
 """
-type CookieSourceScheme = Literal["Unset", "NonSecure", "Secure"]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -150,14 +150,11 @@ class ResourceTiming:
     receive_headers_end: float = field(metadata={"cdp_name": "receiveHeadersEnd"})
 
 
+type ResourcePriority = Literal["VeryLow", "Low", "Medium", "High", "VeryHigh"]
 """
 Loading priority of a resource request.
 """
-type ResourcePriority = Literal["VeryLow", "Low", "Medium", "High", "VeryHigh"]
 
-"""
-The render-blocking behavior of a resource request.
-"""
 type RenderBlockingBehavior = Literal[
     "Blocking",
     "InBodyParserBlocking",
@@ -165,6 +162,9 @@ type RenderBlockingBehavior = Literal[
     "NonBlockingDynamic",
     "PotentiallyBlocking",
 ]
+"""
+The render-blocking behavior of a resource request.
+"""
 
 
 @dataclass(kw_only=True, slots=True)
@@ -173,7 +173,7 @@ class PostDataEntry:
     Post data entry for HTTP request
     """
 
-    bytes: str | None = field(default=None, metadata={"cdp_name": "bytes"})
+    bytes: str | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -182,10 +182,10 @@ class Request:
     HTTP request data.
     """
 
-    url: str = field(metadata={"cdp_name": "url"})
+    url: str
     url_fragment: str | None = field(default=None, metadata={"cdp_name": "urlFragment"})
-    method: str = field(metadata={"cdp_name": "method"})
-    headers: Headers = field(metadata={"cdp_name": "headers"})
+    method: str
+    headers: Headers
     post_data: str | None = field(default=None, metadata={"cdp_name": "postData"})
     has_post_data: bool | None = field(
         default=None, metadata={"cdp_name": "hasPostData"}
@@ -227,11 +227,11 @@ class SignedCertificateTimestamp:
     Details of a signed certificate timestamp (SCT).
     """
 
-    status: str = field(metadata={"cdp_name": "status"})
-    origin: str = field(metadata={"cdp_name": "origin"})
+    status: str
+    origin: str
     log_description: str = field(metadata={"cdp_name": "logDescription"})
     log_id: str = field(metadata={"cdp_name": "logId"})
-    timestamp: float = field(metadata={"cdp_name": "timestamp"})
+    timestamp: float
     hash_algorithm: str = field(metadata={"cdp_name": "hashAlgorithm"})
     signature_algorithm: str = field(metadata={"cdp_name": "signatureAlgorithm"})
     signature_data: str = field(metadata={"cdp_name": "signatureData"})
@@ -243,19 +243,19 @@ class SecurityDetails:
     Security details about a request.
     """
 
-    protocol: str = field(metadata={"cdp_name": "protocol"})
+    protocol: str
     key_exchange: str = field(metadata={"cdp_name": "keyExchange"})
     key_exchange_group: str | None = field(
         default=None, metadata={"cdp_name": "keyExchangeGroup"}
     )
-    cipher: str = field(metadata={"cdp_name": "cipher"})
-    mac: str | None = field(default=None, metadata={"cdp_name": "mac"})
+    cipher: str
+    mac: str | None = None
     certificate_id: security.CertificateId = field(
         metadata={"cdp_name": "certificateId"}
     )
     subject_name: str = field(metadata={"cdp_name": "subjectName"})
     san_list: list[str] = field(metadata={"cdp_name": "sanList"})
-    issuer: str = field(metadata={"cdp_name": "issuer"})
+    issuer: str
     valid_from: TimeSinceEpoch = field(metadata={"cdp_name": "validFrom"})
     valid_to: TimeSinceEpoch = field(metadata={"cdp_name": "validTo"})
     signed_certificate_timestamp_list: list[SignedCertificateTimestamp] = field(
@@ -270,16 +270,13 @@ class SecurityDetails:
     encrypted_client_hello: bool = field(metadata={"cdp_name": "encryptedClientHello"})
 
 
-"""
-Whether the request complied with Certificate Transparency policy.
-"""
 type CertificateTransparencyCompliance = Literal[
     "unknown", "not-compliant", "compliant"
 ]
+"""
+Whether the request complied with Certificate Transparency policy.
+"""
 
-"""
-The reason why request was blocked.
-"""
 type BlockedReason = Literal[
     "other",
     "csp",
@@ -298,10 +295,10 @@ type BlockedReason = Literal[
     "corp-not-same-site",
     "sri-message-signature-mismatch",
 ]
-
 """
 The reason why request was blocked.
 """
+
 type CorsError = Literal[
     "DisallowedByMode",
     "InvalidResponse",
@@ -332,6 +329,9 @@ type CorsError = Literal[
     "NoCorsRedirectModeNotFollow",
     "LocalNetworkAccessPermissionDenied",
 ]
+"""
+The reason why request was blocked.
+"""
 
 
 @dataclass(kw_only=True, slots=True)
@@ -340,12 +340,12 @@ class CorsErrorStatus:
     failed_parameter: str = field(metadata={"cdp_name": "failedParameter"})
 
 
-"""
-Source of serviceworker response.
-"""
 type ServiceWorkerResponseSource = Literal[
     "cache-storage", "http-cache", "fallback-code", "network"
 ]
+"""
+Source of serviceworker response.
+"""
 
 
 @dataclass(kw_only=True, slots=True)
@@ -356,18 +356,15 @@ class TrustTokenParams:
     third_party/blink/renderer/core/fetch/trust_token.idl.
     """
 
-    operation: TrustTokenOperationType = field(metadata={"cdp_name": "operation"})
+    operation: TrustTokenOperationType
     refresh_policy: Literal["UseCached", "Refresh"] = field(
         metadata={"cdp_name": "refreshPolicy"}
     )
-    issuers: list[str] | None = field(default=None, metadata={"cdp_name": "issuers"})
+    issuers: list[str] | None = None
 
 
 type TrustTokenOperationType = Literal["Issuance", "Redemption", "Signing"]
 
-"""
-The reason why Chrome uses a specific transport protocol for HTTP semantics.
-"""
 type AlternateProtocolUsage = Literal[
     "alternativeJobWonWithoutRace",
     "alternativeJobWonRace",
@@ -378,10 +375,10 @@ type AlternateProtocolUsage = Literal[
     "dnsAlpnH3JobWonRace",
     "unspecifiedReason",
 ]
+"""
+The reason why Chrome uses a specific transport protocol for HTTP semantics.
+"""
 
-"""
-Source of service worker router.
-"""
 type ServiceWorkerRouterSource = Literal[
     "network",
     "cache",
@@ -389,6 +386,9 @@ type ServiceWorkerRouterSource = Literal[
     "race-network-and-fetch-handler",
     "race-network-and-cache",
 ]
+"""
+Source of service worker router.
+"""
 
 
 @dataclass(kw_only=True, slots=True)
@@ -410,13 +410,13 @@ class Response:
     HTTP response data.
     """
 
-    url: str = field(metadata={"cdp_name": "url"})
-    status: int = field(metadata={"cdp_name": "status"})
+    url: str
+    status: int
     status_text: str = field(metadata={"cdp_name": "statusText"})
-    headers: Headers = field(metadata={"cdp_name": "headers"})
+    headers: Headers
     headers_text: str | None = field(default=None, metadata={"cdp_name": "headersText"})
     mime_type: str = field(metadata={"cdp_name": "mimeType"})
-    charset: str = field(metadata={"cdp_name": "charset"})
+    charset: str
     request_headers: Headers | None = field(
         default=None, metadata={"cdp_name": "requestHeaders"}
     )
@@ -445,7 +445,7 @@ class Response:
         default=None, metadata={"cdp_name": "serviceWorkerRouterInfo"}
     )
     encoded_data_length: float = field(metadata={"cdp_name": "encodedDataLength"})
-    timing: ResourceTiming | None = field(default=None, metadata={"cdp_name": "timing"})
+    timing: ResourceTiming | None = None
     service_worker_response_source: ServiceWorkerResponseSource | None = field(
         default=None, metadata={"cdp_name": "serviceWorkerResponseSource"}
     )
@@ -455,7 +455,7 @@ class Response:
     cache_storage_cache_name: str | None = field(
         default=None, metadata={"cdp_name": "cacheStorageCacheName"}
     )
-    protocol: str | None = field(default=None, metadata={"cdp_name": "protocol"})
+    protocol: str | None = None
     alternate_protocol_usage: AlternateProtocolUsage | None = field(
         default=None, metadata={"cdp_name": "alternateProtocolUsage"}
     )
@@ -473,7 +473,7 @@ class WebSocketRequest:
     WebSocket request data.
     """
 
-    headers: Headers = field(metadata={"cdp_name": "headers"})
+    headers: Headers
 
 
 @dataclass(kw_only=True, slots=True)
@@ -482,9 +482,9 @@ class WebSocketResponse:
     WebSocket response data.
     """
 
-    status: int = field(metadata={"cdp_name": "status"})
+    status: int
     status_text: str = field(metadata={"cdp_name": "statusText"})
-    headers: Headers = field(metadata={"cdp_name": "headers"})
+    headers: Headers
     headers_text: str | None = field(default=None, metadata={"cdp_name": "headersText"})
     request_headers: Headers | None = field(
         default=None, metadata={"cdp_name": "requestHeaders"}
@@ -501,8 +501,8 @@ class WebSocketFrame:
     fragmented frame as the name suggests.
     """
 
-    opcode: float = field(metadata={"cdp_name": "opcode"})
-    mask: bool = field(metadata={"cdp_name": "mask"})
+    opcode: float
+    mask: bool
     payload_data: str = field(metadata={"cdp_name": "payloadData"})
 
 
@@ -512,9 +512,9 @@ class CachedResource:
     Information about the cached resource.
     """
 
-    url: str = field(metadata={"cdp_name": "url"})
-    type: ResourceType = field(metadata={"cdp_name": "type"})
-    response: Response | None = field(default=None, metadata={"cdp_name": "response"})
+    url: str
+    type: ResourceType
+    response: Response | None = None
     body_size: float = field(metadata={"cdp_name": "bodySize"})
 
 
@@ -526,13 +526,9 @@ class Initiator:
 
     type: Literal[
         "parser", "script", "preload", "SignedExchange", "preflight", "FedCM", "other"
-    ] = field(  # noqa: E501
-        metadata={"cdp_name": "type"},
-    )
-    stack: runtime.StackTrace | None = field(
-        default=None, metadata={"cdp_name": "stack"}
-    )
-    url: str | None = field(default=None, metadata={"cdp_name": "url"})
+    ]
+    stack: runtime.StackTrace | None = None
+    url: str | None = None
     line_number: float | None = field(default=None, metadata={"cdp_name": "lineNumber"})
     column_number: float | None = field(
         default=None, metadata={"cdp_name": "columnNumber"}
@@ -560,19 +556,19 @@ class Cookie:
     Cookie object
     """
 
-    name: str = field(metadata={"cdp_name": "name"})
-    value: str = field(metadata={"cdp_name": "value"})
-    domain: str = field(metadata={"cdp_name": "domain"})
-    path: str = field(metadata={"cdp_name": "path"})
-    expires: float = field(metadata={"cdp_name": "expires"})
-    size: int = field(metadata={"cdp_name": "size"})
+    name: str
+    value: str
+    domain: str
+    path: str
+    expires: float
+    size: int
     http_only: bool = field(metadata={"cdp_name": "httpOnly"})
-    secure: bool = field(metadata={"cdp_name": "secure"})
-    session: bool = field(metadata={"cdp_name": "session"})
+    secure: bool
+    session: bool
     same_site: CookieSameSite | None = field(
         default=None, metadata={"cdp_name": "sameSite"}
     )
-    priority: CookiePriority = field(metadata={"cdp_name": "priority"})
+    priority: CookiePriority
     source_scheme: CookieSourceScheme = field(metadata={"cdp_name": "sourceScheme"})
     source_port: int = field(metadata={"cdp_name": "sourcePort"})
     partition_key: CookiePartitionKey | None = field(
@@ -583,9 +579,6 @@ class Cookie:
     )
 
 
-"""
-Types of reasons why a cookie may not be stored from a response.
-"""
 type SetCookieBlockedReason = Literal[
     "SecureOnly",
     "SameSiteStrict",
@@ -607,10 +600,10 @@ type SetCookieBlockedReason = Literal[
     "DisallowedCharacter",
     "NoCookieContent",
 ]
+"""
+Types of reasons why a cookie may not be stored from a response.
+"""
 
-"""
-Types of reasons why a cookie may not be sent with a request.
-"""
 type CookieBlockedReason = Literal[
     "SecureOnly",
     "NotOnPath",
@@ -630,11 +623,10 @@ type CookieBlockedReason = Literal[
     "SchemeMismatch",
     "AnonymousContext",
 ]
+"""
+Types of reasons why a cookie may not be sent with a request.
+"""
 
-"""
-Types of reasons why a cookie should have been blocked by 3PCD but is exempted for the
-request.
-"""
 type CookieExemptionReason = Literal[
     "None",
     "UserSetting",
@@ -644,6 +636,10 @@ type CookieExemptionReason = Literal[
     "Scheme",
     "SameSiteNoneCookiesInSandbox",
 ]
+"""
+Types of reasons why a cookie should have been blocked by 3PCD but is exempted for the
+request.
+"""
 
 
 @dataclass(kw_only=True, slots=True)
@@ -656,7 +652,7 @@ class BlockedSetCookieWithReason:
         metadata={"cdp_name": "blockedReasons"}
     )
     cookie_line: str = field(metadata={"cdp_name": "cookieLine"})
-    cookie: Cookie | None = field(default=None, metadata={"cdp_name": "cookie"})
+    cookie: Cookie | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -671,7 +667,7 @@ class ExemptedSetCookieWithReason:
         metadata={"cdp_name": "exemptionReason"}
     )
     cookie_line: str = field(metadata={"cdp_name": "cookieLine"})
-    cookie: Cookie = field(metadata={"cdp_name": "cookie"})
+    cookie: Cookie
 
 
 @dataclass(kw_only=True, slots=True)
@@ -681,7 +677,7 @@ class AssociatedCookie:
     the cookies itself and reasons for blocking or exemption.
     """
 
-    cookie: Cookie = field(metadata={"cdp_name": "cookie"})
+    cookie: Cookie
     blocked_reasons: list[CookieBlockedReason] = field(
         metadata={"cdp_name": "blockedReasons"}
     )
@@ -696,22 +692,18 @@ class CookieParam:
     Cookie parameter object
     """
 
-    name: str = field(metadata={"cdp_name": "name"})
-    value: str = field(metadata={"cdp_name": "value"})
-    url: str | None = field(default=None, metadata={"cdp_name": "url"})
-    domain: str | None = field(default=None, metadata={"cdp_name": "domain"})
-    path: str | None = field(default=None, metadata={"cdp_name": "path"})
-    secure: bool | None = field(default=None, metadata={"cdp_name": "secure"})
+    name: str
+    value: str
+    url: str | None = None
+    domain: str | None = None
+    path: str | None = None
+    secure: bool | None = None
     http_only: bool | None = field(default=None, metadata={"cdp_name": "httpOnly"})
     same_site: CookieSameSite | None = field(
         default=None, metadata={"cdp_name": "sameSite"}
     )
-    expires: TimeSinceEpoch | None = field(
-        default=None, metadata={"cdp_name": "expires"}
-    )
-    priority: CookiePriority | None = field(
-        default=None, metadata={"cdp_name": "priority"}
-    )
+    expires: TimeSinceEpoch | None = None
+    priority: CookiePriority | None = None
     source_scheme: CookieSourceScheme | None = field(
         default=None, metadata={"cdp_name": "sourceScheme"}
     )
@@ -727,12 +719,10 @@ class AuthChallenge:
     Authorization challenge for HTTP status code 401 or 407.
     """
 
-    source: Literal["Server", "Proxy"] | None = field(
-        default=None, metadata={"cdp_name": "source"}
-    )
-    origin: str = field(metadata={"cdp_name": "origin"})
-    scheme: str = field(metadata={"cdp_name": "scheme"})
-    realm: str = field(metadata={"cdp_name": "realm"})
+    source: Literal["Server", "Proxy"] | None = None
+    origin: str
+    scheme: str
+    realm: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -741,11 +731,9 @@ class AuthChallengeResponse:
     Response to an AuthChallenge.
     """
 
-    response: Literal["Default", "CancelAuth", "ProvideCredentials"] = field(
-        metadata={"cdp_name": "response"}
-    )
-    username: str | None = field(default=None, metadata={"cdp_name": "username"})
-    password: str | None = field(default=None, metadata={"cdp_name": "password"})
+    response: Literal["Default", "CancelAuth", "ProvideCredentials"]
+    username: str | None = None
+    password: str | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -755,17 +743,15 @@ class SignedExchangeSignature:
     https://wicg.github.io/webpackage/draft-yasskin-httpbis-origin-signed-exchanges-impl.html#rfc.section.3.1
     """
 
-    label: str = field(metadata={"cdp_name": "label"})
-    signature: str = field(metadata={"cdp_name": "signature"})
-    integrity: str = field(metadata={"cdp_name": "integrity"})
+    label: str
+    signature: str
+    integrity: str
     cert_url: str | None = field(default=None, metadata={"cdp_name": "certUrl"})
     cert_sha256: str | None = field(default=None, metadata={"cdp_name": "certSha256"})
     validity_url: str = field(metadata={"cdp_name": "validityUrl"})
-    date: int = field(metadata={"cdp_name": "date"})
-    expires: int = field(metadata={"cdp_name": "expires"})
-    certificates: list[str] | None = field(
-        default=None, metadata={"cdp_name": "certificates"}
-    )
+    date: int
+    expires: int
+    certificates: list[str] | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -778,15 +764,10 @@ class SignedExchangeHeader:
     request_url: str = field(metadata={"cdp_name": "requestUrl"})
     response_code: int = field(metadata={"cdp_name": "responseCode"})
     response_headers: Headers = field(metadata={"cdp_name": "responseHeaders"})
-    signatures: list[SignedExchangeSignature] = field(
-        metadata={"cdp_name": "signatures"}
-    )
+    signatures: list[SignedExchangeSignature]
     header_integrity: str = field(metadata={"cdp_name": "headerIntegrity"})
 
 
-"""
-Field type for a signed exchange related error.
-"""
 type SignedExchangeErrorField = Literal[
     "signatureSig",
     "signatureIntegrity",
@@ -795,6 +776,9 @@ type SignedExchangeErrorField = Literal[
     "signatureValidityUrl",
     "signatureTimestamps",
 ]
+"""
+Field type for a signed exchange related error.
+"""
 
 
 @dataclass(kw_only=True, slots=True)
@@ -803,7 +787,7 @@ class SignedExchangeError:
     Information about a signed exchange response.
     """
 
-    message: str = field(metadata={"cdp_name": "message"})
+    message: str
     signature_index: int | None = field(
         default=None, metadata={"cdp_name": "signatureIndex"}
     )
@@ -820,21 +804,17 @@ class SignedExchangeInfo:
 
     outer_response: Response = field(metadata={"cdp_name": "outerResponse"})
     has_extra_info: bool = field(metadata={"cdp_name": "hasExtraInfo"})
-    header: SignedExchangeHeader | None = field(
-        default=None, metadata={"cdp_name": "header"}
-    )
+    header: SignedExchangeHeader | None = None
     security_details: SecurityDetails | None = field(
         default=None, metadata={"cdp_name": "securityDetails"}
     )
-    errors: list[SignedExchangeError] | None = field(
-        default=None, metadata={"cdp_name": "errors"}
-    )
+    errors: list[SignedExchangeError] | None = None
 
 
 @dataclass(kw_only=True, slots=True)
 class NetworkConditions:
     url_pattern: str = field(metadata={"cdp_name": "urlPattern"})
-    latency: float = field(metadata={"cdp_name": "latency"})
+    latency: float
     download_throughput: float = field(metadata={"cdp_name": "downloadThroughput"})
     upload_throughput: float = field(metadata={"cdp_name": "uploadThroughput"})
     connection_type: ConnectionType | None = field(
@@ -847,13 +827,13 @@ class NetworkConditions:
     packet_reordering: bool | None = field(
         default=None, metadata={"cdp_name": "packetReordering"}
     )
-    offline: bool | None = field(default=None, metadata={"cdp_name": "offline"})
+    offline: bool | None = None
 
 
 @dataclass(kw_only=True, slots=True)
 class BlockPattern:
     url_pattern: str = field(metadata={"cdp_name": "urlPattern"})
-    block: bool = field(metadata={"cdp_name": "block"})
+    block: bool
 
 
 type DirectSocketDnsQueryType = Literal["ipv4", "ipv6"]
@@ -904,7 +884,7 @@ class DirectUDPSocketOptions:
 
 @dataclass(kw_only=True, slots=True)
 class DirectUDPMessage:
-    data: str = field(metadata={"cdp_name": "data"})
+    data: str
     remote_addr: str | None = field(default=None, metadata={"cdp_name": "remoteAddr"})
     remote_port: int | None = field(default=None, metadata={"cdp_name": "remotePort"})
 
@@ -949,7 +929,7 @@ class AdScriptIdentifier:
 
     script_id: runtime.ScriptId = field(metadata={"cdp_name": "scriptId"})
     debugger_id: runtime.UniqueDebuggerId = field(metadata={"cdp_name": "debuggerId"})
-    name: str = field(metadata={"cdp_name": "name"})
+    name: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -999,7 +979,7 @@ type CrossOriginOpenerPolicyValue = Literal[
 
 @dataclass(kw_only=True, slots=True)
 class CrossOriginOpenerPolicyStatus:
-    value: CrossOriginOpenerPolicyValue = field(metadata={"cdp_name": "value"})
+    value: CrossOriginOpenerPolicyValue
     report_only_value: CrossOriginOpenerPolicyValue = field(
         metadata={"cdp_name": "reportOnlyValue"}
     )
@@ -1016,7 +996,7 @@ type CrossOriginEmbedderPolicyValue = Literal["None", "Credentialless", "Require
 
 @dataclass(kw_only=True, slots=True)
 class CrossOriginEmbedderPolicyStatus:
-    value: CrossOriginEmbedderPolicyValue = field(metadata={"cdp_name": "value"})
+    value: CrossOriginEmbedderPolicyValue
     report_only_value: CrossOriginEmbedderPolicyValue = field(
         metadata={"cdp_name": "reportOnlyValue"}
     )
@@ -1035,26 +1015,20 @@ type ContentSecurityPolicySource = Literal["HTTP", "Meta"]
 class ContentSecurityPolicyStatus:
     effective_directives: str = field(metadata={"cdp_name": "effectiveDirectives"})
     is_enforced: bool = field(metadata={"cdp_name": "isEnforced"})
-    source: ContentSecurityPolicySource = field(metadata={"cdp_name": "source"})
+    source: ContentSecurityPolicySource
 
 
 @dataclass(kw_only=True, slots=True)
 class SecurityIsolationStatus:
-    coop: CrossOriginOpenerPolicyStatus | None = field(
-        default=None, metadata={"cdp_name": "coop"}
-    )
-    coep: CrossOriginEmbedderPolicyStatus | None = field(
-        default=None, metadata={"cdp_name": "coep"}
-    )
-    csp: list[ContentSecurityPolicyStatus] | None = field(
-        default=None, metadata={"cdp_name": "csp"}
-    )
+    coop: CrossOriginOpenerPolicyStatus | None = None
+    coep: CrossOriginEmbedderPolicyStatus | None = None
+    csp: list[ContentSecurityPolicyStatus] | None = None
 
 
+type ReportStatus = Literal["Queued", "Pending", "MarkedForRemoval", "Success"]
 """
 The status of a Reporting API report.
 """
-type ReportStatus = Literal["Queued", "Pending", "MarkedForRemoval", "Success"]
 
 ReportId = str
 
@@ -1065,20 +1039,20 @@ class ReportingApiReport:
     An object representing a report generated by the Reporting API.
     """
 
-    id: ReportId = field(metadata={"cdp_name": "id"})
+    id: ReportId
     initiator_url: str = field(metadata={"cdp_name": "initiatorUrl"})
-    destination: str = field(metadata={"cdp_name": "destination"})
-    type: str = field(metadata={"cdp_name": "type"})
-    timestamp: network.TimeSinceEpoch = field(metadata={"cdp_name": "timestamp"})
-    depth: int = field(metadata={"cdp_name": "depth"})
+    destination: str
+    type: str
+    timestamp: network.TimeSinceEpoch
+    depth: int
     completed_attempts: int = field(metadata={"cdp_name": "completedAttempts"})
-    body: dict[str, Any] = field(metadata={"cdp_name": "body"})
-    status: ReportStatus = field(metadata={"cdp_name": "status"})
+    body: dict[str, Any]
+    status: ReportStatus
 
 
 @dataclass(kw_only=True, slots=True)
 class ReportingApiEndpoint:
-    url: str = field(metadata={"cdp_name": "url"})
+    url: str
     group_name: str = field(metadata={"cdp_name": "groupName"})
 
 
@@ -1088,8 +1062,8 @@ class DeviceBoundSessionKey:
     Unique identifier for a device bound session.
     """
 
-    site: str = field(metadata={"cdp_name": "site"})
-    id: str = field(metadata={"cdp_name": "id"})
+    site: str
+    id: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -1106,9 +1080,7 @@ class DeviceBoundSessionWithUsage:
         "ProactiveRefreshNotPossible",
         "ProactiveRefreshAttempted",
         "Deferred",
-    ] = field(  # noqa: E501
-        metadata={"cdp_name": "usage"},
-    )
+    ]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -1117,10 +1089,10 @@ class DeviceBoundSessionCookieCraving:
     A device bound session's cookie craving.
     """
 
-    name: str = field(metadata={"cdp_name": "name"})
-    domain: str = field(metadata={"cdp_name": "domain"})
-    path: str = field(metadata={"cdp_name": "path"})
-    secure: bool = field(metadata={"cdp_name": "secure"})
+    name: str
+    domain: str
+    path: str
+    secure: bool
     http_only: bool = field(metadata={"cdp_name": "httpOnly"})
     same_site: CookieSameSite | None = field(
         default=None, metadata={"cdp_name": "sameSite"}
@@ -1144,7 +1116,7 @@ class DeviceBoundSessionInclusionRules:
     A device bound session's inclusion rules.
     """
 
-    origin: str = field(metadata={"cdp_name": "origin"})
+    origin: str
     include_site: bool = field(metadata={"cdp_name": "includeSite"})
     url_rules: list[DeviceBoundSessionUrlRule] = field(
         metadata={"cdp_name": "urlRules"}
@@ -1157,7 +1129,7 @@ class DeviceBoundSession:
     A device bound session.
     """
 
-    key: DeviceBoundSessionKey = field(metadata={"cdp_name": "key"})
+    key: DeviceBoundSessionKey
     refresh_url: str = field(metadata={"cdp_name": "refreshUrl"})
     inclusion_rules: DeviceBoundSessionInclusionRules = field(
         metadata={"cdp_name": "inclusionRules"}
@@ -1174,15 +1146,11 @@ class DeviceBoundSession:
     )
 
 
+DeviceBoundSessionEventId = str
 """
 A unique identifier for a device bound session event.
 """
-DeviceBoundSessionEventId = str
 
-"""
-A fetch result for a device bound session creation or refresh.
-LINT.IfChange(DeviceBoundSessionFetchResult)
-"""
 type DeviceBoundSessionFetchResult = Literal[
     "Success",
     "SigningKeyGenerationError",
@@ -1262,6 +1230,10 @@ type DeviceBoundSessionFetchResult = Literal[
     "AttestationSigningError",
     "FederatedRegistrationRedirected",
 ]
+"""
+A fetch result for a device bound session creation or refresh.
+LINT.IfChange(DeviceBoundSessionFetchResult)
+"""
 
 
 @dataclass(kw_only=True, slots=True)
@@ -1364,7 +1336,7 @@ class ChallengeEventDetails:
     ] = field(  # noqa: E501
         metadata={"cdp_name": "challengeResult"},
     )
-    challenge: str = field(metadata={"cdp_name": "challenge"})
+    challenge: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -1373,7 +1345,7 @@ class LoadNetworkResourcePageResult:
     An object providing the result of a network resource load.
     """
 
-    success: bool = field(metadata={"cdp_name": "success"})
+    success: bool
     net_error: float | None = field(default=None, metadata={"cdp_name": "netError"})
     net_error_name: str | None = field(
         default=None, metadata={"cdp_name": "netErrorName"}
@@ -1381,12 +1353,8 @@ class LoadNetworkResourcePageResult:
     http_status_code: float | None = field(
         default=None, metadata={"cdp_name": "httpStatusCode"}
     )
-    stream: io.StreamHandle | None = field(
-        default=None, metadata={"cdp_name": "stream"}
-    )
-    headers: network.Headers | None = field(
-        default=None, metadata={"cdp_name": "headers"}
-    )
+    stream: io.StreamHandle | None = None
+    headers: network.Headers | None = None
 
 
 @dataclass(kw_only=True, slots=True)

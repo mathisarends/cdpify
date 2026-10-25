@@ -11,9 +11,6 @@ from cdpify.domains import network
 
 SerializedStorageKey = str
 
-"""
-Enum of possible storage types.
-"""
 type StorageType = Literal[
     "cookies",
     "file_systems",
@@ -27,6 +24,9 @@ type StorageType = Literal[
     "all",
     "other",
 ]
+"""
+Enum of possible storage types.
+"""
 
 
 @dataclass(kw_only=True, slots=True)
@@ -36,7 +36,7 @@ class UsageForType:
     """
 
     storage_type: StorageType = field(metadata={"cdp_name": "storageType"})
-    usage: float = field(metadata={"cdp_name": "usage"})
+    usage: float
 
 
 @dataclass(kw_only=True, slots=True)
@@ -47,7 +47,7 @@ class TrustTokens:
     """
 
     issuer_origin: str = field(metadata={"cdp_name": "issuerOrigin"})
-    count: float = field(metadata={"cdp_name": "count"})
+    count: float
 
 
 @dataclass(kw_only=True, slots=True)
@@ -56,13 +56,13 @@ class PrivateVerificationToken:
     Details of a stored Private Verification Token.
     """
 
-    id: str = field(metadata={"cdp_name": "id"})
+    id: str
     issuer_origin: str = field(metadata={"cdp_name": "issuerOrigin"})
     key_id: int = field(metadata={"cdp_name": "keyId"})
-    expiration: network.TimeSinceEpoch = field(metadata={"cdp_name": "expiration"})
+    expiration: network.TimeSinceEpoch
     creation_time: network.TimeSinceEpoch = field(metadata={"cdp_name": "creationTime"})
-    version: int = field(metadata={"cdp_name": "version"})
-    token: str = field(metadata={"cdp_name": "token"})
+    version: int
+    token: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -81,14 +81,14 @@ type StorageBucketsDurability = Literal["relaxed", "strict"]
 @dataclass(kw_only=True, slots=True)
 class StorageBucket:
     storage_key: SerializedStorageKey = field(metadata={"cdp_name": "storageKey"})
-    name: str | None = field(default=None, metadata={"cdp_name": "name"})
+    name: str | None = None
 
 
 @dataclass(kw_only=True, slots=True)
 class StorageBucketInfo:
-    bucket: StorageBucket = field(metadata={"cdp_name": "bucket"})
-    id: str = field(metadata={"cdp_name": "id"})
-    expiration: network.TimeSinceEpoch = field(metadata={"cdp_name": "expiration"})
-    quota: float = field(metadata={"cdp_name": "quota"})
-    persistent: bool = field(metadata={"cdp_name": "persistent"})
-    durability: StorageBucketsDurability = field(metadata={"cdp_name": "durability"})
+    bucket: StorageBucket
+    id: str
+    expiration: network.TimeSinceEpoch
+    quota: float
+    persistent: bool
+    durability: StorageBucketsDurability

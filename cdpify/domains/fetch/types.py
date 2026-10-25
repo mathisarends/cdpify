@@ -9,18 +9,18 @@ from typing import Literal
 
 from cdpify.domains import network
 
+RequestId = str
 """
 Unique request identifier. Note that this does not identify individual HTTP requests
 that are part of a network request.
 """
-RequestId = str
 
+type RequestStage = Literal["Request", "Response"]
 """
 Stages of the request to handle. Request will intercept before the request is sent.
 Response will intercept after the response is received (but before response body is
 received).
 """
-type RequestStage = Literal["Request", "Response"]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -40,8 +40,8 @@ class HeaderEntry:
     Response HTTP header entry
     """
 
-    name: str = field(metadata={"cdp_name": "name"})
-    value: str = field(metadata={"cdp_name": "value"})
+    name: str
+    value: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -50,12 +50,10 @@ class AuthChallenge:
     Authorization challenge for HTTP status code 401 or 407.
     """
 
-    source: Literal["Server", "Proxy"] | None = field(
-        default=None, metadata={"cdp_name": "source"}
-    )
-    origin: str = field(metadata={"cdp_name": "origin"})
-    scheme: str = field(metadata={"cdp_name": "scheme"})
-    realm: str = field(metadata={"cdp_name": "realm"})
+    source: Literal["Server", "Proxy"] | None = None
+    origin: str
+    scheme: str
+    realm: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -64,8 +62,6 @@ class AuthChallengeResponse:
     Response to an AuthChallenge.
     """
 
-    response: Literal["Default", "CancelAuth", "ProvideCredentials"] = field(
-        metadata={"cdp_name": "response"}
-    )
-    username: str | None = field(default=None, metadata={"cdp_name": "username"})
-    password: str | None = field(default=None, metadata={"cdp_name": "password"})
+    response: Literal["Default", "CancelAuth", "ProvideCredentials"]
+    username: str | None = None
+    password: str | None = None

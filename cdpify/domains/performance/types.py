@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 
 @dataclass(kw_only=True, slots=True)
@@ -13,5 +13,5 @@ class Metric:
     Run-time execution metric.
     """
 
-    name: str = field(metadata={"cdp_name": "name"})
-    value: float = field(metadata={"cdp_name": "value"})
+    name: str
+    value: float

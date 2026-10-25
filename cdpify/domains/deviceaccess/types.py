@@ -4,17 +4,17 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
+RequestId = str
 """
 Device request id.
 """
-RequestId = str
 
+DeviceId = str
 """
 A device id.
 """
-DeviceId = str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -23,5 +23,5 @@ class PromptDevice:
     Device information displayed in a user prompt to select a device.
     """
 
-    id: DeviceId = field(metadata={"cdp_name": "id"})
-    name: str = field(metadata={"cdp_name": "name"})
+    id: DeviceId
+    name: str

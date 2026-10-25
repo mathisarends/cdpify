@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from enum import StrEnum
 from typing import ClassVar
 
@@ -21,4 +21,4 @@ class AuditsEvent(StrEnum):
 class IssueAddedEvent:
     __cdp_event__: ClassVar[str] = "Audits.issueAdded"
 
-    issue: InspectorIssue = field(metadata={"cdp_name": "issue"})
+    issue: InspectorIssue

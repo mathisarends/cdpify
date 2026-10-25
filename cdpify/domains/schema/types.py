@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 
 @dataclass(kw_only=True, slots=True)
@@ -13,5 +13,5 @@ class Domain:
     Description of the protocol domain.
     """
 
-    name: str = field(metadata={"cdp_name": "name"})
-    version: str = field(metadata={"cdp_name": "version"})
+    name: str
+    version: str

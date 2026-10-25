@@ -34,13 +34,11 @@ class WorkerErrorReportedEvent:
 class WorkerRegistrationUpdatedEvent:
     __cdp_event__: ClassVar[str] = "ServiceWorker.workerRegistrationUpdated"
 
-    registrations: list[ServiceWorkerRegistration] = field(
-        metadata={"cdp_name": "registrations"}
-    )
+    registrations: list[ServiceWorkerRegistration]
 
 
 @dataclass(kw_only=True, slots=True)
 class WorkerVersionUpdatedEvent:
     __cdp_event__: ClassVar[str] = "ServiceWorker.workerVersionUpdated"
 
-    versions: list[ServiceWorkerVersion] = field(metadata={"cdp_name": "versions"})
+    versions: list[ServiceWorkerVersion]

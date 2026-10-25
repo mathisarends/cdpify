@@ -33,7 +33,7 @@ def test_renders_result_model(simple_domain: Domain) -> None:
     output = commands.generate(simple_domain)
     assert "@dataclass(kw_only=True, slots=True)" in output
     assert "class GetNodeResult:" in output
-    assert 'box: Box = field(metadata={"cdp_name": "box"})' in output
+    assert "box: Box\n" in output
 
 
 def test_command_without_params_omits_params_class(simple_domain: Domain) -> None:
@@ -89,7 +89,5 @@ def test_optional_param_renders_with_none_default() -> None:
     )
 
     output = commands.generate(domain)
-    assert (
-        'extra: str | None = field(default=None, metadata={"cdp_name": "extra"})'
-        in output
-    )
+    assert "extra: str | None = None" in output
+    assert "from dataclasses import dataclass\n" in output

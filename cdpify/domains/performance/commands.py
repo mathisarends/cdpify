@@ -46,4 +46,4 @@ class SetTimeDomainParams:
 
 @dataclass(kw_only=True, slots=True)
 class GetMetricsResult:
-    metrics: list[Metric] = field(metadata={"cdp_name": "metrics"})
+    metrics: list[Metric]

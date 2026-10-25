@@ -31,7 +31,7 @@ class CacheStorageContentUpdatedEvent:
 
     __cdp_event__: ClassVar[str] = "Storage.cacheStorageContentUpdated"
 
-    origin: str = field(metadata={"cdp_name": "origin"})
+    origin: str
     storage_key: str = field(metadata={"cdp_name": "storageKey"})
     bucket_id: str = field(metadata={"cdp_name": "bucketId"})
     cache_name: str = field(metadata={"cdp_name": "cacheName"})
@@ -45,7 +45,7 @@ class CacheStorageListUpdatedEvent:
 
     __cdp_event__: ClassVar[str] = "Storage.cacheStorageListUpdated"
 
-    origin: str = field(metadata={"cdp_name": "origin"})
+    origin: str
     storage_key: str = field(metadata={"cdp_name": "storageKey"})
     bucket_id: str = field(metadata={"cdp_name": "bucketId"})
 
@@ -58,7 +58,7 @@ class IndexedDBContentUpdatedEvent:
 
     __cdp_event__: ClassVar[str] = "Storage.indexedDBContentUpdated"
 
-    origin: str = field(metadata={"cdp_name": "origin"})
+    origin: str
     storage_key: str = field(metadata={"cdp_name": "storageKey"})
     bucket_id: str = field(metadata={"cdp_name": "bucketId"})
     database_name: str = field(metadata={"cdp_name": "databaseName"})
@@ -73,7 +73,7 @@ class IndexedDBListUpdatedEvent:
 
     __cdp_event__: ClassVar[str] = "Storage.indexedDBListUpdated"
 
-    origin: str = field(metadata={"cdp_name": "origin"})
+    origin: str
     storage_key: str = field(metadata={"cdp_name": "storageKey"})
     bucket_id: str = field(metadata={"cdp_name": "bucketId"})
 

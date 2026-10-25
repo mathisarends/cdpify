@@ -30,7 +30,7 @@ class BufferUsageEvent:
         default=None, metadata={"cdp_name": "percentFull"}
     )
     event_count: float | None = field(default=None, metadata={"cdp_name": "eventCount"})
-    value: float | None = field(default=None, metadata={"cdp_name": "value"})
+    value: float | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -43,7 +43,7 @@ class DataCollectedEvent:
 
     __cdp_event__: ClassVar[str] = "Tracing.dataCollected"
 
-    value: list[dict[str, Any]] = field(metadata={"cdp_name": "value"})
+    value: list[dict[str, Any]]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -56,9 +56,7 @@ class TracingCompleteEvent:
     __cdp_event__: ClassVar[str] = "Tracing.tracingComplete"
 
     data_loss_occurred: bool = field(metadata={"cdp_name": "dataLossOccurred"})
-    stream: io.StreamHandle | None = field(
-        default=None, metadata={"cdp_name": "stream"}
-    )
+    stream: io.StreamHandle | None = None
     trace_format: StreamFormat | None = field(
         default=None, metadata={"cdp_name": "traceFormat"}
     )

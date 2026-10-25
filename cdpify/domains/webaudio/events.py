@@ -41,7 +41,7 @@ class ContextCreatedEvent:
 
     __cdp_event__: ClassVar[str] = "WebAudio.contextCreated"
 
-    context: BaseAudioContext = field(metadata={"cdp_name": "context"})
+    context: BaseAudioContext
 
 
 @dataclass(kw_only=True, slots=True)
@@ -64,7 +64,7 @@ class ContextChangedEvent:
 
     __cdp_event__: ClassVar[str] = "WebAudio.contextChanged"
 
-    context: BaseAudioContext = field(metadata={"cdp_name": "context"})
+    context: BaseAudioContext
 
 
 @dataclass(kw_only=True, slots=True)
@@ -75,7 +75,7 @@ class AudioListenerCreatedEvent:
 
     __cdp_event__: ClassVar[str] = "WebAudio.audioListenerCreated"
 
-    listener: AudioListener = field(metadata={"cdp_name": "listener"})
+    listener: AudioListener
 
 
 @dataclass(kw_only=True, slots=True)
@@ -98,7 +98,7 @@ class AudioNodeCreatedEvent:
 
     __cdp_event__: ClassVar[str] = "WebAudio.audioNodeCreated"
 
-    node: AudioNode = field(metadata={"cdp_name": "node"})
+    node: AudioNode
 
 
 @dataclass(kw_only=True, slots=True)
@@ -121,7 +121,7 @@ class AudioParamCreatedEvent:
 
     __cdp_event__: ClassVar[str] = "WebAudio.audioParamCreated"
 
-    param: AudioParam = field(metadata={"cdp_name": "param"})
+    param: AudioParam
 
 
 @dataclass(kw_only=True, slots=True)

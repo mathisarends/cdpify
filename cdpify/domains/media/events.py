@@ -36,7 +36,7 @@ class PlayerPropertiesChangedEvent:
     __cdp_event__: ClassVar[str] = "Media.playerPropertiesChanged"
 
     player_id: PlayerId = field(metadata={"cdp_name": "playerId"})
-    properties: list[PlayerProperty] = field(metadata={"cdp_name": "properties"})
+    properties: list[PlayerProperty]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -49,7 +49,7 @@ class PlayerEventsAddedEvent:
     __cdp_event__: ClassVar[str] = "Media.playerEventsAdded"
 
     player_id: PlayerId = field(metadata={"cdp_name": "playerId"})
-    events: list[PlayerEvent] = field(metadata={"cdp_name": "events"})
+    events: list[PlayerEvent]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -61,7 +61,7 @@ class PlayerMessagesLoggedEvent:
     __cdp_event__: ClassVar[str] = "Media.playerMessagesLogged"
 
     player_id: PlayerId = field(metadata={"cdp_name": "playerId"})
-    messages: list[PlayerMessage] = field(metadata={"cdp_name": "messages"})
+    messages: list[PlayerMessage]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -73,7 +73,7 @@ class PlayerErrorsRaisedEvent:
     __cdp_event__: ClassVar[str] = "Media.playerErrorsRaised"
 
     player_id: PlayerId = field(metadata={"cdp_name": "playerId"})
-    errors: list[PlayerError] = field(metadata={"cdp_name": "errors"})
+    errors: list[PlayerError]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -86,4 +86,4 @@ class PlayerCreatedEvent:
 
     __cdp_event__: ClassVar[str] = "Media.playerCreated"
 
-    player: Player = field(metadata={"cdp_name": "player"})
+    player: Player

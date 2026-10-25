@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from enum import StrEnum
 
 from .types import (
@@ -26,4 +26,4 @@ class StartViolationsReportParams:
     start violation reporting.
     """
 
-    config: list[ViolationSetting] = field(metadata={"cdp_name": "config"})
+    config: list[ViolationSetting]

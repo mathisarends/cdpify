@@ -10,43 +10,43 @@ from typing import Literal
 
 @dataclass(kw_only=True, slots=True)
 class TouchPoint:
-    x: float = field(metadata={"cdp_name": "x"})
-    y: float = field(metadata={"cdp_name": "y"})
+    x: float
+    y: float
     radius_x: float | None = field(default=None, metadata={"cdp_name": "radiusX"})
     radius_y: float | None = field(default=None, metadata={"cdp_name": "radiusY"})
     rotation_angle: float | None = field(
         default=None, metadata={"cdp_name": "rotationAngle"}
     )
-    force: float | None = field(default=None, metadata={"cdp_name": "force"})
+    force: float | None = None
     tangential_pressure: float | None = field(
         default=None, metadata={"cdp_name": "tangentialPressure"}
     )
     tilt_x: float | None = field(default=None, metadata={"cdp_name": "tiltX"})
     tilt_y: float | None = field(default=None, metadata={"cdp_name": "tiltY"})
-    twist: int | None = field(default=None, metadata={"cdp_name": "twist"})
-    id: float | None = field(default=None, metadata={"cdp_name": "id"})
+    twist: int | None = None
+    id: float | None = None
 
 
 type GestureSourceType = Literal["default", "touch", "mouse"]
 
 type MouseButton = Literal["none", "left", "middle", "right", "back", "forward"]
 
+TimeSinceEpoch = float
 """
 UTC time in seconds, counted from January 1, 1970.
 """
-TimeSinceEpoch = float
 
 
 @dataclass(kw_only=True, slots=True)
 class DragDataItem:
     mime_type: str = field(metadata={"cdp_name": "mimeType"})
-    data: str = field(metadata={"cdp_name": "data"})
-    title: str | None = field(default=None, metadata={"cdp_name": "title"})
+    data: str
+    title: str | None = None
     base_url: str | None = field(default=None, metadata={"cdp_name": "baseURL"})
 
 
 @dataclass(kw_only=True, slots=True)
 class DragData:
-    items: list[DragDataItem] = field(metadata={"cdp_name": "items"})
-    files: list[str] | None = field(default=None, metadata={"cdp_name": "files"})
+    items: list[DragDataItem]
+    files: list[str] | None = None
     drag_operations_mask: int = field(metadata={"cdp_name": "dragOperationsMask"})

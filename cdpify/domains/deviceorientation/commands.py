@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from enum import StrEnum
 
 
@@ -21,6 +21,6 @@ class SetDeviceOrientationOverrideParams:
     Overrides the Device Orientation.
     """
 
-    alpha: float = field(metadata={"cdp_name": "alpha"})
-    beta: float = field(metadata={"cdp_name": "beta"})
-    gamma: float = field(metadata={"cdp_name": "gamma"})
+    alpha: float
+    beta: float
+    gamma: float

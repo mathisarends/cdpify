@@ -30,9 +30,7 @@ class DOMNode:
     child_node_indexes: list[int] | None = field(
         default=None, metadata={"cdp_name": "childNodeIndexes"}
     )
-    attributes: list[NameValue] | None = field(
-        default=None, metadata={"cdp_name": "attributes"}
-    )
+    attributes: list[NameValue] | None = None
     pseudo_element_indexes: list[int] | None = field(
         default=None, metadata={"cdp_name": "pseudoElementIndexes"}
     )
@@ -116,7 +114,7 @@ class ComputedStyle:
     A subset of the full ComputedStyle as defined by the request whitelist.
     """
 
-    properties: list[NameValue] = field(metadata={"cdp_name": "properties"})
+    properties: list[NameValue]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -125,19 +123,19 @@ class NameValue:
     A name/value pair.
     """
 
-    name: str = field(metadata={"cdp_name": "name"})
-    value: str = field(metadata={"cdp_name": "value"})
+    name: str
+    value: str
 
 
-"""
-Index of the string in the strings table.
-"""
 StringIndex = int
-
 """
 Index of the string in the strings table.
 """
+
 ArrayOfStrings = list[StringIndex]
+"""
+Index of the string in the strings table.
+"""
 
 
 @dataclass(kw_only=True, slots=True)
@@ -146,19 +144,19 @@ class RareStringData:
     Data that is only present on rare nodes.
     """
 
-    index: list[int] = field(metadata={"cdp_name": "index"})
-    value: list[StringIndex] = field(metadata={"cdp_name": "value"})
+    index: list[int]
+    value: list[StringIndex]
 
 
 @dataclass(kw_only=True, slots=True)
 class RareBooleanData:
-    index: list[int] = field(metadata={"cdp_name": "index"})
+    index: list[int]
 
 
 @dataclass(kw_only=True, slots=True)
 class RareIntegerData:
-    index: list[int] = field(metadata={"cdp_name": "index"})
-    value: list[int] = field(metadata={"cdp_name": "value"})
+    index: list[int]
+    value: list[int]
 
 
 Rectangle = list[float]
@@ -173,15 +171,15 @@ class DocumentSnapshot:
     document_url: StringIndex | None = field(
         default=None, metadata={"cdp_name": "documentURL"}
     )
-    title: StringIndex = field(metadata={"cdp_name": "title"})
+    title: StringIndex
     base_url: StringIndex | None = field(default=None, metadata={"cdp_name": "baseURL"})
     content_language: StringIndex = field(metadata={"cdp_name": "contentLanguage"})
     encoding_name: StringIndex = field(metadata={"cdp_name": "encodingName"})
     public_id: StringIndex = field(metadata={"cdp_name": "publicId"})
     system_id: StringIndex = field(metadata={"cdp_name": "systemId"})
     frame_id: StringIndex = field(metadata={"cdp_name": "frameId"})
-    nodes: NodeTreeSnapshot = field(metadata={"cdp_name": "nodes"})
-    layout: LayoutTreeSnapshot = field(metadata={"cdp_name": "layout"})
+    nodes: NodeTreeSnapshot
+    layout: LayoutTreeSnapshot
     text_boxes: TextBoxSnapshot = field(metadata={"cdp_name": "textBoxes"})
     scroll_offset_x: float | None = field(
         default=None, metadata={"cdp_name": "scrollOffsetX"}
@@ -219,9 +217,7 @@ class NodeTreeSnapshot:
     backend_node_id: list[dom.BackendNodeId] | None = field(
         default=None, metadata={"cdp_name": "backendNodeId"}
     )
-    attributes: list[ArrayOfStrings] | None = field(
-        default=None, metadata={"cdp_name": "attributes"}
-    )
+    attributes: list[ArrayOfStrings] | None = None
     text_value: RareStringData | None = field(
         default=None, metadata={"cdp_name": "textValue"}
     )
@@ -261,9 +257,9 @@ class LayoutTreeSnapshot:
     """
 
     node_index: list[int] = field(metadata={"cdp_name": "nodeIndex"})
-    styles: list[ArrayOfStrings] = field(metadata={"cdp_name": "styles"})
-    bounds: list[Rectangle] = field(metadata={"cdp_name": "bounds"})
-    text: list[StringIndex] = field(metadata={"cdp_name": "text"})
+    styles: list[ArrayOfStrings]
+    bounds: list[Rectangle]
+    text: list[StringIndex]
     stacking_contexts: RareBooleanData = field(
         metadata={"cdp_name": "stackingContexts"}
     )
@@ -295,6 +291,6 @@ class TextBoxSnapshot:
     """
 
     layout_index: list[int] = field(metadata={"cdp_name": "layoutIndex"})
-    bounds: list[Rectangle] = field(metadata={"cdp_name": "bounds"})
-    start: list[int] = field(metadata={"cdp_name": "start"})
-    length: list[int] = field(metadata={"cdp_name": "length"})
+    bounds: list[Rectangle]
+    start: list[int]
+    length: list[int]

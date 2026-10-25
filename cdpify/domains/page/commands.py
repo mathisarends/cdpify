@@ -118,7 +118,7 @@ class AddScriptToEvaluateOnLoadParams:
 
 @dataclass(kw_only=True, slots=True)
 class AddScriptToEvaluateOnLoadResult:
-    identifier: ScriptIdentifier = field(metadata={"cdp_name": "identifier"})
+    identifier: ScriptIdentifier
 
 
 @dataclass(kw_only=True, slots=True)
@@ -128,7 +128,7 @@ class AddScriptToEvaluateOnNewDocumentParams:
     scripts).
     """
 
-    source: str = field(metadata={"cdp_name": "source"})
+    source: str
     world_name: str | None = field(default=None, metadata={"cdp_name": "worldName"})
     include_command_line_api: bool | None = field(
         default=None, metadata={"cdp_name": "includeCommandLineAPI"}
@@ -140,7 +140,7 @@ class AddScriptToEvaluateOnNewDocumentParams:
 
 @dataclass(kw_only=True, slots=True)
 class AddScriptToEvaluateOnNewDocumentResult:
-    identifier: ScriptIdentifier = field(metadata={"cdp_name": "identifier"})
+    identifier: ScriptIdentifier
 
 
 @dataclass(kw_only=True, slots=True)
@@ -149,11 +149,9 @@ class CaptureScreenshotParams:
     Capture page screenshot.
     """
 
-    format: Literal["jpeg", "png", "webp"] | None = field(
-        default=None, metadata={"cdp_name": "format"}
-    )
-    quality: int | None = field(default=None, metadata={"cdp_name": "quality"})
-    clip: Viewport | None = field(default=None, metadata={"cdp_name": "clip"})
+    format: Literal["jpeg", "png", "webp"] | None = None
+    quality: int | None = None
+    clip: Viewport | None = None
     from_surface: bool | None = field(
         default=None, metadata={"cdp_name": "fromSurface"}
     )
@@ -167,7 +165,7 @@ class CaptureScreenshotParams:
 
 @dataclass(kw_only=True, slots=True)
 class CaptureScreenshotResult:
-    data: str = field(metadata={"cdp_name": "data"})
+    data: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -177,14 +175,12 @@ class CaptureSnapshotParams:
     includes iframes, shadow DOM, external resources, and element-inline styles.
     """
 
-    format: Literal["mhtml"] | None = field(
-        default=None, metadata={"cdp_name": "format"}
-    )
+    format: Literal["mhtml"] | None = None
 
 
 @dataclass(kw_only=True, slots=True)
 class CaptureSnapshotResult:
-    data: str = field(metadata={"cdp_name": "data"})
+    data: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -217,7 +213,7 @@ class DeleteCookieParams:
     """
 
     cookie_name: str = field(metadata={"cdp_name": "cookieName"})
-    url: str = field(metadata={"cdp_name": "url"})
+    url: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -245,13 +241,11 @@ class GetAppManifestParams:
 
 @dataclass(kw_only=True, slots=True)
 class GetAppManifestResult:
-    url: str = field(metadata={"cdp_name": "url"})
-    errors: list[AppManifestError] = field(metadata={"cdp_name": "errors"})
-    data: str | None = field(default=None, metadata={"cdp_name": "data"})
-    parsed: AppManifestParsedProperties | None = field(
-        default=None, metadata={"cdp_name": "parsed"}
-    )
-    manifest: WebAppManifest = field(metadata={"cdp_name": "manifest"})
+    url: str
+    errors: list[AppManifestError]
+    data: str | None = None
+    parsed: AppManifestParsedProperties | None = None
+    manifest: WebAppManifest
 
 
 @dataclass(kw_only=True, slots=True)
@@ -313,7 +307,7 @@ class GetSpellCheckCustomDictionaryParams:
 
 @dataclass(kw_only=True, slots=True)
 class GetSpellCheckCustomDictionaryResult:
-    words: list[str] = field(metadata={"cdp_name": "words"})
+    words: list[str]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -338,7 +332,7 @@ class GetLayoutMetricsResult:
 @dataclass(kw_only=True, slots=True)
 class GetNavigationHistoryResult:
     current_index: int = field(metadata={"cdp_name": "currentIndex"})
-    entries: list[NavigationEntry] = field(metadata={"cdp_name": "entries"})
+    entries: list[NavigationEntry]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -348,12 +342,12 @@ class GetResourceContentParams:
     """
 
     frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
-    url: str = field(metadata={"cdp_name": "url"})
+    url: str
 
 
 @dataclass(kw_only=True, slots=True)
 class GetResourceContentResult:
-    content: str = field(metadata={"cdp_name": "content"})
+    content: str
     base64_encoded: bool = field(metadata={"cdp_name": "base64Encoded"})
 
 
@@ -369,7 +363,7 @@ class HandleJavaScriptDialogParams:
     onbeforeunload).
     """
 
-    accept: bool = field(metadata={"cdp_name": "accept"})
+    accept: bool
     prompt_text: str | None = field(default=None, metadata={"cdp_name": "promptText"})
 
 
@@ -379,8 +373,8 @@ class NavigateParams:
     Navigates current page to the given URL.
     """
 
-    url: str = field(metadata={"cdp_name": "url"})
-    referrer: str | None = field(default=None, metadata={"cdp_name": "referrer"})
+    url: str
+    referrer: str | None = None
     transition_type: TransitionType | None = field(
         default=None, metadata={"cdp_name": "transitionType"}
     )
@@ -415,14 +409,14 @@ class PrintToPDFParams:
     Print page as PDF.
     """
 
-    landscape: bool | None = field(default=None, metadata={"cdp_name": "landscape"})
+    landscape: bool | None = None
     display_header_footer: bool | None = field(
         default=None, metadata={"cdp_name": "displayHeaderFooter"}
     )
     print_background: bool | None = field(
         default=None, metadata={"cdp_name": "printBackground"}
     )
-    scale: float | None = field(default=None, metadata={"cdp_name": "scale"})
+    scale: float | None = None
     paper_width: float | None = field(default=None, metadata={"cdp_name": "paperWidth"})
     paper_height: float | None = field(
         default=None, metadata={"cdp_name": "paperHeight"}
@@ -458,10 +452,8 @@ class PrintToPDFParams:
 
 @dataclass(kw_only=True, slots=True)
 class PrintToPDFResult:
-    data: str = field(metadata={"cdp_name": "data"})
-    stream: io.StreamHandle | None = field(
-        default=None, metadata={"cdp_name": "stream"}
-    )
+    data: str
+    stream: io.StreamHandle | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -487,7 +479,7 @@ class RemoveScriptToEvaluateOnLoadParams:
     Deprecated, please use removeScriptToEvaluateOnNewDocument instead.
     """
 
-    identifier: ScriptIdentifier = field(metadata={"cdp_name": "identifier"})
+    identifier: ScriptIdentifier
 
 
 @dataclass(kw_only=True, slots=True)
@@ -496,7 +488,7 @@ class RemoveScriptToEvaluateOnNewDocumentParams:
     Removes given script from the list.
     """
 
-    identifier: ScriptIdentifier = field(metadata={"cdp_name": "identifier"})
+    identifier: ScriptIdentifier
 
 
 @dataclass(kw_only=True, slots=True)
@@ -515,8 +507,8 @@ class SearchInResourceParams:
     """
 
     frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
-    url: str = field(metadata={"cdp_name": "url"})
-    query: str = field(metadata={"cdp_name": "query"})
+    url: str
+    query: str
     case_sensitive: bool | None = field(
         default=None, metadata={"cdp_name": "caseSensitive"}
     )
@@ -525,7 +517,7 @@ class SearchInResourceParams:
 
 @dataclass(kw_only=True, slots=True)
 class SearchInResourceResult:
-    result: list[debugger.SearchMatch] = field(metadata={"cdp_name": "result"})
+    result: list[debugger.SearchMatch]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -534,7 +526,7 @@ class SetAdBlockingEnabledParams:
     Enable Chrome's experimental ad filter on all sites.
     """
 
-    enabled: bool = field(metadata={"cdp_name": "enabled"})
+    enabled: bool
 
 
 @dataclass(kw_only=True, slots=True)
@@ -543,7 +535,7 @@ class SetBypassCSPParams:
     Enable page Content Security Policy by-passing.
     """
 
-    enabled: bool = field(metadata={"cdp_name": "enabled"})
+    enabled: bool
 
 
 @dataclass(kw_only=True, slots=True)
@@ -557,7 +549,7 @@ class GetPermissionsPolicyStateParams:
 
 @dataclass(kw_only=True, slots=True)
 class GetPermissionsPolicyStateResult:
-    states: list[PermissionsPolicyFeatureState] = field(metadata={"cdp_name": "states"})
+    states: list[PermissionsPolicyFeatureState]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -582,11 +574,11 @@ class SetDeviceMetricsOverrideParams:
     "device-width"/"device-height"-related CSS media query results).
     """
 
-    width: int = field(metadata={"cdp_name": "width"})
-    height: int = field(metadata={"cdp_name": "height"})
+    width: int
+    height: int
     device_scale_factor: float = field(metadata={"cdp_name": "deviceScaleFactor"})
-    mobile: bool = field(metadata={"cdp_name": "mobile"})
-    scale: float | None = field(default=None, metadata={"cdp_name": "scale"})
+    mobile: bool
+    scale: float | None = None
     screen_width: int | None = field(default=None, metadata={"cdp_name": "screenWidth"})
     screen_height: int | None = field(
         default=None, metadata={"cdp_name": "screenHeight"}
@@ -599,7 +591,7 @@ class SetDeviceMetricsOverrideParams:
     screen_orientation: emulation.ScreenOrientation | None = field(
         default=None, metadata={"cdp_name": "screenOrientation"}
     )
-    viewport: Viewport | None = field(default=None, metadata={"cdp_name": "viewport"})
+    viewport: Viewport | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -608,9 +600,9 @@ class SetDeviceOrientationOverrideParams:
     Overrides the Device Orientation.
     """
 
-    alpha: float = field(metadata={"cdp_name": "alpha"})
-    beta: float = field(metadata={"cdp_name": "beta"})
-    gamma: float = field(metadata={"cdp_name": "gamma"})
+    alpha: float
+    beta: float
+    gamma: float
 
 
 @dataclass(kw_only=True, slots=True)
@@ -641,7 +633,7 @@ class SetDocumentContentParams:
     """
 
     frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
-    html: str = field(metadata={"cdp_name": "html"})
+    html: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -650,9 +642,7 @@ class SetDownloadBehaviorParams:
     Set the behavior when downloading a file.
     """
 
-    behavior: Literal["deny", "allow", "default"] = field(
-        metadata={"cdp_name": "behavior"}
-    )
+    behavior: Literal["deny", "allow", "default"]
     download_path: str | None = field(
         default=None, metadata={"cdp_name": "downloadPath"}
     )
@@ -665,9 +655,9 @@ class SetGeolocationOverrideParams:
     emulates position unavailable.
     """
 
-    latitude: float | None = field(default=None, metadata={"cdp_name": "latitude"})
-    longitude: float | None = field(default=None, metadata={"cdp_name": "longitude"})
-    accuracy: float | None = field(default=None, metadata={"cdp_name": "accuracy"})
+    latitude: float | None = None
+    longitude: float | None = None
+    accuracy: float | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -676,7 +666,7 @@ class SetLifecycleEventsEnabledParams:
     Controls whether page will emit lifecycle events.
     """
 
-    enabled: bool = field(metadata={"cdp_name": "enabled"})
+    enabled: bool
 
 
 @dataclass(kw_only=True, slots=True)
@@ -685,10 +675,8 @@ class SetTouchEmulationEnabledParams:
     Toggles mouse event-based touch event emulation.
     """
 
-    enabled: bool = field(metadata={"cdp_name": "enabled"})
-    configuration: Literal["mobile", "desktop"] | None = field(
-        default=None, metadata={"cdp_name": "configuration"}
-    )
+    enabled: bool
+    configuration: Literal["mobile", "desktop"] | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -697,10 +685,8 @@ class StartScreencastParams:
     Starts sending each frame using the `screencastFrame` event.
     """
 
-    format: Literal["jpeg", "png"] | None = field(
-        default=None, metadata={"cdp_name": "format"}
-    )
-    quality: int | None = field(default=None, metadata={"cdp_name": "quality"})
+    format: Literal["jpeg", "png"] | None = None
+    quality: int | None = None
     max_width: int | None = field(default=None, metadata={"cdp_name": "maxWidth"})
     max_height: int | None = field(default=None, metadata={"cdp_name": "maxHeight"})
     every_nth_frame: int | None = field(
@@ -720,7 +706,7 @@ class StartScreenRecordingParams:
     Starts screencast video recording.
     """
 
-    audio: bool | None = field(default=None, metadata={"cdp_name": "audio"})
+    audio: bool | None = None
     max_width: int | None = field(default=None, metadata={"cdp_name": "maxWidth"})
     max_height: int | None = field(default=None, metadata={"cdp_name": "maxHeight"})
     frame_rate: int | None = field(default=None, metadata={"cdp_name": "frameRate"})
@@ -728,12 +714,12 @@ class StartScreenRecordingParams:
 
 @dataclass(kw_only=True, slots=True)
 class StartScreenRecordingResult:
-    stream: io.StreamHandle = field(metadata={"cdp_name": "stream"})
+    stream: io.StreamHandle
 
 
 @dataclass(kw_only=True, slots=True)
 class StopScreenRecordingResult:
-    stream: io.StreamHandle = field(metadata={"cdp_name": "stream"})
+    stream: io.StreamHandle
 
 
 @dataclass(kw_only=True, slots=True)
@@ -743,7 +729,7 @@ class SetWebLifecycleStateParams:
     the given state according to: https://github.com/WICG/web-lifecycle/
     """
 
-    state: Literal["frozen", "active"] = field(metadata={"cdp_name": "state"})
+    state: Literal["frozen", "active"]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -756,7 +742,7 @@ class ProduceCompilationCacheParams:
     heuristics. See also: `Page.compilationCacheProduced`.
     """
 
-    scripts: list[CompilationCacheParams] = field(metadata={"cdp_name": "scripts"})
+    scripts: list[CompilationCacheParams]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -766,8 +752,8 @@ class AddCompilationCacheParams:
     cross-process navigation.
     """
 
-    url: str = field(metadata={"cdp_name": "url"})
-    data: str = field(metadata={"cdp_name": "data"})
+    url: str
+    data: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -779,9 +765,7 @@ class SetSPCTransactionModeParams:
 
     mode: Literal[
         "none", "autoAccept", "autoChooseToAuthAnotherWay", "autoReject", "autoOptOut"
-    ] = field(  # noqa: E501
-        metadata={"cdp_name": "mode"},
-    )
+    ]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -791,9 +775,7 @@ class SetRPHRegistrationModeParams:
     https://html.spec.whatwg.org/multipage/system-state.html#rph-automation
     """
 
-    mode: Literal["none", "autoAccept", "autoReject"] = field(
-        metadata={"cdp_name": "mode"}
-    )
+    mode: Literal["none", "autoAccept", "autoReject"]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -802,8 +784,8 @@ class GenerateTestReportParams:
     Generates a report for testing.
     """
 
-    message: str = field(metadata={"cdp_name": "message"})
-    group: str | None = field(default=None, metadata={"cdp_name": "group"})
+    message: str
+    group: str | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -814,8 +796,8 @@ class SetInterceptFileChooserDialogParams:
     protocol event `Page.fileChooserOpened` is emitted.
     """
 
-    enabled: bool = field(metadata={"cdp_name": "enabled"})
-    cancel: bool | None = field(default=None, metadata={"cdp_name": "cancel"})
+    enabled: bool
+    cancel: bool | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -845,7 +827,7 @@ class GetAnnotatedPageContentParams:
 
 @dataclass(kw_only=True, slots=True)
 class GetAnnotatedPageContentResult:
-    content: str = field(metadata={"cdp_name": "content"})
+    content: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -854,4 +836,4 @@ class SetInputVisualizationParams:
     Configures input visualization on the page.
     """
 
-    clicks: bool | None = field(default=None, metadata={"cdp_name": "clicks"})
+    clicks: bool | None = None

@@ -30,14 +30,14 @@ class GetEncodedResponseParams:
     """
 
     request_id: network.RequestId = field(metadata={"cdp_name": "requestId"})
-    encoding: Literal["webp", "jpeg", "png"] = field(metadata={"cdp_name": "encoding"})
-    quality: float | None = field(default=None, metadata={"cdp_name": "quality"})
+    encoding: Literal["webp", "jpeg", "png"]
+    quality: float | None = None
     size_only: bool | None = field(default=None, metadata={"cdp_name": "sizeOnly"})
 
 
 @dataclass(kw_only=True, slots=True)
 class GetEncodedResponseResult:
-    body: str | None = field(default=None, metadata={"cdp_name": "body"})
+    body: str | None = None
     original_size: int = field(metadata={"cdp_name": "originalSize"})
     encoded_size: int = field(metadata={"cdp_name": "encodedSize"})
 

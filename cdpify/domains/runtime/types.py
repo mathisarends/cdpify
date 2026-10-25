@@ -7,10 +7,10 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any, Literal
 
+ScriptId = str
 """
 Unique script identifier.
 """
-ScriptId = str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -20,9 +20,7 @@ class SerializationOptions:
     `returnByValue`.
     """
 
-    serialization: Literal["deep", "json", "idOnly"] = field(
-        metadata={"cdp_name": "serialization"}
-    )
+    serialization: Literal["deep", "json", "idOnly"]
     max_depth: int | None = field(default=None, metadata={"cdp_name": "maxDepth"})
     additional_parameters: dict[str, Any] | None = field(
         default=None, metadata={"cdp_name": "additionalParameters"}
@@ -60,26 +58,24 @@ class DeepSerializedValue:
         "node",
         "window",
         "generator",
-    ] = field(  # noqa: E501
-        metadata={"cdp_name": "type"},
-    )
-    value: Any | None = field(default=None, metadata={"cdp_name": "value"})
+    ]
+    value: Any | None = None
     object_id: str | None = field(default=None, metadata={"cdp_name": "objectId"})
     weak_local_object_reference: int | None = field(
         default=None, metadata={"cdp_name": "weakLocalObjectReference"}
     )
 
 
+RemoteObjectId = str
 """
 Unique object identifier.
 """
-RemoteObjectId = str
 
+UnserializableValue = str
 """
 Primitive value which cannot be JSON-stringified. Includes values `-0`, `NaN`,
 `Infinity`, `-Infinity`, and bigint literals.
 """
-UnserializableValue = str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -97,9 +93,7 @@ class RemoteObject:
         "boolean",
         "symbol",
         "bigint",
-    ] = field(  # noqa: E501
-        metadata={"cdp_name": "type"},
-    )
+    ]
     subtype: (
         Literal[
             "array",
@@ -125,25 +119,20 @@ class RemoteObject:
             "trustedtype",
         ]
         | None
-    ) = field(  # noqa: E501
-        default=None,
-        metadata={"cdp_name": "subtype"},
-    )
+    ) = None
     class_name: str | None = field(default=None, metadata={"cdp_name": "className"})
-    value: Any | None = field(default=None, metadata={"cdp_name": "value"})
+    value: Any | None = None
     unserializable_value: UnserializableValue | None = field(
         default=None, metadata={"cdp_name": "unserializableValue"}
     )
-    description: str | None = field(default=None, metadata={"cdp_name": "description"})
+    description: str | None = None
     deep_serialized_value: DeepSerializedValue | None = field(
         default=None, metadata={"cdp_name": "deepSerializedValue"}
     )
     object_id: RemoteObjectId | None = field(
         default=None, metadata={"cdp_name": "objectId"}
     )
-    preview: ObjectPreview | None = field(
-        default=None, metadata={"cdp_name": "preview"}
-    )
+    preview: ObjectPreview | None = None
     custom_preview: CustomPreview | None = field(
         default=None, metadata={"cdp_name": "customPreview"}
     )
@@ -151,7 +140,7 @@ class RemoteObject:
 
 @dataclass(kw_only=True, slots=True)
 class CustomPreview:
-    header: str = field(metadata={"cdp_name": "header"})
+    header: str
     body_getter_id: RemoteObjectId | None = field(
         default=None, metadata={"cdp_name": "bodyGetterId"}
     )
@@ -172,9 +161,7 @@ class ObjectPreview:
         "boolean",
         "symbol",
         "bigint",
-    ] = field(  # noqa: E501
-        metadata={"cdp_name": "type"},
-    )
+    ]
     subtype: (
         Literal[
             "array",
@@ -200,21 +187,16 @@ class ObjectPreview:
             "trustedtype",
         ]
         | None
-    ) = field(  # noqa: E501
-        default=None,
-        metadata={"cdp_name": "subtype"},
-    )
-    description: str | None = field(default=None, metadata={"cdp_name": "description"})
-    overflow: bool = field(metadata={"cdp_name": "overflow"})
-    properties: list[PropertyPreview] = field(metadata={"cdp_name": "properties"})
-    entries: list[EntryPreview] | None = field(
-        default=None, metadata={"cdp_name": "entries"}
-    )
+    ) = None
+    description: str | None = None
+    overflow: bool
+    properties: list[PropertyPreview]
+    entries: list[EntryPreview] | None = None
 
 
 @dataclass(kw_only=True, slots=True)
 class PropertyPreview:
-    name: str = field(metadata={"cdp_name": "name"})
+    name: str
     type: Literal[
         "object",
         "function",
@@ -225,10 +207,8 @@ class PropertyPreview:
         "symbol",
         "accessor",
         "bigint",
-    ] = field(  # noqa: E501
-        metadata={"cdp_name": "type"},
-    )
-    value: str | None = field(default=None, metadata={"cdp_name": "value"})
+    ]
+    value: str | None = None
     value_preview: ObjectPreview | None = field(
         default=None, metadata={"cdp_name": "valuePreview"}
     )
@@ -257,16 +237,13 @@ class PropertyPreview:
             "trustedtype",
         ]
         | None
-    ) = field(  # noqa: E501
-        default=None,
-        metadata={"cdp_name": "subtype"},
-    )
+    ) = None
 
 
 @dataclass(kw_only=True, slots=True)
 class EntryPreview:
-    key: ObjectPreview | None = field(default=None, metadata={"cdp_name": "key"})
-    value: ObjectPreview = field(metadata={"cdp_name": "value"})
+    key: ObjectPreview | None = None
+    value: ObjectPreview
 
 
 @dataclass(kw_only=True, slots=True)
@@ -275,16 +252,16 @@ class PropertyDescriptor:
     Object property descriptor.
     """
 
-    name: str = field(metadata={"cdp_name": "name"})
-    value: RemoteObject | None = field(default=None, metadata={"cdp_name": "value"})
-    writable: bool | None = field(default=None, metadata={"cdp_name": "writable"})
-    get: RemoteObject | None = field(default=None, metadata={"cdp_name": "get"})
-    set: RemoteObject | None = field(default=None, metadata={"cdp_name": "set"})
-    configurable: bool = field(metadata={"cdp_name": "configurable"})
-    enumerable: bool = field(metadata={"cdp_name": "enumerable"})
+    name: str
+    value: RemoteObject | None = None
+    writable: bool | None = None
+    get: RemoteObject | None = None
+    set: RemoteObject | None = None
+    configurable: bool
+    enumerable: bool
     was_thrown: bool | None = field(default=None, metadata={"cdp_name": "wasThrown"})
     is_own: bool | None = field(default=None, metadata={"cdp_name": "isOwn"})
-    symbol: RemoteObject | None = field(default=None, metadata={"cdp_name": "symbol"})
+    symbol: RemoteObject | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -294,8 +271,8 @@ class InternalPropertyDescriptor:
     JavaScript code.
     """
 
-    name: str = field(metadata={"cdp_name": "name"})
-    value: RemoteObject | None = field(default=None, metadata={"cdp_name": "value"})
+    name: str
+    value: RemoteObject | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -304,10 +281,10 @@ class PrivatePropertyDescriptor:
     Object private field descriptor.
     """
 
-    name: str = field(metadata={"cdp_name": "name"})
-    value: RemoteObject | None = field(default=None, metadata={"cdp_name": "value"})
-    get: RemoteObject | None = field(default=None, metadata={"cdp_name": "get"})
-    set: RemoteObject | None = field(default=None, metadata={"cdp_name": "set"})
+    name: str
+    value: RemoteObject | None = None
+    get: RemoteObject | None = None
+    set: RemoteObject | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -318,7 +295,7 @@ class CallArgument:
     specified.
     """
 
-    value: Any | None = field(default=None, metadata={"cdp_name": "value"})
+    value: Any | None = None
     unserializable_value: UnserializableValue | None = field(
         default=None, metadata={"cdp_name": "unserializableValue"}
     )
@@ -327,10 +304,10 @@ class CallArgument:
     )
 
 
+ExecutionContextId = int
 """
 Id of an execution context.
 """
-ExecutionContextId = int
 
 
 @dataclass(kw_only=True, slots=True)
@@ -339,9 +316,9 @@ class ExecutionContextDescription:
     Description of an isolated world.
     """
 
-    id: ExecutionContextId = field(metadata={"cdp_name": "id"})
-    origin: str = field(metadata={"cdp_name": "origin"})
-    name: str = field(metadata={"cdp_name": "name"})
+    id: ExecutionContextId
+    origin: str
+    name: str
     unique_id: str = field(metadata={"cdp_name": "uniqueId"})
     aux_data: dict[str, Any] | None = field(
         default=None, metadata={"cdp_name": "auxData"}
@@ -356,17 +333,15 @@ class ExceptionDetails:
     """
 
     exception_id: int = field(metadata={"cdp_name": "exceptionId"})
-    text: str = field(metadata={"cdp_name": "text"})
+    text: str
     line_number: int = field(metadata={"cdp_name": "lineNumber"})
     column_number: int = field(metadata={"cdp_name": "columnNumber"})
     script_id: ScriptId | None = field(default=None, metadata={"cdp_name": "scriptId"})
-    url: str | None = field(default=None, metadata={"cdp_name": "url"})
+    url: str | None = None
     stack_trace: StackTrace | None = field(
         default=None, metadata={"cdp_name": "stackTrace"}
     )
-    exception: RemoteObject | None = field(
-        default=None, metadata={"cdp_name": "exception"}
-    )
+    exception: RemoteObject | None = None
     execution_context_id: ExecutionContextId | None = field(
         default=None, metadata={"cdp_name": "executionContextId"}
     )
@@ -375,15 +350,15 @@ class ExceptionDetails:
     )
 
 
+Timestamp = float
 """
 Number of milliseconds since epoch.
 """
-Timestamp = float
 
+TimeDelta = float
 """
 Number of milliseconds.
 """
-TimeDelta = float
 
 
 @dataclass(kw_only=True, slots=True)
@@ -394,7 +369,7 @@ class CallFrame:
 
     function_name: str = field(metadata={"cdp_name": "functionName"})
     script_id: ScriptId = field(metadata={"cdp_name": "scriptId"})
-    url: str = field(metadata={"cdp_name": "url"})
+    url: str
     line_number: int = field(metadata={"cdp_name": "lineNumber"})
     column_number: int = field(metadata={"cdp_name": "columnNumber"})
 
@@ -405,18 +380,18 @@ class StackTrace:
     Call frames for assertions or error messages.
     """
 
-    description: str | None = field(default=None, metadata={"cdp_name": "description"})
+    description: str | None = None
     call_frames: list[CallFrame] = field(metadata={"cdp_name": "callFrames"})
-    parent: StackTrace | None = field(default=None, metadata={"cdp_name": "parent"})
+    parent: StackTrace | None = None
     parent_id: StackTraceId | None = field(
         default=None, metadata={"cdp_name": "parentId"}
     )
 
 
+UniqueDebuggerId = str
 """
 Unique identifier of current debugger.
 """
-UniqueDebuggerId = str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -427,7 +402,7 @@ class StackTraceId:
     `Debugger.paused` for usages.
     """
 
-    id: str = field(metadata={"cdp_name": "id"})
+    id: str
     debugger_id: UniqueDebuggerId | None = field(
         default=None, metadata={"cdp_name": "debuggerId"}
     )

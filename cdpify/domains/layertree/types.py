@@ -9,15 +9,15 @@ from typing import Literal
 
 from cdpify.domains import dom
 
+LayerId = str
 """
 Unique Layer identifier.
 """
-LayerId = str
 
+SnapshotId = str
 """
 Unique snapshot identifier.
 """
-SnapshotId = str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -26,10 +26,8 @@ class ScrollRect:
     Rectangle where scrolling happens on the main thread.
     """
 
-    rect: dom.Rect = field(metadata={"cdp_name": "rect"})
-    type: Literal["RepaintsOnScroll", "TouchEventHandler", "WheelEventHandler"] = field(
-        metadata={"cdp_name": "type"}
-    )
+    rect: dom.Rect
+    type: Literal["RepaintsOnScroll", "TouchEventHandler", "WheelEventHandler"]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -56,9 +54,9 @@ class PictureTile:
     Serialized fragment of layer picture along with its offset within the layer.
     """
 
-    x: float = field(metadata={"cdp_name": "x"})
-    y: float = field(metadata={"cdp_name": "y"})
-    picture: str = field(metadata={"cdp_name": "picture"})
+    x: float
+    y: float
+    picture: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -76,17 +74,15 @@ class Layer:
     )
     offset_x: float = field(metadata={"cdp_name": "offsetX"})
     offset_y: float = field(metadata={"cdp_name": "offsetY"})
-    width: float = field(metadata={"cdp_name": "width"})
-    height: float = field(metadata={"cdp_name": "height"})
-    transform: list[float] | None = field(
-        default=None, metadata={"cdp_name": "transform"}
-    )
+    width: float
+    height: float
+    transform: list[float] | None = None
     anchor_x: float | None = field(default=None, metadata={"cdp_name": "anchorX"})
     anchor_y: float | None = field(default=None, metadata={"cdp_name": "anchorY"})
     anchor_z: float | None = field(default=None, metadata={"cdp_name": "anchorZ"})
     paint_count: int = field(metadata={"cdp_name": "paintCount"})
     draws_content: bool = field(metadata={"cdp_name": "drawsContent"})
-    invisible: bool | None = field(default=None, metadata={"cdp_name": "invisible"})
+    invisible: bool | None = None
     scroll_rects: list[ScrollRect] | None = field(
         default=None, metadata={"cdp_name": "scrollRects"}
     )
@@ -95,7 +91,7 @@ class Layer:
     )
 
 
+PaintProfile = list[float]
 """
 Array of timings, one per paint step.
 """
-PaintProfile = list[float]

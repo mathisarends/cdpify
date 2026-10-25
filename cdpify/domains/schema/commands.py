@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from enum import StrEnum
 
 from .types import (
@@ -18,4 +18,4 @@ class SchemaCommand(StrEnum):
 
 @dataclass(kw_only=True, slots=True)
 class GetDomainsResult:
-    domains: list[Domain] = field(metadata={"cdp_name": "domains"})
+    domains: list[Domain]

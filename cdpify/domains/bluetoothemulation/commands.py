@@ -50,7 +50,7 @@ class EnableParams:
     Enable the BluetoothEmulation domain.
     """
 
-    state: CentralState = field(metadata={"cdp_name": "state"})
+    state: CentralState
     le_supported: bool = field(metadata={"cdp_name": "leSupported"})
 
 
@@ -60,7 +60,7 @@ class SetSimulatedCentralStateParams:
     Set the state of the simulated central.
     """
 
-    state: CentralState = field(metadata={"cdp_name": "state"})
+    state: CentralState
 
 
 @dataclass(kw_only=True, slots=True)
@@ -70,8 +70,8 @@ class SimulatePreconnectedPeripheralParams:
     already been connected to the system.
     """
 
-    address: str = field(metadata={"cdp_name": "address"})
-    name: str = field(metadata={"cdp_name": "name"})
+    address: str
+    name: str
     manufacturer_data: list[ManufacturerData] = field(
         metadata={"cdp_name": "manufacturerData"}
     )
@@ -85,7 +85,7 @@ class SimulateAdvertisementParams:
     central.
     """
 
-    entry: ScanEntry = field(metadata={"cdp_name": "entry"})
+    entry: ScanEntry
 
 
 @dataclass(kw_only=True, slots=True)
@@ -96,9 +96,9 @@ class SimulateGATTOperationResponseParams:
     Specification Vol 2 Part D 1.3 List Of Error Codes.
     """
 
-    address: str = field(metadata={"cdp_name": "address"})
-    type: GATTOperationType = field(metadata={"cdp_name": "type"})
-    code: int = field(metadata={"cdp_name": "code"})
+    address: str
+    type: GATTOperationType
+    code: int
 
 
 @dataclass(kw_only=True, slots=True)
@@ -111,9 +111,9 @@ class SimulateCharacteristicOperationResponseParams:
     """
 
     characteristic_id: str = field(metadata={"cdp_name": "characteristicId"})
-    type: CharacteristicOperationType = field(metadata={"cdp_name": "type"})
-    code: int = field(metadata={"cdp_name": "code"})
-    data: str | None = field(default=None, metadata={"cdp_name": "data"})
+    type: CharacteristicOperationType
+    code: int
+    data: str | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -126,9 +126,9 @@ class SimulateDescriptorOperationResponseParams:
     """
 
     descriptor_id: str = field(metadata={"cdp_name": "descriptorId"})
-    type: DescriptorOperationType = field(metadata={"cdp_name": "type"})
-    code: int = field(metadata={"cdp_name": "code"})
-    data: str | None = field(default=None, metadata={"cdp_name": "data"})
+    type: DescriptorOperationType
+    code: int
+    data: str | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -137,7 +137,7 @@ class AddServiceParams:
     Adds a service with |serviceUuid| to the peripheral with |address|.
     """
 
-    address: str = field(metadata={"cdp_name": "address"})
+    address: str
     service_uuid: str = field(metadata={"cdp_name": "serviceUuid"})
 
 
@@ -164,7 +164,7 @@ class AddCharacteristicParams:
 
     service_id: str = field(metadata={"cdp_name": "serviceId"})
     characteristic_uuid: str = field(metadata={"cdp_name": "characteristicUuid"})
-    properties: CharacteristicProperties = field(metadata={"cdp_name": "properties"})
+    properties: CharacteristicProperties
 
 
 @dataclass(kw_only=True, slots=True)
@@ -213,4 +213,4 @@ class SimulateGATTDisconnectionParams:
     Simulates a GATT disconnection from the peripheral with |address|.
     """
 
-    address: str = field(metadata={"cdp_name": "address"})
+    address: str

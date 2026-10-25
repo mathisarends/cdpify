@@ -10,13 +10,13 @@ from typing import Literal
 
 @dataclass(kw_only=True, slots=True)
 class SafeAreaInsets:
-    top: int | None = field(default=None, metadata={"cdp_name": "top"})
+    top: int | None = None
     top_max: int | None = field(default=None, metadata={"cdp_name": "topMax"})
-    left: int | None = field(default=None, metadata={"cdp_name": "left"})
+    left: int | None = None
     left_max: int | None = field(default=None, metadata={"cdp_name": "leftMax"})
-    bottom: int | None = field(default=None, metadata={"cdp_name": "bottom"})
+    bottom: int | None = None
     bottom_max: int | None = field(default=None, metadata={"cdp_name": "bottomMax"})
-    right: int | None = field(default=None, metadata={"cdp_name": "right"})
+    right: int | None = None
     right_max: int | None = field(default=None, metadata={"cdp_name": "rightMax"})
 
 
@@ -28,39 +28,35 @@ class ScreenOrientation:
 
     type: Literal[
         "portraitPrimary", "portraitSecondary", "landscapePrimary", "landscapeSecondary"
-    ] = field(  # noqa: E501
-        metadata={"cdp_name": "type"},
-    )
-    angle: int = field(metadata={"cdp_name": "angle"})
+    ]
+    angle: int
 
 
 @dataclass(kw_only=True, slots=True)
 class DisplayFeature:
-    orientation: Literal["vertical", "horizontal"] = field(
-        metadata={"cdp_name": "orientation"}
-    )
-    offset: int = field(metadata={"cdp_name": "offset"})
+    orientation: Literal["vertical", "horizontal"]
+    offset: int
     mask_length: int = field(metadata={"cdp_name": "maskLength"})
 
 
 @dataclass(kw_only=True, slots=True)
 class DevicePosture:
-    type: Literal["continuous", "folded"] = field(metadata={"cdp_name": "type"})
+    type: Literal["continuous", "folded"]
 
 
 @dataclass(kw_only=True, slots=True)
 class MediaFeature:
-    name: str = field(metadata={"cdp_name": "name"})
-    value: str = field(metadata={"cdp_name": "value"})
+    name: str
+    value: str
 
 
+type VirtualTimePolicy = Literal["advance", "pause", "pauseIfNetworkFetchesPending"]
 """
 advance: If the scheduler runs out of immediate work, the virtual time base may fast
 forward to allow the next delayed task (if any) to run; pause: The virtual time base may
 not advance; pauseIfNetworkFetchesPending: The virtual time base may not advance if
 there are any pending resource fetches.
 """
-type VirtualTimePolicy = Literal["advance", "pause", "pauseIfNetworkFetchesPending"]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -70,8 +66,8 @@ class UserAgentBrandVersion:
     https://wicg.github.io/ua-client-hints
     """
 
-    brand: str = field(metadata={"cdp_name": "brand"})
-    version: str = field(metadata={"cdp_name": "version"})
+    brand: str
+    version: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -82,29 +78,23 @@ class UserAgentMetadata:
     the target with what it would normally use.
     """
 
-    brands: list[UserAgentBrandVersion] | None = field(
-        default=None, metadata={"cdp_name": "brands"}
-    )
+    brands: list[UserAgentBrandVersion] | None = None
     full_version_list: list[UserAgentBrandVersion] | None = field(
         default=None, metadata={"cdp_name": "fullVersionList"}
     )
     full_version: str | None = field(default=None, metadata={"cdp_name": "fullVersion"})
-    platform: str = field(metadata={"cdp_name": "platform"})
+    platform: str
     platform_version: str = field(metadata={"cdp_name": "platformVersion"})
-    architecture: str = field(metadata={"cdp_name": "architecture"})
-    model: str = field(metadata={"cdp_name": "model"})
-    mobile: bool = field(metadata={"cdp_name": "mobile"})
-    bitness: str | None = field(default=None, metadata={"cdp_name": "bitness"})
-    wow64: bool | None = field(default=None, metadata={"cdp_name": "wow64"})
+    architecture: str
+    model: str
+    mobile: bool
+    bitness: str | None = None
+    wow64: bool | None = None
     form_factors: list[str] | None = field(
         default=None, metadata={"cdp_name": "formFactors"}
     )
 
 
-"""
-Used to specify sensor types to emulate. See https://w3c.github.io/sensors/#automation
-for more information.
-"""
 type SensorType = Literal[
     "absolute-orientation",
     "accelerometer",
@@ -115,11 +105,15 @@ type SensorType = Literal[
     "magnetometer",
     "relative-orientation",
 ]
+"""
+Used to specify sensor types to emulate. See https://w3c.github.io/sensors/#automation
+for more information.
+"""
 
 
 @dataclass(kw_only=True, slots=True)
 class SensorMetadata:
-    available: bool | None = field(default=None, metadata={"cdp_name": "available"})
+    available: bool | None = None
     minimum_frequency: float | None = field(
         default=None, metadata={"cdp_name": "minimumFrequency"}
     )
@@ -130,33 +124,29 @@ class SensorMetadata:
 
 @dataclass(kw_only=True, slots=True)
 class SensorReadingSingle:
-    value: float = field(metadata={"cdp_name": "value"})
+    value: float
 
 
 @dataclass(kw_only=True, slots=True)
 class SensorReadingXYZ:
-    x: float = field(metadata={"cdp_name": "x"})
-    y: float = field(metadata={"cdp_name": "y"})
-    z: float = field(metadata={"cdp_name": "z"})
+    x: float
+    y: float
+    z: float
 
 
 @dataclass(kw_only=True, slots=True)
 class SensorReadingQuaternion:
-    x: float = field(metadata={"cdp_name": "x"})
-    y: float = field(metadata={"cdp_name": "y"})
-    z: float = field(metadata={"cdp_name": "z"})
-    w: float = field(metadata={"cdp_name": "w"})
+    x: float
+    y: float
+    z: float
+    w: float
 
 
 @dataclass(kw_only=True, slots=True)
 class SensorReading:
-    single: SensorReadingSingle | None = field(
-        default=None, metadata={"cdp_name": "single"}
-    )
-    xyz: SensorReadingXYZ | None = field(default=None, metadata={"cdp_name": "xyz"})
-    quaternion: SensorReadingQuaternion | None = field(
-        default=None, metadata={"cdp_name": "quaternion"}
-    )
+    single: SensorReadingSingle | None = None
+    xyz: SensorReadingXYZ | None = None
+    quaternion: SensorReadingQuaternion | None = None
 
 
 type PressureSource = Literal["cpu"]
@@ -166,15 +156,15 @@ type PressureState = Literal["nominal", "fair", "serious", "critical"]
 
 @dataclass(kw_only=True, slots=True)
 class PressureMetadata:
-    available: bool | None = field(default=None, metadata={"cdp_name": "available"})
+    available: bool | None = None
 
 
 @dataclass(kw_only=True, slots=True)
 class WorkAreaInsets:
-    top: int | None = field(default=None, metadata={"cdp_name": "top"})
-    left: int | None = field(default=None, metadata={"cdp_name": "left"})
-    bottom: int | None = field(default=None, metadata={"cdp_name": "bottom"})
-    right: int | None = field(default=None, metadata={"cdp_name": "right"})
+    top: int | None = None
+    left: int | None = None
+    bottom: int | None = None
+    right: int | None = None
 
 
 ScreenId = str
@@ -187,25 +177,25 @@ class ScreenInfo:
     see https://w3c.github.io/window-management/#screendetailed.
     """
 
-    left: int = field(metadata={"cdp_name": "left"})
-    top: int = field(metadata={"cdp_name": "top"})
-    width: int = field(metadata={"cdp_name": "width"})
-    height: int = field(metadata={"cdp_name": "height"})
+    left: int
+    top: int
+    width: int
+    height: int
     avail_left: int = field(metadata={"cdp_name": "availLeft"})
     avail_top: int = field(metadata={"cdp_name": "availTop"})
     avail_width: int = field(metadata={"cdp_name": "availWidth"})
     avail_height: int = field(metadata={"cdp_name": "availHeight"})
     device_pixel_ratio: float = field(metadata={"cdp_name": "devicePixelRatio"})
-    orientation: ScreenOrientation = field(metadata={"cdp_name": "orientation"})
+    orientation: ScreenOrientation
     color_depth: int = field(metadata={"cdp_name": "colorDepth"})
     is_extended: bool = field(metadata={"cdp_name": "isExtended"})
     is_internal: bool = field(metadata={"cdp_name": "isInternal"})
     is_primary: bool = field(metadata={"cdp_name": "isPrimary"})
-    label: str = field(metadata={"cdp_name": "label"})
-    id: ScreenId = field(metadata={"cdp_name": "id"})
+    label: str
+    id: ScreenId
 
 
+type DisabledImageType = Literal["avif", "jxl", "webp"]
 """
 Enum of image types that can be disabled.
 """
-type DisabledImageType = Literal["avif", "jxl", "webp"]

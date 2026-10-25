@@ -36,13 +36,13 @@ class GetEventListenersParams:
     """
 
     object_id: runtime.RemoteObjectId = field(metadata={"cdp_name": "objectId"})
-    depth: int | None = field(default=None, metadata={"cdp_name": "depth"})
-    pierce: bool | None = field(default=None, metadata={"cdp_name": "pierce"})
+    depth: int | None = None
+    pierce: bool | None = None
 
 
 @dataclass(kw_only=True, slots=True)
 class GetEventListenersResult:
-    listeners: list[EventListener] = field(metadata={"cdp_name": "listeners"})
+    listeners: list[EventListener]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -52,7 +52,7 @@ class RemoveDOMBreakpointParams:
     """
 
     node_id: dom.NodeId = field(metadata={"cdp_name": "nodeId"})
-    type: DOMBreakpointType = field(metadata={"cdp_name": "type"})
+    type: DOMBreakpointType
 
 
 @dataclass(kw_only=True, slots=True)
@@ -80,7 +80,7 @@ class RemoveXHRBreakpointParams:
     Removes breakpoint from XMLHttpRequest.
     """
 
-    url: str = field(metadata={"cdp_name": "url"})
+    url: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -101,7 +101,7 @@ class SetDOMBreakpointParams:
     """
 
     node_id: dom.NodeId = field(metadata={"cdp_name": "nodeId"})
-    type: DOMBreakpointType = field(metadata={"cdp_name": "type"})
+    type: DOMBreakpointType
 
 
 @dataclass(kw_only=True, slots=True)
@@ -129,4 +129,4 @@ class SetXHRBreakpointParams:
     Sets breakpoint on XMLHttpRequest.
     """
 
-    url: str = field(metadata={"cdp_name": "url"})
+    url: str

@@ -7,34 +7,34 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Literal
 
+type CentralState = Literal["absent", "powered-off", "powered-on"]
 """
 Indicates the various states of Central.
 """
-type CentralState = Literal["absent", "powered-off", "powered-on"]
 
+type GATTOperationType = Literal["connection", "discovery"]
 """
 Indicates the various types of GATT event.
 """
-type GATTOperationType = Literal["connection", "discovery"]
 
-"""
-Indicates the various types of characteristic write.
-"""
 type CharacteristicWriteType = Literal[
     "write-default-deprecated", "write-with-response", "write-without-response"
 ]
+"""
+Indicates the various types of characteristic write.
+"""
 
-"""
-Indicates the various types of characteristic operation.
-"""
 type CharacteristicOperationType = Literal[
     "read", "write", "subscribe-to-notifications", "unsubscribe-from-notifications"
 ]
+"""
+Indicates the various types of characteristic operation.
+"""
 
+type DescriptorOperationType = Literal["read", "write"]
 """
 Indicates the various types of descriptor operation.
 """
-type DescriptorOperationType = Literal["read", "write"]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -43,8 +43,8 @@ class ManufacturerData:
     Stores the manufacturer data
     """
 
-    key: int = field(metadata={"cdp_name": "key"})
-    data: str = field(metadata={"cdp_name": "data"})
+    key: int
+    data: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -53,9 +53,9 @@ class ScanRecord:
     Stores the byte data of the advertisement packet sent by a Bluetooth device.
     """
 
-    name: str | None = field(default=None, metadata={"cdp_name": "name"})
-    uuids: list[str] | None = field(default=None, metadata={"cdp_name": "uuids"})
-    appearance: int | None = field(default=None, metadata={"cdp_name": "appearance"})
+    name: str | None = None
+    uuids: list[str] | None = None
+    appearance: int | None = None
     tx_power: int | None = field(default=None, metadata={"cdp_name": "txPower"})
     manufacturer_data: list[ManufacturerData] | None = field(
         default=None, metadata={"cdp_name": "manufacturerData"}
@@ -69,7 +69,7 @@ class ScanEntry:
     """
 
     device_address: str = field(metadata={"cdp_name": "deviceAddress"})
-    rssi: int = field(metadata={"cdp_name": "rssi"})
+    rssi: int
     scan_record: ScanRecord = field(metadata={"cdp_name": "scanRecord"})
 
 
@@ -80,14 +80,14 @@ class CharacteristicProperties:
     Specification BT 4.2 Vol 3 Part G 3.3.1. Characteristic Properties.
     """
 
-    broadcast: bool | None = field(default=None, metadata={"cdp_name": "broadcast"})
-    read: bool | None = field(default=None, metadata={"cdp_name": "read"})
+    broadcast: bool | None = None
+    read: bool | None = None
     write_without_response: bool | None = field(
         default=None, metadata={"cdp_name": "writeWithoutResponse"}
     )
-    write: bool | None = field(default=None, metadata={"cdp_name": "write"})
-    notify: bool | None = field(default=None, metadata={"cdp_name": "notify"})
-    indicate: bool | None = field(default=None, metadata={"cdp_name": "indicate"})
+    write: bool | None = None
+    notify: bool | None = None
+    indicate: bool | None = None
     authenticated_signed_writes: bool | None = field(
         default=None, metadata={"cdp_name": "authenticatedSignedWrites"}
     )

@@ -30,14 +30,14 @@ class MemoryCommand(StrEnum):
 
 @dataclass(kw_only=True, slots=True)
 class GetDOMCountersResult:
-    documents: int = field(metadata={"cdp_name": "documents"})
-    nodes: int = field(metadata={"cdp_name": "nodes"})
+    documents: int
+    nodes: int
     js_event_listeners: int = field(metadata={"cdp_name": "jsEventListeners"})
 
 
 @dataclass(kw_only=True, slots=True)
 class GetDOMCountersForLeakDetectionResult:
-    counters: list[DOMCounter] = field(metadata={"cdp_name": "counters"})
+    counters: list[DOMCounter]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -46,7 +46,7 @@ class SetPressureNotificationsSuppressedParams:
     Enable/disable suppressing memory pressure notifications in all processes.
     """
 
-    suppressed: bool = field(metadata={"cdp_name": "suppressed"})
+    suppressed: bool
 
 
 @dataclass(kw_only=True, slots=True)
@@ -55,7 +55,7 @@ class SimulatePressureNotificationParams:
     Simulate a memory pressure notification in all processes.
     """
 
-    level: PressureLevel = field(metadata={"cdp_name": "level"})
+    level: PressureLevel
 
 
 @dataclass(kw_only=True, slots=True)
@@ -74,14 +74,14 @@ class StartSamplingParams:
 
 @dataclass(kw_only=True, slots=True)
 class GetAllTimeSamplingProfileResult:
-    profile: SamplingProfile = field(metadata={"cdp_name": "profile"})
+    profile: SamplingProfile
 
 
 @dataclass(kw_only=True, slots=True)
 class GetBrowserSamplingProfileResult:
-    profile: SamplingProfile = field(metadata={"cdp_name": "profile"})
+    profile: SamplingProfile
 
 
 @dataclass(kw_only=True, slots=True)
 class GetSamplingProfileResult:
-    profile: SamplingProfile = field(metadata={"cdp_name": "profile"})
+    profile: SamplingProfile

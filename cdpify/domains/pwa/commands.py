@@ -82,7 +82,7 @@ class LaunchParams:
     """
 
     manifest_id: str = field(metadata={"cdp_name": "manifestId"})
-    url: str | None = field(default=None, metadata={"cdp_name": "url"})
+    url: str | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -106,7 +106,7 @@ class LaunchFilesInAppParams:
     """
 
     manifest_id: str = field(metadata={"cdp_name": "manifestId"})
-    files: list[str] = field(metadata={"cdp_name": "files"})
+    files: list[str]
 
 
 @dataclass(kw_only=True, slots=True)

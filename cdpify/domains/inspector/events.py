@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from enum import StrEnum
 from typing import ClassVar
 
@@ -25,7 +25,7 @@ class DetachedEvent:
 
     __cdp_event__: ClassVar[str] = "Inspector.detached"
 
-    reason: str = field(metadata={"cdp_name": "reason"})
+    reason: str
 
 
 @dataclass(kw_only=True, slots=True)

@@ -16,19 +16,15 @@ class Animation:
     Animation instance.
     """
 
-    id: str = field(metadata={"cdp_name": "id"})
-    name: str = field(metadata={"cdp_name": "name"})
+    id: str
+    name: str
     paused_state: bool = field(metadata={"cdp_name": "pausedState"})
     play_state: str = field(metadata={"cdp_name": "playState"})
     playback_rate: float = field(metadata={"cdp_name": "playbackRate"})
     start_time: float = field(metadata={"cdp_name": "startTime"})
     current_time: float = field(metadata={"cdp_name": "currentTime"})
-    type: Literal["CSSTransition", "CSSAnimation", "WebAnimation"] = field(
-        metadata={"cdp_name": "type"}
-    )
-    source: AnimationEffect | None = field(
-        default=None, metadata={"cdp_name": "source"}
-    )
+    type: Literal["CSSTransition", "CSSAnimation", "WebAnimation"]
+    source: AnimationEffect | None = None
     css_id: str | None = field(default=None, metadata={"cdp_name": "cssId"})
     view_or_scroll_timeline: ViewOrScrollTimeline | None = field(
         default=None, metadata={"cdp_name": "viewOrScrollTimeline"}
@@ -51,7 +47,7 @@ class ViewOrScrollTimeline:
     subject_node_id: dom.BackendNodeId | None = field(
         default=None, metadata={"cdp_name": "subjectNodeId"}
     )
-    axis: dom.ScrollOrientation = field(metadata={"cdp_name": "axis"})
+    axis: dom.ScrollOrientation
 
 
 @dataclass(kw_only=True, slots=True)
@@ -60,20 +56,20 @@ class AnimationEffect:
     AnimationEffect instance
     """
 
-    delay: float = field(metadata={"cdp_name": "delay"})
+    delay: float
     end_delay: float = field(metadata={"cdp_name": "endDelay"})
     iteration_start: float = field(metadata={"cdp_name": "iterationStart"})
-    iterations: float | None = field(default=None, metadata={"cdp_name": "iterations"})
-    duration: float = field(metadata={"cdp_name": "duration"})
-    direction: str = field(metadata={"cdp_name": "direction"})
-    fill: str = field(metadata={"cdp_name": "fill"})
+    iterations: float | None = None
+    duration: float
+    direction: str
+    fill: str
     backend_node_id: dom.BackendNodeId | None = field(
         default=None, metadata={"cdp_name": "backendNodeId"}
     )
     keyframes_rule: KeyframesRule | None = field(
         default=None, metadata={"cdp_name": "keyframesRule"}
     )
-    easing: str = field(metadata={"cdp_name": "easing"})
+    easing: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -82,8 +78,8 @@ class KeyframesRule:
     Keyframes Rule
     """
 
-    name: str | None = field(default=None, metadata={"cdp_name": "name"})
-    keyframes: list[KeyframeStyle] = field(metadata={"cdp_name": "keyframes"})
+    name: str | None = None
+    keyframes: list[KeyframeStyle]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -92,5 +88,5 @@ class KeyframeStyle:
     Keyframe Style
     """
 
-    offset: str = field(metadata={"cdp_name": "offset"})
-    easing: str = field(metadata={"cdp_name": "easing"})
+    offset: str
+    easing: str

@@ -26,7 +26,7 @@ class SelectPromptParams:
     Select a device in response to a DeviceAccess.deviceRequestPrompted event.
     """
 
-    id: RequestId = field(metadata={"cdp_name": "id"})
+    id: RequestId
     device_id: DeviceId = field(metadata={"cdp_name": "deviceId"})
 
 
@@ -36,4 +36,4 @@ class CancelPromptParams:
     Cancel a prompt in response to a DeviceAccess.deviceRequestPrompted event.
     """
 
-    id: RequestId = field(metadata={"cdp_name": "id"})
+    id: RequestId

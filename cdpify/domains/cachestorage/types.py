@@ -9,17 +9,17 @@ from typing import Literal
 
 from cdpify.domains import storage
 
+CacheId = str
 """
 Unique identifier of the Cache object.
 """
-CacheId = str
 
-"""
-type of HTTP response cached
-"""
 type CachedResponseType = Literal[
     "basic", "cors", "default", "error", "opaqueResponse", "opaqueRedirect"
 ]
+"""
+type of HTTP response cached
+"""
 
 
 @dataclass(kw_only=True, slots=True)
@@ -55,8 +55,8 @@ class Cache:
 
 @dataclass(kw_only=True, slots=True)
 class Header:
-    name: str = field(metadata={"cdp_name": "name"})
-    value: str = field(metadata={"cdp_name": "value"})
+    name: str
+    value: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -65,4 +65,4 @@ class CachedResponse:
     Cached response
     """
 
-    body: str = field(metadata={"cdp_name": "body"})
+    body: str

@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from enum import StrEnum
 
 
@@ -22,4 +22,4 @@ class FindFirstParams:
     exactly the search starts from is implementation-specific.
     """
 
-    query: str = field(metadata={"cdp_name": "query"})
+    query: str

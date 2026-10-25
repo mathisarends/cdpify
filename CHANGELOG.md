@@ -53,6 +53,11 @@ Breaking changes are listed first in each release.
 
 - `CDPTimeoutError` also inherits from the built-in `TimeoutError`, so
   `except TimeoutError` catches command timeouts.
+- Docstrings of generated type aliases follow the alias, so IDEs and Sphinx
+  show them on hover.
+- Generated fields only carry `metadata={"cdp_name": ...}` when the CDP name
+  differs from the Python name. Code that reads `field.metadata["cdp_name"]`
+  directly should fall back to `field.name`.
 
 ### Fixed
 

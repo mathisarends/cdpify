@@ -48,7 +48,7 @@ class RuleSetUpdatedEvent:
 class RuleSetRemovedEvent:
     __cdp_event__: ClassVar[str] = "Preload.ruleSetRemoved"
 
-    id: RuleSetId = field(metadata={"cdp_name": "id"})
+    id: RuleSetId
 
 
 @dataclass(kw_only=True, slots=True)
@@ -80,13 +80,13 @@ class PrefetchStatusUpdatedEvent:
 
     __cdp_event__: ClassVar[str] = "Preload.prefetchStatusUpdated"
 
-    key: PreloadingAttemptKey = field(metadata={"cdp_name": "key"})
+    key: PreloadingAttemptKey
     pipeline_id: PreloadPipelineId = field(metadata={"cdp_name": "pipelineId"})
     initiating_frame_id: page.FrameId = field(
         metadata={"cdp_name": "initiatingFrameId"}
     )
     prefetch_url: str = field(metadata={"cdp_name": "prefetchUrl"})
-    status: PreloadingStatus = field(metadata={"cdp_name": "status"})
+    status: PreloadingStatus
     prefetch_status: PrefetchStatus = field(metadata={"cdp_name": "prefetchStatus"})
     request_id: network.RequestId = field(metadata={"cdp_name": "requestId"})
 
@@ -99,9 +99,9 @@ class PrerenderStatusUpdatedEvent:
 
     __cdp_event__: ClassVar[str] = "Preload.prerenderStatusUpdated"
 
-    key: PreloadingAttemptKey = field(metadata={"cdp_name": "key"})
+    key: PreloadingAttemptKey
     pipeline_id: PreloadPipelineId = field(metadata={"cdp_name": "pipelineId"})
-    status: PreloadingStatus = field(metadata={"cdp_name": "status"})
+    status: PreloadingStatus
     effective_action: SpeculationAction | None = field(
         default=None, metadata={"cdp_name": "effectiveAction"}
     )

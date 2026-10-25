@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import Literal
 
+type VirtualWalletAction = Literal["respond", "decline", "wait", "clear"]
 """
 The type of virtual wallet action.
 """
-type VirtualWalletAction = Literal["respond", "decline", "wait", "clear"]

@@ -6,7 +6,7 @@
 from typing import {{ typing_names | join(", ") }}
 {% endif %}
 
-from dataclasses import dataclass, field
+{{ dataclass_import }}
 {% if cross_domain_modules %}
 {{ cross_domain_modules | map("prefix_domain_import") | join("\n") }}
 {% endif %}
@@ -21,10 +21,10 @@ class {{ definition.name }}:
 {% endif %}
     {{ definition.fields | map(attribute="declaration") | join("\n    ") }}
 {% else %}
+{% if definition.kind == "enum" %}type {% endif %}{{ definition.name }} = {{ definition.annotation }}
 {% if definition.docstring %}
 {{ definition.docstring }}
 {% endif %}
-{% if definition.kind == "enum" %}type {% endif %}{{ definition.name }} = {{ definition.annotation }}
 {% endif %}
 {% endfor %}
 {% else %}

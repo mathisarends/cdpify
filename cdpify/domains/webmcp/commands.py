@@ -26,7 +26,7 @@ class InvokeToolParams:
 
     frame_id: page.FrameId = field(metadata={"cdp_name": "frameId"})
     tool_name: str = field(metadata={"cdp_name": "toolName"})
-    input: dict[str, Any] = field(metadata={"cdp_name": "input"})
+    input: dict[str, Any]
 
 
 @dataclass(kw_only=True, slots=True)

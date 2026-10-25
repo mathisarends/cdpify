@@ -33,8 +33,8 @@ class GattOperationReceivedEvent:
 
     __cdp_event__: ClassVar[str] = "BluetoothEmulation.gattOperationReceived"
 
-    address: str = field(metadata={"cdp_name": "address"})
-    type: GATTOperationType = field(metadata={"cdp_name": "type"})
+    address: str
+    type: GATTOperationType
 
 
 @dataclass(kw_only=True, slots=True)
@@ -48,8 +48,8 @@ class CharacteristicOperationReceivedEvent:
     __cdp_event__: ClassVar[str] = "BluetoothEmulation.characteristicOperationReceived"
 
     characteristic_id: str = field(metadata={"cdp_name": "characteristicId"})
-    type: CharacteristicOperationType = field(metadata={"cdp_name": "type"})
-    data: str | None = field(default=None, metadata={"cdp_name": "data"})
+    type: CharacteristicOperationType
+    data: str | None = None
     write_type: CharacteristicWriteType | None = field(
         default=None, metadata={"cdp_name": "writeType"}
     )
@@ -65,5 +65,5 @@ class DescriptorOperationReceivedEvent:
     __cdp_event__: ClassVar[str] = "BluetoothEmulation.descriptorOperationReceived"
 
     descriptor_id: str = field(metadata={"cdp_name": "descriptorId"})
-    type: DescriptorOperationType = field(metadata={"cdp_name": "type"})
-    data: str | None = field(default=None, metadata={"cdp_name": "data"})
+    type: DescriptorOperationType
+    data: str | None = None

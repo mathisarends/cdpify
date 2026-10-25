@@ -20,17 +20,15 @@ class Annotation:
     untrusted_content: bool | None = field(
         default=None, metadata={"cdp_name": "untrustedContent"}
     )
-    consequential: bool | None = field(
-        default=None, metadata={"cdp_name": "consequential"}
-    )
-    debugging: bool | None = field(default=None, metadata={"cdp_name": "debugging"})
-    autosubmit: bool | None = field(default=None, metadata={"cdp_name": "autosubmit"})
+    consequential: bool | None = None
+    debugging: bool | None = None
+    autosubmit: bool | None = None
 
 
+type InvocationStatus = Literal["Completed", "Canceled", "Error"]
 """
 Represents the status of a tool invocation.
 """
-type InvocationStatus = Literal["Completed", "Canceled", "Error"]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -39,14 +37,12 @@ class Tool:
     Definition of a tool that can be invoked.
     """
 
-    name: str = field(metadata={"cdp_name": "name"})
-    description: str = field(metadata={"cdp_name": "description"})
+    name: str
+    description: str
     input_schema: dict[str, Any] | None = field(
         default=None, metadata={"cdp_name": "inputSchema"}
     )
-    annotations: Annotation | None = field(
-        default=None, metadata={"cdp_name": "annotations"}
-    )
+    annotations: Annotation | None = None
     frame_id: page.FrameId = field(metadata={"cdp_name": "frameId"})
     backend_node_id: dom.BackendNodeId | None = field(
         default=None, metadata={"cdp_name": "backendNodeId"}
@@ -62,5 +58,5 @@ class RemovedTool:
     Definition of a tool that was removed.
     """
 
-    name: str = field(metadata={"cdp_name": "name"})
+    name: str
     frame_id: page.FrameId = field(metadata={"cdp_name": "frameId"})

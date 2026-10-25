@@ -1,3 +1,4 @@
+from collections.abc import Iterable
 from dataclasses import dataclass
 
 
@@ -9,9 +10,14 @@ class FieldView:
     cdp_name: str | None = None
 
     @property
+    def needs_field(self) -> bool:
+        """Whether the declaration needs ``field()`` to keep the CDP wire name."""
+        return self.cdp_name is not None and self.cdp_name != self.name
+
+    @property
     def declaration(self) -> str:
         annotation = f"{self.annotation} | None" if self.optional else self.annotation
-        if self.cdp_name is None:
+        if not self.needs_field:
             default = " = None" if self.optional else ""
             return f"{self.name}: {annotation}{default}"
 
@@ -96,3 +102,9 @@ class LazyExportView:
     name: str
     module: str
     attribute: str
+
+
+def dataclass_import(models: Iterable[ModelView | TypeDefinitionView]) -> str:
+    """Import ``field`` only when a generated declaration uses it."""
+    uses_field = any(f.needs_field for model in models for f in model.fields)
+    return f"from dataclasses import dataclass{', field' if uses_field else ''}"

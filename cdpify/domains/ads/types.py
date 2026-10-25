@@ -57,4 +57,4 @@ class AdScript:
     """
 
     script_id: runtime.ScriptId = field(metadata={"cdp_name": "scriptId"})
-    provenance: network.AdProvenance = field(metadata={"cdp_name": "provenance"})
+    provenance: network.AdProvenance

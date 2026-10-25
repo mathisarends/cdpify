@@ -52,7 +52,7 @@ class ScreenshotRequestedEvent:
 
     __cdp_event__: ClassVar[str] = "Overlay.screenshotRequested"
 
-    viewport: page.Viewport = field(metadata={"cdp_name": "viewport"})
+    viewport: page.Viewport
 
 
 @dataclass(kw_only=True, slots=True)

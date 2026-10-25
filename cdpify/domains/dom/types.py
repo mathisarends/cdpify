@@ -9,21 +9,21 @@ from typing import Any, Literal
 
 from cdpify.domains import network, page
 
+NodeId = int
 """
 Unique DOM node identifier.
 """
-NodeId = int
 
+BackendNodeId = int
 """
 Unique DOM node identifier used to reference a node that may not have been pushed to
 the front-end.
 """
-BackendNodeId = int
 
+StyleSheetId = str
 """
 Unique identifier for a CSS stylesheet.
 """
-StyleSheetId = str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -37,9 +37,6 @@ class BackendNode:
     backend_node_id: BackendNodeId = field(metadata={"cdp_name": "backendNodeId"})
 
 
-"""
-Pseudo element type.
-"""
 type PseudoType = Literal[
     "first-line",
     "first-letter",
@@ -86,31 +83,34 @@ type PseudoType = Literal[
     "overscroll-backdrop",
     "skeleton",
 ]
+"""
+Pseudo element type.
+"""
 
+type ShadowRootType = Literal["user-agent", "open", "closed"]
 """
 Shadow root type.
 """
-type ShadowRootType = Literal["user-agent", "open", "closed"]
 
+type CompatibilityMode = Literal["QuirksMode", "LimitedQuirksMode", "NoQuirksMode"]
 """
 Document compatibility mode.
 """
-type CompatibilityMode = Literal["QuirksMode", "LimitedQuirksMode", "NoQuirksMode"]
 
+type PhysicalAxes = Literal["Horizontal", "Vertical", "Both"]
 """
 ContainerSelector physical axes
 """
-type PhysicalAxes = Literal["Horizontal", "Vertical", "Both"]
 
+type LogicalAxes = Literal["Inline", "Block", "Both"]
 """
 ContainerSelector logical axes
 """
-type LogicalAxes = Literal["Inline", "Block", "Both"]
 
+type ScrollOrientation = Literal["horizontal", "vertical"]
 """
 Physical scroll orientation
 """
-type ScrollOrientation = Literal["horizontal", "vertical"]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -130,10 +130,8 @@ class Node:
     child_node_count: int | None = field(
         default=None, metadata={"cdp_name": "childNodeCount"}
     )
-    children: list[Node] | None = field(default=None, metadata={"cdp_name": "children"})
-    attributes: list[str] | None = field(
-        default=None, metadata={"cdp_name": "attributes"}
-    )
+    children: list[Node] | None = None
+    attributes: list[str] | None = None
     document_url: str | None = field(default=None, metadata={"cdp_name": "documentURL"})
     base_url: str | None = field(default=None, metadata={"cdp_name": "baseURL"})
     public_id: str | None = field(default=None, metadata={"cdp_name": "publicId"})
@@ -142,8 +140,8 @@ class Node:
         default=None, metadata={"cdp_name": "internalSubset"}
     )
     xml_version: str | None = field(default=None, metadata={"cdp_name": "xmlVersion"})
-    name: str | None = field(default=None, metadata={"cdp_name": "name"})
-    value: str | None = field(default=None, metadata={"cdp_name": "value"})
+    name: str | None = None
+    value: str | None = None
     pseudo_type: PseudoType | None = field(
         default=None, metadata={"cdp_name": "pseudoType"}
     )
@@ -212,17 +210,17 @@ class RGBA:
     A structure holding an RGBA color.
     """
 
-    r: int = field(metadata={"cdp_name": "r"})
-    g: int = field(metadata={"cdp_name": "g"})
-    b: int = field(metadata={"cdp_name": "b"})
-    a: float | None = field(default=None, metadata={"cdp_name": "a"})
+    r: int
+    g: int
+    b: int
+    a: float | None = None
 
 
+Quad = list[float]
 """
 An array of quad vertices, x immediately followed by y for each point, points
 clock-wise.
 """
-Quad = list[float]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -231,12 +229,12 @@ class BoxModel:
     Box model.
     """
 
-    content: Quad = field(metadata={"cdp_name": "content"})
-    padding: Quad = field(metadata={"cdp_name": "padding"})
-    border: Quad = field(metadata={"cdp_name": "border"})
-    margin: Quad = field(metadata={"cdp_name": "margin"})
-    width: int = field(metadata={"cdp_name": "width"})
-    height: int = field(metadata={"cdp_name": "height"})
+    content: Quad
+    padding: Quad
+    border: Quad
+    margin: Quad
+    width: int
+    height: int
     shape_outside: ShapeOutsideInfo | None = field(
         default=None, metadata={"cdp_name": "shapeOutside"}
     )
@@ -248,8 +246,8 @@ class ShapeOutsideInfo:
     CSS Shape Outside details.
     """
 
-    bounds: Quad = field(metadata={"cdp_name": "bounds"})
-    shape: list[Any] = field(metadata={"cdp_name": "shape"})
+    bounds: Quad
+    shape: list[Any]
     margin_shape: list[Any] = field(metadata={"cdp_name": "marginShape"})
 
 
@@ -259,13 +257,13 @@ class Rect:
     Rectangle.
     """
 
-    x: float = field(metadata={"cdp_name": "x"})
-    y: float = field(metadata={"cdp_name": "y"})
-    width: float = field(metadata={"cdp_name": "width"})
-    height: float = field(metadata={"cdp_name": "height"})
+    x: float
+    y: float
+    width: float
+    height: float
 
 
 @dataclass(kw_only=True, slots=True)
 class CSSComputedStyleProperty:
-    name: str = field(metadata={"cdp_name": "name"})
-    value: str = field(metadata={"cdp_name": "value"})
+    name: str
+    value: str

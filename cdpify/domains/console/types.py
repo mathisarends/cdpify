@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Literal
 
 
@@ -26,13 +26,9 @@ class ConsoleMessage:
         "other",
         "deprecation",
         "worker",
-    ] = field(  # noqa: E501
-        metadata={"cdp_name": "source"},
-    )
-    level: Literal["log", "warning", "error", "debug", "info"] = field(
-        metadata={"cdp_name": "level"}
-    )
-    text: str = field(metadata={"cdp_name": "text"})
-    url: str | None = field(default=None, metadata={"cdp_name": "url"})
-    line: int | None = field(default=None, metadata={"cdp_name": "line"})
-    column: int | None = field(default=None, metadata={"cdp_name": "column"})
+    ]
+    level: Literal["log", "warning", "error", "debug", "info"]
+    text: str
+    url: str | None = None
+    line: int | None = None
+    column: int | None = None

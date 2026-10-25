@@ -7,45 +7,45 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Literal
 
+GraphObjectId = str
 """
 An unique ID for a graph object (AudioContext, AudioNode, AudioParam) in Web Audio API
 """
-GraphObjectId = str
 
+type ContextType = Literal["realtime", "offline"]
 """
 Enum of BaseAudioContext types
 """
-type ContextType = Literal["realtime", "offline"]
 
+type ContextState = Literal["suspended", "running", "closed", "interrupted"]
 """
 Enum of AudioContextState from the spec
 """
-type ContextState = Literal["suspended", "running", "closed", "interrupted"]
 
+NodeType = str
 """
 Enum of AudioNode types
 """
-NodeType = str
 
+type ChannelCountMode = Literal["clamped-max", "explicit", "max"]
 """
 Enum of AudioNode::ChannelCountMode from the spec
 """
-type ChannelCountMode = Literal["clamped-max", "explicit", "max"]
 
+type ChannelInterpretation = Literal["discrete", "speakers"]
 """
 Enum of AudioNode::ChannelInterpretation from the spec
 """
-type ChannelInterpretation = Literal["discrete", "speakers"]
 
+ParamType = str
 """
 Enum of AudioParam types
 """
-ParamType = str
 
+type AutomationRate = Literal["a-rate", "k-rate"]
 """
 Enum of AudioParam::AutomationRate from the spec
 """
-type AutomationRate = Literal["a-rate", "k-rate"]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -122,7 +122,7 @@ class AudioParam:
     node_id: GraphObjectId = field(metadata={"cdp_name": "nodeId"})
     context_id: GraphObjectId = field(metadata={"cdp_name": "contextId"})
     param_type: ParamType = field(metadata={"cdp_name": "paramType"})
-    rate: AutomationRate = field(metadata={"cdp_name": "rate"})
+    rate: AutomationRate
     default_value: float = field(metadata={"cdp_name": "defaultValue"})
     min_value: float = field(metadata={"cdp_name": "minValue"})
     max_value: float = field(metadata={"cdp_name": "maxValue"})

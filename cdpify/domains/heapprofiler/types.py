@@ -8,10 +8,10 @@ from dataclasses import dataclass, field
 
 from cdpify.domains import runtime
 
+HeapSnapshotObjectId = str
 """
 Heap snapshot object id.
 """
-HeapSnapshotObjectId = str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -23,8 +23,8 @@ class SamplingHeapProfileNode:
 
     call_frame: runtime.CallFrame = field(metadata={"cdp_name": "callFrame"})
     self_size: float = field(metadata={"cdp_name": "selfSize"})
-    id: int = field(metadata={"cdp_name": "id"})
-    children: list[SamplingHeapProfileNode] = field(metadata={"cdp_name": "children"})
+    id: int
+    children: list[SamplingHeapProfileNode]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -33,9 +33,9 @@ class SamplingHeapProfileSample:
     A single sample from a sampling profile.
     """
 
-    size: float = field(metadata={"cdp_name": "size"})
+    size: float
     node_id: int = field(metadata={"cdp_name": "nodeId"})
-    ordinal: float = field(metadata={"cdp_name": "ordinal"})
+    ordinal: float
 
 
 @dataclass(kw_only=True, slots=True)
@@ -44,5 +44,5 @@ class SamplingHeapProfile:
     Sampling profile.
     """
 
-    head: SamplingHeapProfileNode = field(metadata={"cdp_name": "head"})
-    samples: list[SamplingHeapProfileSample] = field(metadata={"cdp_name": "samples"})
+    head: SamplingHeapProfileNode
+    samples: list[SamplingHeapProfileSample]

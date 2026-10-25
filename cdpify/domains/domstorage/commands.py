@@ -34,17 +34,17 @@ class GetDOMStorageItemsParams:
 
 @dataclass(kw_only=True, slots=True)
 class GetDOMStorageItemsResult:
-    entries: list[Item] = field(metadata={"cdp_name": "entries"})
+    entries: list[Item]
 
 
 @dataclass(kw_only=True, slots=True)
 class RemoveDOMStorageItemParams:
     storage_id: StorageId = field(metadata={"cdp_name": "storageId"})
-    key: str = field(metadata={"cdp_name": "key"})
+    key: str
 
 
 @dataclass(kw_only=True, slots=True)
 class SetDOMStorageItemParams:
     storage_id: StorageId = field(metadata={"cdp_name": "storageId"})
-    key: str = field(metadata={"cdp_name": "key"})
-    value: str = field(metadata={"cdp_name": "value"})
+    key: str
+    value: str

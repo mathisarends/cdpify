@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from enum import StrEnum
 from typing import ClassVar
 
@@ -38,7 +38,5 @@ class ScreenOrientationLockChangedEvent:
 
     __cdp_event__: ClassVar[str] = "Emulation.screenOrientationLockChanged"
 
-    locked: bool = field(metadata={"cdp_name": "locked"})
-    orientation: ScreenOrientation | None = field(
-        default=None, metadata={"cdp_name": "orientation"}
-    )
+    locked: bool
+    orientation: ScreenOrientation | None = None

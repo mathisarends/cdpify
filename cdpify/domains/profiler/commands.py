@@ -27,7 +27,7 @@ class ProfilerCommand(StrEnum):
 
 @dataclass(kw_only=True, slots=True)
 class GetBestEffortCoverageResult:
-    result: list[ScriptCoverage] = field(metadata={"cdp_name": "result"})
+    result: list[ScriptCoverage]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -37,7 +37,7 @@ class SetSamplingIntervalParams:
     recording started.
     """
 
-    interval: int = field(metadata={"cdp_name": "interval"})
+    interval: int
 
 
 @dataclass(kw_only=True, slots=True)
@@ -49,7 +49,7 @@ class StartPreciseCoverageParams:
     """
 
     call_count: bool | None = field(default=None, metadata={"cdp_name": "callCount"})
-    detailed: bool | None = field(default=None, metadata={"cdp_name": "detailed"})
+    detailed: bool | None = None
     allow_triggered_updates: bool | None = field(
         default=None, metadata={"cdp_name": "allowTriggeredUpdates"}
     )
@@ -57,15 +57,15 @@ class StartPreciseCoverageParams:
 
 @dataclass(kw_only=True, slots=True)
 class StartPreciseCoverageResult:
-    timestamp: float = field(metadata={"cdp_name": "timestamp"})
+    timestamp: float
 
 
 @dataclass(kw_only=True, slots=True)
 class StopResult:
-    profile: Profile = field(metadata={"cdp_name": "profile"})
+    profile: Profile
 
 
 @dataclass(kw_only=True, slots=True)
 class TakePreciseCoverageResult:
-    result: list[ScriptCoverage] = field(metadata={"cdp_name": "result"})
-    timestamp: float = field(metadata={"cdp_name": "timestamp"})
+    result: list[ScriptCoverage]
+    timestamp: float

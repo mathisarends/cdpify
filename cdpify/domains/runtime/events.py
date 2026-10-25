@@ -37,8 +37,8 @@ class BindingCalledEvent:
 
     __cdp_event__: ClassVar[str] = "Runtime.bindingCalled"
 
-    name: str = field(metadata={"cdp_name": "name"})
-    payload: str = field(metadata={"cdp_name": "payload"})
+    name: str
+    payload: str
     execution_context_id: ExecutionContextId = field(
         metadata={"cdp_name": "executionContextId"}
     )
@@ -71,18 +71,16 @@ class ConsoleAPICalledEvent:
         "profileEnd",
         "count",
         "timeEnd",
-    ] = field(  # noqa: E501
-        metadata={"cdp_name": "type"},
-    )
-    args: list[RemoteObject] = field(metadata={"cdp_name": "args"})
+    ]
+    args: list[RemoteObject]
     execution_context_id: ExecutionContextId = field(
         metadata={"cdp_name": "executionContextId"}
     )
-    timestamp: Timestamp = field(metadata={"cdp_name": "timestamp"})
+    timestamp: Timestamp
     stack_trace: StackTrace | None = field(
         default=None, metadata={"cdp_name": "stackTrace"}
     )
-    context: str | None = field(default=None, metadata={"cdp_name": "context"})
+    context: str | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -93,7 +91,7 @@ class ExceptionRevokedEvent:
 
     __cdp_event__: ClassVar[str] = "Runtime.exceptionRevoked"
 
-    reason: str = field(metadata={"cdp_name": "reason"})
+    reason: str
     exception_id: int = field(metadata={"cdp_name": "exceptionId"})
 
 
@@ -105,7 +103,7 @@ class ExceptionThrownEvent:
 
     __cdp_event__: ClassVar[str] = "Runtime.exceptionThrown"
 
-    timestamp: Timestamp = field(metadata={"cdp_name": "timestamp"})
+    timestamp: Timestamp
     exception_details: ExceptionDetails = field(
         metadata={"cdp_name": "exceptionDetails"}
     )
@@ -119,7 +117,7 @@ class ExecutionContextCreatedEvent:
 
     __cdp_event__: ClassVar[str] = "Runtime.executionContextCreated"
 
-    context: ExecutionContextDescription = field(metadata={"cdp_name": "context"})
+    context: ExecutionContextDescription
 
 
 @dataclass(kw_only=True, slots=True)
@@ -156,8 +154,8 @@ class InspectRequestedEvent:
 
     __cdp_event__: ClassVar[str] = "Runtime.inspectRequested"
 
-    object: RemoteObject = field(metadata={"cdp_name": "object"})
-    hints: dict[str, Any] = field(metadata={"cdp_name": "hints"})
+    object: RemoteObject
+    hints: dict[str, Any]
     execution_context_id: ExecutionContextId | None = field(
         default=None, metadata={"cdp_name": "executionContextId"}
     )

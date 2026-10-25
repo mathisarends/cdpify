@@ -11,10 +11,10 @@ BrowserContextID = str
 
 WindowID = int
 
+type WindowState = Literal["normal", "minimized", "maximized", "fullscreen"]
 """
 The state of the browser window.
 """
-type WindowState = Literal["normal", "minimized", "maximized", "fullscreen"]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -23,10 +23,10 @@ class Bounds:
     Browser window bounds information
     """
 
-    left: int | None = field(default=None, metadata={"cdp_name": "left"})
-    top: int | None = field(default=None, metadata={"cdp_name": "top"})
-    width: int | None = field(default=None, metadata={"cdp_name": "width"})
-    height: int | None = field(default=None, metadata={"cdp_name": "height"})
+    left: int | None = None
+    top: int | None = None
+    width: int | None = None
+    height: int | None = None
     window_state: WindowState | None = field(
         default=None, metadata={"cdp_name": "windowState"}
     )
@@ -84,8 +84,8 @@ class PermissionDescriptor:
     https://w3c.github.io/permissions/#dom-permissiondescriptor.
     """
 
-    name: str = field(metadata={"cdp_name": "name"})
-    sysex: bool | None = field(default=None, metadata={"cdp_name": "sysex"})
+    name: str
+    sysex: bool | None = None
     user_visible_only: bool | None = field(
         default=None, metadata={"cdp_name": "userVisibleOnly"}
     )
@@ -100,10 +100,10 @@ class PermissionDescriptor:
     )
 
 
+type BrowserCommandId = Literal["openTabSearch", "closeTabSearch", "openGlic"]
 """
 Browser command ids used by executeBrowserCommand.
 """
-type BrowserCommandId = Literal["openTabSearch", "closeTabSearch", "openGlic"]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -112,9 +112,9 @@ class Bucket:
     Chrome histogram bucket.
     """
 
-    low: int = field(metadata={"cdp_name": "low"})
-    high: int = field(metadata={"cdp_name": "high"})
-    count: int = field(metadata={"cdp_name": "count"})
+    low: int
+    high: int
+    count: int
 
 
 @dataclass(kw_only=True, slots=True)
@@ -123,7 +123,7 @@ class Histogram:
     Chrome histogram.
     """
 
-    name: str = field(metadata={"cdp_name": "name"})
-    sum: int = field(metadata={"cdp_name": "sum"})
-    count: int = field(metadata={"cdp_name": "count"})
-    buckets: list[Bucket] = field(metadata={"cdp_name": "buckets"})
+    name: str
+    sum: int
+    count: int
+    buckets: list[Bucket]

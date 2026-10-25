@@ -6,7 +6,7 @@
 from typing import {{ typing_names | join(", ") }}
 {% endif %}
 
-from dataclasses import dataclass, field
+{{ dataclass_import }}
 from enum import StrEnum
 {% if local_type_names %}
 

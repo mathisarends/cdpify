@@ -9,19 +9,19 @@ from typing import Literal
 
 from cdpify.domains import dom, runtime
 
-"""
-DOM breakpoint type.
-"""
 type DOMBreakpointType = Literal[
     "subtree-modified", "attribute-modified", "node-removed"
 ]
+"""
+DOM breakpoint type.
+"""
 
-"""
-CSP Violation type.
-"""
 type CSPViolationType = Literal[
     "trustedtype-sink-violation", "trustedtype-policy-violation"
 ]
+"""
+CSP Violation type.
+"""
 
 
 @dataclass(kw_only=True, slots=True)
@@ -30,16 +30,14 @@ class EventListener:
     Object event listener.
     """
 
-    type: str = field(metadata={"cdp_name": "type"})
+    type: str
     use_capture: bool = field(metadata={"cdp_name": "useCapture"})
-    passive: bool = field(metadata={"cdp_name": "passive"})
-    once: bool = field(metadata={"cdp_name": "once"})
+    passive: bool
+    once: bool
     script_id: runtime.ScriptId = field(metadata={"cdp_name": "scriptId"})
     line_number: int = field(metadata={"cdp_name": "lineNumber"})
     column_number: int = field(metadata={"cdp_name": "columnNumber"})
-    handler: runtime.RemoteObject | None = field(
-        default=None, metadata={"cdp_name": "handler"}
-    )
+    handler: runtime.RemoteObject | None = None
     original_handler: runtime.RemoteObject | None = field(
         default=None, metadata={"cdp_name": "originalHandler"}
     )

@@ -27,7 +27,7 @@ class SinksUpdatedEvent:
 
     __cdp_event__: ClassVar[str] = "Cast.sinksUpdated"
 
-    sinks: list[Sink] = field(metadata={"cdp_name": "sinks"})
+    sinks: list[Sink]
 
 
 @dataclass(kw_only=True, slots=True)

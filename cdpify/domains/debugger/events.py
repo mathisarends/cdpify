@@ -36,7 +36,7 @@ class BreakpointResolvedEvent:
     __cdp_event__: ClassVar[str] = "Debugger.breakpointResolved"
 
     breakpoint_id: BreakpointId = field(metadata={"cdp_name": "breakpointId"})
-    location: Location = field(metadata={"cdp_name": "location"})
+    location: Location
 
 
 @dataclass(kw_only=True, slots=True)
@@ -63,10 +63,8 @@ class PausedEvent:
         "promiseRejection",
         "XHR",
         "step",
-    ] = field(  # noqa: E501
-        metadata={"cdp_name": "reason"},
-    )
-    data: dict[str, Any] | None = field(default=None, metadata={"cdp_name": "data"})
+    ]
+    data: dict[str, Any] | None = None
     hit_breakpoints: list[str] | None = field(
         default=None, metadata={"cdp_name": "hitBreakpoints"}
     )
@@ -99,7 +97,7 @@ class ScriptFailedToParseEvent:
     __cdp_event__: ClassVar[str] = "Debugger.scriptFailedToParse"
 
     script_id: runtime.ScriptId = field(metadata={"cdp_name": "scriptId"})
-    url: str = field(metadata={"cdp_name": "url"})
+    url: str
     start_line: int = field(metadata={"cdp_name": "startLine"})
     start_column: int = field(metadata={"cdp_name": "startColumn"})
     end_line: int = field(metadata={"cdp_name": "endLine"})
@@ -107,7 +105,7 @@ class ScriptFailedToParseEvent:
     execution_context_id: runtime.ExecutionContextId = field(
         metadata={"cdp_name": "executionContextId"}
     )
-    hash: str = field(metadata={"cdp_name": "hash"})
+    hash: str
     build_id: str = field(metadata={"cdp_name": "buildId"})
     execution_context_aux_data: dict[str, Any] | None = field(
         default=None, metadata={"cdp_name": "executionContextAuxData"}
@@ -119,7 +117,7 @@ class ScriptFailedToParseEvent:
         default=None, metadata={"cdp_name": "hasSourceURL"}
     )
     is_module: bool | None = field(default=None, metadata={"cdp_name": "isModule"})
-    length: int | None = field(default=None, metadata={"cdp_name": "length"})
+    length: int | None = None
     stack_trace: runtime.StackTrace | None = field(
         default=None, metadata={"cdp_name": "stackTrace"}
     )
@@ -142,7 +140,7 @@ class ScriptParsedEvent:
     __cdp_event__: ClassVar[str] = "Debugger.scriptParsed"
 
     script_id: runtime.ScriptId = field(metadata={"cdp_name": "scriptId"})
-    url: str = field(metadata={"cdp_name": "url"})
+    url: str
     start_line: int = field(metadata={"cdp_name": "startLine"})
     start_column: int = field(metadata={"cdp_name": "startColumn"})
     end_line: int = field(metadata={"cdp_name": "endLine"})
@@ -150,7 +148,7 @@ class ScriptParsedEvent:
     execution_context_id: runtime.ExecutionContextId = field(
         metadata={"cdp_name": "executionContextId"}
     )
-    hash: str = field(metadata={"cdp_name": "hash"})
+    hash: str
     build_id: str = field(metadata={"cdp_name": "buildId"})
     execution_context_aux_data: dict[str, Any] | None = field(
         default=None, metadata={"cdp_name": "executionContextAuxData"}
@@ -163,7 +161,7 @@ class ScriptParsedEvent:
         default=None, metadata={"cdp_name": "hasSourceURL"}
     )
     is_module: bool | None = field(default=None, metadata={"cdp_name": "isModule"})
-    length: int | None = field(default=None, metadata={"cdp_name": "length"})
+    length: int | None = None
     stack_trace: runtime.StackTrace | None = field(
         default=None, metadata={"cdp_name": "stackTrace"}
     )

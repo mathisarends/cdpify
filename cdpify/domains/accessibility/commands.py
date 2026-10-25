@@ -47,7 +47,7 @@ class GetPartialAXTreeParams:
 
 @dataclass(kw_only=True, slots=True)
 class GetPartialAXTreeResult:
-    nodes: list[AXNode] = field(metadata={"cdp_name": "nodes"})
+    nodes: list[AXNode]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -56,7 +56,7 @@ class GetFullAXTreeParams:
     Fetches the entire accessibility tree for the root Document
     """
 
-    depth: int | None = field(default=None, metadata={"cdp_name": "depth"})
+    depth: int | None = None
     frame_id: page.FrameId | None = field(
         default=None, metadata={"cdp_name": "frameId"}
     )
@@ -64,7 +64,7 @@ class GetFullAXTreeParams:
 
 @dataclass(kw_only=True, slots=True)
 class GetFullAXTreeResult:
-    nodes: list[AXNode] = field(metadata={"cdp_name": "nodes"})
+    nodes: list[AXNode]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -80,7 +80,7 @@ class GetRootAXNodeParams:
 
 @dataclass(kw_only=True, slots=True)
 class GetRootAXNodeResult:
-    node: AXNode = field(metadata={"cdp_name": "node"})
+    node: AXNode
 
 
 @dataclass(kw_only=True, slots=True)
@@ -101,7 +101,7 @@ class GetAXNodeAndAncestorsParams:
 
 @dataclass(kw_only=True, slots=True)
 class GetAXNodeAndAncestorsResult:
-    nodes: list[AXNode] = field(metadata={"cdp_name": "nodes"})
+    nodes: list[AXNode]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -111,7 +111,7 @@ class GetChildAXNodesParams:
     been called previously.
     """
 
-    id: AXNodeId = field(metadata={"cdp_name": "id"})
+    id: AXNodeId
     frame_id: page.FrameId | None = field(
         default=None, metadata={"cdp_name": "frameId"}
     )
@@ -119,7 +119,7 @@ class GetChildAXNodesParams:
 
 @dataclass(kw_only=True, slots=True)
 class GetChildAXNodesResult:
-    nodes: list[AXNode] = field(metadata={"cdp_name": "nodes"})
+    nodes: list[AXNode]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -143,9 +143,9 @@ class QueryAXTreeParams:
     accessible_name: str | None = field(
         default=None, metadata={"cdp_name": "accessibleName"}
     )
-    role: str | None = field(default=None, metadata={"cdp_name": "role"})
+    role: str | None = None
 
 
 @dataclass(kw_only=True, slots=True)
 class QueryAXTreeResult:
-    nodes: list[AXNode] = field(metadata={"cdp_name": "nodes"})
+    nodes: list[AXNode]

@@ -16,8 +16,8 @@ class DatabaseWithObjectStores:
     Database with an array of object stores.
     """
 
-    name: str = field(metadata={"cdp_name": "name"})
-    version: float = field(metadata={"cdp_name": "version"})
+    name: str
+    version: float
     object_stores: list[ObjectStore] = field(metadata={"cdp_name": "objectStores"})
 
 
@@ -27,10 +27,10 @@ class ObjectStore:
     Object store.
     """
 
-    name: str = field(metadata={"cdp_name": "name"})
+    name: str
     key_path: KeyPath = field(metadata={"cdp_name": "keyPath"})
     auto_increment: bool = field(metadata={"cdp_name": "autoIncrement"})
-    indexes: list[ObjectStoreIndex] = field(metadata={"cdp_name": "indexes"})
+    indexes: list[ObjectStoreIndex]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -39,9 +39,9 @@ class ObjectStoreIndex:
     Object store index.
     """
 
-    name: str = field(metadata={"cdp_name": "name"})
+    name: str
     key_path: KeyPath = field(metadata={"cdp_name": "keyPath"})
-    unique: bool = field(metadata={"cdp_name": "unique"})
+    unique: bool
     multi_entry: bool = field(metadata={"cdp_name": "multiEntry"})
 
 
@@ -51,13 +51,11 @@ class Key:
     Key.
     """
 
-    type: Literal["number", "string", "date", "array"] = field(
-        metadata={"cdp_name": "type"}
-    )
-    number: float | None = field(default=None, metadata={"cdp_name": "number"})
-    string: str | None = field(default=None, metadata={"cdp_name": "string"})
-    date: float | None = field(default=None, metadata={"cdp_name": "date"})
-    array: list[Key] | None = field(default=None, metadata={"cdp_name": "array"})
+    type: Literal["number", "string", "date", "array"]
+    number: float | None = None
+    string: str | None = None
+    date: float | None = None
+    array: list[Key] | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -66,8 +64,8 @@ class KeyRange:
     Key range.
     """
 
-    lower: Key | None = field(default=None, metadata={"cdp_name": "lower"})
-    upper: Key | None = field(default=None, metadata={"cdp_name": "upper"})
+    lower: Key | None = None
+    upper: Key | None = None
     lower_open: bool = field(metadata={"cdp_name": "lowerOpen"})
     upper_open: bool = field(metadata={"cdp_name": "upperOpen"})
 
@@ -78,9 +76,9 @@ class DataEntry:
     Data entry.
     """
 
-    key: runtime.RemoteObject = field(metadata={"cdp_name": "key"})
+    key: runtime.RemoteObject
     primary_key: runtime.RemoteObject = field(metadata={"cdp_name": "primaryKey"})
-    value: runtime.RemoteObject = field(metadata={"cdp_name": "value"})
+    value: runtime.RemoteObject
 
 
 @dataclass(kw_only=True, slots=True)
@@ -89,6 +87,6 @@ class KeyPath:
     Key path.
     """
 
-    type: Literal["null", "string", "array"] = field(metadata={"cdp_name": "type"})
-    string: str | None = field(default=None, metadata={"cdp_name": "string"})
-    array: list[str] | None = field(default=None, metadata={"cdp_name": "array"})
+    type: Literal["null", "string", "array"]
+    string: str | None = None
+    array: list[str] | None = None

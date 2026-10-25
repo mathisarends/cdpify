@@ -26,7 +26,7 @@ class SetIgnoreCertificateErrorsParams:
     Enable/disable whether all certificate errors should be ignored.
     """
 
-    ignore: bool = field(metadata={"cdp_name": "ignore"})
+    ignore: bool
 
 
 @dataclass(kw_only=True, slots=True)
@@ -36,7 +36,7 @@ class HandleCertificateErrorParams:
     """
 
     event_id: int = field(metadata={"cdp_name": "eventId"})
-    action: CertificateErrorAction = field(metadata={"cdp_name": "action"})
+    action: CertificateErrorAction
 
 
 @dataclass(kw_only=True, slots=True)
@@ -47,4 +47,4 @@ class SetOverrideCertificateErrorsParams:
     `handleCertificateError` commands.
     """
 
-    override: bool = field(metadata={"cdp_name": "override"})
+    override: bool

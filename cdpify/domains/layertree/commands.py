@@ -53,7 +53,7 @@ class LoadSnapshotParams:
     Returns the snapshot identifier.
     """
 
-    tiles: list[PictureTile] = field(metadata={"cdp_name": "tiles"})
+    tiles: list[PictureTile]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -89,7 +89,7 @@ class ProfileSnapshotParams:
 
 @dataclass(kw_only=True, slots=True)
 class ProfileSnapshotResult:
-    timings: list[PaintProfile] = field(metadata={"cdp_name": "timings"})
+    timings: list[PaintProfile]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -110,7 +110,7 @@ class ReplaySnapshotParams:
     snapshot_id: SnapshotId = field(metadata={"cdp_name": "snapshotId"})
     from_step: int | None = field(default=None, metadata={"cdp_name": "fromStep"})
     to_step: int | None = field(default=None, metadata={"cdp_name": "toStep"})
-    scale: float | None = field(default=None, metadata={"cdp_name": "scale"})
+    scale: float | None = None
 
 
 @dataclass(kw_only=True, slots=True)

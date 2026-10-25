@@ -91,7 +91,7 @@ class EmulationCommand(StrEnum):
 
 @dataclass(kw_only=True, slots=True)
 class CanEmulateResult:
-    result: bool = field(metadata={"cdp_name": "result"})
+    result: bool
 
 
 @dataclass(kw_only=True, slots=True)
@@ -100,7 +100,7 @@ class SetFocusEmulationEnabledParams:
     Enables or disables simulating a focused and active page.
     """
 
-    enabled: bool = field(metadata={"cdp_name": "enabled"})
+    enabled: bool
 
 
 @dataclass(kw_only=True, slots=True)
@@ -109,7 +109,7 @@ class SetAutoDarkModeOverrideParams:
     Automatically render all web contents using a dark theme.
     """
 
-    enabled: bool | None = field(default=None, metadata={"cdp_name": "enabled"})
+    enabled: bool | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -118,7 +118,7 @@ class SetCPUThrottlingRateParams:
     Enables CPU throttling to emulate slow CPUs.
     """
 
-    rate: float = field(metadata={"cdp_name": "rate"})
+    rate: float
 
 
 @dataclass(kw_only=True, slots=True)
@@ -128,7 +128,7 @@ class SetDefaultBackgroundColorOverrideParams:
     override is used if the content does not specify one.
     """
 
-    color: dom.RGBA | None = field(default=None, metadata={"cdp_name": "color"})
+    color: dom.RGBA | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -139,7 +139,7 @@ class SetSafeAreaInsetsOverrideParams:
     overridden.
     """
 
-    insets: SafeAreaInsets = field(metadata={"cdp_name": "insets"})
+    insets: SafeAreaInsets
 
 
 @dataclass(kw_only=True, slots=True)
@@ -166,11 +166,11 @@ class SetDeviceMetricsOverrideParams:
     "device-width"/"device-height"-related CSS media query results).
     """
 
-    width: int = field(metadata={"cdp_name": "width"})
-    height: int = field(metadata={"cdp_name": "height"})
+    width: int
+    height: int
     device_scale_factor: float = field(metadata={"cdp_name": "deviceScaleFactor"})
-    mobile: bool = field(metadata={"cdp_name": "mobile"})
-    scale: float | None = field(default=None, metadata={"cdp_name": "scale"})
+    mobile: bool
+    scale: float | None = None
     screen_width: int | None = field(default=None, metadata={"cdp_name": "screenWidth"})
     screen_height: int | None = field(
         default=None, metadata={"cdp_name": "screenHeight"}
@@ -183,9 +183,7 @@ class SetDeviceMetricsOverrideParams:
     screen_orientation: ScreenOrientation | None = field(
         default=None, metadata={"cdp_name": "screenOrientation"}
     )
-    viewport: page.Viewport | None = field(
-        default=None, metadata={"cdp_name": "viewport"}
-    )
+    viewport: page.Viewport | None = None
     display_feature: DisplayFeature | None = field(
         default=None, metadata={"cdp_name": "displayFeature"}
     )
@@ -213,7 +211,7 @@ class SetDevicePostureOverrideParams:
     can also be set in setDeviceMetricsOverride().
     """
 
-    posture: DevicePosture = field(metadata={"cdp_name": "posture"})
+    posture: DevicePosture
 
 
 @dataclass(kw_only=True, slots=True)
@@ -223,25 +221,23 @@ class SetDisplayFeaturesOverrideParams:
     override can also be set in setDeviceMetricsOverride().
     """
 
-    features: list[DisplayFeature] = field(metadata={"cdp_name": "features"})
+    features: list[DisplayFeature]
 
 
 @dataclass(kw_only=True, slots=True)
 class SetScrollbarsHiddenParams:
-    hidden: bool = field(metadata={"cdp_name": "hidden"})
+    hidden: bool
 
 
 @dataclass(kw_only=True, slots=True)
 class SetDocumentCookieDisabledParams:
-    disabled: bool = field(metadata={"cdp_name": "disabled"})
+    disabled: bool
 
 
 @dataclass(kw_only=True, slots=True)
 class SetEmitTouchEventsForMouseParams:
-    enabled: bool = field(metadata={"cdp_name": "enabled"})
-    configuration: Literal["mobile", "desktop"] | None = field(
-        default=None, metadata={"cdp_name": "configuration"}
-    )
+    enabled: bool
+    configuration: Literal["mobile", "desktop"] | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -250,10 +246,8 @@ class SetEmulatedMediaParams:
     Emulates the given media type or media feature for CSS media queries.
     """
 
-    media: str | None = field(default=None, metadata={"cdp_name": "media"})
-    features: list[MediaFeature] | None = field(
-        default=None, metadata={"cdp_name": "features"}
-    )
+    media: str | None = None
+    features: list[MediaFeature] | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -270,9 +264,7 @@ class SetEmulatedVisionDeficiencyParams:
         "deuteranopia",
         "protanopia",
         "tritanopia",
-    ] = field(  # noqa: E501
-        metadata={"cdp_name": "type"},
-    )
+    ]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -281,7 +273,7 @@ class SetEmulatedOSTextScaleParams:
     Emulates the given OS text scale.
     """
 
-    scale: float | None = field(default=None, metadata={"cdp_name": "scale"})
+    scale: float | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -291,20 +283,20 @@ class SetGeolocationOverrideParams:
     accuracy emulates position unavailable.
     """
 
-    latitude: float | None = field(default=None, metadata={"cdp_name": "latitude"})
-    longitude: float | None = field(default=None, metadata={"cdp_name": "longitude"})
-    accuracy: float | None = field(default=None, metadata={"cdp_name": "accuracy"})
-    altitude: float | None = field(default=None, metadata={"cdp_name": "altitude"})
+    latitude: float | None = None
+    longitude: float | None = None
+    accuracy: float | None = None
+    altitude: float | None = None
     altitude_accuracy: float | None = field(
         default=None, metadata={"cdp_name": "altitudeAccuracy"}
     )
-    heading: float | None = field(default=None, metadata={"cdp_name": "heading"})
-    speed: float | None = field(default=None, metadata={"cdp_name": "speed"})
+    heading: float | None = None
+    speed: float | None = None
 
 
 @dataclass(kw_only=True, slots=True)
 class GetOverriddenSensorInformationParams:
-    type: SensorType = field(metadata={"cdp_name": "type"})
+    type: SensorType
 
 
 @dataclass(kw_only=True, slots=True)
@@ -324,11 +316,9 @@ class SetSensorOverrideEnabledParams:
     sensor instead.
     """
 
-    enabled: bool = field(metadata={"cdp_name": "enabled"})
-    type: SensorType = field(metadata={"cdp_name": "type"})
-    metadata: SensorMetadata | None = field(
-        default=None, metadata={"cdp_name": "metadata"}
-    )
+    enabled: bool
+    type: SensorType
+    metadata: SensorMetadata | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -338,8 +328,8 @@ class SetSensorOverrideReadingsParams:
     setSensorOverrideEnabled.
     """
 
-    type: SensorType = field(metadata={"cdp_name": "type"})
-    reading: SensorReading = field(metadata={"cdp_name": "reading"})
+    type: SensorType
+    reading: SensorReading
 
 
 @dataclass(kw_only=True, slots=True)
@@ -351,11 +341,9 @@ class SetPressureSourceOverrideEnabledParams:
     data.
     """
 
-    enabled: bool = field(metadata={"cdp_name": "enabled"})
-    source: PressureSource = field(metadata={"cdp_name": "source"})
-    metadata: PressureMetadata | None = field(
-        default=None, metadata={"cdp_name": "metadata"}
-    )
+    enabled: bool
+    source: PressureSource
+    metadata: PressureMetadata | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -366,8 +354,8 @@ class SetPressureStateOverrideParams:
     setPressureSourceOverrideEnabled.
     """
 
-    source: PressureSource = field(metadata={"cdp_name": "source"})
-    state: PressureState = field(metadata={"cdp_name": "state"})
+    source: PressureSource
+    state: PressureState
 
 
 @dataclass(kw_only=True, slots=True)
@@ -386,7 +374,7 @@ class SetNavigatorOverridesParams:
     Overrides value returned by the javascript navigator object.
     """
 
-    platform: str = field(metadata={"cdp_name": "platform"})
+    platform: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -404,7 +392,7 @@ class SetScriptExecutionDisabledParams:
     Switches script execution in the page.
     """
 
-    value: bool = field(metadata={"cdp_name": "value"})
+    value: bool
 
 
 @dataclass(kw_only=True, slots=True)
@@ -413,7 +401,7 @@ class SetTouchEmulationEnabledParams:
     Enables touch on platforms which do not support them.
     """
 
-    enabled: bool = field(metadata={"cdp_name": "enabled"})
+    enabled: bool
     max_touch_points: int | None = field(
         default=None, metadata={"cdp_name": "maxTouchPoints"}
     )
@@ -427,8 +415,8 @@ class SetVirtualTimePolicyParams:
     time budget.
     """
 
-    policy: VirtualTimePolicy = field(metadata={"cdp_name": "policy"})
-    budget: float | None = field(default=None, metadata={"cdp_name": "budget"})
+    policy: VirtualTimePolicy
+    budget: float | None = None
     max_virtual_time_task_starvation_count: int | None = field(
         default=None, metadata={"cdp_name": "maxVirtualTimeTaskStarvationCount"}
     )
@@ -450,7 +438,7 @@ class SetLocaleOverrideParams:
     Overrides default host system locale with the specified one.
     """
 
-    locale: str | None = field(default=None, metadata={"cdp_name": "locale"})
+    locale: str | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -470,8 +458,8 @@ class SetVisibleSizeParams:
     size. Not supported on Android.
     """
 
-    width: int = field(metadata={"cdp_name": "width"})
-    height: int = field(metadata={"cdp_name": "height"})
+    width: int
+    height: int
 
 
 @dataclass(kw_only=True, slots=True)
@@ -517,7 +505,7 @@ class SetUserAgentOverrideParams:
     accept_language: str | None = field(
         default=None, metadata={"cdp_name": "acceptLanguage"}
     )
-    platform: str | None = field(default=None, metadata={"cdp_name": "platform"})
+    platform: str | None = None
     user_agent_metadata: UserAgentMetadata | None = field(
         default=None, metadata={"cdp_name": "userAgentMetadata"}
     )
@@ -529,7 +517,7 @@ class SetAutomationOverrideParams:
     Allows overriding the automation flag.
     """
 
-    enabled: bool = field(metadata={"cdp_name": "enabled"})
+    enabled: bool
 
 
 @dataclass(kw_only=True, slots=True)
@@ -540,7 +528,7 @@ class SetSmallViewportHeightDifferenceOverrideParams:
     top-level frames.
     """
 
-    difference: int = field(metadata={"cdp_name": "difference"})
+    difference: int
 
 
 @dataclass(kw_only=True, slots=True)
@@ -554,19 +542,19 @@ class AddScreenParams:
     Add a new screen to the device. Only supported in headless mode.
     """
 
-    left: int = field(metadata={"cdp_name": "left"})
-    top: int = field(metadata={"cdp_name": "top"})
-    width: int = field(metadata={"cdp_name": "width"})
-    height: int = field(metadata={"cdp_name": "height"})
+    left: int
+    top: int
+    width: int
+    height: int
     work_area_insets: WorkAreaInsets | None = field(
         default=None, metadata={"cdp_name": "workAreaInsets"}
     )
     device_pixel_ratio: float | None = field(
         default=None, metadata={"cdp_name": "devicePixelRatio"}
     )
-    rotation: int | None = field(default=None, metadata={"cdp_name": "rotation"})
+    rotation: int | None = None
     color_depth: int | None = field(default=None, metadata={"cdp_name": "colorDepth"})
-    label: str | None = field(default=None, metadata={"cdp_name": "label"})
+    label: str | None = None
     is_internal: bool | None = field(default=None, metadata={"cdp_name": "isInternal"})
 
 
@@ -582,19 +570,19 @@ class UpdateScreenParams:
     """
 
     screen_id: ScreenId = field(metadata={"cdp_name": "screenId"})
-    left: int | None = field(default=None, metadata={"cdp_name": "left"})
-    top: int | None = field(default=None, metadata={"cdp_name": "top"})
-    width: int | None = field(default=None, metadata={"cdp_name": "width"})
-    height: int | None = field(default=None, metadata={"cdp_name": "height"})
+    left: int | None = None
+    top: int | None = None
+    width: int | None = None
+    height: int | None = None
     work_area_insets: WorkAreaInsets | None = field(
         default=None, metadata={"cdp_name": "workAreaInsets"}
     )
     device_pixel_ratio: float | None = field(
         default=None, metadata={"cdp_name": "devicePixelRatio"}
     )
-    rotation: int | None = field(default=None, metadata={"cdp_name": "rotation"})
+    rotation: int | None = None
     color_depth: int | None = field(default=None, metadata={"cdp_name": "colorDepth"})
-    label: str | None = field(default=None, metadata={"cdp_name": "label"})
+    label: str | None = None
     is_internal: bool | None = field(default=None, metadata={"cdp_name": "isInternal"})
 
 

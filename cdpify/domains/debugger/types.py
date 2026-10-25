@@ -9,15 +9,15 @@ from typing import Literal
 
 from cdpify.domains import runtime
 
+BreakpointId = str
 """
 Breakpoint identifier.
 """
-BreakpointId = str
 
+CallFrameId = str
 """
 Call frame identifier.
 """
-CallFrameId = str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -50,8 +50,8 @@ class LocationRange:
     """
 
     script_id: runtime.ScriptId = field(metadata={"cdp_name": "scriptId"})
-    start: ScriptPosition = field(metadata={"cdp_name": "start"})
-    end: ScriptPosition = field(metadata={"cdp_name": "end"})
+    start: ScriptPosition
+    end: ScriptPosition
 
 
 @dataclass(kw_only=True, slots=True)
@@ -65,10 +65,10 @@ class CallFrame:
     function_location: Location | None = field(
         default=None, metadata={"cdp_name": "functionLocation"}
     )
-    location: Location = field(metadata={"cdp_name": "location"})
-    url: str = field(metadata={"cdp_name": "url"})
+    location: Location
+    url: str
     scope_chain: list[Scope] = field(metadata={"cdp_name": "scopeChain"})
-    this: runtime.RemoteObject = field(metadata={"cdp_name": "this"})
+    this: runtime.RemoteObject
     return_value: runtime.RemoteObject | None = field(
         default=None, metadata={"cdp_name": "returnValue"}
     )
@@ -94,11 +94,9 @@ class Scope:
         "eval",
         "module",
         "wasm-expression-stack",
-    ] = field(  # noqa: E501
-        metadata={"cdp_name": "type"},
-    )
-    object: runtime.RemoteObject = field(metadata={"cdp_name": "object"})
-    name: str | None = field(default=None, metadata={"cdp_name": "name"})
+    ]
+    object: runtime.RemoteObject
+    name: str | None = None
     start_location: Location | None = field(
         default=None, metadata={"cdp_name": "startLocation"}
     )
@@ -127,21 +125,19 @@ class BreakLocation:
     column_number: int | None = field(
         default=None, metadata={"cdp_name": "columnNumber"}
     )
-    type: Literal["debuggerStatement", "call", "return"] | None = field(
-        default=None, metadata={"cdp_name": "type"}
-    )
+    type: Literal["debuggerStatement", "call", "return"] | None = None
 
 
 @dataclass(kw_only=True, slots=True)
 class WasmDisassemblyChunk:
-    lines: list[str] = field(metadata={"cdp_name": "lines"})
+    lines: list[str]
     bytecode_offsets: list[int] = field(metadata={"cdp_name": "bytecodeOffsets"})
 
 
+type ScriptLanguage = Literal["JavaScript", "WebAssembly"]
 """
 Enum of possible script languages.
 """
-type ScriptLanguage = Literal["JavaScript", "WebAssembly"]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -150,13 +146,11 @@ class DebugSymbols:
     Debug symbols available for a wasm script.
     """
 
-    type: Literal["SourceMap", "EmbeddedDWARF", "ExternalDWARF"] = field(
-        metadata={"cdp_name": "type"}
-    )
+    type: Literal["SourceMap", "EmbeddedDWARF", "ExternalDWARF"]
     external_url: str | None = field(default=None, metadata={"cdp_name": "externalURL"})
 
 
 @dataclass(kw_only=True, slots=True)
 class ResolvedBreakpoint:
     breakpoint_id: BreakpointId = field(metadata={"cdp_name": "breakpointId"})
-    location: Location = field(metadata={"cdp_name": "location"})
+    location: Location

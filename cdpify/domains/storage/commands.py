@@ -91,7 +91,7 @@ class ClearDataForOriginParams:
     Clears storage for origin.
     """
 
-    origin: str = field(metadata={"cdp_name": "origin"})
+    origin: str
     storage_types: str = field(metadata={"cdp_name": "storageTypes"})
 
 
@@ -118,7 +118,7 @@ class GetCookiesParams:
 
 @dataclass(kw_only=True, slots=True)
 class GetCookiesResult:
-    cookies: list[network.Cookie] = field(metadata={"cdp_name": "cookies"})
+    cookies: list[network.Cookie]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -127,7 +127,7 @@ class SetCookiesParams:
     Sets given cookies.
     """
 
-    cookies: list[network.CookieParam] = field(metadata={"cdp_name": "cookies"})
+    cookies: list[network.CookieParam]
     browser_context_id: browser.BrowserContextID | None = field(
         default=None, metadata={"cdp_name": "browserContextId"}
     )
@@ -150,13 +150,13 @@ class GetUsageAndQuotaParams:
     Returns usage and quota in bytes.
     """
 
-    origin: str = field(metadata={"cdp_name": "origin"})
+    origin: str
 
 
 @dataclass(kw_only=True, slots=True)
 class GetUsageAndQuotaResult:
-    usage: float = field(metadata={"cdp_name": "usage"})
-    quota: float = field(metadata={"cdp_name": "quota"})
+    usage: float
+    quota: float
     override_active: bool = field(metadata={"cdp_name": "overrideActive"})
     usage_breakdown: list[UsageForType] = field(metadata={"cdp_name": "usageBreakdown"})
 
@@ -167,7 +167,7 @@ class OverrideQuotaForOriginParams:
     Override quota for the specified origin
     """
 
-    origin: str = field(metadata={"cdp_name": "origin"})
+    origin: str
     quota_size: float | None = field(default=None, metadata={"cdp_name": "quotaSize"})
 
 
@@ -177,7 +177,7 @@ class TrackCacheStorageForOriginParams:
     Registers origin to be notified when an update occurs to its cache storage list.
     """
 
-    origin: str = field(metadata={"cdp_name": "origin"})
+    origin: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -196,7 +196,7 @@ class TrackIndexedDBForOriginParams:
     Registers origin to be notified when an update occurs to its IndexedDB.
     """
 
-    origin: str = field(metadata={"cdp_name": "origin"})
+    origin: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -214,7 +214,7 @@ class UntrackCacheStorageForOriginParams:
     Unregisters origin from receiving notifications for cache storage.
     """
 
-    origin: str = field(metadata={"cdp_name": "origin"})
+    origin: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -232,7 +232,7 @@ class UntrackIndexedDBForOriginParams:
     Unregisters origin from receiving notifications for IndexedDB.
     """
 
-    origin: str = field(metadata={"cdp_name": "origin"})
+    origin: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -246,7 +246,7 @@ class UntrackIndexedDBForStorageKeyParams:
 
 @dataclass(kw_only=True, slots=True)
 class GetTrustTokensResult:
-    tokens: list[TrustTokens] = field(metadata={"cdp_name": "tokens"})
+    tokens: list[TrustTokens]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -266,14 +266,12 @@ class ClearTrustTokensResult:
 
 @dataclass(kw_only=True, slots=True)
 class GetPrivateVerificationTokensResult:
-    tokens: list[PrivateVerificationToken] = field(metadata={"cdp_name": "tokens"})
+    tokens: list[PrivateVerificationToken]
 
 
 @dataclass(kw_only=True, slots=True)
 class GetPrivateVerificationTokensIssuerConfigsResult:
-    configs: list[PrivateVerificationTokensIssuerConfig] = field(
-        metadata={"cdp_name": "configs"}
-    )
+    configs: list[PrivateVerificationTokensIssuerConfig]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -300,7 +298,7 @@ class SetPrivateVerificationTokensTrackingParams:
     Set tracking for Private Verification Tokens.
     """
 
-    enable: bool = field(metadata={"cdp_name": "enable"})
+    enable: bool
 
 
 @dataclass(kw_only=True, slots=True)
@@ -310,7 +308,7 @@ class SetStorageBucketTrackingParams:
     """
 
     storage_key: str = field(metadata={"cdp_name": "storageKey"})
-    enable: bool = field(metadata={"cdp_name": "enable"})
+    enable: bool
 
 
 @dataclass(kw_only=True, slots=True)
@@ -319,7 +317,7 @@ class DeleteStorageBucketParams:
     Deletes the Storage Bucket with the given storage key and bucket name.
     """
 
-    bucket: StorageBucket = field(metadata={"cdp_name": "bucket"})
+    bucket: StorageBucket
 
 
 @dataclass(kw_only=True, slots=True)

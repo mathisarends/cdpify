@@ -40,7 +40,7 @@ class RequestPausedEvent:
     __cdp_event__: ClassVar[str] = "Fetch.requestPaused"
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
-    request: network.Request = field(metadata={"cdp_name": "request"})
+    request: network.Request
     frame_id: page.FrameId = field(metadata={"cdp_name": "frameId"})
     resource_type: network.ResourceType = field(metadata={"cdp_name": "resourceType"})
     response_error_reason: network.ErrorReason | None = field(
@@ -73,7 +73,7 @@ class AuthRequiredEvent:
     __cdp_event__: ClassVar[str] = "Fetch.authRequired"
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
-    request: network.Request = field(metadata={"cdp_name": "request"})
+    request: network.Request
     frame_id: page.FrameId = field(metadata={"cdp_name": "frameId"})
     resource_type: network.ResourceType = field(metadata={"cdp_name": "resourceType"})
     auth_challenge: AuthChallenge = field(metadata={"cdp_name": "authChallenge"})

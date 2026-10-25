@@ -131,13 +131,13 @@ class DescribeNodeParams:
     object_id: runtime.RemoteObjectId | None = field(
         default=None, metadata={"cdp_name": "objectId"}
     )
-    depth: int | None = field(default=None, metadata={"cdp_name": "depth"})
-    pierce: bool | None = field(default=None, metadata={"cdp_name": "pierce"})
+    depth: int | None = None
+    pierce: bool | None = None
 
 
 @dataclass(kw_only=True, slots=True)
 class DescribeNodeResult:
-    node: Node = field(metadata={"cdp_name": "node"})
+    node: Node
 
 
 @dataclass(kw_only=True, slots=True)
@@ -155,7 +155,7 @@ class ScrollIntoViewIfNeededParams:
     object_id: runtime.RemoteObjectId | None = field(
         default=None, metadata={"cdp_name": "objectId"}
     )
-    rect: Rect | None = field(default=None, metadata={"cdp_name": "rect"})
+    rect: Rect | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -205,7 +205,7 @@ class GetAttributesParams:
 
 @dataclass(kw_only=True, slots=True)
 class GetAttributesResult:
-    attributes: list[str] = field(metadata={"cdp_name": "attributes"})
+    attributes: list[str]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -225,7 +225,7 @@ class GetBoxModelParams:
 
 @dataclass(kw_only=True, slots=True)
 class GetBoxModelResult:
-    model: BoxModel = field(metadata={"cdp_name": "model"})
+    model: BoxModel
 
 
 @dataclass(kw_only=True, slots=True)
@@ -246,7 +246,7 @@ class GetContentQuadsParams:
 
 @dataclass(kw_only=True, slots=True)
 class GetContentQuadsResult:
-    quads: list[Quad] = field(metadata={"cdp_name": "quads"})
+    quads: list[Quad]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -256,13 +256,13 @@ class GetDocumentParams:
     enables the DOM domain events for the current target.
     """
 
-    depth: int | None = field(default=None, metadata={"cdp_name": "depth"})
-    pierce: bool | None = field(default=None, metadata={"cdp_name": "pierce"})
+    depth: int | None = None
+    pierce: bool | None = None
 
 
 @dataclass(kw_only=True, slots=True)
 class GetDocumentResult:
-    root: Node = field(metadata={"cdp_name": "root"})
+    root: Node
 
 
 @dataclass(kw_only=True, slots=True)
@@ -273,13 +273,13 @@ class GetFlattenedDocumentParams:
     DOMSnapshot.captureSnapshot instead.
     """
 
-    depth: int | None = field(default=None, metadata={"cdp_name": "depth"})
-    pierce: bool | None = field(default=None, metadata={"cdp_name": "pierce"})
+    depth: int | None = None
+    pierce: bool | None = None
 
 
 @dataclass(kw_only=True, slots=True)
 class GetFlattenedDocumentResult:
-    nodes: list[Node] = field(metadata={"cdp_name": "nodes"})
+    nodes: list[Node]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -292,7 +292,7 @@ class GetNodesForSubtreeByStyleParams:
     computed_styles: list[CSSComputedStyleProperty] = field(
         metadata={"cdp_name": "computedStyles"}
     )
-    pierce: bool | None = field(default=None, metadata={"cdp_name": "pierce"})
+    pierce: bool | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -307,8 +307,8 @@ class GetNodeForLocationParams:
     nodeId is either returned or not.
     """
 
-    x: int = field(metadata={"cdp_name": "x"})
-    y: int = field(metadata={"cdp_name": "y"})
+    x: int
+    y: int
     include_user_agent_shadow_dom: bool | None = field(
         default=None, metadata={"cdp_name": "includeUserAgentShadowDOM"}
     )
@@ -403,7 +403,7 @@ class PerformSearchParams:
     search results or `cancelSearch` to end this search session.
     """
 
-    query: str = field(metadata={"cdp_name": "query"})
+    query: str
     include_user_agent_shadow_dom: bool | None = field(
         default=None, metadata={"cdp_name": "includeUserAgentShadowDOM"}
     )
@@ -421,7 +421,7 @@ class PushNodeByPathToFrontendParams:
     Requests that the node is sent to the caller given its path. // FIXME, use XPath
     """
 
-    path: str = field(metadata={"cdp_name": "path"})
+    path: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -452,7 +452,7 @@ class QuerySelectorParams:
     """
 
     node_id: NodeId = field(metadata={"cdp_name": "nodeId"})
-    selector: str = field(metadata={"cdp_name": "selector"})
+    selector: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -467,7 +467,7 @@ class QuerySelectorAllParams:
     """
 
     node_id: NodeId = field(metadata={"cdp_name": "nodeId"})
-    selector: str = field(metadata={"cdp_name": "selector"})
+    selector: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -487,9 +487,7 @@ class GetElementByRelationParams:
     """
 
     node_id: NodeId = field(metadata={"cdp_name": "nodeId"})
-    relation: Literal["PopoverTarget", "InterestTarget", "CommandFor"] = field(
-        metadata={"cdp_name": "relation"}
-    )
+    relation: Literal["PopoverTarget", "InterestTarget", "CommandFor"]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -504,7 +502,7 @@ class RemoveAttributeParams:
     """
 
     node_id: NodeId = field(metadata={"cdp_name": "nodeId"})
-    name: str = field(metadata={"cdp_name": "name"})
+    name: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -525,8 +523,8 @@ class RequestChildNodesParams:
     """
 
     node_id: NodeId = field(metadata={"cdp_name": "nodeId"})
-    depth: int | None = field(default=None, metadata={"cdp_name": "depth"})
-    pierce: bool | None = field(default=None, metadata={"cdp_name": "pierce"})
+    depth: int | None = None
+    pierce: bool | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -563,7 +561,7 @@ class ResolveNodeParams:
 
 @dataclass(kw_only=True, slots=True)
 class ResolveNodeResult:
-    object: runtime.RemoteObject = field(metadata={"cdp_name": "object"})
+    object: runtime.RemoteObject
 
 
 @dataclass(kw_only=True, slots=True)
@@ -573,8 +571,8 @@ class SetAttributeValueParams:
     """
 
     node_id: NodeId = field(metadata={"cdp_name": "nodeId"})
-    name: str = field(metadata={"cdp_name": "name"})
-    value: str = field(metadata={"cdp_name": "value"})
+    name: str
+    value: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -585,8 +583,8 @@ class SetAttributesAsTextParams:
     """
 
     node_id: NodeId = field(metadata={"cdp_name": "nodeId"})
-    text: str = field(metadata={"cdp_name": "text"})
-    name: str | None = field(default=None, metadata={"cdp_name": "name"})
+    text: str
+    name: str | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -595,7 +593,7 @@ class SetFileInputFilesParams:
     Sets files for the given file input element.
     """
 
-    files: list[str] = field(metadata={"cdp_name": "files"})
+    files: list[str]
     node_id: NodeId | None = field(default=None, metadata={"cdp_name": "nodeId"})
     backend_node_id: BackendNodeId | None = field(
         default=None, metadata={"cdp_name": "backendNodeId"}
@@ -612,7 +610,7 @@ class SetNodeStackTracesEnabledParams:
     Default is disabled.
     """
 
-    enable: bool = field(metadata={"cdp_name": "enable"})
+    enable: bool
 
 
 @dataclass(kw_only=True, slots=True)
@@ -627,9 +625,7 @@ class GetNodeStackTracesParams:
 
 @dataclass(kw_only=True, slots=True)
 class GetNodeStackTracesResult:
-    creation: runtime.StackTrace | None = field(
-        default=None, metadata={"cdp_name": "creation"}
-    )
+    creation: runtime.StackTrace | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -643,7 +639,7 @@ class GetFileInfoParams:
 
 @dataclass(kw_only=True, slots=True)
 class GetFileInfoResult:
-    path: str = field(metadata={"cdp_name": "path"})
+    path: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -670,7 +666,7 @@ class SetNodeNameParams:
     """
 
     node_id: NodeId = field(metadata={"cdp_name": "nodeId"})
-    name: str = field(metadata={"cdp_name": "name"})
+    name: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -685,7 +681,7 @@ class SetNodeValueParams:
     """
 
     node_id: NodeId = field(metadata={"cdp_name": "nodeId"})
-    value: str = field(metadata={"cdp_name": "value"})
+    value: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -787,7 +783,7 @@ class ForceShowPopoverParams:
     """
 
     node_id: NodeId = field(metadata={"cdp_name": "nodeId"})
-    enable: bool = field(metadata={"cdp_name": "enable"})
+    enable: bool
     invoker_node_id: BackendNodeId | None = field(
         default=None, metadata={"cdp_name": "invokerNodeId"}
     )
@@ -822,7 +818,7 @@ class ForceShowInterestParams:
     """
 
     node_id: NodeId = field(metadata={"cdp_name": "nodeId"})
-    enable: bool = field(metadata={"cdp_name": "enable"})
+    enable: bool
 
 
 @dataclass(kw_only=True, slots=True)
@@ -841,6 +837,6 @@ class SetTextMarkerParams:
     object_id: runtime.RemoteObjectId | None = field(
         default=None, metadata={"cdp_name": "objectId"}
     )
-    type: Literal["spelling", "grammar"] = field(metadata={"cdp_name": "type"})
-    start: int = field(metadata={"cdp_name": "start"})
-    end: int = field(metadata={"cdp_name": "end"})
+    type: Literal["spelling", "grammar"]
+    start: int
+    end: int

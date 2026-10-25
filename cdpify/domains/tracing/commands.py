@@ -28,12 +28,12 @@ class TracingCommand(StrEnum):
 
 @dataclass(kw_only=True, slots=True)
 class GetCategoriesResult:
-    categories: list[str] = field(metadata={"cdp_name": "categories"})
+    categories: list[str]
 
 
 @dataclass(kw_only=True, slots=True)
 class GetTrackEventDescriptorResult:
-    descriptor: str = field(metadata={"cdp_name": "descriptor"})
+    descriptor: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -51,9 +51,7 @@ class RequestMemoryDumpParams:
     Request a global memory dump.
     """
 
-    deterministic: bool | None = field(
-        default=None, metadata={"cdp_name": "deterministic"}
-    )
+    deterministic: bool | None = None
     level_of_detail: MemoryDumpLevelOfDetail | None = field(
         default=None, metadata={"cdp_name": "levelOfDetail"}
     )
@@ -62,7 +60,7 @@ class RequestMemoryDumpParams:
 @dataclass(kw_only=True, slots=True)
 class RequestMemoryDumpResult:
     dump_guid: str = field(metadata={"cdp_name": "dumpGuid"})
-    success: bool = field(metadata={"cdp_name": "success"})
+    success: bool
 
 
 @dataclass(kw_only=True, slots=True)
@@ -71,8 +69,8 @@ class StartParams:
     Start trace events collection.
     """
 
-    categories: str | None = field(default=None, metadata={"cdp_name": "categories"})
-    options: str | None = field(default=None, metadata={"cdp_name": "options"})
+    categories: str | None = None
+    options: str | None = None
     buffer_usage_reporting_interval: float | None = field(
         default=None, metadata={"cdp_name": "bufferUsageReportingInterval"}
     )

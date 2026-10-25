@@ -7,7 +7,7 @@ def test_generates_header_and_dataclass_imports(simple_domain: Domain) -> None:
 
     assert "auto-generated" in output
     assert "from __future__ import annotations" in output
-    assert "from dataclasses import dataclass, field" in output
+    assert "from dataclasses import dataclass\n" in output
     assert "cdpify.shared.models" not in output
 
 
@@ -48,12 +48,29 @@ def test_renders_object_as_dataclass(simple_domain: Domain) -> None:
 
     assert "@dataclass(kw_only=True, slots=True)" in output
     assert "class Box:" in output
-    assert 'width: int = field(metadata={"cdp_name": "width"})' in output
-    assert 'height: int = field(metadata={"cdp_name": "height"})' in output
-    assert (
-        'label: str | None = field(default=None, metadata={"cdp_name": "label"})'
-        in output
+    assert "width: int\n" in output
+    assert "height: int\n" in output
+    assert "label: str | None = None" in output
+    assert "metadata=" not in output
+
+
+def test_alias_docstring_follows_the_assignment() -> None:
+    domain = Domain(
+        domain="Page",
+        types=[
+            TypeDefinition(
+                id="FrameId", type="string", description="Unique frame identifier."
+            ),
+            TypeDefinition(
+                id="Kind", type="string", enum=["a", "b"], description="Frame kind."
+            ),
+        ],
     )
+
+    output = types.generate(domain)
+
+    assert 'FrameId = str\n"""\nUnique frame identifier.\n"""' in output
+    assert 'type Kind = Literal["a", "b"]\n"""\nFrame kind.\n"""' in output
 
 
 def test_includes_descriptions_as_docstrings(simple_domain: Domain) -> None:
@@ -107,7 +124,7 @@ def test_optional_override_makes_field_optional() -> None:
         "document_url: str | None = field("
         'default=None, metadata={"cdp_name": "documentURL"})'
     ) in output
-    assert 'title: str = field(metadata={"cdp_name": "title"})' in output
+    assert "title: str\n" in output
 
 
 def test_long_aliased_field_declaration_is_lint_safe() -> None:

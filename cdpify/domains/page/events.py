@@ -58,7 +58,7 @@ class PageEvent(StrEnum):
 class DomContentEventFiredEvent:
     __cdp_event__: ClassVar[str] = "Page.domContentEventFired"
 
-    timestamp: network.MonotonicTime = field(metadata={"cdp_name": "timestamp"})
+    timestamp: network.MonotonicTime
 
 
 @dataclass(kw_only=True, slots=True)
@@ -70,9 +70,7 @@ class FileChooserOpenedEvent:
     __cdp_event__: ClassVar[str] = "Page.fileChooserOpened"
 
     frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
-    mode: Literal["selectSingle", "selectMultiple"] = field(
-        metadata={"cdp_name": "mode"}
-    )
+    mode: Literal["selectSingle", "selectMultiple"]
     backend_node_id: dom.BackendNodeId | None = field(
         default=None, metadata={"cdp_name": "backendNodeId"}
     )
@@ -88,9 +86,7 @@ class FrameAttachedEvent:
 
     frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
     parent_frame_id: FrameId = field(metadata={"cdp_name": "parentFrameId"})
-    stack: runtime.StackTrace | None = field(
-        default=None, metadata={"cdp_name": "stack"}
-    )
+    stack: runtime.StackTrace | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -113,7 +109,7 @@ class FrameDetachedEvent:
     __cdp_event__: ClassVar[str] = "Page.frameDetached"
 
     frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
-    reason: Literal["remove", "swap"] = field(metadata={"cdp_name": "reason"})
+    reason: Literal["remove", "swap"]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -137,8 +133,8 @@ class FrameNavigatedEvent:
 
     __cdp_event__: ClassVar[str] = "Page.frameNavigated"
 
-    frame: Frame = field(metadata={"cdp_name": "frame"})
-    type: NavigationType = field(metadata={"cdp_name": "type"})
+    frame: Frame
+    type: NavigationType
 
 
 @dataclass(kw_only=True, slots=True)
@@ -149,7 +145,7 @@ class DocumentOpenedEvent:
 
     __cdp_event__: ClassVar[str] = "Page.documentOpened"
 
-    frame: Frame = field(metadata={"cdp_name": "frame"})
+    frame: Frame
 
 
 @dataclass(kw_only=True, slots=True)
@@ -171,7 +167,7 @@ class FrameStartedNavigatingEvent:
     __cdp_event__: ClassVar[str] = "Page.frameStartedNavigating"
 
     frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
-    url: str = field(metadata={"cdp_name": "url"})
+    url: str
     loader_id: network.LoaderId = field(metadata={"cdp_name": "loaderId"})
     navigation_type: Literal[
         "reload",
@@ -197,11 +193,9 @@ class FrameRequestedNavigationEvent:
     __cdp_event__: ClassVar[str] = "Page.frameRequestedNavigation"
 
     frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
-    reason: ClientNavigationReason = field(metadata={"cdp_name": "reason"})
-    url: str = field(metadata={"cdp_name": "url"})
-    disposition: ClientNavigationDisposition = field(
-        metadata={"cdp_name": "disposition"}
-    )
+    reason: ClientNavigationReason
+    url: str
+    disposition: ClientNavigationDisposition
 
 
 @dataclass(kw_only=True, slots=True)
@@ -213,9 +207,9 @@ class FrameScheduledNavigationEvent:
     __cdp_event__: ClassVar[str] = "Page.frameScheduledNavigation"
 
     frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
-    delay: float = field(metadata={"cdp_name": "delay"})
-    reason: ClientNavigationReason = field(metadata={"cdp_name": "reason"})
-    url: str = field(metadata={"cdp_name": "url"})
+    delay: float
+    reason: ClientNavigationReason
+    url: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -250,8 +244,8 @@ class DownloadWillBeginEvent:
     __cdp_event__: ClassVar[str] = "Page.downloadWillBegin"
 
     frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
-    guid: str = field(metadata={"cdp_name": "guid"})
-    url: str = field(metadata={"cdp_name": "url"})
+    guid: str
+    url: str
     suggested_filename: str = field(metadata={"cdp_name": "suggestedFilename"})
 
 
@@ -264,12 +258,10 @@ class DownloadProgressEvent:
 
     __cdp_event__: ClassVar[str] = "Page.downloadProgress"
 
-    guid: str = field(metadata={"cdp_name": "guid"})
+    guid: str
     total_bytes: float = field(metadata={"cdp_name": "totalBytes"})
     received_bytes: float = field(metadata={"cdp_name": "receivedBytes"})
-    state: Literal["inProgress", "completed", "canceled"] = field(
-        metadata={"cdp_name": "state"}
-    )
+    state: Literal["inProgress", "completed", "canceled"]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -300,7 +292,7 @@ class JavascriptDialogClosedEvent:
     __cdp_event__: ClassVar[str] = "Page.javascriptDialogClosed"
 
     frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
-    result: bool = field(metadata={"cdp_name": "result"})
+    result: bool
     user_input: str = field(metadata={"cdp_name": "userInput"})
 
 
@@ -313,10 +305,10 @@ class JavascriptDialogOpeningEvent:
 
     __cdp_event__: ClassVar[str] = "Page.javascriptDialogOpening"
 
-    url: str = field(metadata={"cdp_name": "url"})
+    url: str
     frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
-    message: str = field(metadata={"cdp_name": "message"})
-    type: DialogType = field(metadata={"cdp_name": "type"})
+    message: str
+    type: DialogType
     has_browser_handler: bool = field(metadata={"cdp_name": "hasBrowserHandler"})
     default_prompt: str | None = field(
         default=None, metadata={"cdp_name": "defaultPrompt"}
@@ -334,8 +326,8 @@ class LifecycleEventEvent:
 
     frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
     loader_id: network.LoaderId = field(metadata={"cdp_name": "loaderId"})
-    name: str = field(metadata={"cdp_name": "name"})
-    timestamp: network.MonotonicTime = field(metadata={"cdp_name": "timestamp"})
+    name: str
+    timestamp: network.MonotonicTime
 
 
 @dataclass(kw_only=True, slots=True)
@@ -366,7 +358,7 @@ class BackForwardCacheNotUsedEvent:
 class LoadEventFiredEvent:
     __cdp_event__: ClassVar[str] = "Page.loadEventFired"
 
-    timestamp: network.MonotonicTime = field(metadata={"cdp_name": "timestamp"})
+    timestamp: network.MonotonicTime
 
 
 @dataclass(kw_only=True, slots=True)
@@ -379,7 +371,7 @@ class NavigatedWithinDocumentEvent:
     __cdp_event__: ClassVar[str] = "Page.navigatedWithinDocument"
 
     frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
-    url: str = field(metadata={"cdp_name": "url"})
+    url: str
     navigation_type: Literal["fragment", "historyApi", "other"] = field(
         metadata={"cdp_name": "navigationType"}
     )
@@ -393,8 +385,8 @@ class ScreencastFrameEvent:
 
     __cdp_event__: ClassVar[str] = "Page.screencastFrame"
 
-    data: str = field(metadata={"cdp_name": "data"})
-    metadata: ScreencastFrameMetadata = field(metadata={"cdp_name": "metadata"})
+    data: str
+    metadata: ScreencastFrameMetadata
     session_id: int = field(metadata={"cdp_name": "sessionId"})
 
 
@@ -406,7 +398,7 @@ class ScreencastVisibilityChangedEvent:
 
     __cdp_event__: ClassVar[str] = "Page.screencastVisibilityChanged"
 
-    visible: bool = field(metadata={"cdp_name": "visible"})
+    visible: bool
 
 
 @dataclass(kw_only=True, slots=True)
@@ -418,7 +410,7 @@ class WindowOpenEvent:
 
     __cdp_event__: ClassVar[str] = "Page.windowOpen"
 
-    url: str = field(metadata={"cdp_name": "url"})
+    url: str
     window_name: str = field(metadata={"cdp_name": "windowName"})
     window_features: list[str] = field(metadata={"cdp_name": "windowFeatures"})
     user_gesture: bool = field(metadata={"cdp_name": "userGesture"})
@@ -432,5 +424,5 @@ class CompilationCacheProducedEvent:
 
     __cdp_event__: ClassVar[str] = "Page.compilationCacheProduced"
 
-    url: str = field(metadata={"cdp_name": "url"})
-    data: str = field(metadata={"cdp_name": "data"})
+    url: str
+    data: str

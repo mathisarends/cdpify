@@ -26,11 +26,11 @@ class LayerPaintedEvent:
     __cdp_event__: ClassVar[str] = "LayerTree.layerPainted"
 
     layer_id: LayerId = field(metadata={"cdp_name": "layerId"})
-    clip: dom.Rect = field(metadata={"cdp_name": "clip"})
+    clip: dom.Rect
 
 
 @dataclass(kw_only=True, slots=True)
 class LayerTreeDidChangeEvent:
     __cdp_event__: ClassVar[str] = "LayerTree.layerTreeDidChange"
 
-    layers: list[Layer] | None = field(default=None, metadata={"cdp_name": "layers"})
+    layers: list[Layer] | None = None

@@ -17,9 +17,9 @@ class LargestContentfulPaint:
 
     render_time: network.TimeSinceEpoch = field(metadata={"cdp_name": "renderTime"})
     load_time: network.TimeSinceEpoch = field(metadata={"cdp_name": "loadTime"})
-    size: float = field(metadata={"cdp_name": "size"})
+    size: float
     element_id: str | None = field(default=None, metadata={"cdp_name": "elementId"})
-    url: str | None = field(default=None, metadata={"cdp_name": "url"})
+    url: str | None = None
     node_id: dom.BackendNodeId | None = field(
         default=None, metadata={"cdp_name": "nodeId"}
     )
@@ -41,21 +41,21 @@ class LayoutShift:
     layout_shift.idl
     """
 
-    value: float = field(metadata={"cdp_name": "value"})
+    value: float
     had_recent_input: bool = field(metadata={"cdp_name": "hadRecentInput"})
     last_input_time: network.TimeSinceEpoch = field(
         metadata={"cdp_name": "lastInputTime"}
     )
-    sources: list[LayoutShiftAttribution] = field(metadata={"cdp_name": "sources"})
+    sources: list[LayoutShiftAttribution]
 
 
 @dataclass(kw_only=True, slots=True)
 class TimelineEvent:
     frame_id: page.FrameId = field(metadata={"cdp_name": "frameId"})
-    type: str = field(metadata={"cdp_name": "type"})
-    name: str = field(metadata={"cdp_name": "name"})
-    time: network.TimeSinceEpoch = field(metadata={"cdp_name": "time"})
-    duration: float | None = field(default=None, metadata={"cdp_name": "duration"})
+    type: str
+    name: str
+    time: network.TimeSinceEpoch
+    duration: float | None = None
     lcp_details: LargestContentfulPaint | None = field(
         default=None, metadata={"cdp_name": "lcpDetails"}
     )

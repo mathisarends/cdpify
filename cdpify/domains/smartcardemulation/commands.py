@@ -68,7 +68,7 @@ class ReportListReadersResultParams:
     """
 
     request_id: str = field(metadata={"cdp_name": "requestId"})
-    readers: list[str] = field(metadata={"cdp_name": "readers"})
+    readers: list[str]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -96,7 +96,7 @@ class ReportBeginTransactionResultParams:
     """
 
     request_id: str = field(metadata={"cdp_name": "requestId"})
-    handle: int = field(metadata={"cdp_name": "handle"})
+    handle: int
 
 
 @dataclass(kw_only=True, slots=True)
@@ -135,7 +135,7 @@ class ReportConnectResultParams:
     """
 
     request_id: str = field(metadata={"cdp_name": "requestId"})
-    handle: int = field(metadata={"cdp_name": "handle"})
+    handle: int
     active_protocol: Protocol | None = field(
         default=None, metadata={"cdp_name": "activeProtocol"}
     )
@@ -161,7 +161,7 @@ class ReportDataResultParams:
     """
 
     request_id: str = field(metadata={"cdp_name": "requestId"})
-    data: str = field(metadata={"cdp_name": "data"})
+    data: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -175,9 +175,9 @@ class ReportStatusResultParams:
 
     request_id: str = field(metadata={"cdp_name": "requestId"})
     reader_name: str = field(metadata={"cdp_name": "readerName"})
-    state: ConnectionState = field(metadata={"cdp_name": "state"})
-    atr: str = field(metadata={"cdp_name": "atr"})
-    protocol: Protocol | None = field(default=None, metadata={"cdp_name": "protocol"})
+    state: ConnectionState
+    atr: str
+    protocol: Protocol | None = None
 
 
 @dataclass(kw_only=True, slots=True)

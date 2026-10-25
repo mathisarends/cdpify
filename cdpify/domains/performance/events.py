@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from enum import StrEnum
 from typing import ClassVar
 
@@ -25,5 +25,5 @@ class MetricsEvent:
 
     __cdp_event__: ClassVar[str] = "Performance.metrics"
 
-    metrics: list[Metric] = field(metadata={"cdp_name": "metrics"})
-    title: str = field(metadata={"cdp_name": "title"})
+    metrics: list[Metric]
+    title: str

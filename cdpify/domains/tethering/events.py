@@ -21,5 +21,5 @@ class AcceptedEvent:
 
     __cdp_event__: ClassVar[str] = "Tethering.accepted"
 
-    port: int = field(metadata={"cdp_name": "port"})
+    port: int
     connection_id: str = field(metadata={"cdp_name": "connectionId"})

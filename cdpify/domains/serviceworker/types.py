@@ -86,7 +86,7 @@ class ServiceWorkerRouterSource:
     `RouterSourceDict`: `type` equals `sourceDict`, `sourceDict` has valid value.
     """
 
-    type: ServiceWorkerRouterSourceType = field(metadata={"cdp_name": "type"})
+    type: ServiceWorkerRouterSourceType
     source_dict: ServiceWorkerRouterSourceDict | None = field(
         default=None, metadata={"cdp_name": "sourceDict"}
     )
@@ -94,9 +94,9 @@ class ServiceWorkerRouterSource:
 
 @dataclass(kw_only=True, slots=True)
 class ServiceWorkerRouterRule:
-    condition: ServiceWorkerRouterCondition = field(metadata={"cdp_name": "condition"})
-    source: ServiceWorkerRouterSource = field(metadata={"cdp_name": "source"})
-    id: int = field(metadata={"cdp_name": "id"})
+    condition: ServiceWorkerRouterCondition
+    source: ServiceWorkerRouterSource
+    id: int
 
 
 @dataclass(kw_only=True, slots=True)
@@ -111,7 +111,7 @@ class ServiceWorkerVersion:
     running_status: ServiceWorkerVersionRunningStatus = field(
         metadata={"cdp_name": "runningStatus"}
     )
-    status: ServiceWorkerVersionStatus = field(metadata={"cdp_name": "status"})
+    status: ServiceWorkerVersionStatus
     script_last_modified: float | None = field(
         default=None, metadata={"cdp_name": "scriptLastModified"}
     )

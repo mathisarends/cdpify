@@ -17,7 +17,7 @@ class GPUDevice:
     vendor_id: float = field(metadata={"cdp_name": "vendorId"})
     device_id: float = field(metadata={"cdp_name": "deviceId"})
     sub_sys_id: float | None = field(default=None, metadata={"cdp_name": "subSysId"})
-    revision: float | None = field(default=None, metadata={"cdp_name": "revision"})
+    revision: float | None = None
     vendor_string: str = field(metadata={"cdp_name": "vendorString"})
     device_string: str = field(metadata={"cdp_name": "deviceString"})
     driver_vendor: str = field(metadata={"cdp_name": "driverVendor"})
@@ -30,8 +30,8 @@ class Size:
     Describes the width and height dimensions of an entity.
     """
 
-    width: int = field(metadata={"cdp_name": "width"})
-    height: int = field(metadata={"cdp_name": "height"})
+    width: int
+    height: int
 
 
 @dataclass(kw_only=True, slots=True)
@@ -41,7 +41,7 @@ class VideoDecodeAcceleratorCapability:
     maximum resolutions.
     """
 
-    profile: str = field(metadata={"cdp_name": "profile"})
+    profile: str
     max_resolution: Size = field(metadata={"cdp_name": "maxResolution"})
     min_resolution: Size = field(metadata={"cdp_name": "minResolution"})
 
@@ -53,7 +53,7 @@ class VideoEncodeAcceleratorCapability:
     and maximum framerate.
     """
 
-    profile: str = field(metadata={"cdp_name": "profile"})
+    profile: str
     max_resolution: Size = field(metadata={"cdp_name": "maxResolution"})
     max_framerate_numerator: int = field(metadata={"cdp_name": "maxFramerateNumerator"})
     max_framerate_denominator: int = field(
@@ -61,15 +61,15 @@ class VideoEncodeAcceleratorCapability:
     )
 
 
+type SubsamplingFormat = Literal["yuv420", "yuv422", "yuv444"]
 """
 YUV subsampling type of the pixels of a given image.
 """
-type SubsamplingFormat = Literal["yuv420", "yuv422", "yuv444"]
 
+type ImageType = Literal["jpeg", "webp", "unknown"]
 """
 Image format of a given image.
 """
-type ImageType = Literal["jpeg", "webp", "unknown"]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -78,7 +78,7 @@ class GPUInfo:
     Provides information about the GPU(s) on the system.
     """
 
-    devices: list[GPUDevice] = field(metadata={"cdp_name": "devices"})
+    devices: list[GPUDevice]
     aux_attributes: dict[str, Any] | None = field(
         default=None, metadata={"cdp_name": "auxAttributes"}
     )
@@ -102,6 +102,6 @@ class ProcessInfo:
     Represents process info.
     """
 
-    type: str = field(metadata={"cdp_name": "type"})
-    id: int = field(metadata={"cdp_name": "id"})
+    type: str
+    id: int
     cpu_time: float = field(metadata={"cdp_name": "cpuTime"})

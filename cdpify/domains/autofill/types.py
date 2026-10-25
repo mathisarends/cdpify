@@ -12,17 +12,17 @@ from cdpify.domains import dom, page
 
 @dataclass(kw_only=True, slots=True)
 class CreditCard:
-    number: str = field(metadata={"cdp_name": "number"})
-    name: str = field(metadata={"cdp_name": "name"})
+    number: str
+    name: str
     expiry_month: str = field(metadata={"cdp_name": "expiryMonth"})
     expiry_year: str = field(metadata={"cdp_name": "expiryYear"})
-    cvc: str = field(metadata={"cdp_name": "cvc"})
+    cvc: str
 
 
 @dataclass(kw_only=True, slots=True)
 class AddressField:
-    name: str = field(metadata={"cdp_name": "name"})
-    value: str = field(metadata={"cdp_name": "value"})
+    name: str
+    value: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -31,12 +31,12 @@ class AddressFields:
     A list of address fields.
     """
 
-    fields: list[AddressField] = field(metadata={"cdp_name": "fields"})
+    fields: list[AddressField]
 
 
 @dataclass(kw_only=True, slots=True)
 class Address:
-    fields: list[AddressField] = field(metadata={"cdp_name": "fields"})
+    fields: list[AddressField]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -53,19 +53,19 @@ class AddressUI:
     address_fields: list[AddressFields] = field(metadata={"cdp_name": "addressFields"})
 
 
+type FillingStrategy = Literal["autocompleteAttribute", "autofillInferred"]
 """
 Specified whether a filled field was done so by using the html autocomplete attribute
 or autofill heuristics.
 """
-type FillingStrategy = Literal["autocompleteAttribute", "autofillInferred"]
 
 
 @dataclass(kw_only=True, slots=True)
 class FilledField:
     html_type: str = field(metadata={"cdp_name": "htmlType"})
-    id: str = field(metadata={"cdp_name": "id"})
-    name: str = field(metadata={"cdp_name": "name"})
-    value: str = field(metadata={"cdp_name": "value"})
+    id: str
+    name: str
+    value: str
     autofill_type: str = field(metadata={"cdp_name": "autofillType"})
     filling_strategy: FillingStrategy = field(metadata={"cdp_name": "fillingStrategy"})
     frame_id: page.FrameId = field(metadata={"cdp_name": "frameId"})

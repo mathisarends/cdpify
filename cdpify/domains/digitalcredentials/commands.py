@@ -26,11 +26,9 @@ class SetVirtualWalletBehaviorParams:
     this frame.
     """
 
-    action: VirtualWalletAction = field(metadata={"cdp_name": "action"})
-    protocol: str | None = field(default=None, metadata={"cdp_name": "protocol"})
-    response: dict[str, Any] | None = field(
-        default=None, metadata={"cdp_name": "response"}
-    )
+    action: VirtualWalletAction
+    protocol: str | None = None
+    response: dict[str, Any] | None = None
     frame_id: page.FrameId | None = field(
         default=None, metadata={"cdp_name": "frameId"}
     )

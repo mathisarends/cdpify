@@ -15,6 +15,6 @@ class CrashReportContextEntry:
     Key-value pair in CrashReportContext.
     """
 
-    key: str = field(metadata={"cdp_name": "key"})
-    value: str = field(metadata={"cdp_name": "value"})
+    key: str
+    value: str
     frame_id: page.FrameId = field(metadata={"cdp_name": "frameId"})

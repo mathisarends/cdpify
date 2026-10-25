@@ -55,9 +55,9 @@ class SetPermissionParams:
     Set permission settings for given embedding and embedded origins.
     """
 
-    permission: PermissionDescriptor = field(metadata={"cdp_name": "permission"})
-    setting: PermissionSetting = field(metadata={"cdp_name": "setting"})
-    origin: str | None = field(default=None, metadata={"cdp_name": "origin"})
+    permission: PermissionDescriptor
+    setting: PermissionSetting
+    origin: str | None = None
     embedded_origin: str | None = field(
         default=None, metadata={"cdp_name": "embeddedOrigin"}
     )
@@ -73,8 +73,8 @@ class GrantPermissionsParams:
     Use setPermission instead.
     """
 
-    permissions: list[PermissionType] = field(metadata={"cdp_name": "permissions"})
-    origin: str | None = field(default=None, metadata={"cdp_name": "origin"})
+    permissions: list[PermissionType]
+    origin: str | None = None
     browser_context_id: BrowserContextID | None = field(
         default=None, metadata={"cdp_name": "browserContextId"}
     )
@@ -97,9 +97,7 @@ class SetDownloadBehaviorParams:
     Set the behavior when downloading a file.
     """
 
-    behavior: Literal["deny", "allow", "allowAndName", "default"] = field(
-        metadata={"cdp_name": "behavior"}
-    )
+    behavior: Literal["deny", "allow", "allowAndName", "default"]
     browser_context_id: BrowserContextID | None = field(
         default=None, metadata={"cdp_name": "browserContextId"}
     )
@@ -117,7 +115,7 @@ class CancelDownloadParams:
     Cancel a download if in progress
     """
 
-    guid: str = field(metadata={"cdp_name": "guid"})
+    guid: str
     browser_context_id: BrowserContextID | None = field(
         default=None, metadata={"cdp_name": "browserContextId"}
     )
@@ -126,15 +124,15 @@ class CancelDownloadParams:
 @dataclass(kw_only=True, slots=True)
 class GetVersionResult:
     protocol_version: str = field(metadata={"cdp_name": "protocolVersion"})
-    product: str = field(metadata={"cdp_name": "product"})
-    revision: str = field(metadata={"cdp_name": "revision"})
+    product: str
+    revision: str
     user_agent: str = field(metadata={"cdp_name": "userAgent"})
     js_version: str = field(metadata={"cdp_name": "jsVersion"})
 
 
 @dataclass(kw_only=True, slots=True)
 class GetBrowserCommandLineResult:
-    arguments: list[str] = field(metadata={"cdp_name": "arguments"})
+    arguments: list[str]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -154,13 +152,13 @@ class GetHistogramsParams:
     Get Chrome histograms.
     """
 
-    query: str | None = field(default=None, metadata={"cdp_name": "query"})
-    delta: bool | None = field(default=None, metadata={"cdp_name": "delta"})
+    query: str | None = None
+    delta: bool | None = None
 
 
 @dataclass(kw_only=True, slots=True)
 class GetHistogramsResult:
-    histograms: list[Histogram] = field(metadata={"cdp_name": "histograms"})
+    histograms: list[Histogram]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -169,13 +167,13 @@ class GetHistogramParams:
     Get a Chrome histogram by name.
     """
 
-    name: str = field(metadata={"cdp_name": "name"})
-    delta: bool | None = field(default=None, metadata={"cdp_name": "delta"})
+    name: str
+    delta: bool | None = None
 
 
 @dataclass(kw_only=True, slots=True)
 class GetHistogramResult:
-    histogram: Histogram = field(metadata={"cdp_name": "histogram"})
+    histogram: Histogram
 
 
 @dataclass(kw_only=True, slots=True)
@@ -189,7 +187,7 @@ class GetWindowBoundsParams:
 
 @dataclass(kw_only=True, slots=True)
 class GetWindowBoundsResult:
-    bounds: Bounds = field(metadata={"cdp_name": "bounds"})
+    bounds: Bounds
 
 
 @dataclass(kw_only=True, slots=True)
@@ -206,7 +204,7 @@ class GetWindowForTargetParams:
 @dataclass(kw_only=True, slots=True)
 class GetWindowForTargetResult:
     window_id: WindowID = field(metadata={"cdp_name": "windowId"})
-    bounds: Bounds = field(metadata={"cdp_name": "bounds"})
+    bounds: Bounds
 
 
 @dataclass(kw_only=True, slots=True)
@@ -216,7 +214,7 @@ class SetWindowBoundsParams:
     """
 
     window_id: WindowID = field(metadata={"cdp_name": "windowId"})
-    bounds: Bounds = field(metadata={"cdp_name": "bounds"})
+    bounds: Bounds
 
 
 @dataclass(kw_only=True, slots=True)
@@ -226,8 +224,8 @@ class SetContentsSizeParams:
     """
 
     window_id: WindowID = field(metadata={"cdp_name": "windowId"})
-    width: int | None = field(default=None, metadata={"cdp_name": "width"})
-    height: int | None = field(default=None, metadata={"cdp_name": "height"})
+    width: int | None = None
+    height: int | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -237,7 +235,7 @@ class SetDockTileParams:
     """
 
     badge_label: str | None = field(default=None, metadata={"cdp_name": "badgeLabel"})
-    image: str | None = field(default=None, metadata={"cdp_name": "image"})
+    image: str | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -256,12 +254,12 @@ class AddPrivacySandboxEnrollmentOverrideParams:
     site actually being enrolled. Only supported on page targets.
     """
 
-    url: str = field(metadata={"cdp_name": "url"})
+    url: str
 
 
 @dataclass(kw_only=True, slots=True)
 class GetGlobalPrivacyControlResult:
-    gpc: bool = field(metadata={"cdp_name": "gpc"})
+    gpc: bool
 
 
 @dataclass(kw_only=True, slots=True)
@@ -271,9 +269,9 @@ class SetGlobalPrivacyControlParams:
     https://www.w3.org/TR/gpc/#set-global-privacy-control
     """
 
-    gpc: bool = field(metadata={"cdp_name": "gpc"})
+    gpc: bool
 
 
 @dataclass(kw_only=True, slots=True)
 class SetGlobalPrivacyControlResult:
-    gpc: bool = field(metadata={"cdp_name": "gpc"})
+    gpc: bool

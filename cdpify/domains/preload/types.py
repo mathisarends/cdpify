@@ -9,10 +9,10 @@ from typing import Literal
 
 from cdpify.domains import dom, network
 
+RuleSetId = str
 """
 Unique id
 """
-RuleSetId = str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -21,13 +21,13 @@ class RuleSet:
     Corresponds to SpeculationRuleSet
     """
 
-    id: RuleSetId = field(metadata={"cdp_name": "id"})
+    id: RuleSetId
     loader_id: network.LoaderId = field(metadata={"cdp_name": "loaderId"})
     source_text: str = field(metadata={"cdp_name": "sourceText"})
     backend_node_id: dom.BackendNodeId | None = field(
         default=None, metadata={"cdp_name": "backendNodeId"}
     )
-    url: str | None = field(default=None, metadata={"cdp_name": "url"})
+    url: str | None = None
     request_id: network.RequestId | None = field(
         default=None, metadata={"cdp_name": "requestId"}
     )
@@ -37,24 +37,24 @@ class RuleSet:
     error_message: str | None = field(
         default=None, metadata={"cdp_name": "errorMessage"}
     )
-    tag: str | None = field(default=None, metadata={"cdp_name": "tag"})
+    tag: str | None = None
 
 
 type RuleSetErrorType = Literal[
     "SourceIsNotJsonObject", "InvalidRulesSkipped", "InvalidRulesetLevelTag"
 ]
 
+type SpeculationAction = Literal["Prefetch", "Prerender", "PrerenderUntilScript"]
 """
 The type of preloading attempted. It corresponds to mojom::SpeculationAction (although
 PrefetchWithSubresources is omitted as it isn't being used by clients).
 """
-type SpeculationAction = Literal["Prefetch", "Prerender", "PrerenderUntilScript"]
 
+type SpeculationTargetHint = Literal["Blank", "Self"]
 """
 Corresponds to mojom::SpeculationTargetHint. See
 https://github.com/WICG/nav-speculation/blob/main/triggers.md#window-name-targeting-hints
 """
-type SpeculationTargetHint = Literal["Blank", "Self"]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -67,8 +67,8 @@ class PreloadingAttemptKey:
     """
 
     loader_id: network.LoaderId = field(metadata={"cdp_name": "loaderId"})
-    action: SpeculationAction = field(metadata={"cdp_name": "action"})
-    url: str = field(metadata={"cdp_name": "url"})
+    action: SpeculationAction
+    url: str
     form_submission: bool | None = field(
         default=None, metadata={"cdp_name": "formSubmission"}
     )
@@ -87,22 +87,19 @@ class PreloadingAttemptSource:
     single attempt.
     """
 
-    key: PreloadingAttemptKey = field(metadata={"cdp_name": "key"})
+    key: PreloadingAttemptKey
     rule_set_ids: list[RuleSetId] = field(metadata={"cdp_name": "ruleSetIds"})
     node_ids: list[dom.BackendNodeId] = field(metadata={"cdp_name": "nodeIds"})
 
 
+PreloadPipelineId = str
 """
 Chrome manages different types of preloads together using a concept of preloading
 pipeline. For example, if a site uses a SpeculationRules for prerender, Chrome first
 starts a prefetch and then upgrades it to prerender. CDP events for them are emitted
 separately but they share `PreloadPipelineId`.
 """
-PreloadPipelineId = str
 
-"""
-List of FinalStatus reasons for Prerender2.
-"""
 type PrerenderFinalStatus = Literal[
     "Activated",
     "Destroyed",
@@ -181,19 +178,18 @@ type PrerenderFinalStatus = Literal[
     "FormSubmitWhenPrerendering",
     "CrossDocumentRestart",
 ]
+"""
+List of FinalStatus reasons for Prerender2.
+"""
 
+type PreloadingStatus = Literal[
+    "Pending", "Running", "Ready", "Success", "Failure", "NotSupported"
+]
 """
 Preloading status values, see also PreloadingTriggeringOutcome. This status is shared
 by prefetchStatusUpdated and prerenderStatusUpdated.
 """
-type PreloadingStatus = Literal[
-    "Pending", "Running", "Ready", "Success", "Failure", "NotSupported"
-]
 
-"""
-TODO(https://crbug.com/1384419): revisit the list of PrefetchStatus and filter out the
-ones that aren't necessary to the developers.
-"""
 type PrefetchStatus = Literal[
     "PrefetchAllowed",
     "PrefetchFailedIneligibleRedirect",
@@ -233,6 +229,10 @@ type PrefetchStatus = Literal[
     "PrefetchNotUsedProbeFailed",
     "PrefetchCancelledOnUserNavigation",
 ]
+"""
+TODO(https://crbug.com/1384419): revisit the list of PrefetchStatus and filter out the
+ones that aren't necessary to the developers.
+"""
 
 
 @dataclass(kw_only=True, slots=True)

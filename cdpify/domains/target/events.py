@@ -62,7 +62,7 @@ class ReceivedMessageFromTargetEvent:
     __cdp_event__: ClassVar[str] = "Target.receivedMessageFromTarget"
 
     session_id: SessionID = field(metadata={"cdp_name": "sessionId"})
-    message: str = field(metadata={"cdp_name": "message"})
+    message: str
     target_id: TargetID | None = field(default=None, metadata={"cdp_name": "targetId"})
 
 
@@ -97,7 +97,7 @@ class TargetCrashedEvent:
     __cdp_event__: ClassVar[str] = "Target.targetCrashed"
 
     target_id: TargetID = field(metadata={"cdp_name": "targetId"})
-    status: str = field(metadata={"cdp_name": "status"})
+    status: str
     error_code: int = field(metadata={"cdp_name": "errorCode"})
 
 

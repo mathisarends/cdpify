@@ -21,12 +21,12 @@ class FileHandlerAccept:
 
 @dataclass(kw_only=True, slots=True)
 class FileHandler:
-    action: str = field(metadata={"cdp_name": "action"})
-    accepts: list[FileHandlerAccept] = field(metadata={"cdp_name": "accepts"})
+    action: str
+    accepts: list[FileHandlerAccept]
     display_name: str = field(metadata={"cdp_name": "displayName"})
 
 
+type DisplayMode = Literal["standalone", "browser"]
 """
 If user prefers opening the app in browser or an app window.
 """
-type DisplayMode = Literal["standalone", "browser"]

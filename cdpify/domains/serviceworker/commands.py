@@ -29,24 +29,24 @@ class ServiceWorkerCommand(StrEnum):
 
 @dataclass(kw_only=True, slots=True)
 class DeliverPushMessageParams:
-    origin: str = field(metadata={"cdp_name": "origin"})
+    origin: str
     registration_id: RegistrationID = field(metadata={"cdp_name": "registrationId"})
-    data: str = field(metadata={"cdp_name": "data"})
+    data: str
 
 
 @dataclass(kw_only=True, slots=True)
 class DispatchSyncEventParams:
-    origin: str = field(metadata={"cdp_name": "origin"})
+    origin: str
     registration_id: RegistrationID = field(metadata={"cdp_name": "registrationId"})
-    tag: str = field(metadata={"cdp_name": "tag"})
+    tag: str
     last_chance: bool = field(metadata={"cdp_name": "lastChance"})
 
 
 @dataclass(kw_only=True, slots=True)
 class DispatchPeriodicSyncEventParams:
-    origin: str = field(metadata={"cdp_name": "origin"})
+    origin: str
     registration_id: RegistrationID = field(metadata={"cdp_name": "registrationId"})
-    tag: str = field(metadata={"cdp_name": "tag"})
+    tag: str
 
 
 @dataclass(kw_only=True, slots=True)

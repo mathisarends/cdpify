@@ -31,13 +31,11 @@ class BeginFrameParams:
     frame_time_ticks: float | None = field(
         default=None, metadata={"cdp_name": "frameTimeTicks"}
     )
-    interval: float | None = field(default=None, metadata={"cdp_name": "interval"})
+    interval: float | None = None
     no_display_updates: bool | None = field(
         default=None, metadata={"cdp_name": "noDisplayUpdates"}
     )
-    screenshot: ScreenshotParams | None = field(
-        default=None, metadata={"cdp_name": "screenshot"}
-    )
+    screenshot: ScreenshotParams | None = None
 
 
 @dataclass(kw_only=True, slots=True)

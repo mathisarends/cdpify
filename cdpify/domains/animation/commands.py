@@ -29,7 +29,7 @@ class GetCurrentTimeParams:
     Returns the current time of the an animation.
     """
 
-    id: str = field(metadata={"cdp_name": "id"})
+    id: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -48,7 +48,7 @@ class ReleaseAnimationsParams:
     Releases a set of animations to no longer be manipulated.
     """
 
-    animations: list[str] = field(metadata={"cdp_name": "animations"})
+    animations: list[str]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -71,7 +71,7 @@ class SeekAnimationsParams:
     Seek a set of animations to a particular time within each animation.
     """
 
-    animations: list[str] = field(metadata={"cdp_name": "animations"})
+    animations: list[str]
     current_time: float | None = field(
         default=None, metadata={"cdp_name": "currentTime"}
     )
@@ -86,8 +86,8 @@ class SetPausedParams:
     Sets the paused state of a set of animations.
     """
 
-    animations: list[str] = field(metadata={"cdp_name": "animations"})
-    paused: bool = field(metadata={"cdp_name": "paused"})
+    animations: list[str]
+    paused: bool
 
 
 @dataclass(kw_only=True, slots=True)
@@ -106,5 +106,5 @@ class SetTimingParams:
     """
 
     animation_id: str = field(metadata={"cdp_name": "animationId"})
-    duration: float = field(metadata={"cdp_name": "duration"})
-    delay: float = field(metadata={"cdp_name": "delay"})
+    duration: float
+    delay: float

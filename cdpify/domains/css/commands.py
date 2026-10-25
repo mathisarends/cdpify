@@ -95,7 +95,7 @@ class AddRuleParams:
 
     style_sheet_id: dom.StyleSheetId = field(metadata={"cdp_name": "styleSheetId"})
     rule_text: str = field(metadata={"cdp_name": "ruleText"})
-    location: SourceRange = field(metadata={"cdp_name": "location"})
+    location: SourceRange
     node_for_property_syntax_validation: dom.NodeId | None = field(
         default=None, metadata={"cdp_name": "nodeForPropertySyntaxValidation"}
     )
@@ -103,7 +103,7 @@ class AddRuleParams:
 
 @dataclass(kw_only=True, slots=True)
 class AddRuleResult:
-    rule: CSSRule = field(metadata={"cdp_name": "rule"})
+    rule: CSSRule
 
 
 @dataclass(kw_only=True, slots=True)
@@ -127,7 +127,7 @@ class CreateStyleSheetParams:
     """
 
     frame_id: page.FrameId = field(metadata={"cdp_name": "frameId"})
-    force: bool | None = field(default=None, metadata={"cdp_name": "force"})
+    force: bool | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -155,7 +155,7 @@ class ForceStartingStyleParams:
     """
 
     node_id: dom.NodeId = field(metadata={"cdp_name": "nodeId"})
-    forced: bool = field(metadata={"cdp_name": "forced"})
+    forced: bool
 
 
 @dataclass(kw_only=True, slots=True)
@@ -165,7 +165,7 @@ class ForcePositionTryOptionParams:
     """
 
     node_id: dom.NodeId = field(metadata={"cdp_name": "nodeId"})
-    index: int | None = field(default=None, metadata={"cdp_name": "index"})
+    index: int | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -217,7 +217,7 @@ class ResolveValuesParams:
     unmodified random() function parts.`
     """
 
-    values: list[str] = field(metadata={"cdp_name": "values"})
+    values: list[str]
     node_id: dom.NodeId = field(metadata={"cdp_name": "nodeId"})
     property_name: str | None = field(
         default=None, metadata={"cdp_name": "propertyName"}
@@ -232,13 +232,13 @@ class ResolveValuesParams:
 
 @dataclass(kw_only=True, slots=True)
 class ResolveValuesResult:
-    results: list[str] = field(metadata={"cdp_name": "results"})
+    results: list[str]
 
 
 @dataclass(kw_only=True, slots=True)
 class GetLonghandPropertiesParams:
     shorthand_name: str = field(metadata={"cdp_name": "shorthandName"})
-    value: str = field(metadata={"cdp_name": "value"})
+    value: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -286,9 +286,7 @@ class GetAnimatedStylesForNodeResult:
     transitions_style: CSSStyle | None = field(
         default=None, metadata={"cdp_name": "transitionsStyle"}
     )
-    inherited: list[InheritedAnimatedStyleEntry] | None = field(
-        default=None, metadata={"cdp_name": "inherited"}
-    )
+    inherited: list[InheritedAnimatedStyleEntry] | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -314,9 +312,7 @@ class GetMatchedStylesForNodeResult:
     pseudo_elements: list[PseudoElementMatches] | None = field(
         default=None, metadata={"cdp_name": "pseudoElements"}
     )
-    inherited: list[InheritedStyleEntry] | None = field(
-        default=None, metadata={"cdp_name": "inherited"}
-    )
+    inherited: list[InheritedStyleEntry] | None = None
     inherited_pseudo_elements: list[InheritedPseudoElementMatches] | None = field(
         default=None, metadata={"cdp_name": "inheritedPseudoElements"}
     )
@@ -355,7 +351,7 @@ class GetEnvironmentVariablesResult:
 
 @dataclass(kw_only=True, slots=True)
 class GetMediaQueriesResult:
-    medias: list[CSSMedia] = field(metadata={"cdp_name": "medias"})
+    medias: list[CSSMedia]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -370,7 +366,7 @@ class GetPlatformFontsForNodeParams:
 
 @dataclass(kw_only=True, slots=True)
 class GetPlatformFontsForNodeResult:
-    fonts: list[PlatformFontUsage] = field(metadata={"cdp_name": "fonts"})
+    fonts: list[PlatformFontUsage]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -384,7 +380,7 @@ class GetStyleSheetTextParams:
 
 @dataclass(kw_only=True, slots=True)
 class GetStyleSheetTextResult:
-    text: str = field(metadata={"cdp_name": "text"})
+    text: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -417,7 +413,7 @@ class GetLocationForSelectorParams:
 
 @dataclass(kw_only=True, slots=True)
 class GetLocationForSelectorResult:
-    ranges: list[SourceRange] = field(metadata={"cdp_name": "ranges"})
+    ranges: list[SourceRange]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -464,7 +460,7 @@ class SetEffectivePropertyValueForNodeParams:
 
     node_id: dom.NodeId = field(metadata={"cdp_name": "nodeId"})
     property_name: str = field(metadata={"cdp_name": "propertyName"})
-    value: str = field(metadata={"cdp_name": "value"})
+    value: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -474,7 +470,7 @@ class SetPropertyRulePropertyNameParams:
     """
 
     style_sheet_id: dom.StyleSheetId = field(metadata={"cdp_name": "styleSheetId"})
-    range: SourceRange = field(metadata={"cdp_name": "range"})
+    range: SourceRange
     property_name: str = field(metadata={"cdp_name": "propertyName"})
 
 
@@ -490,7 +486,7 @@ class SetKeyframeKeyParams:
     """
 
     style_sheet_id: dom.StyleSheetId = field(metadata={"cdp_name": "styleSheetId"})
-    range: SourceRange = field(metadata={"cdp_name": "range"})
+    range: SourceRange
     key_text: str = field(metadata={"cdp_name": "keyText"})
 
 
@@ -506,13 +502,13 @@ class SetMediaTextParams:
     """
 
     style_sheet_id: dom.StyleSheetId = field(metadata={"cdp_name": "styleSheetId"})
-    range: SourceRange = field(metadata={"cdp_name": "range"})
-    text: str = field(metadata={"cdp_name": "text"})
+    range: SourceRange
+    text: str
 
 
 @dataclass(kw_only=True, slots=True)
 class SetMediaTextResult:
-    media: CSSMedia = field(metadata={"cdp_name": "media"})
+    media: CSSMedia
 
 
 @dataclass(kw_only=True, slots=True)
@@ -523,8 +519,8 @@ class SetContainerQueryTextParams:
     """
 
     style_sheet_id: dom.StyleSheetId = field(metadata={"cdp_name": "styleSheetId"})
-    range: SourceRange = field(metadata={"cdp_name": "range"})
-    text: str = field(metadata={"cdp_name": "text"})
+    range: SourceRange
+    text: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -535,8 +531,8 @@ class SetContainerQueryTextResult:
 @dataclass(kw_only=True, slots=True)
 class SetContainerQueryConditionTextParams:
     style_sheet_id: dom.StyleSheetId = field(metadata={"cdp_name": "styleSheetId"})
-    range: SourceRange = field(metadata={"cdp_name": "range"})
-    text: str = field(metadata={"cdp_name": "text"})
+    range: SourceRange
+    text: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -551,13 +547,13 @@ class SetSupportsTextParams:
     """
 
     style_sheet_id: dom.StyleSheetId = field(metadata={"cdp_name": "styleSheetId"})
-    range: SourceRange = field(metadata={"cdp_name": "range"})
-    text: str = field(metadata={"cdp_name": "text"})
+    range: SourceRange
+    text: str
 
 
 @dataclass(kw_only=True, slots=True)
 class SetSupportsTextResult:
-    supports: CSSSupports = field(metadata={"cdp_name": "supports"})
+    supports: CSSSupports
 
 
 @dataclass(kw_only=True, slots=True)
@@ -567,13 +563,13 @@ class SetNavigationTextParams:
     """
 
     style_sheet_id: dom.StyleSheetId = field(metadata={"cdp_name": "styleSheetId"})
-    range: SourceRange = field(metadata={"cdp_name": "range"})
-    text: str = field(metadata={"cdp_name": "text"})
+    range: SourceRange
+    text: str
 
 
 @dataclass(kw_only=True, slots=True)
 class SetNavigationTextResult:
-    navigation: CSSNavigation = field(metadata={"cdp_name": "navigation"})
+    navigation: CSSNavigation
 
 
 @dataclass(kw_only=True, slots=True)
@@ -583,13 +579,13 @@ class SetScopeTextParams:
     """
 
     style_sheet_id: dom.StyleSheetId = field(metadata={"cdp_name": "styleSheetId"})
-    range: SourceRange = field(metadata={"cdp_name": "range"})
-    text: str = field(metadata={"cdp_name": "text"})
+    range: SourceRange
+    text: str
 
 
 @dataclass(kw_only=True, slots=True)
 class SetScopeTextResult:
-    scope: CSSScope = field(metadata={"cdp_name": "scope"})
+    scope: CSSScope
 
 
 @dataclass(kw_only=True, slots=True)
@@ -599,8 +595,8 @@ class SetRuleSelectorParams:
     """
 
     style_sheet_id: dom.StyleSheetId = field(metadata={"cdp_name": "styleSheetId"})
-    range: SourceRange = field(metadata={"cdp_name": "range"})
-    selector: str = field(metadata={"cdp_name": "selector"})
+    range: SourceRange
+    selector: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -615,7 +611,7 @@ class SetStyleSheetTextParams:
     """
 
     style_sheet_id: dom.StyleSheetId = field(metadata={"cdp_name": "styleSheetId"})
-    text: str = field(metadata={"cdp_name": "text"})
+    text: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -631,7 +627,7 @@ class SetStyleTextsParams:
     Applies specified style edits one after another in the given order.
     """
 
-    edits: list[StyleDeclarationEdit] = field(metadata={"cdp_name": "edits"})
+    edits: list[StyleDeclarationEdit]
     node_for_property_syntax_validation: dom.NodeId | None = field(
         default=None, metadata={"cdp_name": "nodeForPropertySyntaxValidation"}
     )
@@ -639,7 +635,7 @@ class SetStyleTextsParams:
 
 @dataclass(kw_only=True, slots=True)
 class SetStyleTextsResult:
-    styles: list[CSSStyle] = field(metadata={"cdp_name": "styles"})
+    styles: list[CSSStyle]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -649,8 +645,8 @@ class StopRuleUsageTrackingResult:
 
 @dataclass(kw_only=True, slots=True)
 class TakeCoverageDeltaResult:
-    coverage: list[RuleUsage] = field(metadata={"cdp_name": "coverage"})
-    timestamp: float = field(metadata={"cdp_name": "timestamp"})
+    coverage: list[RuleUsage]
+    timestamp: float
 
 
 @dataclass(kw_only=True, slots=True)
@@ -659,4 +655,4 @@ class SetLocalFontsEnabledParams:
     Enables/disables rendering of local CSS fonts (enabled by default).
     """
 
-    enabled: bool = field(metadata={"cdp_name": "enabled"})
+    enabled: bool

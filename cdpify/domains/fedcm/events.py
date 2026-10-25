@@ -25,9 +25,9 @@ class DialogShownEvent:
 
     dialog_id: str = field(metadata={"cdp_name": "dialogId"})
     dialog_type: DialogType = field(metadata={"cdp_name": "dialogType"})
-    accounts: list[Account] = field(metadata={"cdp_name": "accounts"})
-    title: str = field(metadata={"cdp_name": "title"})
-    subtitle: str | None = field(default=None, metadata={"cdp_name": "subtitle"})
+    accounts: list[Account]
+    title: str
+    subtitle: str | None = None
 
 
 @dataclass(kw_only=True, slots=True)

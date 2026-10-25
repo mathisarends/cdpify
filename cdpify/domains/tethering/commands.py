@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from enum import StrEnum
 
 
@@ -19,7 +19,7 @@ class BindParams:
     Request browser port binding.
     """
 
-    port: int = field(metadata={"cdp_name": "port"})
+    port: int
 
 
 @dataclass(kw_only=True, slots=True)
@@ -28,4 +28,4 @@ class UnbindParams:
     Request browser port unbinding.
     """
 
-    port: int = field(metadata={"cdp_name": "port"})
+    port: int

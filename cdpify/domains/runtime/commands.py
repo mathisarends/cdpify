@@ -65,7 +65,7 @@ class AwaitPromiseParams:
 
 @dataclass(kw_only=True, slots=True)
 class AwaitPromiseResult:
-    result: RemoteObject = field(metadata={"cdp_name": "result"})
+    result: RemoteObject
     exception_details: ExceptionDetails | None = field(
         default=None, metadata={"cdp_name": "exceptionDetails"}
     )
@@ -82,10 +82,8 @@ class CallFunctionOnParams:
     object_id: RemoteObjectId | None = field(
         default=None, metadata={"cdp_name": "objectId"}
     )
-    arguments: list[CallArgument] | None = field(
-        default=None, metadata={"cdp_name": "arguments"}
-    )
-    silent: bool | None = field(default=None, metadata={"cdp_name": "silent"})
+    arguments: list[CallArgument] | None = None
+    silent: bool | None = None
     return_by_value: bool | None = field(
         default=None, metadata={"cdp_name": "returnByValue"}
     )
@@ -115,7 +113,7 @@ class CallFunctionOnParams:
 
 @dataclass(kw_only=True, slots=True)
 class CallFunctionOnResult:
-    result: RemoteObject = field(metadata={"cdp_name": "result"})
+    result: RemoteObject
     exception_details: ExceptionDetails | None = field(
         default=None, metadata={"cdp_name": "exceptionDetails"}
     )
@@ -127,7 +125,7 @@ class CompileScriptParams:
     Compiles expression.
     """
 
-    expression: str = field(metadata={"cdp_name": "expression"})
+    expression: str
     source_url: str = field(metadata={"cdp_name": "sourceURL"})
     persist_script: bool = field(metadata={"cdp_name": "persistScript"})
     execution_context_id: ExecutionContextId | None = field(
@@ -149,12 +147,12 @@ class EvaluateParams:
     Evaluates expression on global object.
     """
 
-    expression: str = field(metadata={"cdp_name": "expression"})
+    expression: str
     object_group: str | None = field(default=None, metadata={"cdp_name": "objectGroup"})
     include_command_line_api: bool | None = field(
         default=None, metadata={"cdp_name": "includeCommandLineAPI"}
     )
-    silent: bool | None = field(default=None, metadata={"cdp_name": "silent"})
+    silent: bool | None = None
     context_id: ExecutionContextId | None = field(
         default=None, metadata={"cdp_name": "contextId"}
     )
@@ -173,7 +171,7 @@ class EvaluateParams:
     throw_on_side_effect: bool | None = field(
         default=None, metadata={"cdp_name": "throwOnSideEffect"}
     )
-    timeout: TimeDelta | None = field(default=None, metadata={"cdp_name": "timeout"})
+    timeout: TimeDelta | None = None
     disable_breaks: bool | None = field(
         default=None, metadata={"cdp_name": "disableBreaks"}
     )
@@ -191,7 +189,7 @@ class EvaluateParams:
 
 @dataclass(kw_only=True, slots=True)
 class EvaluateResult:
-    result: RemoteObject = field(metadata={"cdp_name": "result"})
+    result: RemoteObject
     exception_details: ExceptionDetails | None = field(
         default=None, metadata={"cdp_name": "exceptionDetails"}
     )
@@ -199,7 +197,7 @@ class EvaluateResult:
 
 @dataclass(kw_only=True, slots=True)
 class GetIsolateIdResult:
-    id: str = field(metadata={"cdp_name": "id"})
+    id: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -236,7 +234,7 @@ class GetPropertiesParams:
 
 @dataclass(kw_only=True, slots=True)
 class GetPropertiesResult:
-    result: list[PropertyDescriptor] = field(metadata={"cdp_name": "result"})
+    result: list[PropertyDescriptor]
     internal_properties: list[InternalPropertyDescriptor] | None = field(
         default=None, metadata={"cdp_name": "internalProperties"}
     )
@@ -261,7 +259,7 @@ class GlobalLexicalScopeNamesParams:
 
 @dataclass(kw_only=True, slots=True)
 class GlobalLexicalScopeNamesResult:
-    names: list[str] = field(metadata={"cdp_name": "names"})
+    names: list[str]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -274,7 +272,7 @@ class QueryObjectsParams:
 
 @dataclass(kw_only=True, slots=True)
 class QueryObjectsResult:
-    objects: RemoteObject = field(metadata={"cdp_name": "objects"})
+    objects: RemoteObject
 
 
 @dataclass(kw_only=True, slots=True)
@@ -306,7 +304,7 @@ class RunScriptParams:
         default=None, metadata={"cdp_name": "executionContextId"}
     )
     object_group: str | None = field(default=None, metadata={"cdp_name": "objectGroup"})
-    silent: bool | None = field(default=None, metadata={"cdp_name": "silent"})
+    silent: bool | None = None
     include_command_line_api: bool | None = field(
         default=None, metadata={"cdp_name": "includeCommandLineAPI"}
     )
@@ -323,7 +321,7 @@ class RunScriptParams:
 
 @dataclass(kw_only=True, slots=True)
 class RunScriptResult:
-    result: RemoteObject = field(metadata={"cdp_name": "result"})
+    result: RemoteObject
     exception_details: ExceptionDetails | None = field(
         default=None, metadata={"cdp_name": "exceptionDetails"}
     )
@@ -340,12 +338,12 @@ class SetAsyncCallStackDepthParams:
 
 @dataclass(kw_only=True, slots=True)
 class SetCustomObjectFormatterEnabledParams:
-    enabled: bool = field(metadata={"cdp_name": "enabled"})
+    enabled: bool
 
 
 @dataclass(kw_only=True, slots=True)
 class SetMaxCallStackSizeToCaptureParams:
-    size: int = field(metadata={"cdp_name": "size"})
+    size: int
 
 
 @dataclass(kw_only=True, slots=True)
@@ -358,7 +356,7 @@ class AddBindingParams:
     function call produces Runtime.bindingCalled notification.
     """
 
-    name: str = field(metadata={"cdp_name": "name"})
+    name: str
     execution_context_id: ExecutionContextId | None = field(
         default=None, metadata={"cdp_name": "executionContextId"}
     )
@@ -374,7 +372,7 @@ class RemoveBindingParams:
     current runtime agent from Runtime.bindingCalled notifications.
     """
 
-    name: str = field(metadata={"cdp_name": "name"})
+    name: str
 
 
 @dataclass(kw_only=True, slots=True)

@@ -4,11 +4,11 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 
 @dataclass(kw_only=True, slots=True)
 class Sink:
-    name: str = field(metadata={"cdp_name": "name"})
-    id: str = field(metadata={"cdp_name": "id"})
-    session: str | None = field(default=None, metadata={"cdp_name": "session"})
+    name: str
+    id: str
+    session: str | None = None

@@ -60,12 +60,12 @@ class GetObjectByHeapObjectIdParams:
 
 @dataclass(kw_only=True, slots=True)
 class GetObjectByHeapObjectIdResult:
-    result: runtime.RemoteObject = field(metadata={"cdp_name": "result"})
+    result: runtime.RemoteObject
 
 
 @dataclass(kw_only=True, slots=True)
 class GetSamplingProfileResult:
-    profile: SamplingHeapProfile = field(metadata={"cdp_name": "profile"})
+    profile: SamplingHeapProfile
 
 
 @dataclass(kw_only=True, slots=True)
@@ -91,7 +91,7 @@ class StartTrackingHeapObjectsParams:
 
 @dataclass(kw_only=True, slots=True)
 class StopSamplingResult:
-    profile: SamplingHeapProfile = field(metadata={"cdp_name": "profile"})
+    profile: SamplingHeapProfile
 
 
 @dataclass(kw_only=True, slots=True)

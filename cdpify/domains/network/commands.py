@@ -69,17 +69,17 @@ class NetworkCommand(StrEnum):
 
 @dataclass(kw_only=True, slots=True)
 class CanClearBrowserCacheResult:
-    result: bool = field(metadata={"cdp_name": "result"})
+    result: bool
 
 
 @dataclass(kw_only=True, slots=True)
 class CanClearBrowserCookiesResult:
-    result: bool = field(metadata={"cdp_name": "result"})
+    result: bool
 
 
 @dataclass(kw_only=True, slots=True)
 class CanEmulateNetworkConditionsResult:
-    result: bool = field(metadata={"cdp_name": "result"})
+    result: bool
 
 
 @dataclass(kw_only=True, slots=True)
@@ -89,10 +89,10 @@ class DeleteCookiesParams:
     pair.
     """
 
-    name: str = field(metadata={"cdp_name": "name"})
-    url: str | None = field(default=None, metadata={"cdp_name": "url"})
-    domain: str | None = field(default=None, metadata={"cdp_name": "domain"})
-    path: str | None = field(default=None, metadata={"cdp_name": "path"})
+    name: str
+    url: str | None = None
+    domain: str | None = None
+    path: str | None = None
     partition_key: CookiePartitionKey | None = field(
         default=None, metadata={"cdp_name": "partitionKey"}
     )
@@ -106,8 +106,8 @@ class EmulateNetworkConditionsParams:
     used together to the same effect.
     """
 
-    offline: bool = field(metadata={"cdp_name": "offline"})
-    latency: float = field(metadata={"cdp_name": "latency"})
+    offline: bool
+    latency: float
     download_throughput: float = field(metadata={"cdp_name": "downloadThroughput"})
     upload_throughput: float = field(metadata={"cdp_name": "uploadThroughput"})
     connection_type: ConnectionType | None = field(
@@ -131,7 +131,7 @@ class EmulateNetworkConditionsByRuleParams:
     `navigator` behavior.
     """
 
-    offline: bool | None = field(default=None, metadata={"cdp_name": "offline"})
+    offline: bool | None = None
     emulate_offline_service_worker: bool | None = field(
         default=None, metadata={"cdp_name": "emulateOfflineServiceWorker"}
     )
@@ -151,8 +151,8 @@ class OverrideNetworkStateParams:
     Override the state of navigator.onLine and navigator.connection.
     """
 
-    offline: bool = field(metadata={"cdp_name": "offline"})
-    latency: float = field(metadata={"cdp_name": "latency"})
+    offline: bool
+    latency: float
     download_throughput: float = field(metadata={"cdp_name": "downloadThroughput"})
     upload_throughput: float = field(metadata={"cdp_name": "uploadThroughput"})
     connection_type: ConnectionType | None = field(
@@ -201,7 +201,7 @@ class ConfigureDurableMessagesParams:
 
 @dataclass(kw_only=True, slots=True)
 class GetAllCookiesResult:
-    cookies: list[Cookie] = field(metadata={"cdp_name": "cookies"})
+    cookies: list[Cookie]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -210,7 +210,7 @@ class GetCertificateParams:
     Returns the DER-encoded certificate.
     """
 
-    origin: str = field(metadata={"cdp_name": "origin"})
+    origin: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -225,12 +225,12 @@ class GetCookiesParams:
     will return detailed cookie information in the `cookies` field.
     """
 
-    urls: list[str] | None = field(default=None, metadata={"cdp_name": "urls"})
+    urls: list[str] | None = None
 
 
 @dataclass(kw_only=True, slots=True)
 class GetCookiesResult:
-    cookies: list[Cookie] = field(metadata={"cdp_name": "cookies"})
+    cookies: list[Cookie]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -244,7 +244,7 @@ class GetResponseBodyParams:
 
 @dataclass(kw_only=True, slots=True)
 class GetResponseBodyResult:
-    body: str = field(metadata={"cdp_name": "body"})
+    body: str
     base64_encoded: bool = field(metadata={"cdp_name": "base64Encoded"})
 
 
@@ -282,7 +282,7 @@ class SearchInResponseBodyParams:
     """
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
-    query: str = field(metadata={"cdp_name": "query"})
+    query: str
     case_sensitive: bool | None = field(
         default=None, metadata={"cdp_name": "caseSensitive"}
     )
@@ -291,7 +291,7 @@ class SearchInResponseBodyParams:
 
 @dataclass(kw_only=True, slots=True)
 class SearchInResponseBodyResult:
-    result: list[debugger.SearchMatch] = field(metadata={"cdp_name": "result"})
+    result: list[debugger.SearchMatch]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -303,7 +303,7 @@ class SetBlockedURLsParams:
     url_patterns: list[BlockPattern] | None = field(
         default=None, metadata={"cdp_name": "urlPatterns"}
     )
-    urls: list[str] | None = field(default=None, metadata={"cdp_name": "urls"})
+    urls: list[str] | None = None
 
 
 @dataclass(kw_only=True, slots=True)
@@ -312,7 +312,7 @@ class SetBypassServiceWorkerParams:
     Toggles ignoring of service worker for each request.
     """
 
-    bypass: bool = field(metadata={"cdp_name": "bypass"})
+    bypass: bool
 
 
 @dataclass(kw_only=True, slots=True)
@@ -331,22 +331,18 @@ class SetCookieParams:
     exist.
     """
 
-    name: str = field(metadata={"cdp_name": "name"})
-    value: str = field(metadata={"cdp_name": "value"})
-    url: str | None = field(default=None, metadata={"cdp_name": "url"})
-    domain: str | None = field(default=None, metadata={"cdp_name": "domain"})
-    path: str | None = field(default=None, metadata={"cdp_name": "path"})
-    secure: bool | None = field(default=None, metadata={"cdp_name": "secure"})
+    name: str
+    value: str
+    url: str | None = None
+    domain: str | None = None
+    path: str | None = None
+    secure: bool | None = None
     http_only: bool | None = field(default=None, metadata={"cdp_name": "httpOnly"})
     same_site: CookieSameSite | None = field(
         default=None, metadata={"cdp_name": "sameSite"}
     )
-    expires: TimeSinceEpoch | None = field(
-        default=None, metadata={"cdp_name": "expires"}
-    )
-    priority: CookiePriority | None = field(
-        default=None, metadata={"cdp_name": "priority"}
-    )
+    expires: TimeSinceEpoch | None = None
+    priority: CookiePriority | None = None
     source_scheme: CookieSourceScheme | None = field(
         default=None, metadata={"cdp_name": "sourceScheme"}
     )
@@ -358,7 +354,7 @@ class SetCookieParams:
 
 @dataclass(kw_only=True, slots=True)
 class SetCookieResult:
-    success: bool = field(metadata={"cdp_name": "success"})
+    success: bool
 
 
 @dataclass(kw_only=True, slots=True)
@@ -367,7 +363,7 @@ class SetCookiesParams:
     Sets given cookies.
     """
 
-    cookies: list[CookieParam] = field(metadata={"cdp_name": "cookies"})
+    cookies: list[CookieParam]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -377,7 +373,7 @@ class SetExtraHTTPHeadersParams:
     page.
     """
 
-    headers: Headers = field(metadata={"cdp_name": "headers"})
+    headers: Headers
 
 
 @dataclass(kw_only=True, slots=True)
@@ -386,7 +382,7 @@ class SetAttachDebugStackParams:
     Specifies whether to attach a page script stack id in requests
     """
 
-    enabled: bool = field(metadata={"cdp_name": "enabled"})
+    enabled: bool
 
 
 @dataclass(kw_only=True, slots=True)
@@ -399,7 +395,7 @@ class SetUserAgentOverrideParams:
     accept_language: str | None = field(
         default=None, metadata={"cdp_name": "acceptLanguage"}
     )
-    platform: str | None = field(default=None, metadata={"cdp_name": "platform"})
+    platform: str | None = None
     user_agent_metadata: emulation.UserAgentMetadata | None = field(
         default=None, metadata={"cdp_name": "userAgentMetadata"}
     )
@@ -433,7 +429,7 @@ class GetSecurityIsolationStatusParams:
 
 @dataclass(kw_only=True, slots=True)
 class GetSecurityIsolationStatusResult:
-    status: SecurityIsolationStatus = field(metadata={"cdp_name": "status"})
+    status: SecurityIsolationStatus
 
 
 @dataclass(kw_only=True, slots=True)
@@ -444,7 +440,7 @@ class EnableReportingApiParams:
     existing reports.
     """
 
-    enable: bool = field(metadata={"cdp_name": "enable"})
+    enable: bool
 
 
 @dataclass(kw_only=True, slots=True)
@@ -453,7 +449,7 @@ class EnableDeviceBoundSessionsParams:
     Sets up tracking device bound sessions and fetching of initial set of sessions.
     """
 
-    enable: bool = field(metadata={"cdp_name": "enable"})
+    enable: bool
 
 
 @dataclass(kw_only=True, slots=True)
@@ -462,7 +458,7 @@ class DeleteDeviceBoundSessionParams:
     Deletes a device bound session.
     """
 
-    key: DeviceBoundSessionKey = field(metadata={"cdp_name": "key"})
+    key: DeviceBoundSessionKey
 
 
 @dataclass(kw_only=True, slots=True)
@@ -471,7 +467,7 @@ class FetchSchemefulSiteParams:
     Fetches the schemeful site for a specific origin.
     """
 
-    origin: str = field(metadata={"cdp_name": "origin"})
+    origin: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -488,13 +484,13 @@ class LoadNetworkResourceParams:
     frame_id: page.FrameId | None = field(
         default=None, metadata={"cdp_name": "frameId"}
     )
-    url: str = field(metadata={"cdp_name": "url"})
-    options: LoadNetworkResourceOptions = field(metadata={"cdp_name": "options"})
+    url: str
+    options: LoadNetworkResourceOptions
 
 
 @dataclass(kw_only=True, slots=True)
 class LoadNetworkResourceResult:
-    resource: LoadNetworkResourcePageResult = field(metadata={"cdp_name": "resource"})
+    resource: LoadNetworkResourcePageResult
 
 
 @dataclass(kw_only=True, slots=True)

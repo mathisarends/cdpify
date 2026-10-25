@@ -42,7 +42,7 @@ class DeleteEntryParams:
     """
 
     cache_id: CacheId = field(metadata={"cdp_name": "cacheId"})
-    request: str = field(metadata={"cdp_name": "request"})
+    request: str
 
 
 @dataclass(kw_only=True, slots=True)
@@ -62,7 +62,7 @@ class RequestCacheNamesParams:
 
 @dataclass(kw_only=True, slots=True)
 class RequestCacheNamesResult:
-    caches: list[Cache] = field(metadata={"cdp_name": "caches"})
+    caches: list[Cache]
 
 
 @dataclass(kw_only=True, slots=True)
@@ -78,7 +78,7 @@ class RequestCachedResponseParams:
 
 @dataclass(kw_only=True, slots=True)
 class RequestCachedResponseResult:
-    response: CachedResponse = field(metadata={"cdp_name": "response"})
+    response: CachedResponse
 
 
 @dataclass(kw_only=True, slots=True)
