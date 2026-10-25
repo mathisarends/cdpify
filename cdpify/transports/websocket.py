@@ -7,11 +7,7 @@ from typing import Any, Self
 import websockets
 from websockets.asyncio.client import ClientConnection, connect
 
-from cdpify.exceptions import (
-    CDPCommandException,
-    CDPConnectionException,
-    CDPTimeoutException,
-)
+from cdpify.exceptions import CDPCommandError, CDPConnectionError, CDPTimeoutError
 from cdpify.transport import TransportEvent
 
 logger = logging.getLogger(__name__)
@@ -52,7 +48,7 @@ class WebSocketTransport:
 
     async def connect(self) -> None:
         if self.is_connected:
-            raise CDPConnectionException("Already connected")
+            raise CDPConnectionError("Already connected")
 
         logger.info("Connecting to %s", self.url)
         try:
@@ -62,7 +58,7 @@ class WebSocketTransport:
                 additional_headers=self._additional_headers,
             )
         except Exception as error:
-            raise CDPConnectionException(f"Connection failed: {error}") from error
+            raise CDPConnectionError(f"Connection failed: {error}") from error
 
         self._is_shutting_down = False
         self._event_queue = asyncio.Queue()
@@ -92,7 +88,7 @@ class WebSocketTransport:
         timeout: float | None = None,
     ) -> dict[str, Any]:
         if not self.is_connected:
-            raise CDPConnectionException("Not connected")
+            raise CDPConnectionError("Not connected")
 
         request_timeout = self._default_timeout if timeout is None else timeout
         message_id = self._next_message_id
@@ -159,10 +155,7 @@ class WebSocketTransport:
         if not future or future.done():
             return
 
-        if "error" in message:
-            future.set_exception(CDPCommandException(message["error"]))
-        else:
-            future.set_result(message.get("result", {}))
+        future.set_result(message)
 
     def _handle_event(self, message: dict[str, Any]) -> None:
         self._event_queue.put_nowait(
@@ -184,7 +177,7 @@ class WebSocketTransport:
         self._message_loop_task = None
 
     def _cancel_pending_requests(self) -> None:
-        error = CDPConnectionException("Disconnected")
+        error = CDPConnectionError("Disconnected")
         for future in self._pending_requests.values():
             if not future.done():
                 future.set_exception(error)
@@ -212,7 +205,7 @@ class WebSocketTransport:
     ) -> None:
         connection = self._ws
         if connection is None:
-            raise CDPConnectionException("Not connected")
+            raise CDPConnectionError("Not connected")
         logger.debug("-> #%s: %s", message_id, method)
         await connection.send(json.dumps(message))
 
@@ -224,11 +217,15 @@ class WebSocketTransport:
         timeout: float,
     ) -> dict[str, Any]:
         try:
-            result = await asyncio.wait_for(future, timeout=timeout)
-            logger.debug("<- #%s: OK", message_id)
-            return result
+            response = await asyncio.wait_for(future, timeout=timeout)
         except TimeoutError:
-            raise CDPTimeoutException(f"{method} timed out after {timeout}s") from None
+            raise CDPTimeoutError(f"{method} timed out after {timeout}s") from None
+
+        if "error" in response:
+            logger.debug("<- #%s: error", message_id)
+            raise CDPCommandError.from_response(method, response["error"])
+        logger.debug("<- #%s: OK", message_id)
+        return response.get("result", {})
 
 
 def _build_message(

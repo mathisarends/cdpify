@@ -5,6 +5,23 @@ Breaking changes are listed first in each release.
 
 ## [Unreleased]
 
+### Breaking changes
+
+- Exceptions follow Python naming: `CDPException` → `CDPError`,
+  `CDPConnectionException` → `CDPConnectionError`, `CDPCommandException` →
+  `CDPCommandError`, `CDPTimeoutException` → `CDPTimeoutError`. The old names
+  still work but emit a `DeprecationWarning` and will be removed in a future
+  release.
+- `CDPCommandError` takes `(method, code, message, data=None)` instead of the
+  raw error dict. Use `CDPCommandError.from_response(method, error)` to build
+  one from a CDP error payload. The message now names the failed method, e.g.
+  `Page.navigate failed with CDP error -32000: Cannot navigate to invalid URL`.
+
+### Changed
+
+- `CDPTimeoutError` also inherits from the built-in `TimeoutError`, so
+  `except TimeoutError` catches command timeouts.
+
 ### Fixed
 
 - Event listeners (`listen()`, `listen_all()`, `CDPSession.listen()`) now end

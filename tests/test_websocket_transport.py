@@ -5,9 +5,9 @@ from unittest.mock import AsyncMock
 import pytest
 
 from cdpify.exceptions import (
-    CDPCommandException,
-    CDPConnectionException,
-    CDPTimeoutException,
+    CDPCommandError,
+    CDPConnectionError,
+    CDPTimeoutError,
 )
 from cdpify.transports.websocket import (
     WebSocketTransport,
@@ -47,17 +47,29 @@ async def test_creates_and_registers_pending_request() -> None:
 
 
 @pytest.mark.asyncio
-async def test_handle_response_sets_result_and_command_error() -> None:
+async def test_await_response_returns_result() -> None:
     transport = WebSocketTransport("ws://example")
-    ok_future = _create_pending_request(transport._pending_requests, 1)
-    err_future = _create_pending_request(transport._pending_requests, 2)
+    future = _create_pending_request(transport._pending_requests, 1)
 
     transport._handle_response({"id": 1, "result": {"ok": True}})
+    result = await transport._await_response(1, "Page.enable", future, timeout=1.0)
+
+    assert result == {"ok": True}
+
+
+@pytest.mark.asyncio
+async def test_await_response_raises_command_error_with_method() -> None:
+    transport = WebSocketTransport("ws://example")
+    future = _create_pending_request(transport._pending_requests, 2)
+
     transport._handle_response({"id": 2, "error": {"code": 9, "message": "failed"}})
 
-    assert await ok_future == {"ok": True}
-    with pytest.raises(CDPCommandException):
-        await err_future
+    with pytest.raises(CDPCommandError) as error_info:
+        await transport._await_response(2, "Page.enable", future, timeout=1.0)
+
+    assert error_info.value.method == "Page.enable"
+    assert error_info.value.code == 9
+    assert str(error_info.value) == "Page.enable failed with CDP error 9: failed"
 
 
 @pytest.mark.asyncio
@@ -101,7 +113,7 @@ async def test_await_response_raises_timeout() -> None:
     transport = WebSocketTransport("ws://example")
     unresolved: asyncio.Future[dict[str, object]] = asyncio.Future()
 
-    with pytest.raises(CDPTimeoutException):
+    with pytest.raises(CDPTimeoutError):
         await transport._await_response(
             1,
             "Page.enable",
@@ -114,7 +126,7 @@ async def test_await_response_raises_timeout() -> None:
 async def test_execute_requires_connection() -> None:
     transport = WebSocketTransport("ws://example")
 
-    with pytest.raises(CDPConnectionException):
+    with pytest.raises(CDPConnectionError):
         await transport.execute("Runtime.enable")
 
 
@@ -124,10 +136,10 @@ async def test_execute_removes_pending_request_after_failure() -> None:
     transport._ws = _FakeWebSocket()  # type: ignore[assignment]
     transport._send = AsyncMock()  # type: ignore[method-assign]
     transport._await_response = AsyncMock(  # type: ignore[method-assign]
-        side_effect=CDPTimeoutException("timeout")
+        side_effect=CDPTimeoutError("timeout")
     )
 
-    with pytest.raises(CDPTimeoutException):
+    with pytest.raises(CDPTimeoutError):
         await transport.execute("Runtime.enable")
 
     assert transport._pending_requests == {}
@@ -145,7 +157,7 @@ async def test_disconnect_cancels_pending_requests_and_closes_websocket() -> Non
 
     assert websocket.closed is True
     assert transport.is_connected is False
-    with pytest.raises(CDPConnectionException):
+    with pytest.raises(CDPConnectionError):
         await pending
 
 

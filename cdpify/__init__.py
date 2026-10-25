@@ -2,10 +2,11 @@ from .client import Client
 from .codec import decode_cdp, encode_cdp
 from .events import ReceivedEvent
 from .exceptions import (
-    CDPCommandException,
-    CDPConnectionException,
-    CDPException,
-    CDPTimeoutException,
+    CDPCommandError,
+    CDPConnectionError,
+    CDPError,
+    CDPTimeoutError,
+    deprecated_exception,
 )
 from .executor import CommandExecutor
 from .session import CDPSession
@@ -20,8 +21,15 @@ __all__ = [
     "encode_cdp",
     "Transport",
     "TransportEvent",
-    "CDPException",
-    "CDPConnectionException",
-    "CDPCommandException",
-    "CDPTimeoutException",
+    "CDPError",
+    "CDPConnectionError",
+    "CDPCommandError",
+    "CDPTimeoutError",
 ]
+
+
+def __getattr__(name: str) -> type[CDPError]:
+    replacement = deprecated_exception(name)
+    if replacement is None:
+        raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
+    return replacement
