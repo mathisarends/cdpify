@@ -16,6 +16,19 @@ Breaking changes are listed first in each release.
   raw error dict. Use `CDPCommandError.from_response(method, error)` to build
   one from a CDP error payload. The message now names the failed method, e.g.
   `Page.navigate failed with CDP error -32000: Cannot navigate to invalid URL`.
+- `listen()`, `listen_all()` and `CDPSession.listen()` are now regular methods
+  that return an `EventSubscription` instead of async generators. `async for`
+  and `aclose()` keep working. Code that relied on the generator type itself
+  (e.g. `inspect.isasyncgen`) or on `asend()`/`athrow()` must be updated.
+
+### Added
+
+- `EventSubscription` registers its handler as soon as `listen()` is called, so
+  events emitted before the first read are no longer lost. It supports
+  `async with` for deterministic cleanup and `await events.next(timeout=...)`
+  for waiting on a single event. `next()` raises `CDPStreamClosedError` once
+  the stream has ended.
+- `FindInPage` domain (`client.find_in_page`) from the latest CDP spec.
 
 ### Changed
 
@@ -30,10 +43,6 @@ Breaking changes are listed first in each release.
   received are still delivered before the stream ends.
 - Generated fields and parameters whose CDP name is a Python keyword get a
   trailing underscore (`or` → `or_`), so the generated code is valid again.
-
-### Added
-
-- `FindInPage` domain (`client.find_in_page`) from the latest CDP spec.
 
 ### Performance
 

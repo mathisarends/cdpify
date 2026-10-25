@@ -1,10 +1,11 @@
 from .client import Client
 from .codec import decode_cdp, encode_cdp
-from .events import ReceivedEvent
+from .events import EventSubscription, ReceivedEvent
 from .exceptions import (
     CDPCommandError,
     CDPConnectionError,
     CDPError,
+    CDPStreamClosedError,
     CDPTimeoutError,
     deprecated_exception,
 )
@@ -16,6 +17,7 @@ __all__ = [
     "Client",
     "CDPSession",
     "CommandExecutor",
+    "EventSubscription",
     "ReceivedEvent",
     "decode_cdp",
     "encode_cdp",
@@ -25,6 +27,7 @@ __all__ = [
     "CDPConnectionError",
     "CDPCommandError",
     "CDPTimeoutError",
+    "CDPStreamClosedError",
 ]
 
 

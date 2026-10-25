@@ -43,6 +43,10 @@ class CDPTimeoutError(CDPError, TimeoutError):
     """A command did not receive a response in time."""
 
 
+class CDPStreamClosedError(CDPError):
+    """An event subscription ended before the next event arrived."""
+
+
 _DEPRECATED_NAMES = {
     "CDPException": CDPError,
     "CDPConnectionException": CDPConnectionError,

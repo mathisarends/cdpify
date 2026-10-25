@@ -284,3 +284,18 @@ async def test_listen_after_disconnect_ends_immediately() -> None:
     events = [event async for event in client.listen("Test.event", _EventModel)]
 
     assert events == []
+
+
+@pytest.mark.asyncio
+async def test_listen_receives_events_emitted_before_first_read() -> None:
+    transport = _FakeTransport()
+    client = Client(transport=transport)
+    await client.connect()
+
+    async with client.listen("Test.event", _EventModel) as events:
+        transport.emit(TransportEvent(method="Test.event", params={"value": 3}))
+        await asyncio.sleep(0.01)
+
+        assert await events.next(timeout=1.0) == _EventModel(value=3)
+
+    await client.disconnect()

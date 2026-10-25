@@ -1,10 +1,9 @@
 import asyncio
 import logging
-from collections.abc import AsyncIterator
 from typing import Any, Self
 
 from cdpify.domains import DomainAccessors
-from cdpify.events import EventRouter, ReceivedEvent
+from cdpify.events import EventRouter, EventSubscription, ReceivedEvent
 from cdpify.executor import BoundCommandExecutor
 from cdpify.session import CDPSession
 from cdpify.transport import Transport, TransportEvent
@@ -83,34 +82,32 @@ class Client(DomainAccessors):
             timeout=timeout,
         )
 
-    async def listen[T](
+    def listen[T](
         self,
         event_name: str,
         event_type: type[T],
         timeout: float | None = None,
-    ) -> AsyncIterator[T]:
-        """Listen for events emitted by the root CDP connection only."""
-        async for event in self._event_router.listen(
+    ) -> EventSubscription[T]:
+        """Subscribe to events emitted by the root CDP connection only."""
+        return self._event_router.listen(
             event_name,
             event_type,
             session_id=None,
             timeout=timeout,
-        ):
-            yield event
+        )
 
-    async def listen_all[T](
+    def listen_all[T](
         self,
         event_name: str,
         event_type: type[T],
         timeout: float | None = None,
-    ) -> AsyncIterator[ReceivedEvent[T]]:
-        """Listen for matching events from the root and every target session."""
-        async for event in self._event_router.listen_all(
+    ) -> EventSubscription[ReceivedEvent[T]]:
+        """Subscribe to matching events from the root and every target session."""
+        return self._event_router.listen_all(
             event_name,
             event_type,
             timeout=timeout,
-        ):
-            yield event
+        )
 
     async def _run_event_loop(self) -> None:
         try:

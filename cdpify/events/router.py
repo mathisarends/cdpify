@@ -1,11 +1,11 @@
-import asyncio
-from collections.abc import AsyncIterator
+from collections.abc import Callable
 from dataclasses import dataclass
 
 from cdpify.codec import decode_cdp
 from cdpify.transport import TransportEvent
 
 from .dispatcher import EventDispatcher, RawCDPEvent
+from .subscription import EventBuffer, EventSubscription
 
 
 @dataclass(frozen=True, slots=True)
@@ -16,15 +16,12 @@ class ReceivedEvent[T]:
     session_id: str | None
 
 
-_STREAM_CLOSED = object()
-
-
 class EventRouter:
     """Decode and route transport events to root, session, or global listeners."""
 
     def __init__(self) -> None:
         self._dispatcher = EventDispatcher()
-        self._queues: set[asyncio.Queue[RawCDPEvent | object]] = set()
+        self._buffers: set[EventBuffer] = set()
         self._closed = False
 
     @property
@@ -40,8 +37,8 @@ class EventRouter:
         if self._closed:
             return
         self._closed = True
-        for queue in self._queues:
-            queue.put_nowait(_STREAM_CLOSED)
+        for buffer in self._buffers:
+            buffer.finish()
 
     async def dispatch(self, event: TransportEvent) -> bool:
         return await self._dispatcher.dispatch(
@@ -49,75 +46,77 @@ class EventRouter:
             RawCDPEvent(params=event.params, session_id=event.session_id),
         )
 
-    async def listen[T](
+    def listen[T](
         self,
         event_name: str,
         event_type: type[T],
         *,
         session_id: str | None,
         timeout: float | None = None,
-    ) -> AsyncIterator[T]:
-        async for event in self._listen_raw(
+    ) -> EventSubscription[T]:
+        return self._subscribe(
             event_name,
+            lambda event: decode_cdp(event_type, event.params),
             session_id=session_id,
             timeout=timeout,
-        ):
-            yield decode_cdp(event_type, event.params)
+        )
 
-    async def listen_all[T](
+    def listen_all[T](
         self,
         event_name: str,
         event_type: type[T],
         *,
         timeout: float | None = None,
-    ) -> AsyncIterator[ReceivedEvent[T]]:
-        async for event in self._listen_raw(
+    ) -> EventSubscription[ReceivedEvent[T]]:
+        return self._subscribe(
             event_name,
-            all_sessions=True,
-            timeout=timeout,
-        ):
-            yield ReceivedEvent(
+            lambda event: ReceivedEvent(
                 value=decode_cdp(event_type, event.params),
                 session_id=event.session_id,
-            )
+            ),
+            all_sessions=True,
+            timeout=timeout,
+        )
 
-    async def _listen_raw(
+    def _subscribe[T](
         self,
         event_name: str,
+        convert: Callable[[RawCDPEvent], T],
         *,
         session_id: str | None = None,
         all_sessions: bool = False,
-        timeout: float | None = None,
-    ) -> AsyncIterator[RawCDPEvent]:
+        timeout: float | None,
+    ) -> EventSubscription[T]:
+        buffer = EventBuffer()
         if self._closed:
-            return
-
-        queue: asyncio.Queue[RawCDPEvent | object] = asyncio.Queue()
+            buffer.finish()
+            return EventSubscription(
+                buffer, convert, timeout=timeout, unsubscribe=_do_nothing
+            )
 
         async def handler(event: RawCDPEvent) -> None:
-            queue.put_nowait(event)
+            buffer.push(event)
 
-        self._queues.add(queue)
-        try:
-            self._dispatcher.add_handler(
-                event_name,
-                handler,
-                session_id=session_id,
-                all_sessions=all_sessions,
-            )
-            while True:
-                if timeout is None:
-                    item = await queue.get()
-                else:
-                    item = await asyncio.wait_for(queue.get(), timeout=timeout)
-                if not isinstance(item, RawCDPEvent):
-                    return
-                yield item
-        finally:
-            self._queues.discard(queue)
+        def unsubscribe() -> None:
+            self._buffers.discard(buffer)
             self._dispatcher.remove_handler(
                 event_name,
                 handler,
                 session_id=session_id,
                 all_sessions=all_sessions,
             )
+
+        self._dispatcher.add_handler(
+            event_name,
+            handler,
+            session_id=session_id,
+            all_sessions=all_sessions,
+        )
+        self._buffers.add(buffer)
+        return EventSubscription(
+            buffer, convert, timeout=timeout, unsubscribe=unsubscribe
+        )
+
+
+def _do_nothing() -> None:
+    pass

@@ -1,8 +1,7 @@
-from collections.abc import AsyncIterator
 from typing import Any
 
 from cdpify.domains import DomainAccessors
-from cdpify.events.router import EventRouter
+from cdpify.events import EventRouter, EventSubscription
 from cdpify.executor import BoundCommandExecutor
 from cdpify.transport import Transport
 
@@ -39,16 +38,16 @@ class CDPSession(DomainAccessors):
             timeout=timeout,
         )
 
-    async def listen[T](
+    def listen[T](
         self,
         event_name: str,
         event_type: type[T],
         timeout: float | None = None,
-    ) -> AsyncIterator[T]:
-        async for event in self._event_router.listen(
+    ) -> EventSubscription[T]:
+        """Subscribe to events emitted by this session only."""
+        return self._event_router.listen(
             event_name,
             event_type,
             session_id=self._session_id,
             timeout=timeout,
-        ):
-            yield event
+        )
