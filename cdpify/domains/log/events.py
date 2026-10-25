@@ -6,6 +6,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import StrEnum
+from typing import ClassVar
 
 from .types import (
     LogEntry,
@@ -21,5 +22,7 @@ class EntryAddedEvent:
     """
     Issued when new message was logged.
     """
+
+    __cdp_event__: ClassVar[str] = "Log.entryAdded"
 
     entry: LogEntry = field(metadata={"cdp_name": "entry"})

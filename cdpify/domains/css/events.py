@@ -6,6 +6,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import StrEnum
+from typing import ClassVar
 
 from cdpify.domains import dom
 
@@ -31,6 +32,8 @@ class FontsUpdatedEvent:
     successfully loaded web font.
     """
 
+    __cdp_event__: ClassVar[str] = "CSS.fontsUpdated"
+
     font: FontFace | None = field(default=None, metadata={"cdp_name": "font"})
 
 
@@ -42,7 +45,7 @@ class MediaQueryResultChangedEvent:
     features.
     """
 
-    pass
+    __cdp_event__: ClassVar[str] = "CSS.mediaQueryResultChanged"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -50,6 +53,8 @@ class StyleSheetAddedEvent:
     """
     Fired whenever an active document stylesheet is added.
     """
+
+    __cdp_event__: ClassVar[str] = "CSS.styleSheetAdded"
 
     header: CSSStyleSheetHeader = field(metadata={"cdp_name": "header"})
 
@@ -60,6 +65,8 @@ class StyleSheetChangedEvent:
     Fired whenever a stylesheet is changed as a result of the client operation.
     """
 
+    __cdp_event__: ClassVar[str] = "CSS.styleSheetChanged"
+
     style_sheet_id: dom.StyleSheetId = field(metadata={"cdp_name": "styleSheetId"})
 
 
@@ -69,9 +76,13 @@ class StyleSheetRemovedEvent:
     Fired whenever an active document stylesheet is removed.
     """
 
+    __cdp_event__: ClassVar[str] = "CSS.styleSheetRemoved"
+
     style_sheet_id: dom.StyleSheetId = field(metadata={"cdp_name": "styleSheetId"})
 
 
 @dataclass(kw_only=True, slots=True)
 class ComputedStyleUpdatedEvent:
+    __cdp_event__: ClassVar[str] = "CSS.computedStyleUpdated"
+
     node_id: dom.NodeId = field(metadata={"cdp_name": "nodeId"})

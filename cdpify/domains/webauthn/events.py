@@ -6,6 +6,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import StrEnum
+from typing import ClassVar
 
 from .types import (
     AuthenticatorId,
@@ -26,6 +27,8 @@ class CredentialAddedEvent:
     Triggered when a credential is added to an authenticator.
     """
 
+    __cdp_event__: ClassVar[str] = "WebAuthn.credentialAdded"
+
     authenticator_id: AuthenticatorId = field(metadata={"cdp_name": "authenticatorId"})
     credential: Credential = field(metadata={"cdp_name": "credential"})
 
@@ -36,6 +39,8 @@ class CredentialDeletedEvent:
     Triggered when a credential is deleted, e.g. through
     PublicKeyCredential.signalUnknownCredential().
     """
+
+    __cdp_event__: ClassVar[str] = "WebAuthn.credentialDeleted"
 
     authenticator_id: AuthenticatorId = field(metadata={"cdp_name": "authenticatorId"})
     credential_id: str = field(metadata={"cdp_name": "credentialId"})
@@ -48,6 +53,8 @@ class CredentialUpdatedEvent:
     PublicKeyCredential.signalCurrentUserDetails().
     """
 
+    __cdp_event__: ClassVar[str] = "WebAuthn.credentialUpdated"
+
     authenticator_id: AuthenticatorId = field(metadata={"cdp_name": "authenticatorId"})
     credential: Credential = field(metadata={"cdp_name": "credential"})
 
@@ -57,6 +64,8 @@ class CredentialAssertedEvent:
     """
     Triggered when a credential is used in a webauthn assertion.
     """
+
+    __cdp_event__: ClassVar[str] = "WebAuthn.credentialAsserted"
 
     authenticator_id: AuthenticatorId = field(metadata={"cdp_name": "authenticatorId"})
     credential: Credential = field(metadata={"cdp_name": "credential"})

@@ -6,6 +6,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import StrEnum
+from typing import ClassVar
 
 from .types import (
     InsecureContentStatus,
@@ -30,6 +31,8 @@ class CertificateErrorEvent:
     target should override certificate errors at the same time.
     """
 
+    __cdp_event__: ClassVar[str] = "Security.certificateError"
+
     event_id: int = field(metadata={"cdp_name": "eventId"})
     error_type: str = field(metadata={"cdp_name": "errorType"})
     request_url: str = field(metadata={"cdp_name": "requestURL"})
@@ -41,6 +44,8 @@ class VisibleSecurityStateChangedEvent:
     The security state of the page changed.
     """
 
+    __cdp_event__: ClassVar[str] = "Security.visibleSecurityStateChanged"
+
     visible_security_state: VisibleSecurityState = field(
         metadata={"cdp_name": "visibleSecurityState"}
     )
@@ -51,6 +56,8 @@ class SecurityStateChangedEvent:
     """
     The security state of the page changed. No longer being sent.
     """
+
+    __cdp_event__: ClassVar[str] = "Security.securityStateChanged"
 
     security_state: SecurityState = field(metadata={"cdp_name": "securityState"})
     scheme_is_cryptographic: bool = field(

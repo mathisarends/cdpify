@@ -6,6 +6,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import StrEnum
+from typing import ClassVar
 
 from cdpify.domains import dom, page
 
@@ -26,6 +27,8 @@ class InspectNodeRequestedEvent:
     `setInspectMode` or when user manually inspects an element.
     """
 
+    __cdp_event__: ClassVar[str] = "Overlay.inspectNodeRequested"
+
     backend_node_id: dom.BackendNodeId = field(metadata={"cdp_name": "backendNodeId"})
 
 
@@ -36,6 +39,8 @@ class NodeHighlightRequestedEvent:
     `setInspectMode`.
     """
 
+    __cdp_event__: ClassVar[str] = "Overlay.nodeHighlightRequested"
+
     node_id: dom.NodeId = field(metadata={"cdp_name": "nodeId"})
 
 
@@ -44,6 +49,8 @@ class ScreenshotRequestedEvent:
     """
     Fired when user asks to capture screenshot of some area on the page.
     """
+
+    __cdp_event__: ClassVar[str] = "Overlay.screenshotRequested"
 
     viewport: page.Viewport = field(metadata={"cdp_name": "viewport"})
 
@@ -54,6 +61,8 @@ class InspectPanelShowRequestedEvent:
     Fired when user asks to show the Inspect panel.
     """
 
+    __cdp_event__: ClassVar[str] = "Overlay.inspectPanelShowRequested"
+
     backend_node_id: dom.BackendNodeId = field(metadata={"cdp_name": "backendNodeId"})
 
 
@@ -62,6 +71,8 @@ class InspectedElementWindowRestoredEvent:
     """
     Fired when user asks to restore the Inspected Element floating window.
     """
+
+    __cdp_event__: ClassVar[str] = "Overlay.inspectedElementWindowRestored"
 
     backend_node_id: dom.BackendNodeId = field(metadata={"cdp_name": "backendNodeId"})
 
@@ -72,4 +83,4 @@ class InspectModeCanceledEvent:
     Fired when user cancels the inspect mode.
     """
 
-    pass
+    __cdp_event__: ClassVar[str] = "Overlay.inspectModeCanceled"

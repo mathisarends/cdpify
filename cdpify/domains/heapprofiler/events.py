@@ -6,6 +6,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import StrEnum
+from typing import ClassVar
 
 
 class HeapProfilerEvent(StrEnum):
@@ -18,6 +19,8 @@ class HeapProfilerEvent(StrEnum):
 
 @dataclass(kw_only=True, slots=True)
 class AddHeapSnapshotChunkEvent:
+    __cdp_event__: ClassVar[str] = "HeapProfiler.addHeapSnapshotChunk"
+
     chunk: str = field(metadata={"cdp_name": "chunk"})
 
 
@@ -27,6 +30,8 @@ class HeapStatsUpdateEvent:
     If heap objects tracking has been started then backend may send update for one or
     more fragments
     """
+
+    __cdp_event__: ClassVar[str] = "HeapProfiler.heapStatsUpdate"
 
     stats_update: list[int] = field(metadata={"cdp_name": "statsUpdate"})
 
@@ -40,12 +45,16 @@ class LastSeenObjectIdEvent:
     before a new lastSeenObjectId event.
     """
 
+    __cdp_event__: ClassVar[str] = "HeapProfiler.lastSeenObjectId"
+
     last_seen_object_id: int = field(metadata={"cdp_name": "lastSeenObjectId"})
     timestamp: float = field(metadata={"cdp_name": "timestamp"})
 
 
 @dataclass(kw_only=True, slots=True)
 class ReportHeapSnapshotProgressEvent:
+    __cdp_event__: ClassVar[str] = "HeapProfiler.reportHeapSnapshotProgress"
+
     done: int = field(metadata={"cdp_name": "done"})
     total: int = field(metadata={"cdp_name": "total"})
     finished: bool | None = field(default=None, metadata={"cdp_name": "finished"})
@@ -53,4 +62,4 @@ class ReportHeapSnapshotProgressEvent:
 
 @dataclass(kw_only=True, slots=True)
 class ResetProfilesEvent:
-    pass
+    __cdp_event__: ClassVar[str] = "HeapProfiler.resetProfiles"

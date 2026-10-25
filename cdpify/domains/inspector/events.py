@@ -6,6 +6,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import StrEnum
+from typing import ClassVar
 
 
 class InspectorEvent(StrEnum):
@@ -22,6 +23,8 @@ class DetachedEvent:
     reason.
     """
 
+    __cdp_event__: ClassVar[str] = "Inspector.detached"
+
     reason: str = field(metadata={"cdp_name": "reason"})
 
 
@@ -31,7 +34,7 @@ class TargetCrashedEvent:
     Fired when debugging target has crashed
     """
 
-    pass
+    __cdp_event__: ClassVar[str] = "Inspector.targetCrashed"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -40,7 +43,7 @@ class TargetReloadedAfterCrashEvent:
     Fired when debugging target has reloaded after crash
     """
 
-    pass
+    __cdp_event__: ClassVar[str] = "Inspector.targetReloadedAfterCrash"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -50,4 +53,4 @@ class WorkerScriptLoadedEvent:
     evaluated.
     """
 
-    pass
+    __cdp_event__: ClassVar[str] = "Inspector.workerScriptLoaded"

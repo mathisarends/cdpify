@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import StrEnum
-from typing import Literal
+from typing import ClassVar, Literal
 
 from cdpify.domains import page
 
@@ -22,6 +22,8 @@ class DownloadWillBeginEvent:
     Fired when page is about to start a download.
     """
 
+    __cdp_event__: ClassVar[str] = "Browser.downloadWillBegin"
+
     frame_id: page.FrameId = field(metadata={"cdp_name": "frameId"})
     guid: str = field(metadata={"cdp_name": "guid"})
     url: str = field(metadata={"cdp_name": "url"})
@@ -33,6 +35,8 @@ class DownloadProgressEvent:
     """
     Fired when download makes progress. Last call has |done| == true.
     """
+
+    __cdp_event__: ClassVar[str] = "Browser.downloadProgress"
 
     guid: str = field(metadata={"cdp_name": "guid"})
     total_bytes: float = field(metadata={"cdp_name": "totalBytes"})

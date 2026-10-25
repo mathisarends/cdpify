@@ -6,6 +6,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import StrEnum
+from typing import ClassVar
 
 from .types import (
     Sink,
@@ -24,6 +25,8 @@ class SinksUpdatedEvent:
     software surface that you can cast to.
     """
 
+    __cdp_event__: ClassVar[str] = "Cast.sinksUpdated"
+
     sinks: list[Sink] = field(metadata={"cdp_name": "sinks"})
 
 
@@ -33,5 +36,7 @@ class IssueUpdatedEvent:
     This is fired whenever the outstanding issue/error message changes. |issueMessage|
     is empty if there is no issue.
     """
+
+    __cdp_event__: ClassVar[str] = "Cast.issueUpdated"
 
     issue_message: str = field(metadata={"cdp_name": "issueMessage"})

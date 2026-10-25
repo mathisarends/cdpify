@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import StrEnum
-from typing import Any, Literal
+from typing import Any, ClassVar, Literal
 
 from cdpify.domains import debugger, runtime
 
@@ -33,6 +33,8 @@ class BreakpointResolvedEvent:
     favor of `resolvedBreakpoints` in the `scriptParsed` event.
     """
 
+    __cdp_event__: ClassVar[str] = "Debugger.breakpointResolved"
+
     breakpoint_id: BreakpointId = field(metadata={"cdp_name": "breakpointId"})
     location: Location = field(metadata={"cdp_name": "location"})
 
@@ -43,6 +45,8 @@ class PausedEvent:
     Fired when the virtual machine stopped on breakpoint or exception or any other stop
     criteria.
     """
+
+    __cdp_event__: ClassVar[str] = "Debugger.paused"
 
     call_frames: list[CallFrame] = field(metadata={"cdp_name": "callFrames"})
     reason: Literal[
@@ -83,7 +87,7 @@ class ResumedEvent:
     Fired when the virtual machine resumed execution.
     """
 
-    pass
+    __cdp_event__: ClassVar[str] = "Debugger.resumed"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -91,6 +95,8 @@ class ScriptFailedToParseEvent:
     """
     Fired when virtual machine fails to parse the script.
     """
+
+    __cdp_event__: ClassVar[str] = "Debugger.scriptFailedToParse"
 
     script_id: runtime.ScriptId = field(metadata={"cdp_name": "scriptId"})
     url: str = field(metadata={"cdp_name": "url"})
@@ -132,6 +138,8 @@ class ScriptParsedEvent:
     Fired when virtual machine parses script. This event is also fired for all known
     and uncollected scripts upon enabling debugger.
     """
+
+    __cdp_event__: ClassVar[str] = "Debugger.scriptParsed"
 
     script_id: runtime.ScriptId = field(metadata={"cdp_name": "scriptId"})
     url: str = field(metadata={"cdp_name": "url"})

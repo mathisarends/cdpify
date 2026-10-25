@@ -6,6 +6,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import StrEnum
+from typing import ClassVar
 
 from .types import (
     AXNode,
@@ -24,6 +25,8 @@ class LoadCompleteEvent:
     assistive technology when the web page has finished loading.
     """
 
+    __cdp_event__: ClassVar[str] = "Accessibility.loadComplete"
+
     root: AXNode = field(metadata={"cdp_name": "root"})
 
 
@@ -33,5 +36,7 @@ class NodesUpdatedEvent:
     The nodesUpdated event is sent every time a previously requested node has changed
     the in tree.
     """
+
+    __cdp_event__: ClassVar[str] = "Accessibility.nodesUpdated"
 
     nodes: list[AXNode] = field(metadata={"cdp_name": "nodes"})

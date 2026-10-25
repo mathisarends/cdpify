@@ -6,6 +6,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import StrEnum
+from typing import ClassVar
 
 from .types import (
     AddressUI,
@@ -22,6 +23,8 @@ class AddressFormFilledEvent:
     """
     Emitted when an address form is filled.
     """
+
+    __cdp_event__: ClassVar[str] = "Autofill.addressFormFilled"
 
     filled_fields: list[FilledField] = field(metadata={"cdp_name": "filledFields"})
     address_ui: AddressUI = field(metadata={"cdp_name": "addressUi"})

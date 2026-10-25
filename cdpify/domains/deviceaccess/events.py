@@ -6,6 +6,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import StrEnum
+from typing import ClassVar
 
 from .types import (
     PromptDevice,
@@ -23,6 +24,8 @@ class DeviceRequestPromptedEvent:
     A device request opened a user prompt to select a device. Respond with the
     selectPrompt or cancelPrompt command.
     """
+
+    __cdp_event__: ClassVar[str] = "DeviceAccess.deviceRequestPrompted"
 
     id: RequestId = field(metadata={"cdp_name": "id"})
     devices: list[PromptDevice] = field(metadata={"cdp_name": "devices"})

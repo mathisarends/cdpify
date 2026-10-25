@@ -54,6 +54,7 @@ class ModelView:
     name: str
     docstring: str | None = None
     fields: tuple[FieldView, ...] = ()
+    event_name: str | None = None
 
 
 @dataclass(frozen=True, slots=True)

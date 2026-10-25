@@ -6,6 +6,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import StrEnum
+from typing import ClassVar
 
 from cdpify.domains import network, page
 
@@ -38,11 +39,15 @@ class RuleSetUpdatedEvent:
     Upsert. Currently, it is only emitted when a rule set added.
     """
 
+    __cdp_event__: ClassVar[str] = "Preload.ruleSetUpdated"
+
     rule_set: RuleSet = field(metadata={"cdp_name": "ruleSet"})
 
 
 @dataclass(kw_only=True, slots=True)
 class RuleSetRemovedEvent:
+    __cdp_event__: ClassVar[str] = "Preload.ruleSetRemoved"
+
     id: RuleSetId = field(metadata={"cdp_name": "id"})
 
 
@@ -51,6 +56,8 @@ class PreloadEnabledStateUpdatedEvent:
     """
     Fired when a preload enabled state is updated.
     """
+
+    __cdp_event__: ClassVar[str] = "Preload.preloadEnabledStateUpdated"
 
     disabled_by_preference: bool = field(metadata={"cdp_name": "disabledByPreference"})
     disabled_by_data_saver: bool = field(metadata={"cdp_name": "disabledByDataSaver"})
@@ -71,6 +78,8 @@ class PrefetchStatusUpdatedEvent:
     Fired when a prefetch attempt is updated.
     """
 
+    __cdp_event__: ClassVar[str] = "Preload.prefetchStatusUpdated"
+
     key: PreloadingAttemptKey = field(metadata={"cdp_name": "key"})
     pipeline_id: PreloadPipelineId = field(metadata={"cdp_name": "pipelineId"})
     initiating_frame_id: page.FrameId = field(
@@ -87,6 +96,8 @@ class PrerenderStatusUpdatedEvent:
     """
     Fired when a prerender attempt is updated.
     """
+
+    __cdp_event__: ClassVar[str] = "Preload.prerenderStatusUpdated"
 
     key: PreloadingAttemptKey = field(metadata={"cdp_name": "key"})
     pipeline_id: PreloadPipelineId = field(metadata={"cdp_name": "pipelineId"})
@@ -110,6 +121,8 @@ class PreloadingAttemptSourcesUpdatedEvent:
     """
     Send a list of sources for all preloading attempts in a document.
     """
+
+    __cdp_event__: ClassVar[str] = "Preload.preloadingAttemptSourcesUpdated"
 
     loader_id: network.LoaderId = field(metadata={"cdp_name": "loaderId"})
     preloading_attempt_sources: list[PreloadingAttemptSource] = field(

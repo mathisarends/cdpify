@@ -28,10 +28,10 @@ class {{ model.name }}:
 {% if model.docstring %}
 {{ model.docstring }}
 {% endif %}
+    __cdp_event__: ClassVar[str] = "{{ model.event_name }}"
 {% if model.fields %}
+
     {{ model.fields | map(attribute="declaration") | join("\n    ") }}
-{% else %}
-    pass
 {% endif %}
 {% endfor %}
 {% else %}

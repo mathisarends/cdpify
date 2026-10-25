@@ -6,6 +6,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import StrEnum
+from typing import ClassVar
 
 from .types import (
     ScreenOrientation,
@@ -24,7 +25,7 @@ class VirtualTimeBudgetExpiredEvent:
     has run out.
     """
 
-    pass
+    __cdp_event__: ClassVar[str] = "Emulation.virtualTimeBudgetExpired"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -34,6 +35,8 @@ class ScreenOrientationLockChangedEvent:
     while device emulation is enabled. This allows the DevTools frontend to update the
     emulated device orientation accordingly.
     """
+
+    __cdp_event__: ClassVar[str] = "Emulation.screenOrientationLockChanged"
 
     locked: bool = field(metadata={"cdp_name": "locked"})
     orientation: ScreenOrientation | None = field(

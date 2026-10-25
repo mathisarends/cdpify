@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import StrEnum
-from typing import Any, Literal
+from typing import Any, ClassVar, Literal
 
 from .types import (
     ExceptionDetails,
@@ -35,6 +35,8 @@ class BindingCalledEvent:
     Notification is issued every time when binding is called.
     """
 
+    __cdp_event__: ClassVar[str] = "Runtime.bindingCalled"
+
     name: str = field(metadata={"cdp_name": "name"})
     payload: str = field(metadata={"cdp_name": "payload"})
     execution_context_id: ExecutionContextId = field(
@@ -47,6 +49,8 @@ class ConsoleAPICalledEvent:
     """
     Issued when console API was called.
     """
+
+    __cdp_event__: ClassVar[str] = "Runtime.consoleAPICalled"
 
     type: Literal[
         "log",
@@ -87,6 +91,8 @@ class ExceptionRevokedEvent:
     Issued when unhandled exception was revoked.
     """
 
+    __cdp_event__: ClassVar[str] = "Runtime.exceptionRevoked"
+
     reason: str = field(metadata={"cdp_name": "reason"})
     exception_id: int = field(metadata={"cdp_name": "exceptionId"})
 
@@ -96,6 +102,8 @@ class ExceptionThrownEvent:
     """
     Issued when exception was thrown and unhandled.
     """
+
+    __cdp_event__: ClassVar[str] = "Runtime.exceptionThrown"
 
     timestamp: Timestamp = field(metadata={"cdp_name": "timestamp"})
     exception_details: ExceptionDetails = field(
@@ -109,6 +117,8 @@ class ExecutionContextCreatedEvent:
     Issued when new execution context is created.
     """
 
+    __cdp_event__: ClassVar[str] = "Runtime.executionContextCreated"
+
     context: ExecutionContextDescription = field(metadata={"cdp_name": "context"})
 
 
@@ -117,6 +127,8 @@ class ExecutionContextDestroyedEvent:
     """
     Issued when execution context is destroyed.
     """
+
+    __cdp_event__: ClassVar[str] = "Runtime.executionContextDestroyed"
 
     execution_context_id: ExecutionContextId = field(
         metadata={"cdp_name": "executionContextId"}
@@ -132,7 +144,7 @@ class ExecutionContextsClearedEvent:
     Issued when all executionContexts were cleared in browser
     """
 
-    pass
+    __cdp_event__: ClassVar[str] = "Runtime.executionContextsCleared"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -141,6 +153,8 @@ class InspectRequestedEvent:
     Issued when object should be inspected (for example, as a result of inspect()
     command line API call).
     """
+
+    __cdp_event__: ClassVar[str] = "Runtime.inspectRequested"
 
     object: RemoteObject = field(metadata={"cdp_name": "object"})
     hints: dict[str, Any] = field(metadata={"cdp_name": "hints"})

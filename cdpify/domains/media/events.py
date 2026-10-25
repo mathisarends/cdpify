@@ -6,6 +6,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import StrEnum
+from typing import ClassVar
 
 from .types import (
     Player,
@@ -32,6 +33,8 @@ class PlayerPropertiesChangedEvent:
     player properties. A null propValue indicates removal.
     """
 
+    __cdp_event__: ClassVar[str] = "Media.playerPropertiesChanged"
+
     player_id: PlayerId = field(metadata={"cdp_name": "playerId"})
     properties: list[PlayerProperty] = field(metadata={"cdp_name": "properties"})
 
@@ -43,6 +46,8 @@ class PlayerEventsAddedEvent:
     congestion. If batched, events must ALWAYS be in chronological order.
     """
 
+    __cdp_event__: ClassVar[str] = "Media.playerEventsAdded"
+
     player_id: PlayerId = field(metadata={"cdp_name": "playerId"})
     events: list[PlayerEvent] = field(metadata={"cdp_name": "events"})
 
@@ -53,6 +58,8 @@ class PlayerMessagesLoggedEvent:
     Send a list of any messages that need to be delivered.
     """
 
+    __cdp_event__: ClassVar[str] = "Media.playerMessagesLogged"
+
     player_id: PlayerId = field(metadata={"cdp_name": "playerId"})
     messages: list[PlayerMessage] = field(metadata={"cdp_name": "messages"})
 
@@ -62,6 +69,8 @@ class PlayerErrorsRaisedEvent:
     """
     Send a list of any errors that need to be delivered.
     """
+
+    __cdp_event__: ClassVar[str] = "Media.playerErrorsRaised"
 
     player_id: PlayerId = field(metadata={"cdp_name": "playerId"})
     errors: list[PlayerError] = field(metadata={"cdp_name": "errors"})
@@ -74,5 +83,7 @@ class PlayerCreatedEvent:
     of active players. If an agent is restored, it will receive one event for each
     active player.
     """
+
+    __cdp_event__: ClassVar[str] = "Media.playerCreated"
 
     player: Player = field(metadata={"cdp_name": "player"})

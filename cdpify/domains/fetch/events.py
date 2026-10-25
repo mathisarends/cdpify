@@ -6,6 +6,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import StrEnum
+from typing import ClassVar
 
 from cdpify.domains import network, page
 
@@ -35,6 +36,8 @@ class RequestPausedEvent:
     presence of the `location` header. Requests resulting from a redirect will have
     `redirectedRequestId` field set.
     """
+
+    __cdp_event__: ClassVar[str] = "Fetch.requestPaused"
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
     request: network.Request = field(metadata={"cdp_name": "request"})
@@ -66,6 +69,8 @@ class AuthRequiredEvent:
     Issued when the domain is enabled with handleAuthRequests set to true. The request
     is paused until client responds with continueWithAuth.
     """
+
+    __cdp_event__: ClassVar[str] = "Fetch.authRequired"
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
     request: network.Request = field(metadata={"cdp_name": "request"})

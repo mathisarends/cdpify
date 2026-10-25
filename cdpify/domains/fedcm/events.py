@@ -6,6 +6,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import StrEnum
+from typing import ClassVar
 
 from .types import (
     Account,
@@ -20,6 +21,8 @@ class FedCmEvent(StrEnum):
 
 @dataclass(kw_only=True, slots=True)
 class DialogShownEvent:
+    __cdp_event__: ClassVar[str] = "FedCm.dialogShown"
+
     dialog_id: str = field(metadata={"cdp_name": "dialogId"})
     dialog_type: DialogType = field(metadata={"cdp_name": "dialogType"})
     accounts: list[Account] = field(metadata={"cdp_name": "accounts"})
@@ -33,5 +36,7 @@ class DialogClosedEvent:
     Triggered when a dialog is closed, either by user action, JS abort, or a command
     below.
     """
+
+    __cdp_event__: ClassVar[str] = "FedCm.dialogClosed"
 
     dialog_id: str = field(metadata={"cdp_name": "dialogId"})

@@ -6,6 +6,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import StrEnum
+from typing import ClassVar
 
 from .types import (
     SessionID,
@@ -30,6 +31,8 @@ class AttachedToTargetEvent:
     Issued when attached to target because of auto-attach or `attachToTarget` command.
     """
 
+    __cdp_event__: ClassVar[str] = "Target.attachedToTarget"
+
     session_id: SessionID = field(metadata={"cdp_name": "sessionId"})
     target_info: TargetInfo = field(metadata={"cdp_name": "targetInfo"})
     waiting_for_debugger: bool = field(metadata={"cdp_name": "waitingForDebugger"})
@@ -43,6 +46,8 @@ class DetachedFromTargetEvent:
     attached to it.
     """
 
+    __cdp_event__: ClassVar[str] = "Target.detachedFromTarget"
+
     session_id: SessionID = field(metadata={"cdp_name": "sessionId"})
     target_id: TargetID | None = field(default=None, metadata={"cdp_name": "targetId"})
 
@@ -53,6 +58,8 @@ class ReceivedMessageFromTargetEvent:
     Notifies about a new protocol message received from the session (as reported in
     `attachedToTarget` event).
     """
+
+    __cdp_event__: ClassVar[str] = "Target.receivedMessageFromTarget"
 
     session_id: SessionID = field(metadata={"cdp_name": "sessionId"})
     message: str = field(metadata={"cdp_name": "message"})
@@ -65,6 +72,8 @@ class TargetCreatedEvent:
     Issued when a possible inspection target is created.
     """
 
+    __cdp_event__: ClassVar[str] = "Target.targetCreated"
+
     target_info: TargetInfo = field(metadata={"cdp_name": "targetInfo"})
 
 
@@ -74,6 +83,8 @@ class TargetDestroyedEvent:
     Issued when a target is destroyed.
     """
 
+    __cdp_event__: ClassVar[str] = "Target.targetDestroyed"
+
     target_id: TargetID = field(metadata={"cdp_name": "targetId"})
 
 
@@ -82,6 +93,8 @@ class TargetCrashedEvent:
     """
     Issued when a target has crashed.
     """
+
+    __cdp_event__: ClassVar[str] = "Target.targetCrashed"
 
     target_id: TargetID = field(metadata={"cdp_name": "targetId"})
     status: str = field(metadata={"cdp_name": "status"})
@@ -94,5 +107,7 @@ class TargetInfoChangedEvent:
     Issued when some information about a target has changed. This only happens between
     `targetCreated` and `targetDestroyed`.
     """
+
+    __cdp_event__: ClassVar[str] = "Target.targetInfoChanged"
 
     target_info: TargetInfo = field(metadata={"cdp_name": "targetInfo"})

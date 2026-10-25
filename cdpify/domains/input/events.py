@@ -6,6 +6,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import StrEnum
+from typing import ClassVar
 
 from .types import (
     DragData,
@@ -22,5 +23,7 @@ class DragInterceptedEvent:
     Emitted only when `Input.setInterceptDrags` is enabled. Use this data with
     `Input.dispatchDragEvent` to restore normal drag and drop behavior.
     """
+
+    __cdp_event__: ClassVar[str] = "Input.dragIntercepted"
 
     data: DragData = field(metadata={"cdp_name": "data"})

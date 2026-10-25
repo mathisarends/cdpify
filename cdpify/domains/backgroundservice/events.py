@@ -6,6 +6,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import StrEnum
+from typing import ClassVar
 
 from .types import (
     BackgroundServiceEvent as BackgroundServiceEventType,
@@ -28,6 +29,8 @@ class RecordingStateChangedEvent:
     Called when the recording state for the service has been updated.
     """
 
+    __cdp_event__: ClassVar[str] = "BackgroundService.recordingStateChanged"
+
     is_recording: bool = field(metadata={"cdp_name": "isRecording"})
     service: ServiceName = field(metadata={"cdp_name": "service"})
 
@@ -38,6 +41,8 @@ class BackgroundServiceEventReceivedEvent:
     Called with all existing backgroundServiceEvents when enabled, and all new events
     afterwards if enabled and recording.
     """
+
+    __cdp_event__: ClassVar[str] = "BackgroundService.backgroundServiceEventReceived"
 
     background_service_event: BackgroundServiceEventType = field(
         metadata={"cdp_name": "backgroundServiceEvent"}

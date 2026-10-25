@@ -6,6 +6,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import StrEnum
+from typing import ClassVar
 
 from .types import (
     CharacteristicOperationType,
@@ -30,6 +31,8 @@ class GattOperationReceivedEvent:
     happened.
     """
 
+    __cdp_event__: ClassVar[str] = "BluetoothEmulation.gattOperationReceived"
+
     address: str = field(metadata={"cdp_name": "address"})
     type: GATTOperationType = field(metadata={"cdp_name": "type"})
 
@@ -41,6 +44,8 @@ class CharacteristicOperationReceivedEvent:
     respresented by |characteristicId| happened. |data| and |writeType| is expected to
     exist when |type| is write.
     """
+
+    __cdp_event__: ClassVar[str] = "BluetoothEmulation.characteristicOperationReceived"
 
     characteristic_id: str = field(metadata={"cdp_name": "characteristicId"})
     type: CharacteristicOperationType = field(metadata={"cdp_name": "type"})
@@ -56,6 +61,8 @@ class DescriptorOperationReceivedEvent:
     Event for when a descriptor operation of |type| to the descriptor respresented by
     |descriptorId| happened. |data| is expected to exist when |type| is write.
     """
+
+    __cdp_event__: ClassVar[str] = "BluetoothEmulation.descriptorOperationReceived"
 
     descriptor_id: str = field(metadata={"cdp_name": "descriptorId"})
     type: DescriptorOperationType = field(metadata={"cdp_name": "type"})

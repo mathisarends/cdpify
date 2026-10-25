@@ -6,6 +6,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import StrEnum
+from typing import ClassVar
 
 from cdpify.domains import debugger
 
@@ -23,6 +24,8 @@ class ProfilerEvent(StrEnum):
 
 @dataclass(kw_only=True, slots=True)
 class ConsoleProfileFinishedEvent:
+    __cdp_event__: ClassVar[str] = "Profiler.consoleProfileFinished"
+
     id: str = field(metadata={"cdp_name": "id"})
     location: debugger.Location = field(metadata={"cdp_name": "location"})
     profile: Profile = field(metadata={"cdp_name": "profile"})
@@ -34,6 +37,8 @@ class ConsoleProfileStartedEvent:
     """
     Sent when new profile recording is started using console.profile() call.
     """
+
+    __cdp_event__: ClassVar[str] = "Profiler.consoleProfileStarted"
 
     id: str = field(metadata={"cdp_name": "id"})
     location: debugger.Location = field(metadata={"cdp_name": "location"})
@@ -48,6 +53,8 @@ class PreciseCoverageDeltaUpdateEvent:
     coverage has been started. This event can be trigged by the embedder to, for
     example, trigger collection of coverage data immediately at a certain point in time.
     """
+
+    __cdp_event__: ClassVar[str] = "Profiler.preciseCoverageDeltaUpdate"
 
     timestamp: float = field(metadata={"cdp_name": "timestamp"})
     occasion: str = field(metadata={"cdp_name": "occasion"})

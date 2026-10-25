@@ -6,6 +6,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import StrEnum
+from typing import ClassVar
 
 from .types import (
     Disposition,
@@ -42,6 +43,8 @@ class EstablishContextRequestedEvent:
     https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardestablishcontext
     """
 
+    __cdp_event__: ClassVar[str] = "SmartCardEmulation.establishContextRequested"
+
     request_id: str = field(metadata={"cdp_name": "requestId"})
 
 
@@ -53,6 +56,8 @@ class ReleaseContextRequestedEvent:
     Microsoft:
     https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardreleasecontext
     """
+
+    __cdp_event__: ClassVar[str] = "SmartCardEmulation.releaseContextRequested"
 
     request_id: str = field(metadata={"cdp_name": "requestId"})
     context_id: int = field(metadata={"cdp_name": "contextId"})
@@ -67,6 +72,8 @@ class ListReadersRequestedEvent:
     https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardlistreadersa
     """
 
+    __cdp_event__: ClassVar[str] = "SmartCardEmulation.listReadersRequested"
+
     request_id: str = field(metadata={"cdp_name": "requestId"})
     context_id: int = field(metadata={"cdp_name": "contextId"})
 
@@ -80,6 +87,8 @@ class GetStatusChangeRequestedEvent:
     Microsoft:
     https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardgetstatuschangea
     """
+
+    __cdp_event__: ClassVar[str] = "SmartCardEmulation.getStatusChangeRequested"
 
     request_id: str = field(metadata={"cdp_name": "requestId"})
     context_id: int = field(metadata={"cdp_name": "contextId"})
@@ -96,6 +105,8 @@ class CancelRequestedEvent:
     https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardcancel
     """
 
+    __cdp_event__: ClassVar[str] = "SmartCardEmulation.cancelRequested"
+
     request_id: str = field(metadata={"cdp_name": "requestId"})
     context_id: int = field(metadata={"cdp_name": "contextId"})
 
@@ -108,6 +119,8 @@ class ConnectRequestedEvent:
     Microsoft:
     https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardconnecta
     """
+
+    __cdp_event__: ClassVar[str] = "SmartCardEmulation.connectRequested"
 
     request_id: str = field(metadata={"cdp_name": "requestId"})
     context_id: int = field(metadata={"cdp_name": "contextId"})
@@ -127,6 +140,8 @@ class DisconnectRequestedEvent:
     https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scarddisconnect
     """
 
+    __cdp_event__: ClassVar[str] = "SmartCardEmulation.disconnectRequested"
+
     request_id: str = field(metadata={"cdp_name": "requestId"})
     handle: int = field(metadata={"cdp_name": "handle"})
     disposition: Disposition = field(metadata={"cdp_name": "disposition"})
@@ -140,6 +155,8 @@ class TransmitRequestedEvent:
     Microsoft:
     https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardtransmit
     """
+
+    __cdp_event__: ClassVar[str] = "SmartCardEmulation.transmitRequested"
 
     request_id: str = field(metadata={"cdp_name": "requestId"})
     handle: int = field(metadata={"cdp_name": "handle"})
@@ -156,6 +173,8 @@ class ControlRequestedEvent:
     https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardcontrol
     """
 
+    __cdp_event__: ClassVar[str] = "SmartCardEmulation.controlRequested"
+
     request_id: str = field(metadata={"cdp_name": "requestId"})
     handle: int = field(metadata={"cdp_name": "handle"})
     control_code: int = field(metadata={"cdp_name": "controlCode"})
@@ -171,6 +190,8 @@ class GetAttribRequestedEvent:
     https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardgetattrib
     """
 
+    __cdp_event__: ClassVar[str] = "SmartCardEmulation.getAttribRequested"
+
     request_id: str = field(metadata={"cdp_name": "requestId"})
     handle: int = field(metadata={"cdp_name": "handle"})
     attrib_id: int = field(metadata={"cdp_name": "attribId"})
@@ -184,6 +205,8 @@ class SetAttribRequestedEvent:
     Microsoft:
     https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardsetattrib
     """
+
+    __cdp_event__: ClassVar[str] = "SmartCardEmulation.setAttribRequested"
 
     request_id: str = field(metadata={"cdp_name": "requestId"})
     handle: int = field(metadata={"cdp_name": "handle"})
@@ -200,6 +223,8 @@ class StatusRequestedEvent:
     https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardstatusa
     """
 
+    __cdp_event__: ClassVar[str] = "SmartCardEmulation.statusRequested"
+
     request_id: str = field(metadata={"cdp_name": "requestId"})
     handle: int = field(metadata={"cdp_name": "handle"})
 
@@ -213,6 +238,8 @@ class BeginTransactionRequestedEvent:
     https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardbegintransaction
     """
 
+    __cdp_event__: ClassVar[str] = "SmartCardEmulation.beginTransactionRequested"
+
     request_id: str = field(metadata={"cdp_name": "requestId"})
     handle: int = field(metadata={"cdp_name": "handle"})
 
@@ -225,6 +252,8 @@ class EndTransactionRequestedEvent:
     Microsoft:
     https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardendtransaction
     """
+
+    __cdp_event__: ClassVar[str] = "SmartCardEmulation.endTransactionRequested"
 
     request_id: str = field(metadata={"cdp_name": "requestId"})
     handle: int = field(metadata={"cdp_name": "handle"})

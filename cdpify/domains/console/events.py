@@ -6,6 +6,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import StrEnum
+from typing import ClassVar
 
 from .types import (
     ConsoleMessage,
@@ -21,5 +22,7 @@ class MessageAddedEvent:
     """
     Issued when new console message is added.
     """
+
+    __cdp_event__: ClassVar[str] = "Console.messageAdded"
 
     message: ConsoleMessage = field(metadata={"cdp_name": "message"})

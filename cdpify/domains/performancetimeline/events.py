@@ -6,6 +6,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import StrEnum
+from typing import ClassVar
 
 from .types import (
     TimelineEvent,
@@ -22,5 +23,7 @@ class TimelineEventAddedEvent:
     Sent when a performance timeline event is added. See reportPerformanceTimeline
     method.
     """
+
+    __cdp_event__: ClassVar[str] = "PerformanceTimeline.timelineEventAdded"
 
     event: TimelineEvent = field(metadata={"cdp_name": "event"})

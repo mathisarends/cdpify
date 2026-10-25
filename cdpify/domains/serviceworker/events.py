@@ -6,6 +6,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import StrEnum
+from typing import ClassVar
 
 from .types import (
     ServiceWorkerErrorMessage,
@@ -22,6 +23,8 @@ class ServiceWorkerEvent(StrEnum):
 
 @dataclass(kw_only=True, slots=True)
 class WorkerErrorReportedEvent:
+    __cdp_event__: ClassVar[str] = "ServiceWorker.workerErrorReported"
+
     error_message: ServiceWorkerErrorMessage = field(
         metadata={"cdp_name": "errorMessage"}
     )
@@ -29,6 +32,8 @@ class WorkerErrorReportedEvent:
 
 @dataclass(kw_only=True, slots=True)
 class WorkerRegistrationUpdatedEvent:
+    __cdp_event__: ClassVar[str] = "ServiceWorker.workerRegistrationUpdated"
+
     registrations: list[ServiceWorkerRegistration] = field(
         metadata={"cdp_name": "registrations"}
     )
@@ -36,4 +41,6 @@ class WorkerRegistrationUpdatedEvent:
 
 @dataclass(kw_only=True, slots=True)
 class WorkerVersionUpdatedEvent:
+    __cdp_event__: ClassVar[str] = "ServiceWorker.workerVersionUpdated"
+
     versions: list[ServiceWorkerVersion] = field(metadata={"cdp_name": "versions"})

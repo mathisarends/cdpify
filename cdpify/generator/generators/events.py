@@ -29,7 +29,7 @@ def generate(domain: Domain) -> str:
         "events.py.jinja2",
         header=HEADER,
         future_annotations=FUTURE_ANNOTATIONS,
-        typing_names=ctx.sorted_typing_names,
+        typing_names=tuple(sorted({*ctx.sorted_typing_names, "ClassVar"})),
         local_type_names=tuple(
             f"{name} as {alias}" if alias else name
             for name, alias in ctx.sorted_local_types(aliases)
@@ -82,6 +82,7 @@ def _build_event_model(
             _build_field_view(param, event_fqn, aliases, ctx)
             for param in event.parameters
         ),
+        event_name=event_fqn,
     )
 
 

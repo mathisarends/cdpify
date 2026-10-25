@@ -6,6 +6,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import StrEnum
+from typing import ClassVar
 
 from .types import (
     StorageId,
@@ -21,6 +22,8 @@ class DOMStorageEvent(StrEnum):
 
 @dataclass(kw_only=True, slots=True)
 class DomStorageItemAddedEvent:
+    __cdp_event__: ClassVar[str] = "DOMStorage.domStorageItemAdded"
+
     storage_id: StorageId = field(metadata={"cdp_name": "storageId"})
     key: str = field(metadata={"cdp_name": "key"})
     new_value: str = field(metadata={"cdp_name": "newValue"})
@@ -28,12 +31,16 @@ class DomStorageItemAddedEvent:
 
 @dataclass(kw_only=True, slots=True)
 class DomStorageItemRemovedEvent:
+    __cdp_event__: ClassVar[str] = "DOMStorage.domStorageItemRemoved"
+
     storage_id: StorageId = field(metadata={"cdp_name": "storageId"})
     key: str = field(metadata={"cdp_name": "key"})
 
 
 @dataclass(kw_only=True, slots=True)
 class DomStorageItemUpdatedEvent:
+    __cdp_event__: ClassVar[str] = "DOMStorage.domStorageItemUpdated"
+
     storage_id: StorageId = field(metadata={"cdp_name": "storageId"})
     key: str = field(metadata={"cdp_name": "key"})
     old_value: str = field(metadata={"cdp_name": "oldValue"})
@@ -42,4 +49,6 @@ class DomStorageItemUpdatedEvent:
 
 @dataclass(kw_only=True, slots=True)
 class DomStorageItemsClearedEvent:
+    __cdp_event__: ClassVar[str] = "DOMStorage.domStorageItemsCleared"
+
     storage_id: StorageId = field(metadata={"cdp_name": "storageId"})

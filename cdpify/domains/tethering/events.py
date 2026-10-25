@@ -6,6 +6,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import StrEnum
+from typing import ClassVar
 
 
 class TetheringEvent(StrEnum):
@@ -17,6 +18,8 @@ class AcceptedEvent:
     """
     Informs that port was successfully bound and got a specified connection id.
     """
+
+    __cdp_event__: ClassVar[str] = "Tethering.accepted"
 
     port: int = field(metadata={"cdp_name": "port"})
     connection_id: str = field(metadata={"cdp_name": "connectionId"})

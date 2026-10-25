@@ -6,6 +6,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import StrEnum
+from typing import ClassVar
 
 from .types import (
     Animation,
@@ -25,6 +26,8 @@ class AnimationCanceledEvent:
     Event for when an animation has been cancelled.
     """
 
+    __cdp_event__: ClassVar[str] = "Animation.animationCanceled"
+
     id: str = field(metadata={"cdp_name": "id"})
 
 
@@ -33,6 +36,8 @@ class AnimationCreatedEvent:
     """
     Event for each animation that has been created.
     """
+
+    __cdp_event__: ClassVar[str] = "Animation.animationCreated"
 
     id: str = field(metadata={"cdp_name": "id"})
 
@@ -43,6 +48,8 @@ class AnimationStartedEvent:
     Event for animation that has been started.
     """
 
+    __cdp_event__: ClassVar[str] = "Animation.animationStarted"
+
     animation: Animation = field(metadata={"cdp_name": "animation"})
 
 
@@ -51,5 +58,7 @@ class AnimationUpdatedEvent:
     """
     Event for animation that has been updated.
     """
+
+    __cdp_event__: ClassVar[str] = "Animation.animationUpdated"
 
     animation: Animation = field(metadata={"cdp_name": "animation"})

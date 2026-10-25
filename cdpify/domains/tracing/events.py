@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import StrEnum
-from typing import Any
+from typing import Any, ClassVar
 
 from cdpify.domains import io
 
@@ -24,6 +24,8 @@ class TracingEvent(StrEnum):
 
 @dataclass(kw_only=True, slots=True)
 class BufferUsageEvent:
+    __cdp_event__: ClassVar[str] = "Tracing.bufferUsage"
+
     percent_full: float | None = field(
         default=None, metadata={"cdp_name": "percentFull"}
     )
@@ -39,6 +41,8 @@ class DataCollectedEvent:
     tracingComplete event.
     """
 
+    __cdp_event__: ClassVar[str] = "Tracing.dataCollected"
+
     value: list[dict[str, Any]] = field(metadata={"cdp_name": "value"})
 
 
@@ -48,6 +52,8 @@ class TracingCompleteEvent:
     Signals that tracing is stopped and there is no trace buffers pending flush, all
     data were delivered via dataCollected events.
     """
+
+    __cdp_event__: ClassVar[str] = "Tracing.tracingComplete"
 
     data_loss_occurred: bool = field(metadata={"cdp_name": "dataLossOccurred"})
     stream: io.StreamHandle | None = field(
