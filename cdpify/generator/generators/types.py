@@ -33,6 +33,7 @@ def generate(domain: Domain) -> str:
         cross_domain_modules=ctx.cross_domain_modules,
         definitions=definitions,
         has_enums=any(definition.kind == "enum" for definition in definitions),
+        uses_unset=any(f.uses_unset for m in definitions for f in m.fields),
         dataclass_import=dataclass_import(definitions),
     )
 

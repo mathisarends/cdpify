@@ -1,16 +1,21 @@
 import logging
 import sys
 from collections.abc import Callable
+from contextvars import ContextVar
 from dataclasses import MISSING, dataclass, fields, is_dataclass
 from enum import StrEnum
 from functools import cache
 from types import UnionType
 from typing import Any, TypeAliasType, Union, get_args, get_origin, get_type_hints
 
+from cdpify.exceptions import CDPDecodeError
+from cdpify.unset import UNSET
+
 logger = logging.getLogger(__name__)
 
 _CDP_ENABLED_METADATA_KEY = "cdp"
 _CDP_NAME_METADATA_KEY = "cdp_name"
+_strict_decoding: ContextVar[bool] = ContextVar("cdpify_strict_decoding", default=True)
 
 
 # Converts a non-None wire value; ``None`` means the value is used as is.
@@ -25,6 +30,7 @@ class _FieldPlan:
     init: bool
     required: bool
     wire_enabled: bool
+    omit_none: bool
 
 
 @dataclass(frozen=True, slots=True)
@@ -44,7 +50,7 @@ def encode_cdp(model: Any) -> dict[str, Any]:
             continue
 
         value = getattr(model, model_field.name)
-        if value is not None:
+        if value is not UNSET and (value is not None or not model_field.omit_none):
             encoded[model_field.cdp_name] = _encode_value(value)
 
     return encoded
@@ -53,8 +59,23 @@ def encode_cdp(model: Any) -> dict[str, Any]:
 def decode_cdp[T](
     model_type: type[T],
     data: dict[str, Any],
+    *,
+    strict: bool = True,
 ) -> T:
-    """Construct a generated CDP dataclass from its wire representation."""
+    """Construct a CDP dataclass, rejecting missing required fields by default.
+
+    ``strict=False`` fills missing required fields with None and logs a warning,
+    including in nested models. Extra wire fields are always ignored. This is
+    structural decoding, not validation of primitive values against a schema.
+    """
+    token = _strict_decoding.set(strict)
+    try:
+        return _decode_model(model_type, data)
+    finally:
+        _strict_decoding.reset(token)
+
+
+def _decode_model[T](model_type: type[T], data: dict[str, Any]) -> T:
     plan = _compile_model(model_type)
     values: dict[str, Any] = {}
 
@@ -63,7 +84,10 @@ def decode_cdp[T](
         if model_field is None:
             continue
         if value is not None and model_field.decoder is not None:
-            value = model_field.decoder(value)
+            try:
+                value = model_field.decoder(value)
+            except CDPDecodeError as error:
+                raise error._prepend(cdp_name) from error
         values[model_field.name] = value
 
     if not values.keys() >= plan.required_names:
@@ -73,6 +97,8 @@ def decode_cdp[T](
             if model_field.name in plan.required_names
             and model_field.name not in values
         ]
+        if _strict_decoding.get():
+            raise CDPDecodeError(model_type, tuple(missing))
         logger.warning(
             "CDP spec mismatch for %s. Missing fields: %s. Data keys: %s",
             model_type.__name__,
@@ -101,6 +127,7 @@ def _compile_model(model_type: type) -> _ModelPlan:
                 and model_field.default_factory is MISSING
             ),
             wire_enabled=model_field.metadata.get(_CDP_ENABLED_METADATA_KEY, True),
+            omit_none=not _is_any(resolved_types.get(model_field.name, Any)),
         )
         for model_field in fields(model_type)
     )
@@ -150,6 +177,8 @@ def _resolve_field_types(model_type: type) -> dict[str, Any]:
 
 
 def _encode_value(value: Any) -> Any:
+    if value is None or isinstance(value, (str, int, float, bool)):
+        return value
     if is_dataclass(value) and not isinstance(value, type):
         return encode_cdp(value)
     if isinstance(value, (list, tuple)):
@@ -157,6 +186,16 @@ def _encode_value(value: Any) -> Any:
     if isinstance(value, dict):
         return {key: _encode_value(item) for key, item in value.items()}
     return value
+
+
+def _is_any(field_type: Any) -> bool:
+    if field_type is Any:
+        return True
+    if isinstance(field_type, TypeAliasType):
+        return _is_any(field_type.__value__)
+    return get_origin(field_type) in (Union, UnionType) and any(
+        _is_any(arg) for arg in get_args(field_type)
+    )
 
 
 def _build_decoder(field_type: Any) -> _Decoder:
@@ -224,7 +263,7 @@ def _enum_decoder(enum_type: type[StrEnum]) -> Callable[[str], StrEnum]:
 def _model_decoder(model_type: type) -> Callable[[Any], Any]:
     # Resolved lazily so recursive models (e.g. a StackTrace parent) work.
     def decode(value: Any) -> Any:
-        return decode_cdp(model_type, value) if isinstance(value, dict) else value
+        return _decode_model(model_type, value) if isinstance(value, dict) else value
 
     return decode
 

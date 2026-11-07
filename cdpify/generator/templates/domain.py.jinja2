@@ -8,6 +8,9 @@ from typing import {{ typing_names | join(", ") }}
 
 from cdpify.codec import decode_cdp, encode_cdp
 from cdpify.executor import CommandExecutor
+{% if uses_unset %}
+from cdpify.unset import UNSET, UnsetType
+{% endif %}
 {% if has_deprecated %}
 from cdpify.shared.decorators import deprecated
 {% endif %}

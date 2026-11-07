@@ -7,6 +7,8 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any, Literal
 
+from cdpify.unset import UNSET, UnsetType
+
 type ScriptId = str
 """
 Unique script identifier.
@@ -59,7 +61,7 @@ class DeepSerializedValue:
         "window",
         "generator",
     ]
-    value: Any | None = None
+    value: Any | UnsetType = UNSET
     object_id: str | None = field(default=None, metadata={"cdp_name": "objectId"})
     weak_local_object_reference: int | None = field(
         default=None, metadata={"cdp_name": "weakLocalObjectReference"}
@@ -121,7 +123,7 @@ class RemoteObject:
         | None
     ) = None
     class_name: str | None = field(default=None, metadata={"cdp_name": "className"})
-    value: Any | None = None
+    value: Any | UnsetType = UNSET
     unserializable_value: UnserializableValue | None = field(
         default=None, metadata={"cdp_name": "unserializableValue"}
     )
@@ -295,7 +297,7 @@ class CallArgument:
     specified.
     """
 
-    value: Any | None = None
+    value: Any | UnsetType = UNSET
     unserializable_value: UnserializableValue | None = field(
         default=None, metadata={"cdp_name": "unserializableValue"}
     )

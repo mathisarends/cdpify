@@ -5,6 +5,17 @@ Breaking changes are listed first in each release.
 
 ## [Unreleased]
 
+### Breaking changes
+
+- Optional `any` fields now default to `UNSET`, distinguishing omission from
+  JSON `null`. For example, `CallArgument()` omits `value`, while
+  `CallArgument(value=None)` sends `{"value": null}`. Ordinary optional scalar
+  fields still use `None` to mean omitted. `UNSET` and `UnsetType` are public.
+- `decode_cdp` now raises `CDPDecodeError` for missing required fields, including
+  nested models. Unknown fields and future enum values remain supported. Use
+  `decode_cdp(Model, payload, strict=False)` for the previous tolerant behavior
+  that logs a warning and fills missing required fields with `None`.
+
 ## [0.4.0] - 2026-10-25
 
 ### Breaking changes

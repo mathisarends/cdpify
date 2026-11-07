@@ -4,6 +4,7 @@ from .events import EventSubscription, ReceivedEvent
 from .exceptions import (
     CDPCommandError,
     CDPConnectionError,
+    CDPDecodeError,
     CDPError,
     CDPStreamClosedError,
     CDPTimeoutError,
@@ -12,6 +13,7 @@ from .exceptions import (
 from .executor import CommandExecutor
 from .session import CdpSession
 from .transport import Transport, TransportEvent
+from .unset import UNSET, UnsetType
 
 __all__ = [
     "CdpClient",
@@ -28,6 +30,9 @@ __all__ = [
     "CDPCommandError",
     "CDPTimeoutError",
     "CDPStreamClosedError",
+    "CDPDecodeError",
+    "UNSET",
+    "UnsetType",
 ]
 
 

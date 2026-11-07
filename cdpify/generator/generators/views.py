@@ -10,20 +10,27 @@ class FieldView:
     cdp_name: str | None = None
 
     @property
+    def uses_unset(self) -> bool:
+        return self.optional and self.annotation == "Any"
+
+    @property
     def needs_field(self) -> bool:
         """Whether the declaration needs ``field()`` to keep the CDP wire name."""
         return self.cdp_name is not None and self.cdp_name != self.name
 
     @property
     def declaration(self) -> str:
-        annotation = f"{self.annotation} | None" if self.optional else self.annotation
+        annotation = self.annotation
+        default_value = "UNSET" if self.uses_unset else "None"
+        if self.optional:
+            annotation += " | UnsetType" if self.uses_unset else " | None"
         if not self.needs_field:
-            default = " = None" if self.optional else ""
+            default = f" = {default_value}" if self.optional else ""
             return f"{self.name}: {annotation}{default}"
 
         arguments = []
         if self.optional:
-            arguments.append("default=None")
+            arguments.append(f"default={default_value}")
         arguments.append(f'metadata={{"cdp_name": "{self.cdp_name}"}}')
         declaration = f"{self.name}: {annotation}"
         if len(declaration) + len(" = field(") + 4 > 88:

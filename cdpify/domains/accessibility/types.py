@@ -9,6 +9,7 @@ from typing import Any
 
 from cdpify.domains import dom, page
 from cdpify.shared.enums import CDPStrEnum
+from cdpify.unset import UNSET, UnsetType
 
 type AXNodeId = str
 """
@@ -118,7 +119,7 @@ class AXValue:
     """
 
     type: AXValueType
-    value: Any | None = None
+    value: Any | UnsetType = UNSET
     related_nodes: list[AXRelatedNode] | None = field(
         default=None, metadata={"cdp_name": "relatedNodes"}
     )

@@ -9,6 +9,7 @@ from enum import StrEnum
 from typing import Any, ClassVar
 
 from cdpify.domains import page, runtime
+from cdpify.unset import UNSET, UnsetType
 
 from .types import (
     InvocationStatus,
@@ -70,6 +71,6 @@ class ToolRespondedEvent:
 
     invocation_id: str = field(metadata={"cdp_name": "invocationId"})
     status: InvocationStatus
-    output: Any | None = None
+    output: Any | UnsetType = UNSET
     error_text: str | None = field(default=None, metadata={"cdp_name": "errorText"})
     exception: runtime.RemoteObject | None = None

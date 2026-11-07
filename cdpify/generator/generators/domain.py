@@ -27,6 +27,7 @@ def generate(domain: Domain) -> str:
         header=HEADER,
         future_annotations=FUTURE_ANNOTATIONS,
         typing_names=ctx.sorted_typing_names,
+        uses_unset=any(p.uses_unset for m in methods for p in m.parameters),
         has_deprecated=any(command.deprecated for command in domain.commands),
         command_imports=_command_imports(domain),
         local_type_names=tuple(name for name, _ in ctx.sorted_local_types()),

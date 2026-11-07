@@ -44,6 +44,7 @@ def generate(domain: Domain) -> str:
             for command in domain.commands
         ),
         models=models,
+        uses_unset=any(f.uses_unset for m in models for f in m.fields),
         dataclass_import=dataclass_import(models),
     )
 

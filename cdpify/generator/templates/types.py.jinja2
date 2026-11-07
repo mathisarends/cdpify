@@ -7,6 +7,10 @@ from typing import {{ typing_names | join(", ") }}
 {% endif %}
 
 {{ dataclass_import }}
+{% if uses_unset %}
+
+from cdpify.unset import UNSET, UnsetType
+{% endif %}
 {% if has_enums %}
 
 from cdpify.shared.enums import CDPStrEnum
