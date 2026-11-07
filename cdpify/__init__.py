@@ -1,8 +1,6 @@
 from .client import CdpClient
 from .codec import decode_cdp, encode_cdp
-from .event_queue import OverflowPolicy
-from .events import EventSubscription, ReceivedEvent
-from .exceptions import (
+from .error import (
     CDPCommandError,
     CDPConnectionError,
     CDPDecodeError,
@@ -12,6 +10,8 @@ from .exceptions import (
     CDPTimeoutError,
     deprecated_exception,
 )
+from .event_queue import OverflowPolicy
+from .events import EventSubscription, ReceivedEvent
 from .executor import CommandExecutor
 from .session import CdpSession
 from .transport import Transport, TransportEvent

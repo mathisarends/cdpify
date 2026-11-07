@@ -9,7 +9,7 @@ from websockets.asyncio.server import ServerConnection, serve
 from websockets.exceptions import ConnectionClosedOK
 
 from cdpify import CdpClient
-from cdpify.exceptions import CDPConnectionError, CDPStreamClosedError
+from cdpify.error import CDPConnectionError, CDPStreamClosedError
 from cdpify.transports import websocket as websocket_module
 
 

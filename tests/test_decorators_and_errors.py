@@ -3,8 +3,8 @@ import inspect
 import pytest
 
 import cdpify
-from cdpify import exceptions
-from cdpify.exceptions import CDPCommandError, CDPTimeoutError
+from cdpify import error
+from cdpify.error import CDPCommandError, CDPTimeoutError
 from cdpify.shared.decorators import _Deprecated, deprecated
 
 
@@ -32,7 +32,7 @@ def test_timeout_error_is_builtin_timeout_error() -> None:
     assert issubclass(CDPTimeoutError, TimeoutError)
 
 
-@pytest.mark.parametrize("module", [cdpify, exceptions])
+@pytest.mark.parametrize("module", [cdpify, error])
 @pytest.mark.parametrize(
     ("old_name", "new_name"),
     [
@@ -48,7 +48,7 @@ def test_old_exception_names_are_deprecated_aliases(
     with pytest.deprecated_call(match=new_name):
         alias = getattr(module, old_name)
 
-    assert alias is getattr(exceptions, new_name)
+    assert alias is getattr(error, new_name)
 
 
 _IMPLEMENTATIONS = pytest.mark.parametrize(

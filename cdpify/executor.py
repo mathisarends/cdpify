@@ -2,7 +2,7 @@ import asyncio
 from collections.abc import Awaitable
 from typing import Any, Protocol
 
-from cdpify.exceptions import CDPTimeoutError
+from cdpify.error import CDPTimeoutError
 from cdpify.transport import Transport
 from cdpify.unset import UNSET, UnsetType
 

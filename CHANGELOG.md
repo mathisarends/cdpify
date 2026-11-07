@@ -7,6 +7,11 @@ Breaking changes are listed first in each release.
 
 ### Breaking changes
 
+- Renamed the error module from `cdpify.exceptions` to `cdpify.error`.
+  Update imports such as `from cdpify.exceptions import CDPCommandError` to
+  `from cdpify.error import CDPCommandError`. The old module is removed;
+  error classes remain available from the root package (`from cdpify import
+  CDPCommandError`) with the same behavior and inheritance.
 - Optional `any` fields now default to `UNSET`, distinguishing omission from
   JSON `null`. For example, `CallArgument()` omits `value`, while
   `CallArgument(value=None)` sends `{"value": null}`. Ordinary optional scalar

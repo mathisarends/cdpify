@@ -6,7 +6,7 @@ from unittest.mock import AsyncMock
 import pytest
 from websockets.exceptions import ConnectionClosedOK
 
-from cdpify.exceptions import (
+from cdpify.error import (
     CDPCommandError,
     CDPConnectionError,
     CDPTimeoutError,

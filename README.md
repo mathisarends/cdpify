@@ -411,6 +411,12 @@ than `FrameId("F1")`, and `isinstance(frame_id, str)` for a runtime check.
 
 ### When Chrome deviates from the spec
 
+Library error classes are available from `cdpify.error` and the root package:
+
+```python
+from cdpify.error import CDPCommandError, CDPDecodeError
+```
+
 Missing required fields raise `CDPDecodeError` with `model_type`,
 `missing_fields` and the enclosing wire-field `path`. Unknown fields are ignored
 and future enum values remain supported. Decoding checks required field

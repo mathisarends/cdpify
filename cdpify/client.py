@@ -3,10 +3,10 @@ import logging
 from typing import Any, Literal, Self
 
 from cdpify.domains import DomainAccessors
+from cdpify.error import CDPConnectionError
 from cdpify.event_queue import OverflowPolicy
 from cdpify.events import EventRouter, EventSubscription, ReceivedEvent
 from cdpify.events.source import EventSource
-from cdpify.exceptions import CDPConnectionError
 from cdpify.executor import BoundCommandExecutor
 from cdpify.session import CdpSession
 from cdpify.transport import CallbackTransport, Transport, TransportEvent
