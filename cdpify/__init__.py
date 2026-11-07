@@ -1,11 +1,13 @@
 from .client import CdpClient
 from .codec import decode_cdp, encode_cdp
+from .event_queue import OverflowPolicy
 from .events import EventSubscription, ReceivedEvent
 from .exceptions import (
     CDPCommandError,
     CDPConnectionError,
     CDPDecodeError,
     CDPError,
+    CDPEventOverflowError,
     CDPStreamClosedError,
     CDPTimeoutError,
     deprecated_exception,
@@ -31,6 +33,8 @@ __all__ = [
     "CDPTimeoutError",
     "CDPStreamClosedError",
     "CDPDecodeError",
+    "CDPEventOverflowError",
+    "OverflowPolicy",
     "UNSET",
     "UnsetType",
 ]

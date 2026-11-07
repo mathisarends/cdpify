@@ -1,7 +1,7 @@
 from collections.abc import Callable
 from dataclasses import dataclass
 
-from cdpify.event_queue import EventQueue
+from cdpify.event_queue import EventQueue, OverflowPolicy
 from cdpify.transport import TransportEvent
 
 from .dispatcher import EventDispatcher, RawCDPEvent
@@ -19,10 +19,13 @@ class ReceivedEvent[T]:
 class EventRouter:
     """Decode and route transport events to root, session, or global listeners."""
 
-    def __init__(self, *, max_queue_size: int = 0) -> None:
+    def __init__(
+        self, *, max_queue_size: int = 0, overflow: OverflowPolicy = "error"
+    ) -> None:
         # Validate the default even when no listeners are registered yet.
-        EventQueue(max_queue_size)
+        EventQueue(max_queue_size, overflow=overflow)
         self._max_queue_size = max_queue_size
+        self._overflow: OverflowPolicy = overflow
         self._dispatcher = EventDispatcher()
         self._buffers: set[EventQueue[RawCDPEvent]] = set()
         self._closed = False
@@ -50,7 +53,9 @@ class EventRouter:
             return False
         return await self._dispatcher.dispatch(
             event.method,
-            RawCDPEvent(params=event.params, session_id=event.session_id),
+            RawCDPEvent(
+                params=event.params, session_id=event.session_id, method=event.method
+            ),
         )
 
     def listen[T](
@@ -61,6 +66,7 @@ class EventRouter:
         timeout: float | None = None,
         event_name: str | None = None,
         max_queue_size: int | None = None,
+        overflow: OverflowPolicy | None = None,
     ) -> EventSubscription[T]:
         return self._subscribe(
             _resolve_event_name(event_type, event_name),
@@ -68,6 +74,7 @@ class EventRouter:
             session_id=session_id,
             timeout=timeout,
             max_queue_size=max_queue_size,
+            overflow=overflow,
         )
 
     def listen_all[T](
@@ -77,6 +84,7 @@ class EventRouter:
         timeout: float | None = None,
         event_name: str | None = None,
         max_queue_size: int | None = None,
+        overflow: OverflowPolicy | None = None,
     ) -> EventSubscription[ReceivedEvent[T]]:
         return self._subscribe(
             _resolve_event_name(event_type, event_name),
@@ -87,20 +95,44 @@ class EventRouter:
             all_sessions=True,
             timeout=timeout,
             max_queue_size=max_queue_size,
+            overflow=overflow,
+        )
+
+    def listen_raw(
+        self,
+        method: str | None = None,
+        *,
+        session_id: str | None,
+        all_sessions: bool = False,
+        timeout: float | None = None,
+        max_queue_size: int | None = None,
+        overflow: OverflowPolicy | None = None,
+    ) -> EventSubscription[TransportEvent]:
+        """Subscribe to wire dictionaries; None matches every method in scope."""
+        return self._subscribe(
+            method,
+            lambda event: TransportEvent(event.method, event.params, event.session_id),
+            session_id=session_id,
+            all_sessions=all_sessions,
+            timeout=timeout,
+            max_queue_size=max_queue_size,
+            overflow=overflow,
         )
 
     def _subscribe[T](
         self,
-        event_name: str,
+        event_name: str | None,
         convert: Callable[[RawCDPEvent], T],
         *,
         session_id: str | None = None,
         all_sessions: bool = False,
         timeout: float | None,
         max_queue_size: int | None,
+        overflow: OverflowPolicy | None,
     ) -> EventSubscription[T]:
         buffer = EventQueue[RawCDPEvent](
-            self._max_queue_size if max_queue_size is None else max_queue_size
+            self._max_queue_size if max_queue_size is None else max_queue_size,
+            overflow=self._overflow if overflow is None else overflow,
         )
         if self._closed:
             buffer.finish()
@@ -110,6 +142,8 @@ class EventRouter:
 
         async def handler(event: RawCDPEvent) -> None:
             buffer.push(event)
+            if buffer.failed:
+                unsubscribe()
 
         def unsubscribe() -> None:
             buffer.finish(discard=True)

@@ -263,7 +263,9 @@ async def test_event_without_params_has_empty_params() -> None:
 
 @pytest.mark.asyncio
 async def test_bounded_transport_drains_latest_events_on_disconnect() -> None:
-    transport = WebSocketTransport("ws://example", max_queue_size=2)
+    transport = WebSocketTransport(
+        "ws://example", max_queue_size=2, overflow="drop_oldest"
+    )
     for value in range(5):
         await transport._process_message(
             json.dumps({"method": "Test.event", "params": {"value": value}})
@@ -356,7 +358,9 @@ async def test_reconnect_resets_buffer_without_migrating_old_readers(
         "connect",
         AsyncMock(side_effect=[messages([1, 2, 3]), messages([4])]),
     )
-    transport = WebSocketTransport("ws://example", max_queue_size=2)
+    transport = WebSocketTransport(
+        "ws://example", max_queue_size=2, overflow="drop_oldest"
+    )
     await transport.connect()
     old_events = transport.events()
     assert (await anext(old_events)).params == {"value": 2}

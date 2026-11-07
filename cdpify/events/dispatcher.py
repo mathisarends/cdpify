@@ -13,6 +13,7 @@ _NOT_DECODED = object()
 class RawCDPEvent:
     params: dict[str, Any]
     session_id: str | None = None
+    method: str = ""
     _decoded: dict[type, Any] = field(
         default_factory=dict, init=False, repr=False, compare=False
     )

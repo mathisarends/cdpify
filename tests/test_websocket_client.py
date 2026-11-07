@@ -42,7 +42,9 @@ async def test_websocket_client_routes_bursts_without_blocking_responses() -> No
 
     async with serve(respond, "127.0.0.1", 0) as server:
         port = server.sockets[0].getsockname()[1]
-        async with CdpClient(f"ws://127.0.0.1:{port}", max_queue_size=2) as client:
+        async with CdpClient(
+            f"ws://127.0.0.1:{port}", max_queue_size=2, overflow="drop_oldest"
+        ) as client:
             assert client.transport._ws.protocol.extensions == []
             root_events = client.listen(_Event)
             session_events = client.session("S1").listen(_Event, max_queue_size=1)

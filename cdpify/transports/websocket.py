@@ -8,7 +8,7 @@ from typing import Any, Literal, Self
 import websockets
 from websockets.asyncio.client import ClientConnection, connect
 
-from cdpify.event_queue import EventQueue
+from cdpify.event_queue import EventQueue, OverflowPolicy
 from cdpify.exceptions import CDPCommandError, CDPConnectionError
 from cdpify.executor import _with_timeout
 from cdpify.transport import EventHandler, TransportEvent
@@ -29,6 +29,7 @@ class WebSocketTransport:
         additional_headers: dict[str, str] | None = None,
         max_frame_size: int = 100 * 1024 * 1024,
         max_queue_size: int = 0,
+        overflow: OverflowPolicy = "error",
         compression: Literal["deflate"] | None = None,
         open_timeout: float | None = 10.0,
         close_timeout: float | None = 10.0,
@@ -37,6 +38,7 @@ class WebSocketTransport:
         self._additional_headers = additional_headers
         self._max_frame_size = max_frame_size
         self._max_queue_size = max_queue_size
+        self._overflow: OverflowPolicy = overflow
         self._compression = compression
         self._open_timeout = open_timeout
         self._close_timeout = close_timeout
@@ -46,7 +48,9 @@ class WebSocketTransport:
         self._pending_requests: dict[int, asyncio.Future[dict[str, Any]]] = {}
         self._message_loop_task: asyncio.Task[None] | None = None
         self._shutdown_task: asyncio.Task[None] | None = None
-        self._event_queue = EventQueue[TransportEvent](max_queue_size)
+        self._event_queue = EventQueue[TransportEvent](
+            max_queue_size, overflow=overflow
+        )
         self._event_handler: EventHandler | None = None
         self._event_stream_closed = False
         self._is_shutting_down = False
@@ -94,7 +98,7 @@ class WebSocketTransport:
 
         self._is_shutting_down = False
         self._shutdown_task = None
-        self._event_queue = EventQueue(self._max_queue_size)
+        self._event_queue = EventQueue(self._max_queue_size, overflow=self._overflow)
         self._event_stream_closed = False
         self._message_loop_task = asyncio.create_task(self._run_message_loop())
         logger.info("Connected")

@@ -47,6 +47,19 @@ class CDPStreamClosedError(CDPError):
     """An event subscription ended before the next event arrived."""
 
 
+class CDPEventOverflowError(CDPError):
+    """An event buffer exceeded its limit and the subscription was terminated."""
+
+    def __init__(self, max_queue_size: int, dropped_events: int) -> None:
+        self.max_queue_size = max_queue_size
+        self.dropped_events = dropped_events
+        super().__init__(
+            f"Event buffer exceeded max_queue_size={max_queue_size}; "
+            f"discarded {dropped_events} events. Increase the limit or explicitly "
+            'select overflow="drop_oldest" for a lossy stream.'
+        )
+
+
 class CDPDecodeError(CDPError):
     """A CDP payload is missing fields required by its generated model."""
 

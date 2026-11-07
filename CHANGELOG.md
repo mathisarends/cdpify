@@ -26,8 +26,19 @@ Breaking changes are listed first in each release.
 - WebSocket compression is disabled by default for lower local latency. Pass
   `compression="deflate"` to `CdpClient` or `WebSocketTransport` to opt into
   compression when bandwidth matters more.
+- Bounded event buffers now default to `overflow="error"`: overflow terminates
+  only the affected stream and raises `CDPEventOverflowError` on its next read.
+  Pass `overflow="drop_oldest"` on the client, transport or subscription to keep
+  the old lossy behavior. The default queue size remains unlimited (`0`).
 
 ### Added
+
+- `listen_raw(method=None)` on clients and sessions, and `listen_all_raw()` on
+  clients, return `TransportEvent` values with wire names, parameter dictionaries
+  and session IDs. None matches every method in the selected scope.
+- Per-subscription overflow overrides and structured `CDPEventOverflowError`
+  details (`max_queue_size`, `dropped_events`). Overflow never blocks responses
+  or other subscriptions; failed listeners unregister immediately.
 
 - `compression`, `open_timeout` and `close_timeout` options for URL-based clients
   and the standalone WebSocket transport. Connection timeouts are in seconds.
