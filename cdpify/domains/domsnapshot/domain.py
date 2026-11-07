@@ -4,15 +4,15 @@
 
 from __future__ import annotations
 
-from cdpify.codec import decode_cdp, encode_cdp
+from typing import Any
+
+from cdpify.codec import _encode_value, decode_cdp
 from cdpify.executor import CommandExecutor
 from cdpify.shared.decorators import deprecated
 
 from .commands import (
-    CaptureSnapshotParams,
     CaptureSnapshotResult,
     DOMSnapshotCommand,
-    GetSnapshotParams,
     GetSnapshotResult,
 )
 
@@ -58,16 +58,18 @@ class DOMSnapshot:
         array, as well as layout and white-listed computed style information for the
         nodes. Shadow DOM in the returned DOM tree is flattened.
         """
-        params = GetSnapshotParams(
-            computed_style_whitelist=computed_style_whitelist,
-            include_event_listeners=include_event_listeners,
-            include_paint_order=include_paint_order,
-            include_user_agent_shadow_tree=include_user_agent_shadow_tree,
-        )
+        _params: dict[str, Any] = {}
+        _params["computedStyleWhitelist"] = _encode_value(computed_style_whitelist)
+        if include_event_listeners is not None:
+            _params["includeEventListeners"] = include_event_listeners
+        if include_paint_order is not None:
+            _params["includePaintOrder"] = include_paint_order
+        if include_user_agent_shadow_tree is not None:
+            _params["includeUserAgentShadowTree"] = include_user_agent_shadow_tree
 
         result = await self._executor.execute(
             method=DOMSnapshotCommand.GET_SNAPSHOT,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetSnapshotResult, result)
 
@@ -86,16 +88,21 @@ class DOMSnapshot:
         array, as well as layout and white-listed computed style information for the
         nodes. Shadow DOM in the returned DOM tree is flattened.
         """
-        params = CaptureSnapshotParams(
-            computed_styles=computed_styles,
-            include_paint_order=include_paint_order,
-            include_dom_rects=include_dom_rects,
-            include_blended_background_colors=include_blended_background_colors,
-            include_text_color_opacities=include_text_color_opacities,
-        )
+        _params: dict[str, Any] = {}
+        _params["computedStyles"] = _encode_value(computed_styles)
+        if include_paint_order is not None:
+            _params["includePaintOrder"] = include_paint_order
+        if include_dom_rects is not None:
+            _params["includeDOMRects"] = include_dom_rects
+        if include_blended_background_colors is not None:
+            _params["includeBlendedBackgroundColors"] = (
+                include_blended_background_colors
+            )
+        if include_text_color_opacities is not None:
+            _params["includeTextColorOpacities"] = include_text_color_opacities
 
         result = await self._executor.execute(
             method=DOMSnapshotCommand.CAPTURE_SNAPSHOT,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(CaptureSnapshotResult, result)

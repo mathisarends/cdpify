@@ -4,13 +4,12 @@
 
 from __future__ import annotations
 
-from cdpify.codec import encode_cdp
+from typing import Any
+
 from cdpify.executor import CommandExecutor
 
 from .commands import (
-    BindParams,
     TetheringCommand,
-    UnbindParams,
 )
 
 
@@ -26,11 +25,12 @@ class Tethering:
         """
         Request browser port binding.
         """
-        params = BindParams(port=port)
+        _params: dict[str, Any] = {}
+        _params["port"] = port
 
         await self._executor.execute(
             method=TetheringCommand.BIND,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def unbind(
@@ -41,9 +41,10 @@ class Tethering:
         """
         Request browser port unbinding.
         """
-        params = UnbindParams(port=port)
+        _params: dict[str, Any] = {}
+        _params["port"] = port
 
         await self._executor.execute(
             method=TetheringCommand.UNBIND,
-            params=encode_cdp(params),
+            params=_params,
         )

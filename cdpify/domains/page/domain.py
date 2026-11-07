@@ -4,83 +4,38 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Literal
+from typing import TYPE_CHECKING, Any, Literal
 
-from cdpify.codec import decode_cdp, encode_cdp
+from cdpify.codec import _encode_value, decode_cdp
 from cdpify.executor import CommandExecutor
 from cdpify.shared.decorators import deprecated
 
 from .commands import (
-    AddCompilationCacheParams,
-    AddScriptToEvaluateOnLoadParams,
     AddScriptToEvaluateOnLoadResult,
-    AddScriptToEvaluateOnNewDocumentParams,
     AddScriptToEvaluateOnNewDocumentResult,
-    CaptureScreenshotParams,
     CaptureScreenshotResult,
-    CaptureSnapshotParams,
     CaptureSnapshotResult,
-    CreateIsolatedWorldParams,
     CreateIsolatedWorldResult,
-    DeleteCookieParams,
-    EnableParams,
-    GenerateTestReportParams,
-    GetAdScriptAncestryParams,
     GetAdScriptAncestryResult,
-    GetAnnotatedPageContentParams,
     GetAnnotatedPageContentResult,
     GetAppIdResult,
-    GetAppManifestParams,
     GetAppManifestResult,
     GetFrameTreeResult,
     GetInstallabilityErrorsResult,
     GetLayoutMetricsResult,
     GetManifestIconsResult,
     GetNavigationHistoryResult,
-    GetOriginTrialsParams,
     GetOriginTrialsResult,
-    GetPermissionsPolicyStateParams,
     GetPermissionsPolicyStateResult,
-    GetResourceContentParams,
     GetResourceContentResult,
     GetResourceTreeResult,
     GetSiblingSubAppsResult,
-    GetSpellCheckCustomDictionaryParams,
     GetSpellCheckCustomDictionaryResult,
     GetSubAppsResult,
-    HandleJavaScriptDialogParams,
-    NavigateParams,
     NavigateResult,
-    NavigateToHistoryEntryParams,
     PageCommand,
-    PrintToPDFParams,
     PrintToPDFResult,
-    ProduceCompilationCacheParams,
-    ReloadParams,
-    RemoveScriptToEvaluateOnLoadParams,
-    RemoveScriptToEvaluateOnNewDocumentParams,
-    ScreencastFrameAckParams,
-    SearchInResourceParams,
     SearchInResourceResult,
-    SetAdBlockingEnabledParams,
-    SetBypassCSPParams,
-    SetDeviceMetricsOverrideParams,
-    SetDeviceOrientationOverrideParams,
-    SetDocumentContentParams,
-    SetDownloadBehaviorParams,
-    SetFontFamiliesParams,
-    SetFontSizesParams,
-    SetGeolocationOverrideParams,
-    SetInputVisualizationParams,
-    SetInterceptFileChooserDialogParams,
-    SetLifecycleEventsEnabledParams,
-    SetPrerenderingAllowedParams,
-    SetRPHRegistrationModeParams,
-    SetSPCTransactionModeParams,
-    SetTouchEmulationEnabledParams,
-    SetWebLifecycleStateParams,
-    StartScreencastParams,
-    StartScreenRecordingParams,
     StartScreenRecordingResult,
     StopScreenRecordingResult,
 )
@@ -113,11 +68,12 @@ class Page:
         """
         Deprecated, please use addScriptToEvaluateOnNewDocument instead.
         """
-        params = AddScriptToEvaluateOnLoadParams(script_source=script_source)
+        _params: dict[str, Any] = {}
+        _params["scriptSource"] = script_source
 
         result = await self._executor.execute(
             method=PageCommand.ADD_SCRIPT_TO_EVALUATE_ON_LOAD,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(AddScriptToEvaluateOnLoadResult, result)
 
@@ -133,16 +89,18 @@ class Page:
         Evaluates given script in every frame upon creation (before loading frame's
         scripts).
         """
-        params = AddScriptToEvaluateOnNewDocumentParams(
-            source=source,
-            world_name=world_name,
-            include_command_line_api=include_command_line_api,
-            run_immediately=run_immediately,
-        )
+        _params: dict[str, Any] = {}
+        _params["source"] = source
+        if world_name is not None:
+            _params["worldName"] = world_name
+        if include_command_line_api is not None:
+            _params["includeCommandLineAPI"] = include_command_line_api
+        if run_immediately is not None:
+            _params["runImmediately"] = run_immediately
 
         result = await self._executor.execute(
             method=PageCommand.ADD_SCRIPT_TO_EVALUATE_ON_NEW_DOCUMENT,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(AddScriptToEvaluateOnNewDocumentResult, result)
 
@@ -170,18 +128,23 @@ class Page:
         """
         Capture page screenshot.
         """
-        params = CaptureScreenshotParams(
-            format=format,
-            quality=quality,
-            clip=clip,
-            from_surface=from_surface,
-            capture_beyond_viewport=capture_beyond_viewport,
-            optimize_for_speed=optimize_for_speed,
-        )
+        _params: dict[str, Any] = {}
+        if format is not None:
+            _params["format"] = format
+        if quality is not None:
+            _params["quality"] = quality
+        if clip is not None:
+            _params["clip"] = _encode_value(clip)
+        if from_surface is not None:
+            _params["fromSurface"] = from_surface
+        if capture_beyond_viewport is not None:
+            _params["captureBeyondViewport"] = capture_beyond_viewport
+        if optimize_for_speed is not None:
+            _params["optimizeForSpeed"] = optimize_for_speed
 
         result = await self._executor.execute(
             method=PageCommand.CAPTURE_SCREENSHOT,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(CaptureScreenshotResult, result)
 
@@ -194,11 +157,13 @@ class Page:
         Returns a snapshot of the page as a string. For MHTML format, the serialization
         includes iframes, shadow DOM, external resources, and element-inline styles.
         """
-        params = CaptureSnapshotParams(format=format)
+        _params: dict[str, Any] = {}
+        if format is not None:
+            _params["format"] = format
 
         result = await self._executor.execute(
             method=PageCommand.CAPTURE_SNAPSHOT,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(CaptureSnapshotResult, result)
 
@@ -249,16 +214,18 @@ class Page:
         """
         Creates an isolated world for the given frame.
         """
-        params = CreateIsolatedWorldParams(
-            frame_id=frame_id,
-            world_name=world_name,
-            grant_univeral_access=grant_univeral_access,
-            content_security_policy=content_security_policy,
-        )
+        _params: dict[str, Any] = {}
+        _params["frameId"] = _encode_value(frame_id)
+        if world_name is not None:
+            _params["worldName"] = world_name
+        if grant_univeral_access is not None:
+            _params["grantUniveralAccess"] = grant_univeral_access
+        if content_security_policy is not None:
+            _params["contentSecurityPolicy"] = content_security_policy
 
         result = await self._executor.execute(
             method=PageCommand.CREATE_ISOLATED_WORLD,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(CreateIsolatedWorldResult, result)
 
@@ -272,11 +239,13 @@ class Page:
         """
         Deletes browser cookie with given name, domain and path.
         """
-        params = DeleteCookieParams(cookie_name=cookie_name, url=url)
+        _params: dict[str, Any] = {}
+        _params["cookieName"] = cookie_name
+        _params["url"] = url
 
         await self._executor.execute(
             method=PageCommand.DELETE_COOKIE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def disable(
@@ -298,13 +267,13 @@ class Page:
         """
         Enables page domain notifications.
         """
-        params = EnableParams(
-            enable_file_chooser_opened_event=enable_file_chooser_opened_event
-        )
+        _params: dict[str, Any] = {}
+        if enable_file_chooser_opened_event is not None:
+            _params["enableFileChooserOpenedEvent"] = enable_file_chooser_opened_event
 
         await self._executor.execute(
             method=PageCommand.ENABLE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def get_app_manifest(
@@ -318,11 +287,13 @@ class Page:
         the manifest of the current document, this API errors out. If there is not a
         loaded page, this API errors out immediately.
         """
-        params = GetAppManifestParams(manifest_id=manifest_id)
+        _params: dict[str, Any] = {}
+        if manifest_id is not None:
+            _params["manifestId"] = manifest_id
 
         result = await self._executor.execute(
             method=PageCommand.GET_APP_MANIFEST,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetAppManifestResult, result)
 
@@ -392,11 +363,12 @@ class Page:
         *,
         frame_id: FrameId,
     ) -> GetAdScriptAncestryResult:
-        params = GetAdScriptAncestryParams(frame_id=frame_id)
+        _params: dict[str, Any] = {}
+        _params["frameId"] = _encode_value(frame_id)
 
         result = await self._executor.execute(
             method=PageCommand.GET_AD_SCRIPT_ANCESTRY,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetAdScriptAncestryResult, result)
 
@@ -410,11 +382,12 @@ class Page:
         dictionary with `document.spellCheckCustomDictionary.addWords()`, sorted. Page
         script cannot read the dictionary back; this lets developers inspect it.
         """
-        params = GetSpellCheckCustomDictionaryParams(frame_id=frame_id)
+        _params: dict[str, Any] = {}
+        _params["frameId"] = _encode_value(frame_id)
 
         result = await self._executor.execute(
             method=PageCommand.GET_SPELL_CHECK_CUSTOM_DICTIONARY,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetSpellCheckCustomDictionaryResult, result)
 
@@ -475,11 +448,13 @@ class Page:
         """
         Returns content of the given resource.
         """
-        params = GetResourceContentParams(frame_id=frame_id, url=url)
+        _params: dict[str, Any] = {}
+        _params["frameId"] = _encode_value(frame_id)
+        _params["url"] = url
 
         result = await self._executor.execute(
             method=PageCommand.GET_RESOURCE_CONTENT,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetResourceContentResult, result)
 
@@ -505,11 +480,14 @@ class Page:
         Accepts or dismisses a JavaScript initiated dialog (alert, confirm, prompt, or
         onbeforeunload).
         """
-        params = HandleJavaScriptDialogParams(accept=accept, prompt_text=prompt_text)
+        _params: dict[str, Any] = {}
+        _params["accept"] = accept
+        if prompt_text is not None:
+            _params["promptText"] = prompt_text
 
         await self._executor.execute(
             method=PageCommand.HANDLE_JAVA_SCRIPT_DIALOG,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def navigate(
@@ -524,17 +502,20 @@ class Page:
         """
         Navigates current page to the given URL.
         """
-        params = NavigateParams(
-            url=url,
-            referrer=referrer,
-            transition_type=transition_type,
-            frame_id=frame_id,
-            referrer_policy=referrer_policy,
-        )
+        _params: dict[str, Any] = {}
+        _params["url"] = url
+        if referrer is not None:
+            _params["referrer"] = referrer
+        if transition_type is not None:
+            _params["transitionType"] = _encode_value(transition_type)
+        if frame_id is not None:
+            _params["frameId"] = _encode_value(frame_id)
+        if referrer_policy is not None:
+            _params["referrerPolicy"] = _encode_value(referrer_policy)
 
         result = await self._executor.execute(
             method=PageCommand.NAVIGATE,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(NavigateResult, result)
 
@@ -546,11 +527,12 @@ class Page:
         """
         Navigates current page to the given history entry.
         """
-        params = NavigateToHistoryEntryParams(entry_id=entry_id)
+        _params: dict[str, Any] = {}
+        _params["entryId"] = entry_id
 
         await self._executor.execute(
             method=PageCommand.NAVIGATE_TO_HISTORY_ENTRY,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def print_to_pdf(
@@ -577,29 +559,45 @@ class Page:
         """
         Print page as PDF.
         """
-        params = PrintToPDFParams(
-            landscape=landscape,
-            display_header_footer=display_header_footer,
-            print_background=print_background,
-            scale=scale,
-            paper_width=paper_width,
-            paper_height=paper_height,
-            margin_top=margin_top,
-            margin_bottom=margin_bottom,
-            margin_left=margin_left,
-            margin_right=margin_right,
-            page_ranges=page_ranges,
-            header_template=header_template,
-            footer_template=footer_template,
-            prefer_css_page_size=prefer_css_page_size,
-            transfer_mode=transfer_mode,
-            generate_tagged_pdf=generate_tagged_pdf,
-            generate_document_outline=generate_document_outline,
-        )
+        _params: dict[str, Any] = {}
+        if landscape is not None:
+            _params["landscape"] = landscape
+        if display_header_footer is not None:
+            _params["displayHeaderFooter"] = display_header_footer
+        if print_background is not None:
+            _params["printBackground"] = print_background
+        if scale is not None:
+            _params["scale"] = scale
+        if paper_width is not None:
+            _params["paperWidth"] = paper_width
+        if paper_height is not None:
+            _params["paperHeight"] = paper_height
+        if margin_top is not None:
+            _params["marginTop"] = margin_top
+        if margin_bottom is not None:
+            _params["marginBottom"] = margin_bottom
+        if margin_left is not None:
+            _params["marginLeft"] = margin_left
+        if margin_right is not None:
+            _params["marginRight"] = margin_right
+        if page_ranges is not None:
+            _params["pageRanges"] = page_ranges
+        if header_template is not None:
+            _params["headerTemplate"] = header_template
+        if footer_template is not None:
+            _params["footerTemplate"] = footer_template
+        if prefer_css_page_size is not None:
+            _params["preferCSSPageSize"] = prefer_css_page_size
+        if transfer_mode is not None:
+            _params["transferMode"] = transfer_mode
+        if generate_tagged_pdf is not None:
+            _params["generateTaggedPDF"] = generate_tagged_pdf
+        if generate_document_outline is not None:
+            _params["generateDocumentOutline"] = generate_document_outline
 
         result = await self._executor.execute(
             method=PageCommand.PRINT_TO_PDF,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(PrintToPDFResult, result)
 
@@ -613,15 +611,17 @@ class Page:
         """
         Reloads given page optionally ignoring the cache.
         """
-        params = ReloadParams(
-            ignore_cache=ignore_cache,
-            script_to_evaluate_on_load=script_to_evaluate_on_load,
-            loader_id=loader_id,
-        )
+        _params: dict[str, Any] = {}
+        if ignore_cache is not None:
+            _params["ignoreCache"] = ignore_cache
+        if script_to_evaluate_on_load is not None:
+            _params["scriptToEvaluateOnLoad"] = script_to_evaluate_on_load
+        if loader_id is not None:
+            _params["loaderId"] = _encode_value(loader_id)
 
         await self._executor.execute(
             method=PageCommand.RELOAD,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     @deprecated("Page.removeScriptToEvaluateOnLoad is deprecated")
@@ -633,11 +633,12 @@ class Page:
         """
         Deprecated, please use removeScriptToEvaluateOnNewDocument instead.
         """
-        params = RemoveScriptToEvaluateOnLoadParams(identifier=identifier)
+        _params: dict[str, Any] = {}
+        _params["identifier"] = _encode_value(identifier)
 
         await self._executor.execute(
             method=PageCommand.REMOVE_SCRIPT_TO_EVALUATE_ON_LOAD,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def remove_script_to_evaluate_on_new_document(
@@ -648,11 +649,12 @@ class Page:
         """
         Removes given script from the list.
         """
-        params = RemoveScriptToEvaluateOnNewDocumentParams(identifier=identifier)
+        _params: dict[str, Any] = {}
+        _params["identifier"] = _encode_value(identifier)
 
         await self._executor.execute(
             method=PageCommand.REMOVE_SCRIPT_TO_EVALUATE_ON_NEW_DOCUMENT,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def screencast_frame_ack(
@@ -663,11 +665,12 @@ class Page:
         """
         Acknowledges that a screencast frame has been received by the frontend.
         """
-        params = ScreencastFrameAckParams(session_id=session_id)
+        _params: dict[str, Any] = {}
+        _params["sessionId"] = session_id
 
         await self._executor.execute(
             method=PageCommand.SCREENCAST_FRAME_ACK,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def search_in_resource(
@@ -682,17 +685,18 @@ class Page:
         """
         Searches for given string in resource content.
         """
-        params = SearchInResourceParams(
-            frame_id=frame_id,
-            url=url,
-            query=query,
-            case_sensitive=case_sensitive,
-            is_regex=is_regex,
-        )
+        _params: dict[str, Any] = {}
+        _params["frameId"] = _encode_value(frame_id)
+        _params["url"] = url
+        _params["query"] = query
+        if case_sensitive is not None:
+            _params["caseSensitive"] = case_sensitive
+        if is_regex is not None:
+            _params["isRegex"] = is_regex
 
         result = await self._executor.execute(
             method=PageCommand.SEARCH_IN_RESOURCE,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(SearchInResourceResult, result)
 
@@ -704,11 +708,12 @@ class Page:
         """
         Enable Chrome's experimental ad filter on all sites.
         """
-        params = SetAdBlockingEnabledParams(enabled=enabled)
+        _params: dict[str, Any] = {}
+        _params["enabled"] = enabled
 
         await self._executor.execute(
             method=PageCommand.SET_AD_BLOCKING_ENABLED,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_bypass_csp(
@@ -719,11 +724,12 @@ class Page:
         """
         Enable page Content Security Policy by-passing.
         """
-        params = SetBypassCSPParams(enabled=enabled)
+        _params: dict[str, Any] = {}
+        _params["enabled"] = enabled
 
         await self._executor.execute(
             method=PageCommand.SET_BYPASS_CSP,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def get_permissions_policy_state(
@@ -734,11 +740,12 @@ class Page:
         """
         Get Permissions Policy state on given frame.
         """
-        params = GetPermissionsPolicyStateParams(frame_id=frame_id)
+        _params: dict[str, Any] = {}
+        _params["frameId"] = _encode_value(frame_id)
 
         result = await self._executor.execute(
             method=PageCommand.GET_PERMISSIONS_POLICY_STATE,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetPermissionsPolicyStateResult, result)
 
@@ -750,11 +757,12 @@ class Page:
         """
         Get Origin Trials on given frame.
         """
-        params = GetOriginTrialsParams(frame_id=frame_id)
+        _params: dict[str, Any] = {}
+        _params["frameId"] = _encode_value(frame_id)
 
         result = await self._executor.execute(
             method=PageCommand.GET_ORIGIN_TRIALS,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetOriginTrialsResult, result)
 
@@ -780,24 +788,31 @@ class Page:
         window.screen.height, window.innerWidth, window.innerHeight, and
         "device-width"/"device-height"-related CSS media query results).
         """
-        params = SetDeviceMetricsOverrideParams(
-            width=width,
-            height=height,
-            device_scale_factor=device_scale_factor,
-            mobile=mobile,
-            scale=scale,
-            screen_width=screen_width,
-            screen_height=screen_height,
-            position_x=position_x,
-            position_y=position_y,
-            dont_set_visible_size=dont_set_visible_size,
-            screen_orientation=screen_orientation,
-            viewport=viewport,
-        )
+        _params: dict[str, Any] = {}
+        _params["width"] = width
+        _params["height"] = height
+        _params["deviceScaleFactor"] = device_scale_factor
+        _params["mobile"] = mobile
+        if scale is not None:
+            _params["scale"] = scale
+        if screen_width is not None:
+            _params["screenWidth"] = screen_width
+        if screen_height is not None:
+            _params["screenHeight"] = screen_height
+        if position_x is not None:
+            _params["positionX"] = position_x
+        if position_y is not None:
+            _params["positionY"] = position_y
+        if dont_set_visible_size is not None:
+            _params["dontSetVisibleSize"] = dont_set_visible_size
+        if screen_orientation is not None:
+            _params["screenOrientation"] = _encode_value(screen_orientation)
+        if viewport is not None:
+            _params["viewport"] = _encode_value(viewport)
 
         await self._executor.execute(
             method=PageCommand.SET_DEVICE_METRICS_OVERRIDE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     @deprecated("Page.setDeviceOrientationOverride is deprecated")
@@ -811,11 +826,14 @@ class Page:
         """
         Overrides the Device Orientation.
         """
-        params = SetDeviceOrientationOverrideParams(alpha=alpha, beta=beta, gamma=gamma)
+        _params: dict[str, Any] = {}
+        _params["alpha"] = alpha
+        _params["beta"] = beta
+        _params["gamma"] = gamma
 
         await self._executor.execute(
             method=PageCommand.SET_DEVICE_ORIENTATION_OVERRIDE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_font_families(
@@ -827,13 +845,14 @@ class Page:
         """
         Set generic font families.
         """
-        params = SetFontFamiliesParams(
-            font_families=font_families, for_scripts=for_scripts
-        )
+        _params: dict[str, Any] = {}
+        _params["fontFamilies"] = _encode_value(font_families)
+        if for_scripts is not None:
+            _params["forScripts"] = _encode_value(for_scripts)
 
         await self._executor.execute(
             method=PageCommand.SET_FONT_FAMILIES,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_font_sizes(
@@ -844,11 +863,12 @@ class Page:
         """
         Set default font sizes.
         """
-        params = SetFontSizesParams(font_sizes=font_sizes)
+        _params: dict[str, Any] = {}
+        _params["fontSizes"] = _encode_value(font_sizes)
 
         await self._executor.execute(
             method=PageCommand.SET_FONT_SIZES,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_document_content(
@@ -860,11 +880,13 @@ class Page:
         """
         Sets given markup as the document's HTML.
         """
-        params = SetDocumentContentParams(frame_id=frame_id, html=html)
+        _params: dict[str, Any] = {}
+        _params["frameId"] = _encode_value(frame_id)
+        _params["html"] = html
 
         await self._executor.execute(
             method=PageCommand.SET_DOCUMENT_CONTENT,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     @deprecated("Page.setDownloadBehavior is deprecated")
@@ -877,13 +899,14 @@ class Page:
         """
         Set the behavior when downloading a file.
         """
-        params = SetDownloadBehaviorParams(
-            behavior=behavior, download_path=download_path
-        )
+        _params: dict[str, Any] = {}
+        _params["behavior"] = behavior
+        if download_path is not None:
+            _params["downloadPath"] = download_path
 
         await self._executor.execute(
             method=PageCommand.SET_DOWNLOAD_BEHAVIOR,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     @deprecated("Page.setGeolocationOverride is deprecated")
@@ -898,13 +921,17 @@ class Page:
         Overrides the Geolocation Position or Error. Omitting any of the parameters
         emulates position unavailable.
         """
-        params = SetGeolocationOverrideParams(
-            latitude=latitude, longitude=longitude, accuracy=accuracy
-        )
+        _params: dict[str, Any] = {}
+        if latitude is not None:
+            _params["latitude"] = latitude
+        if longitude is not None:
+            _params["longitude"] = longitude
+        if accuracy is not None:
+            _params["accuracy"] = accuracy
 
         await self._executor.execute(
             method=PageCommand.SET_GEOLOCATION_OVERRIDE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_lifecycle_events_enabled(
@@ -915,11 +942,12 @@ class Page:
         """
         Controls whether page will emit lifecycle events.
         """
-        params = SetLifecycleEventsEnabledParams(enabled=enabled)
+        _params: dict[str, Any] = {}
+        _params["enabled"] = enabled
 
         await self._executor.execute(
             method=PageCommand.SET_LIFECYCLE_EVENTS_ENABLED,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     @deprecated("Page.setTouchEmulationEnabled is deprecated")
@@ -932,13 +960,14 @@ class Page:
         """
         Toggles mouse event-based touch event emulation.
         """
-        params = SetTouchEmulationEnabledParams(
-            enabled=enabled, configuration=configuration
-        )
+        _params: dict[str, Any] = {}
+        _params["enabled"] = enabled
+        if configuration is not None:
+            _params["configuration"] = configuration
 
         await self._executor.execute(
             method=PageCommand.SET_TOUCH_EMULATION_ENABLED,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def start_screencast(
@@ -955,19 +984,25 @@ class Page:
         """
         Starts sending each frame using the `screencastFrame` event.
         """
-        params = StartScreencastParams(
-            format=format,
-            quality=quality,
-            max_width=max_width,
-            max_height=max_height,
-            every_nth_frame=every_nth_frame,
-            max_frames_in_flight=max_frames_in_flight,
-            send_last_frame=send_last_frame,
-        )
+        _params: dict[str, Any] = {}
+        if format is not None:
+            _params["format"] = format
+        if quality is not None:
+            _params["quality"] = quality
+        if max_width is not None:
+            _params["maxWidth"] = max_width
+        if max_height is not None:
+            _params["maxHeight"] = max_height
+        if every_nth_frame is not None:
+            _params["everyNthFrame"] = every_nth_frame
+        if max_frames_in_flight is not None:
+            _params["maxFramesInFlight"] = max_frames_in_flight
+        if send_last_frame is not None:
+            _params["sendLastFrame"] = send_last_frame
 
         await self._executor.execute(
             method=PageCommand.START_SCREENCAST,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def start_screen_recording(
@@ -981,16 +1016,19 @@ class Page:
         """
         Starts screencast video recording.
         """
-        params = StartScreenRecordingParams(
-            audio=audio,
-            max_width=max_width,
-            max_height=max_height,
-            frame_rate=frame_rate,
-        )
+        _params: dict[str, Any] = {}
+        if audio is not None:
+            _params["audio"] = audio
+        if max_width is not None:
+            _params["maxWidth"] = max_width
+        if max_height is not None:
+            _params["maxHeight"] = max_height
+        if frame_rate is not None:
+            _params["frameRate"] = frame_rate
 
         result = await self._executor.execute(
             method=PageCommand.START_SCREEN_RECORDING,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(StartScreenRecordingResult, result)
 
@@ -1048,11 +1086,12 @@ class Page:
         Tries to update the web lifecycle state of the page. It will transition the
         page to the given state according to: https://github.com/WICG/web-lifecycle/
         """
-        params = SetWebLifecycleStateParams(state=state)
+        _params: dict[str, Any] = {}
+        _params["state"] = state
 
         await self._executor.execute(
             method=PageCommand.SET_WEB_LIFECYCLE_STATE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def stop_screencast(
@@ -1079,11 +1118,12 @@ class Page:
         discretion, based on internal heuristics. See also:
         `Page.compilationCacheProduced`.
         """
-        params = ProduceCompilationCacheParams(scripts=scripts)
+        _params: dict[str, Any] = {}
+        _params["scripts"] = _encode_value(scripts)
 
         await self._executor.execute(
             method=PageCommand.PRODUCE_COMPILATION_CACHE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def add_compilation_cache(
@@ -1096,11 +1136,13 @@ class Page:
         Seeds compilation cache for given url. Compilation cache does not survive
         cross-process navigation.
         """
-        params = AddCompilationCacheParams(url=url, data=data)
+        _params: dict[str, Any] = {}
+        _params["url"] = url
+        _params["data"] = data
 
         await self._executor.execute(
             method=PageCommand.ADD_COMPILATION_CACHE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def clear_compilation_cache(
@@ -1129,11 +1171,12 @@ class Page:
         Sets the Secure Payment Confirmation transaction mode.
         https://w3c.github.io/secure-payment-confirmation/#sctn-automation-set-spc-transaction-mode
         """
-        params = SetSPCTransactionModeParams(mode=mode)
+        _params: dict[str, Any] = {}
+        _params["mode"] = mode
 
         await self._executor.execute(
             method=PageCommand.SET_SPC_TRANSACTION_MODE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_rph_registration_mode(
@@ -1145,11 +1188,12 @@ class Page:
         Extensions for Custom Handlers API:
         https://html.spec.whatwg.org/multipage/system-state.html#rph-automation
         """
-        params = SetRPHRegistrationModeParams(mode=mode)
+        _params: dict[str, Any] = {}
+        _params["mode"] = mode
 
         await self._executor.execute(
             method=PageCommand.SET_RPH_REGISTRATION_MODE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def generate_test_report(
@@ -1161,11 +1205,14 @@ class Page:
         """
         Generates a report for testing.
         """
-        params = GenerateTestReportParams(message=message, group=group)
+        _params: dict[str, Any] = {}
+        _params["message"] = message
+        if group is not None:
+            _params["group"] = group
 
         await self._executor.execute(
             method=PageCommand.GENERATE_TEST_REPORT,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def wait_for_debugger(
@@ -1191,11 +1238,14 @@ class Page:
         file chooser interception is enabled, native file chooser dialog is not shown.
         Instead, a protocol event `Page.fileChooserOpened` is emitted.
         """
-        params = SetInterceptFileChooserDialogParams(enabled=enabled, cancel=cancel)
+        _params: dict[str, Any] = {}
+        _params["enabled"] = enabled
+        if cancel is not None:
+            _params["cancel"] = cancel
 
         await self._executor.execute(
             method=PageCommand.SET_INTERCEPT_FILE_CHOOSER_DIALOG,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_prerendering_allowed(
@@ -1210,11 +1260,12 @@ class Page:
         for more details. TODO(https://crbug.com/1440085): Remove this once Puppeteer
         supports tab targets.
         """
-        params = SetPrerenderingAllowedParams(is_allowed=is_allowed)
+        _params: dict[str, Any] = {}
+        _params["isAllowed"] = is_allowed
 
         await self._executor.execute(
             method=PageCommand.SET_PRERENDERING_ALLOWED,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def get_annotated_page_content(
@@ -1226,13 +1277,13 @@ class Page:
         Get the annotated page content for the main frame. This is an experimental
         command that is subject to change.
         """
-        params = GetAnnotatedPageContentParams(
-            include_actionable_information=include_actionable_information
-        )
+        _params: dict[str, Any] = {}
+        if include_actionable_information is not None:
+            _params["includeActionableInformation"] = include_actionable_information
 
         result = await self._executor.execute(
             method=PageCommand.GET_ANNOTATED_PAGE_CONTENT,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetAnnotatedPageContentResult, result)
 
@@ -1244,9 +1295,11 @@ class Page:
         """
         Configures input visualization on the page.
         """
-        params = SetInputVisualizationParams(clicks=clicks)
+        _params: dict[str, Any] = {}
+        if clicks is not None:
+            _params["clicks"] = clicks
 
         await self._executor.execute(
             method=PageCommand.SET_INPUT_VISUALIZATION,
-            params=encode_cdp(params),
+            params=_params,
         )

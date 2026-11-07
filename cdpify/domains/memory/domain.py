@@ -4,7 +4,9 @@
 
 from __future__ import annotations
 
-from cdpify.codec import decode_cdp, encode_cdp
+from typing import Any
+
+from cdpify.codec import _encode_value, decode_cdp
 from cdpify.executor import CommandExecutor
 
 from .commands import (
@@ -14,9 +16,6 @@ from .commands import (
     GetDOMCountersResult,
     GetSamplingProfileResult,
     MemoryCommand,
-    SetPressureNotificationsSuppressedParams,
-    SimulatePressureNotificationParams,
-    StartSamplingParams,
 )
 from .types import (
     PressureLevel,
@@ -82,11 +81,12 @@ class Memory:
         """
         Enable/disable suppressing memory pressure notifications in all processes.
         """
-        params = SetPressureNotificationsSuppressedParams(suppressed=suppressed)
+        _params: dict[str, Any] = {}
+        _params["suppressed"] = suppressed
 
         await self._executor.execute(
             method=MemoryCommand.SET_PRESSURE_NOTIFICATIONS_SUPPRESSED,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def simulate_pressure_notification(
@@ -97,11 +97,12 @@ class Memory:
         """
         Simulate a memory pressure notification in all processes.
         """
-        params = SimulatePressureNotificationParams(level=level)
+        _params: dict[str, Any] = {}
+        _params["level"] = _encode_value(level)
 
         await self._executor.execute(
             method=MemoryCommand.SIMULATE_PRESSURE_NOTIFICATION,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def start_sampling(
@@ -113,13 +114,15 @@ class Memory:
         """
         Start collecting native memory profile.
         """
-        params = StartSamplingParams(
-            sampling_interval=sampling_interval, suppress_randomness=suppress_randomness
-        )
+        _params: dict[str, Any] = {}
+        if sampling_interval is not None:
+            _params["samplingInterval"] = sampling_interval
+        if suppress_randomness is not None:
+            _params["suppressRandomness"] = suppress_randomness
 
         await self._executor.execute(
             method=MemoryCommand.START_SAMPLING,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def stop_sampling(

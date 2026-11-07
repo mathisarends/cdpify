@@ -4,25 +4,18 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
-from cdpify.codec import decode_cdp, encode_cdp
+from cdpify.codec import _encode_value, decode_cdp
 from cdpify.executor import CommandExecutor
 
 from .commands import (
-    CompositingReasonsParams,
     CompositingReasonsResult,
     LayerTreeCommand,
-    LoadSnapshotParams,
     LoadSnapshotResult,
-    MakeSnapshotParams,
     MakeSnapshotResult,
-    ProfileSnapshotParams,
     ProfileSnapshotResult,
-    ReleaseSnapshotParams,
-    ReplaySnapshotParams,
     ReplaySnapshotResult,
-    SnapshotCommandLogParams,
     SnapshotCommandLogResult,
 )
 from .types import (
@@ -47,11 +40,12 @@ class LayerTree:
         """
         Provides the reasons why the given layer was composited.
         """
-        params = CompositingReasonsParams(layer_id=layer_id)
+        _params: dict[str, Any] = {}
+        _params["layerId"] = _encode_value(layer_id)
 
         result = await self._executor.execute(
             method=LayerTreeCommand.COMPOSITING_REASONS,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(CompositingReasonsResult, result)
 
@@ -85,11 +79,12 @@ class LayerTree:
         """
         Returns the snapshot identifier.
         """
-        params = LoadSnapshotParams(tiles=tiles)
+        _params: dict[str, Any] = {}
+        _params["tiles"] = _encode_value(tiles)
 
         result = await self._executor.execute(
             method=LayerTreeCommand.LOAD_SNAPSHOT,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(LoadSnapshotResult, result)
 
@@ -101,11 +96,12 @@ class LayerTree:
         """
         Returns the layer snapshot identifier.
         """
-        params = MakeSnapshotParams(layer_id=layer_id)
+        _params: dict[str, Any] = {}
+        _params["layerId"] = _encode_value(layer_id)
 
         result = await self._executor.execute(
             method=LayerTreeCommand.MAKE_SNAPSHOT,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(MakeSnapshotResult, result)
 
@@ -117,16 +113,18 @@ class LayerTree:
         min_duration: float | None = None,
         clip_rect: dom.Rect | None = None,
     ) -> ProfileSnapshotResult:
-        params = ProfileSnapshotParams(
-            snapshot_id=snapshot_id,
-            min_repeat_count=min_repeat_count,
-            min_duration=min_duration,
-            clip_rect=clip_rect,
-        )
+        _params: dict[str, Any] = {}
+        _params["snapshotId"] = _encode_value(snapshot_id)
+        if min_repeat_count is not None:
+            _params["minRepeatCount"] = min_repeat_count
+        if min_duration is not None:
+            _params["minDuration"] = min_duration
+        if clip_rect is not None:
+            _params["clipRect"] = _encode_value(clip_rect)
 
         result = await self._executor.execute(
             method=LayerTreeCommand.PROFILE_SNAPSHOT,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(ProfileSnapshotResult, result)
 
@@ -138,11 +136,12 @@ class LayerTree:
         """
         Releases layer snapshot captured by the back-end.
         """
-        params = ReleaseSnapshotParams(snapshot_id=snapshot_id)
+        _params: dict[str, Any] = {}
+        _params["snapshotId"] = _encode_value(snapshot_id)
 
         await self._executor.execute(
             method=LayerTreeCommand.RELEASE_SNAPSHOT,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def replay_snapshot(
@@ -156,13 +155,18 @@ class LayerTree:
         """
         Replays the layer snapshot and returns the resulting bitmap.
         """
-        params = ReplaySnapshotParams(
-            snapshot_id=snapshot_id, from_step=from_step, to_step=to_step, scale=scale
-        )
+        _params: dict[str, Any] = {}
+        _params["snapshotId"] = _encode_value(snapshot_id)
+        if from_step is not None:
+            _params["fromStep"] = from_step
+        if to_step is not None:
+            _params["toStep"] = to_step
+        if scale is not None:
+            _params["scale"] = scale
 
         result = await self._executor.execute(
             method=LayerTreeCommand.REPLAY_SNAPSHOT,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(ReplaySnapshotResult, result)
 
@@ -174,10 +178,11 @@ class LayerTree:
         """
         Replays the layer snapshot and returns canvas log.
         """
-        params = SnapshotCommandLogParams(snapshot_id=snapshot_id)
+        _params: dict[str, Any] = {}
+        _params["snapshotId"] = _encode_value(snapshot_id)
 
         result = await self._executor.execute(
             method=LayerTreeCommand.SNAPSHOT_COMMAND_LOG,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(SnapshotCommandLogResult, result)

@@ -4,11 +4,12 @@
 
 from __future__ import annotations
 
-from cdpify.codec import encode_cdp
+from typing import Any
+
+from cdpify.codec import _encode_value
 from cdpify.executor import CommandExecutor
 
 from .commands import (
-    EnableParams,
     PerformanceTimelineCommand,
 )
 
@@ -26,9 +27,10 @@ class PerformanceTimeline:
         Previously buffered events would be reported before method returns. See also:
         timelineEventAdded
         """
-        params = EnableParams(event_types=event_types)
+        _params: dict[str, Any] = {}
+        _params["eventTypes"] = _encode_value(event_types)
 
         await self._executor.execute(
             method=PerformanceTimelineCommand.ENABLE,
-            params=encode_cdp(params),
+            params=_params,
         )

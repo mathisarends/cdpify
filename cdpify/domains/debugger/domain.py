@@ -4,59 +4,29 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Literal
+from typing import TYPE_CHECKING, Any, Literal
 
-from cdpify.codec import decode_cdp, encode_cdp
+from cdpify.codec import _encode_value, decode_cdp
 from cdpify.executor import CommandExecutor
 from cdpify.shared.decorators import deprecated
 
 from .commands import (
-    ContinueToLocationParams,
     DebuggerCommand,
-    DisassembleWasmModuleParams,
     DisassembleWasmModuleResult,
-    EnableParams,
     EnableResult,
-    EvaluateOnCallFrameParams,
     EvaluateOnCallFrameResult,
-    GetPossibleBreakpointsParams,
     GetPossibleBreakpointsResult,
-    GetScriptSourceParams,
     GetScriptSourceResult,
-    GetStackTraceParams,
     GetStackTraceResult,
-    GetWasmBytecodeParams,
     GetWasmBytecodeResult,
-    NextWasmDisassemblyChunkParams,
     NextWasmDisassemblyChunkResult,
-    PauseOnAsyncCallParams,
-    RemoveBreakpointParams,
-    RestartFrameParams,
     RestartFrameResult,
-    ResumeParams,
-    SearchInContentParams,
     SearchInContentResult,
-    SetAsyncCallStackDepthParams,
-    SetBlackboxedRangesParams,
-    SetBlackboxExecutionContextsParams,
-    SetBlackboxPatternsParams,
-    SetBreakpointByUrlParams,
     SetBreakpointByUrlResult,
-    SetBreakpointOnFunctionCallParams,
     SetBreakpointOnFunctionCallResult,
-    SetBreakpointParams,
     SetBreakpointResult,
-    SetBreakpointsActiveParams,
-    SetInstrumentationBreakpointParams,
     SetInstrumentationBreakpointResult,
-    SetPauseOnExceptionsParams,
-    SetReturnValueParams,
-    SetScriptSourceParams,
     SetScriptSourceResult,
-    SetSkipAllPausesParams,
-    SetVariableValueParams,
-    StepIntoParams,
-    StepOverParams,
 )
 from .types import (
     BreakpointId,
@@ -83,13 +53,14 @@ class Debugger:
         """
         Continues execution until specific location is reached.
         """
-        params = ContinueToLocationParams(
-            location=location, target_call_frames=target_call_frames
-        )
+        _params: dict[str, Any] = {}
+        _params["location"] = _encode_value(location)
+        if target_call_frames is not None:
+            _params["targetCallFrames"] = target_call_frames
 
         await self._executor.execute(
             method=DebuggerCommand.CONTINUE_TO_LOCATION,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def disable(
@@ -112,11 +83,13 @@ class Debugger:
         Enables debugger for the given page. Clients should not assume that the
         debugging has been enabled until the result for this command is received.
         """
-        params = EnableParams(max_scripts_cache_size=max_scripts_cache_size)
+        _params: dict[str, Any] = {}
+        if max_scripts_cache_size is not None:
+            _params["maxScriptsCacheSize"] = max_scripts_cache_size
 
         result = await self._executor.execute(
             method=DebuggerCommand.ENABLE,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(EnableResult, result)
 
@@ -137,22 +110,29 @@ class Debugger:
         """
         Evaluates expression on a given call frame.
         """
-        params = EvaluateOnCallFrameParams(
-            call_frame_id=call_frame_id,
-            expression=expression,
-            object_group=object_group,
-            include_command_line_api=include_command_line_api,
-            silent=silent,
-            return_by_value=return_by_value,
-            generate_preview=generate_preview,
-            throw_on_side_effect=throw_on_side_effect,
-            timeout=timeout,
-            scope_number=scope_number,
-        )
+        _params: dict[str, Any] = {}
+        _params["callFrameId"] = _encode_value(call_frame_id)
+        _params["expression"] = expression
+        if object_group is not None:
+            _params["objectGroup"] = object_group
+        if include_command_line_api is not None:
+            _params["includeCommandLineAPI"] = include_command_line_api
+        if silent is not None:
+            _params["silent"] = silent
+        if return_by_value is not None:
+            _params["returnByValue"] = return_by_value
+        if generate_preview is not None:
+            _params["generatePreview"] = generate_preview
+        if throw_on_side_effect is not None:
+            _params["throwOnSideEffect"] = throw_on_side_effect
+        if timeout is not None:
+            _params["timeout"] = _encode_value(timeout)
+        if scope_number is not None:
+            _params["scopeNumber"] = scope_number
 
         result = await self._executor.execute(
             method=DebuggerCommand.EVALUATE_ON_CALL_FRAME,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(EvaluateOnCallFrameResult, result)
 
@@ -167,13 +147,16 @@ class Debugger:
         Returns possible locations for breakpoint. scriptId in start and end range
         locations should be the same.
         """
-        params = GetPossibleBreakpointsParams(
-            start=start, end=end, restrict_to_function=restrict_to_function
-        )
+        _params: dict[str, Any] = {}
+        _params["start"] = _encode_value(start)
+        if end is not None:
+            _params["end"] = _encode_value(end)
+        if restrict_to_function is not None:
+            _params["restrictToFunction"] = restrict_to_function
 
         result = await self._executor.execute(
             method=DebuggerCommand.GET_POSSIBLE_BREAKPOINTS,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetPossibleBreakpointsResult, result)
 
@@ -185,11 +168,12 @@ class Debugger:
         """
         Returns source for the script with given id.
         """
-        params = GetScriptSourceParams(script_id=script_id)
+        _params: dict[str, Any] = {}
+        _params["scriptId"] = _encode_value(script_id)
 
         result = await self._executor.execute(
             method=DebuggerCommand.GET_SCRIPT_SOURCE,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetScriptSourceResult, result)
 
@@ -198,11 +182,12 @@ class Debugger:
         *,
         script_id: runtime.ScriptId,
     ) -> DisassembleWasmModuleResult:
-        params = DisassembleWasmModuleParams(script_id=script_id)
+        _params: dict[str, Any] = {}
+        _params["scriptId"] = _encode_value(script_id)
 
         result = await self._executor.execute(
             method=DebuggerCommand.DISASSEMBLE_WASM_MODULE,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(DisassembleWasmModuleResult, result)
 
@@ -216,11 +201,12 @@ class Debugger:
         If disassembly is complete, this API will invalidate the streamId and return an
         empty chunk. Any subsequent calls for the now invalid stream will return errors.
         """
-        params = NextWasmDisassemblyChunkParams(stream_id=stream_id)
+        _params: dict[str, Any] = {}
+        _params["streamId"] = stream_id
 
         result = await self._executor.execute(
             method=DebuggerCommand.NEXT_WASM_DISASSEMBLY_CHUNK,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(NextWasmDisassemblyChunkResult, result)
 
@@ -233,11 +219,12 @@ class Debugger:
         """
         This command is deprecated. Use getScriptSource instead.
         """
-        params = GetWasmBytecodeParams(script_id=script_id)
+        _params: dict[str, Any] = {}
+        _params["scriptId"] = _encode_value(script_id)
 
         result = await self._executor.execute(
             method=DebuggerCommand.GET_WASM_BYTECODE,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetWasmBytecodeResult, result)
 
@@ -249,11 +236,12 @@ class Debugger:
         """
         Returns stack trace with given `stackTraceId`.
         """
-        params = GetStackTraceParams(stack_trace_id=stack_trace_id)
+        _params: dict[str, Any] = {}
+        _params["stackTraceId"] = _encode_value(stack_trace_id)
 
         result = await self._executor.execute(
             method=DebuggerCommand.GET_STACK_TRACE,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetStackTraceResult, result)
 
@@ -274,11 +262,12 @@ class Debugger:
         *,
         parent_stack_trace_id: runtime.StackTraceId,
     ) -> None:
-        params = PauseOnAsyncCallParams(parent_stack_trace_id=parent_stack_trace_id)
+        _params: dict[str, Any] = {}
+        _params["parentStackTraceId"] = _encode_value(parent_stack_trace_id)
 
         await self._executor.execute(
             method=DebuggerCommand.PAUSE_ON_ASYNC_CALL,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def remove_breakpoint(
@@ -289,11 +278,12 @@ class Debugger:
         """
         Removes JavaScript breakpoint.
         """
-        params = RemoveBreakpointParams(breakpoint_id=breakpoint_id)
+        _params: dict[str, Any] = {}
+        _params["breakpointId"] = _encode_value(breakpoint_id)
 
         await self._executor.execute(
             method=DebuggerCommand.REMOVE_BREAKPOINT,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def restart_frame(
@@ -314,11 +304,14 @@ class Debugger:
         events instead, that fires once V8 pauses at the beginning of the restarted
         function.
         """
-        params = RestartFrameParams(call_frame_id=call_frame_id, mode=mode)
+        _params: dict[str, Any] = {}
+        _params["callFrameId"] = _encode_value(call_frame_id)
+        if mode is not None:
+            _params["mode"] = mode
 
         result = await self._executor.execute(
             method=DebuggerCommand.RESTART_FRAME,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(RestartFrameResult, result)
 
@@ -330,11 +323,13 @@ class Debugger:
         """
         Resumes JavaScript execution.
         """
-        params = ResumeParams(terminate_on_resume=terminate_on_resume)
+        _params: dict[str, Any] = {}
+        if terminate_on_resume is not None:
+            _params["terminateOnResume"] = terminate_on_resume
 
         await self._executor.execute(
             method=DebuggerCommand.RESUME,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def search_in_content(
@@ -348,16 +343,17 @@ class Debugger:
         """
         Searches for given string in script content.
         """
-        params = SearchInContentParams(
-            script_id=script_id,
-            query=query,
-            case_sensitive=case_sensitive,
-            is_regex=is_regex,
-        )
+        _params: dict[str, Any] = {}
+        _params["scriptId"] = _encode_value(script_id)
+        _params["query"] = query
+        if case_sensitive is not None:
+            _params["caseSensitive"] = case_sensitive
+        if is_regex is not None:
+            _params["isRegex"] = is_regex
 
         result = await self._executor.execute(
             method=DebuggerCommand.SEARCH_IN_CONTENT,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(SearchInContentResult, result)
 
@@ -369,11 +365,12 @@ class Debugger:
         """
         Enables or disables async call stacks tracking.
         """
-        params = SetAsyncCallStackDepthParams(max_depth=max_depth)
+        _params: dict[str, Any] = {}
+        _params["maxDepth"] = max_depth
 
         await self._executor.execute(
             method=DebuggerCommand.SET_ASYNC_CALL_STACK_DEPTH,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_blackbox_execution_contexts(
@@ -387,11 +384,12 @@ class Debugger:
         leave blackboxed script by performing 'step in' several times, finally resorting
         to 'step out' if unsuccessful.
         """
-        params = SetBlackboxExecutionContextsParams(unique_ids=unique_ids)
+        _params: dict[str, Any] = {}
+        _params["uniqueIds"] = _encode_value(unique_ids)
 
         await self._executor.execute(
             method=DebuggerCommand.SET_BLACKBOX_EXECUTION_CONTEXTS,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_blackbox_patterns(
@@ -406,13 +404,14 @@ class Debugger:
         to leave blackboxed script by performing 'step in' several times, finally
         resorting to 'step out' if unsuccessful.
         """
-        params = SetBlackboxPatternsParams(
-            patterns=patterns, skip_anonymous=skip_anonymous
-        )
+        _params: dict[str, Any] = {}
+        _params["patterns"] = _encode_value(patterns)
+        if skip_anonymous is not None:
+            _params["skipAnonymous"] = skip_anonymous
 
         await self._executor.execute(
             method=DebuggerCommand.SET_BLACKBOX_PATTERNS,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_blackboxed_ranges(
@@ -427,11 +426,13 @@ class Debugger:
         'step out' if unsuccessful. Positions array contains positions where blackbox
         state is changed. First interval isn't blackboxed. Array should be sorted.
         """
-        params = SetBlackboxedRangesParams(script_id=script_id, positions=positions)
+        _params: dict[str, Any] = {}
+        _params["scriptId"] = _encode_value(script_id)
+        _params["positions"] = _encode_value(positions)
 
         await self._executor.execute(
             method=DebuggerCommand.SET_BLACKBOXED_RANGES,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_breakpoint(
@@ -443,11 +444,14 @@ class Debugger:
         """
         Sets JavaScript breakpoint at a given location.
         """
-        params = SetBreakpointParams(location=location, condition=condition)
+        _params: dict[str, Any] = {}
+        _params["location"] = _encode_value(location)
+        if condition is not None:
+            _params["condition"] = condition
 
         result = await self._executor.execute(
             method=DebuggerCommand.SET_BREAKPOINT,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(SetBreakpointResult, result)
 
@@ -461,11 +465,12 @@ class Debugger:
         """
         Sets instrumentation breakpoint.
         """
-        params = SetInstrumentationBreakpointParams(instrumentation=instrumentation)
+        _params: dict[str, Any] = {}
+        _params["instrumentation"] = instrumentation
 
         result = await self._executor.execute(
             method=DebuggerCommand.SET_INSTRUMENTATION_BREAKPOINT,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(SetInstrumentationBreakpointResult, result)
 
@@ -486,18 +491,22 @@ class Debugger:
         script parsing will result in subsequent `breakpointResolved` events issued.
         This logical breakpoint will survive page reloads.
         """
-        params = SetBreakpointByUrlParams(
-            line_number=line_number,
-            url=url,
-            url_regex=url_regex,
-            script_hash=script_hash,
-            column_number=column_number,
-            condition=condition,
-        )
+        _params: dict[str, Any] = {}
+        _params["lineNumber"] = line_number
+        if url is not None:
+            _params["url"] = url
+        if url_regex is not None:
+            _params["urlRegex"] = url_regex
+        if script_hash is not None:
+            _params["scriptHash"] = script_hash
+        if column_number is not None:
+            _params["columnNumber"] = column_number
+        if condition is not None:
+            _params["condition"] = condition
 
         result = await self._executor.execute(
             method=DebuggerCommand.SET_BREAKPOINT_BY_URL,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(SetBreakpointByUrlResult, result)
 
@@ -512,13 +521,14 @@ class Debugger:
         function was created from the same source as a given one, calling it will also
         trigger the breakpoint.
         """
-        params = SetBreakpointOnFunctionCallParams(
-            object_id=object_id, condition=condition
-        )
+        _params: dict[str, Any] = {}
+        _params["objectId"] = _encode_value(object_id)
+        if condition is not None:
+            _params["condition"] = condition
 
         result = await self._executor.execute(
             method=DebuggerCommand.SET_BREAKPOINT_ON_FUNCTION_CALL,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(SetBreakpointOnFunctionCallResult, result)
 
@@ -530,11 +540,12 @@ class Debugger:
         """
         Activates / deactivates all breakpoints on the page.
         """
-        params = SetBreakpointsActiveParams(active=active)
+        _params: dict[str, Any] = {}
+        _params["active"] = active
 
         await self._executor.execute(
             method=DebuggerCommand.SET_BREAKPOINTS_ACTIVE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_pause_on_exceptions(
@@ -547,11 +558,12 @@ class Debugger:
         uncaught exceptions, or caught exceptions, no exceptions. Initial pause on
         exceptions state is `none`.
         """
-        params = SetPauseOnExceptionsParams(state=state)
+        _params: dict[str, Any] = {}
+        _params["state"] = state
 
         await self._executor.execute(
             method=DebuggerCommand.SET_PAUSE_ON_EXCEPTIONS,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_return_value(
@@ -562,11 +574,12 @@ class Debugger:
         """
         Changes return value in top frame. Available only at return break position.
         """
-        params = SetReturnValueParams(new_value=new_value)
+        _params: dict[str, Any] = {}
+        _params["newValue"] = _encode_value(new_value)
 
         await self._executor.execute(
             method=DebuggerCommand.SET_RETURN_VALUE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     @deprecated("Debugger.setScriptSource is deprecated")
@@ -582,16 +595,17 @@ class Debugger:
         Live edit is no longer supported and this command always fails with a "no
         longer available" error.
         """
-        params = SetScriptSourceParams(
-            script_id=script_id,
-            script_source=script_source,
-            dry_run=dry_run,
-            allow_top_frame_editing=allow_top_frame_editing,
-        )
+        _params: dict[str, Any] = {}
+        _params["scriptId"] = _encode_value(script_id)
+        _params["scriptSource"] = script_source
+        if dry_run is not None:
+            _params["dryRun"] = dry_run
+        if allow_top_frame_editing is not None:
+            _params["allowTopFrameEditing"] = allow_top_frame_editing
 
         result = await self._executor.execute(
             method=DebuggerCommand.SET_SCRIPT_SOURCE,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(SetScriptSourceResult, result)
 
@@ -604,11 +618,12 @@ class Debugger:
         Makes page not interrupt on any pauses (breakpoint, exception, dom exception
         etc).
         """
-        params = SetSkipAllPausesParams(skip=skip)
+        _params: dict[str, Any] = {}
+        _params["skip"] = skip
 
         await self._executor.execute(
             method=DebuggerCommand.SET_SKIP_ALL_PAUSES,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_variable_value(
@@ -623,16 +638,15 @@ class Debugger:
         Changes value of variable in a callframe. Object-based scopes are not supported
         and must be mutated manually.
         """
-        params = SetVariableValueParams(
-            scope_number=scope_number,
-            variable_name=variable_name,
-            new_value=new_value,
-            call_frame_id=call_frame_id,
-        )
+        _params: dict[str, Any] = {}
+        _params["scopeNumber"] = scope_number
+        _params["variableName"] = variable_name
+        _params["newValue"] = _encode_value(new_value)
+        _params["callFrameId"] = _encode_value(call_frame_id)
 
         await self._executor.execute(
             method=DebuggerCommand.SET_VARIABLE_VALUE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def step_into(
@@ -644,13 +658,15 @@ class Debugger:
         """
         Steps into the function call.
         """
-        params = StepIntoParams(
-            break_on_async_call=break_on_async_call, skip_list=skip_list
-        )
+        _params: dict[str, Any] = {}
+        if break_on_async_call is not None:
+            _params["breakOnAsyncCall"] = break_on_async_call
+        if skip_list is not None:
+            _params["skipList"] = _encode_value(skip_list)
 
         await self._executor.execute(
             method=DebuggerCommand.STEP_INTO,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def step_out(
@@ -673,9 +689,13 @@ class Debugger:
         """
         Steps over the statement.
         """
-        params = StepOverParams(skip_list=skip_list, enter_ranges=enter_ranges)
+        _params: dict[str, Any] = {}
+        if skip_list is not None:
+            _params["skipList"] = _encode_value(skip_list)
+        if enter_ranges is not None:
+            _params["enterRanges"] = _encode_value(enter_ranges)
 
         await self._executor.execute(
             method=DebuggerCommand.STEP_OVER,
-            params=encode_cdp(params),
+            params=_params,
         )

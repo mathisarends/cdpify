@@ -4,11 +4,12 @@
 
 from __future__ import annotations
 
-from cdpify.codec import decode_cdp, encode_cdp
+from typing import Any
+
+from cdpify.codec import _encode_value, decode_cdp
 from cdpify.executor import CommandExecutor
 
 from .commands import (
-    GetRealtimeDataParams,
     GetRealtimeDataResult,
     WebAudioCommand,
 )
@@ -51,10 +52,11 @@ class WebAudio:
         """
         Fetch the realtime data from the registered contexts.
         """
-        params = GetRealtimeDataParams(context_id=context_id)
+        _params: dict[str, Any] = {}
+        _params["contextId"] = _encode_value(context_id)
 
         result = await self._executor.execute(
             method=WebAudioCommand.GET_REALTIME_DATA,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetRealtimeDataResult, result)

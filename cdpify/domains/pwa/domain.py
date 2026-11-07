@@ -4,21 +4,16 @@
 
 from __future__ import annotations
 
-from cdpify.codec import decode_cdp, encode_cdp
+from typing import Any
+
+from cdpify.codec import _encode_value, decode_cdp
 from cdpify.executor import CommandExecutor
 
 from .commands import (
-    ChangeAppUserSettingsParams,
-    GetOsAppStateParams,
     GetOsAppStateResult,
-    InstallParams,
-    LaunchFilesInAppParams,
     LaunchFilesInAppResult,
-    LaunchParams,
     LaunchResult,
-    OpenCurrentPageInAppParams,
     PWACommand,
-    UninstallParams,
 )
 from .types import (
     DisplayMode,
@@ -37,11 +32,12 @@ class PWA:
         """
         Returns the following OS state for the given manifest id.
         """
-        params = GetOsAppStateParams(manifest_id=manifest_id)
+        _params: dict[str, Any] = {}
+        _params["manifestId"] = manifest_id
 
         result = await self._executor.execute(
             method=PWACommand.GET_OS_APP_STATE,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetOsAppStateResult, result)
 
@@ -67,13 +63,14 @@ class PWA:
         the entire sequence using Base32 without padding. If Chrome is not in IWA dev
         mode, the installation will fail, regardless of the state of the allowlist.
         """
-        params = InstallParams(
-            manifest_id=manifest_id, install_url_or_bundle_url=install_url_or_bundle_url
-        )
+        _params: dict[str, Any] = {}
+        _params["manifestId"] = manifest_id
+        if install_url_or_bundle_url is not None:
+            _params["installUrlOrBundleUrl"] = install_url_or_bundle_url
 
         await self._executor.execute(
             method=PWACommand.INSTALL,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def uninstall(
@@ -84,11 +81,12 @@ class PWA:
         """
         Uninstalls the given manifest_id and closes any opened app windows.
         """
-        params = UninstallParams(manifest_id=manifest_id)
+        _params: dict[str, Any] = {}
+        _params["manifestId"] = manifest_id
 
         await self._executor.execute(
             method=PWACommand.UNINSTALL,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def launch(
@@ -102,11 +100,14 @@ class PWA:
         default start url if it is provided. Returns a page Target.TargetID which can be
         used to attach to via Target.attachToTarget or similar APIs.
         """
-        params = LaunchParams(manifest_id=manifest_id, url=url)
+        _params: dict[str, Any] = {}
+        _params["manifestId"] = manifest_id
+        if url is not None:
+            _params["url"] = url
 
         result = await self._executor.execute(
             method=PWACommand.LAUNCH,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(LaunchResult, result)
 
@@ -128,11 +129,13 @@ class PWA:
         handling one or more files. The order of the returned Target.TargetIDs is not
         guaranteed. TODO(crbug.com/339454034): Check the existences of the input files.
         """
-        params = LaunchFilesInAppParams(manifest_id=manifest_id, files=files)
+        _params: dict[str, Any] = {}
+        _params["manifestId"] = manifest_id
+        _params["files"] = _encode_value(files)
 
         result = await self._executor.execute(
             method=PWACommand.LAUNCH_FILES_IN_APP,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(LaunchFilesInAppResult, result)
 
@@ -146,11 +149,12 @@ class PWA:
         be called on a page target. This function returns immediately without waiting
         for the app to finish loading.
         """
-        params = OpenCurrentPageInAppParams(manifest_id=manifest_id)
+        _params: dict[str, Any] = {}
+        _params["manifestId"] = manifest_id
 
         await self._executor.execute(
             method=PWACommand.OPEN_CURRENT_PAGE_IN_APP,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def change_app_user_settings(
@@ -168,13 +172,14 @@ class PWA:
         controlled by the users, they impact the way the browser handling the web apps.
         See the comment of each parameter.
         """
-        params = ChangeAppUserSettingsParams(
-            manifest_id=manifest_id,
-            link_capturing=link_capturing,
-            display_mode=display_mode,
-        )
+        _params: dict[str, Any] = {}
+        _params["manifestId"] = manifest_id
+        if link_capturing is not None:
+            _params["linkCapturing"] = link_capturing
+        if display_mode is not None:
+            _params["displayMode"] = _encode_value(display_mode)
 
         await self._executor.execute(
             method=PWACommand.CHANGE_APP_USER_SETTINGS,
-            params=encode_cdp(params),
+            params=_params,
         )

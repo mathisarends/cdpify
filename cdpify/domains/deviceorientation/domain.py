@@ -4,12 +4,12 @@
 
 from __future__ import annotations
 
-from cdpify.codec import encode_cdp
+from typing import Any
+
 from cdpify.executor import CommandExecutor
 
 from .commands import (
     DeviceOrientationCommand,
-    SetDeviceOrientationOverrideParams,
 )
 
 
@@ -38,9 +38,12 @@ class DeviceOrientation:
         """
         Overrides the Device Orientation.
         """
-        params = SetDeviceOrientationOverrideParams(alpha=alpha, beta=beta, gamma=gamma)
+        _params: dict[str, Any] = {}
+        _params["alpha"] = alpha
+        _params["beta"] = beta
+        _params["gamma"] = gamma
 
         await self._executor.execute(
             method=DeviceOrientationCommand.SET_DEVICE_ORIENTATION_OVERRIDE,
-            params=encode_cdp(params),
+            params=_params,
         )

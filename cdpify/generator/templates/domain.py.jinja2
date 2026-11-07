@@ -6,7 +6,7 @@
 from typing import {{ typing_names | join(", ") }}
 {% endif %}
 
-from cdpify.codec import decode_cdp, encode_cdp
+from cdpify.codec import _encode_value, decode_cdp
 from cdpify.executor import CommandExecutor
 {% if uses_unset %}
 from cdpify.unset import UNSET, UnsetType
@@ -43,26 +43,34 @@ class {{ domain_name }}:
         self,
 {% if method.parameters %}
         *,
-        {{ method.parameters | map(attribute="declaration") | join(",\n        ") }},
+        {{ method.parameters | map(attribute="parameter_declaration") | join(",\n        ") }},
 {% endif %}
     ) -> {{ method.return_type }}:
 {% if method.docstring %}
 {{ method.docstring }}
 {% endif %}
 {% if method.params_model %}
-        params = {{ method.params_model }}({{ method.constructor_args }})
+        {{ method.wire_params_name }}: dict[str, Any] = {}
+{% for parameter in method.parameters %}
+{% if parameter.optional %}
+        if {{ parameter.name }} is not {{ "UNSET" if parameter.uses_unset else "None" }}:
+            {{ method.wire_params_name }}["{{ parameter.cdp_name }}"] = {{ parameter.encoded_value }}
+{% else %}
+        {{ method.wire_params_name }}["{{ parameter.cdp_name }}"] = {{ parameter.encoded_value }}
+{% endif %}
+{% endfor %}
 
 {% endif %}
 {% if method.result_model %}
         result = await self._executor.execute(
             method={{ domain_name }}Command.{{ method.command_member }},
-            params={% if method.params_model %}encode_cdp(params){% else %}None{% endif %},
+            params={% if method.params_model %}{{ method.wire_params_name }}{% else %}None{% endif %},
         )
         return decode_cdp({{ method.result_model }}, result)
 {% else %}
         await self._executor.execute(
             method={{ domain_name }}Command.{{ method.command_member }},
-            params={% if method.params_model %}encode_cdp(params){% else %}None{% endif %},
+            params={% if method.params_model %}{{ method.wire_params_name }}{% else %}None{% endif %},
         )
 {% endif %}
 {% endfor %}

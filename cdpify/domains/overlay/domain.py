@@ -4,45 +4,17 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
-from cdpify.codec import decode_cdp, encode_cdp
+from cdpify.codec import _encode_value, decode_cdp
 from cdpify.executor import CommandExecutor
 from cdpify.shared.decorators import deprecated
 
 from .commands import (
-    GetGridHighlightObjectsForTestParams,
     GetGridHighlightObjectsForTestResult,
-    GetHighlightObjectForTestParams,
     GetHighlightObjectForTestResult,
-    GetSourceOrderHighlightObjectForTestParams,
     GetSourceOrderHighlightObjectForTestResult,
-    HighlightFrameParams,
-    HighlightNodeParams,
-    HighlightQuadParams,
-    HighlightRectParams,
-    HighlightSourceOrderParams,
     OverlayCommand,
-    SetInspectModeParams,
-    SetPausedInDebuggerMessageParams,
-    SetShowAdHighlightsParams,
-    SetShowContainerQueryOverlaysParams,
-    SetShowDebugBordersParams,
-    SetShowDisplayCutoutParams,
-    SetShowFlexOverlaysParams,
-    SetShowFPSCounterParams,
-    SetShowGridOverlaysParams,
-    SetShowHingeParams,
-    SetShowHitTestBordersParams,
-    SetShowInspectedElementAnchorParams,
-    SetShowIsolatedElementsParams,
-    SetShowLayoutShiftRegionsParams,
-    SetShowPaintRectsParams,
-    SetShowScrollBottleneckRectsParams,
-    SetShowScrollSnapOverlaysParams,
-    SetShowViewportSizeOnResizeParams,
-    SetShowWebVitalsParams,
-    SetShowWindowControlsOverlayParams,
 )
 from .types import (
     ColorFormat,
@@ -102,17 +74,20 @@ class Overlay:
         """
         For testing.
         """
-        params = GetHighlightObjectForTestParams(
-            node_id=node_id,
-            include_distance=include_distance,
-            include_style=include_style,
-            color_format=color_format,
-            show_accessibility_info=show_accessibility_info,
-        )
+        _params: dict[str, Any] = {}
+        _params["nodeId"] = _encode_value(node_id)
+        if include_distance is not None:
+            _params["includeDistance"] = include_distance
+        if include_style is not None:
+            _params["includeStyle"] = include_style
+        if color_format is not None:
+            _params["colorFormat"] = _encode_value(color_format)
+        if show_accessibility_info is not None:
+            _params["showAccessibilityInfo"] = show_accessibility_info
 
         result = await self._executor.execute(
             method=OverlayCommand.GET_HIGHLIGHT_OBJECT_FOR_TEST,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetHighlightObjectForTestResult, result)
 
@@ -124,11 +99,12 @@ class Overlay:
         """
         For Persistent Grid testing.
         """
-        params = GetGridHighlightObjectsForTestParams(node_ids=node_ids)
+        _params: dict[str, Any] = {}
+        _params["nodeIds"] = _encode_value(node_ids)
 
         result = await self._executor.execute(
             method=OverlayCommand.GET_GRID_HIGHLIGHT_OBJECTS_FOR_TEST,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetGridHighlightObjectsForTestResult, result)
 
@@ -140,11 +116,12 @@ class Overlay:
         """
         For Source Order Viewer testing.
         """
-        params = GetSourceOrderHighlightObjectForTestParams(node_id=node_id)
+        _params: dict[str, Any] = {}
+        _params["nodeId"] = _encode_value(node_id)
 
         result = await self._executor.execute(
             method=OverlayCommand.GET_SOURCE_ORDER_HIGHLIGHT_OBJECT_FOR_TEST,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetSourceOrderHighlightObjectForTestResult, result)
 
@@ -173,15 +150,16 @@ class Overlay:
         in a different process). Determine the owner node in the client and use
         highlightNode.
         """
-        params = HighlightFrameParams(
-            frame_id=frame_id,
-            content_color=content_color,
-            content_outline_color=content_outline_color,
-        )
+        _params: dict[str, Any] = {}
+        _params["frameId"] = _encode_value(frame_id)
+        if content_color is not None:
+            _params["contentColor"] = _encode_value(content_color)
+        if content_outline_color is not None:
+            _params["contentOutlineColor"] = _encode_value(content_outline_color)
 
         await self._executor.execute(
             method=OverlayCommand.HIGHLIGHT_FRAME,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def highlight_node(
@@ -197,17 +175,20 @@ class Overlay:
         Highlights DOM node with given id or with the given JavaScript object wrapper.
         Either nodeId or objectId must be specified.
         """
-        params = HighlightNodeParams(
-            highlight_config=highlight_config,
-            node_id=node_id,
-            backend_node_id=backend_node_id,
-            object_id=object_id,
-            selector=selector,
-        )
+        _params: dict[str, Any] = {}
+        _params["highlightConfig"] = _encode_value(highlight_config)
+        if node_id is not None:
+            _params["nodeId"] = _encode_value(node_id)
+        if backend_node_id is not None:
+            _params["backendNodeId"] = _encode_value(backend_node_id)
+        if object_id is not None:
+            _params["objectId"] = _encode_value(object_id)
+        if selector is not None:
+            _params["selector"] = selector
 
         await self._executor.execute(
             method=OverlayCommand.HIGHLIGHT_NODE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def highlight_quad(
@@ -221,13 +202,16 @@ class Overlay:
         Highlights given quad. Coordinates are absolute with respect to the main frame
         viewport.
         """
-        params = HighlightQuadParams(
-            quad=quad, color=color, outline_color=outline_color
-        )
+        _params: dict[str, Any] = {}
+        _params["quad"] = _encode_value(quad)
+        if color is not None:
+            _params["color"] = _encode_value(color)
+        if outline_color is not None:
+            _params["outlineColor"] = _encode_value(outline_color)
 
         await self._executor.execute(
             method=OverlayCommand.HIGHLIGHT_QUAD,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def highlight_rect(
@@ -246,18 +230,19 @@ class Overlay:
         correctly. The coordinates currently have to be adjusted by the client if DPR is
         not 1 (see crbug.com/437807128).
         """
-        params = HighlightRectParams(
-            x=x,
-            y=y,
-            width=width,
-            height=height,
-            color=color,
-            outline_color=outline_color,
-        )
+        _params: dict[str, Any] = {}
+        _params["x"] = x
+        _params["y"] = y
+        _params["width"] = width
+        _params["height"] = height
+        if color is not None:
+            _params["color"] = _encode_value(color)
+        if outline_color is not None:
+            _params["outlineColor"] = _encode_value(outline_color)
 
         await self._executor.execute(
             method=OverlayCommand.HIGHLIGHT_RECT,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def highlight_source_order(
@@ -273,16 +258,18 @@ class Overlay:
         with the given JavaScript object wrapper. Either nodeId or objectId must be
         specified.
         """
-        params = HighlightSourceOrderParams(
-            source_order_config=source_order_config,
-            node_id=node_id,
-            backend_node_id=backend_node_id,
-            object_id=object_id,
-        )
+        _params: dict[str, Any] = {}
+        _params["sourceOrderConfig"] = _encode_value(source_order_config)
+        if node_id is not None:
+            _params["nodeId"] = _encode_value(node_id)
+        if backend_node_id is not None:
+            _params["backendNodeId"] = _encode_value(backend_node_id)
+        if object_id is not None:
+            _params["objectId"] = _encode_value(object_id)
 
         await self._executor.execute(
             method=OverlayCommand.HIGHLIGHT_SOURCE_ORDER,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_inspect_mode(
@@ -296,11 +283,14 @@ class Overlay:
         are highlighted. Backend then generates 'inspectNodeRequested' event upon
         element selection.
         """
-        params = SetInspectModeParams(mode=mode, highlight_config=highlight_config)
+        _params: dict[str, Any] = {}
+        _params["mode"] = _encode_value(mode)
+        if highlight_config is not None:
+            _params["highlightConfig"] = _encode_value(highlight_config)
 
         await self._executor.execute(
             method=OverlayCommand.SET_INSPECT_MODE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_show_ad_highlights(
@@ -311,11 +301,12 @@ class Overlay:
         """
         Highlights owner element of all frames detected to be ads.
         """
-        params = SetShowAdHighlightsParams(show=show)
+        _params: dict[str, Any] = {}
+        _params["show"] = show
 
         await self._executor.execute(
             method=OverlayCommand.SET_SHOW_AD_HIGHLIGHTS,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_paused_in_debugger_message(
@@ -323,11 +314,13 @@ class Overlay:
         *,
         message: str | None = None,
     ) -> None:
-        params = SetPausedInDebuggerMessageParams(message=message)
+        _params: dict[str, Any] = {}
+        if message is not None:
+            _params["message"] = message
 
         await self._executor.execute(
             method=OverlayCommand.SET_PAUSED_IN_DEBUGGER_MESSAGE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_show_debug_borders(
@@ -338,11 +331,12 @@ class Overlay:
         """
         Requests that backend shows debug borders on layers
         """
-        params = SetShowDebugBordersParams(show=show)
+        _params: dict[str, Any] = {}
+        _params["show"] = show
 
         await self._executor.execute(
             method=OverlayCommand.SET_SHOW_DEBUG_BORDERS,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_show_fps_counter(
@@ -353,11 +347,12 @@ class Overlay:
         """
         Requests that backend shows the FPS counter
         """
-        params = SetShowFPSCounterParams(show=show)
+        _params: dict[str, Any] = {}
+        _params["show"] = show
 
         await self._executor.execute(
             method=OverlayCommand.SET_SHOW_FPS_COUNTER,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_show_grid_overlays(
@@ -368,13 +363,12 @@ class Overlay:
         """
         Highlight multiple elements with the CSS Grid overlay.
         """
-        params = SetShowGridOverlaysParams(
-            grid_node_highlight_configs=grid_node_highlight_configs
-        )
+        _params: dict[str, Any] = {}
+        _params["gridNodeHighlightConfigs"] = _encode_value(grid_node_highlight_configs)
 
         await self._executor.execute(
             method=OverlayCommand.SET_SHOW_GRID_OVERLAYS,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_show_flex_overlays(
@@ -382,13 +376,12 @@ class Overlay:
         *,
         flex_node_highlight_configs: list[FlexNodeHighlightConfig],
     ) -> None:
-        params = SetShowFlexOverlaysParams(
-            flex_node_highlight_configs=flex_node_highlight_configs
-        )
+        _params: dict[str, Any] = {}
+        _params["flexNodeHighlightConfigs"] = _encode_value(flex_node_highlight_configs)
 
         await self._executor.execute(
             method=OverlayCommand.SET_SHOW_FLEX_OVERLAYS,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_show_scroll_snap_overlays(
@@ -396,13 +389,14 @@ class Overlay:
         *,
         scroll_snap_highlight_configs: list[ScrollSnapHighlightConfig],
     ) -> None:
-        params = SetShowScrollSnapOverlaysParams(
-            scroll_snap_highlight_configs=scroll_snap_highlight_configs
+        _params: dict[str, Any] = {}
+        _params["scrollSnapHighlightConfigs"] = _encode_value(
+            scroll_snap_highlight_configs
         )
 
         await self._executor.execute(
             method=OverlayCommand.SET_SHOW_SCROLL_SNAP_OVERLAYS,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_show_container_query_overlays(
@@ -410,13 +404,14 @@ class Overlay:
         *,
         container_query_highlight_configs: list[ContainerQueryHighlightConfig],
     ) -> None:
-        params = SetShowContainerQueryOverlaysParams(
-            container_query_highlight_configs=container_query_highlight_configs
+        _params: dict[str, Any] = {}
+        _params["containerQueryHighlightConfigs"] = _encode_value(
+            container_query_highlight_configs
         )
 
         await self._executor.execute(
             method=OverlayCommand.SET_SHOW_CONTAINER_QUERY_OVERLAYS,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_show_inspected_element_anchor(
@@ -424,13 +419,14 @@ class Overlay:
         *,
         inspected_element_anchor_config: InspectedElementAnchorConfig,
     ) -> None:
-        params = SetShowInspectedElementAnchorParams(
-            inspected_element_anchor_config=inspected_element_anchor_config
+        _params: dict[str, Any] = {}
+        _params["inspectedElementAnchorConfig"] = _encode_value(
+            inspected_element_anchor_config
         )
 
         await self._executor.execute(
             method=OverlayCommand.SET_SHOW_INSPECTED_ELEMENT_ANCHOR,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_show_paint_rects(
@@ -441,11 +437,12 @@ class Overlay:
         """
         Requests that backend shows paint rectangles
         """
-        params = SetShowPaintRectsParams(result=result)
+        _params: dict[str, Any] = {}
+        _params["result"] = result
 
         await self._executor.execute(
             method=OverlayCommand.SET_SHOW_PAINT_RECTS,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_show_layout_shift_regions(
@@ -456,11 +453,12 @@ class Overlay:
         """
         Requests that backend shows layout shift regions
         """
-        params = SetShowLayoutShiftRegionsParams(result=result)
+        _params: dict[str, Any] = {}
+        _params["result"] = result
 
         await self._executor.execute(
             method=OverlayCommand.SET_SHOW_LAYOUT_SHIFT_REGIONS,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_show_scroll_bottleneck_rects(
@@ -471,11 +469,12 @@ class Overlay:
         """
         Requests that backend shows scroll bottleneck rects
         """
-        params = SetShowScrollBottleneckRectsParams(show=show)
+        _params: dict[str, Any] = {}
+        _params["show"] = show
 
         await self._executor.execute(
             method=OverlayCommand.SET_SHOW_SCROLL_BOTTLENECK_RECTS,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     @deprecated("Overlay.setShowHitTestBorders is deprecated")
@@ -487,11 +486,12 @@ class Overlay:
         """
         Deprecated, no longer has any effect.
         """
-        params = SetShowHitTestBordersParams(show=show)
+        _params: dict[str, Any] = {}
+        _params["show"] = show
 
         await self._executor.execute(
             method=OverlayCommand.SET_SHOW_HIT_TEST_BORDERS,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     @deprecated("Overlay.setShowWebVitals is deprecated")
@@ -503,11 +503,12 @@ class Overlay:
         """
         Deprecated, no longer has any effect.
         """
-        params = SetShowWebVitalsParams(show=show)
+        _params: dict[str, Any] = {}
+        _params["show"] = show
 
         await self._executor.execute(
             method=OverlayCommand.SET_SHOW_WEB_VITALS,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_show_viewport_size_on_resize(
@@ -518,11 +519,12 @@ class Overlay:
         """
         Paints viewport size upon main frame resize.
         """
-        params = SetShowViewportSizeOnResizeParams(show=show)
+        _params: dict[str, Any] = {}
+        _params["show"] = show
 
         await self._executor.execute(
             method=OverlayCommand.SET_SHOW_VIEWPORT_SIZE_ON_RESIZE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_show_hinge(
@@ -533,11 +535,13 @@ class Overlay:
         """
         Add a dual screen device hinge
         """
-        params = SetShowHingeParams(hinge_config=hinge_config)
+        _params: dict[str, Any] = {}
+        if hinge_config is not None:
+            _params["hingeConfig"] = _encode_value(hinge_config)
 
         await self._executor.execute(
             method=OverlayCommand.SET_SHOW_HINGE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_show_display_cutout(
@@ -548,11 +552,13 @@ class Overlay:
         """
         Add a display cutout overlay.
         """
-        params = SetShowDisplayCutoutParams(display_cutout_config=display_cutout_config)
+        _params: dict[str, Any] = {}
+        if display_cutout_config is not None:
+            _params["displayCutoutConfig"] = _encode_value(display_cutout_config)
 
         await self._executor.execute(
             method=OverlayCommand.SET_SHOW_DISPLAY_CUTOUT,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_show_isolated_elements(
@@ -563,13 +569,14 @@ class Overlay:
         """
         Show elements in isolation mode with overlays.
         """
-        params = SetShowIsolatedElementsParams(
-            isolated_element_highlight_configs=isolated_element_highlight_configs
+        _params: dict[str, Any] = {}
+        _params["isolatedElementHighlightConfigs"] = _encode_value(
+            isolated_element_highlight_configs
         )
 
         await self._executor.execute(
             method=OverlayCommand.SET_SHOW_ISOLATED_ELEMENTS,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_show_window_controls_overlay(
@@ -580,11 +587,13 @@ class Overlay:
         """
         Show Window Controls Overlay for PWA
         """
-        params = SetShowWindowControlsOverlayParams(
-            window_controls_overlay_config=window_controls_overlay_config
-        )
+        _params: dict[str, Any] = {}
+        if window_controls_overlay_config is not None:
+            _params["windowControlsOverlayConfig"] = _encode_value(
+                window_controls_overlay_config
+            )
 
         await self._executor.execute(
             method=OverlayCommand.SET_SHOW_WINDOW_CONTROLS_OVERLAY,
-            params=encode_cdp(params),
+            params=_params,
         )

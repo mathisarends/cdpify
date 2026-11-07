@@ -4,15 +4,14 @@
 
 from __future__ import annotations
 
-from cdpify.codec import encode_cdp
+from typing import Any
+
+from cdpify.codec import _encode_value
 from cdpify.executor import CommandExecutor
 from cdpify.shared.decorators import deprecated
 
 from .commands import (
-    HandleCertificateErrorParams,
     SecurityCommand,
-    SetIgnoreCertificateErrorsParams,
-    SetOverrideCertificateErrorsParams,
 )
 from .types import (
     CertificateErrorAction,
@@ -53,11 +52,12 @@ class Security:
         """
         Enable/disable whether all certificate errors should be ignored.
         """
-        params = SetIgnoreCertificateErrorsParams(ignore=ignore)
+        _params: dict[str, Any] = {}
+        _params["ignore"] = ignore
 
         await self._executor.execute(
             method=SecurityCommand.SET_IGNORE_CERTIFICATE_ERRORS,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     @deprecated("Security.handleCertificateError is deprecated")
@@ -70,11 +70,13 @@ class Security:
         """
         Handles a certificate error that fired a certificateError event.
         """
-        params = HandleCertificateErrorParams(event_id=event_id, action=action)
+        _params: dict[str, Any] = {}
+        _params["eventId"] = event_id
+        _params["action"] = _encode_value(action)
 
         await self._executor.execute(
             method=SecurityCommand.HANDLE_CERTIFICATE_ERROR,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     @deprecated("Security.setOverrideCertificateErrors is deprecated")
@@ -88,9 +90,10 @@ class Security:
         events need to be handled by the DevTools client and should be answered with
         `handleCertificateError` commands.
         """
-        params = SetOverrideCertificateErrorsParams(override=override)
+        _params: dict[str, Any] = {}
+        _params["override"] = override
 
         await self._executor.execute(
             method=SecurityCommand.SET_OVERRIDE_CERTIFICATE_ERRORS,
-            params=encode_cdp(params),
+            params=_params,
         )

@@ -4,25 +4,13 @@
 
 from __future__ import annotations
 
-from typing import Literal
+from typing import Any, Literal
 
-from cdpify.codec import encode_cdp
+from cdpify.codec import _encode_value
 from cdpify.executor import CommandExecutor
 
 from .commands import (
-    DispatchDragEventParams,
-    DispatchKeyEventParams,
-    DispatchMouseEventParams,
-    DispatchTouchEventParams,
-    EmulateTouchFromMouseEventParams,
-    ImeSetCompositionParams,
     InputCommand,
-    InsertTextParams,
-    SetIgnoreInputEventsParams,
-    SetInterceptDragsParams,
-    SynthesizePinchGestureParams,
-    SynthesizeScrollGestureParams,
-    SynthesizeTapGestureParams,
 )
 from .types import (
     DragData,
@@ -49,13 +37,17 @@ class Input:
         """
         Dispatches a drag event into the page.
         """
-        params = DispatchDragEventParams(
-            type=type, x=x, y=y, data=data, modifiers=modifiers
-        )
+        _params: dict[str, Any] = {}
+        _params["type"] = type
+        _params["x"] = x
+        _params["y"] = y
+        _params["data"] = _encode_value(data)
+        if modifiers is not None:
+            _params["modifiers"] = modifiers
 
         await self._executor.execute(
             method=InputCommand.DISPATCH_DRAG_EVENT,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def dispatch_key_event(
@@ -80,27 +72,40 @@ class Input:
         """
         Dispatches a key event to the page.
         """
-        params = DispatchKeyEventParams(
-            type=type,
-            modifiers=modifiers,
-            timestamp=timestamp,
-            text=text,
-            unmodified_text=unmodified_text,
-            key_identifier=key_identifier,
-            code=code,
-            key=key,
-            windows_virtual_key_code=windows_virtual_key_code,
-            native_virtual_key_code=native_virtual_key_code,
-            auto_repeat=auto_repeat,
-            is_keypad=is_keypad,
-            is_system_key=is_system_key,
-            location=location,
-            commands=commands,
-        )
+        _params: dict[str, Any] = {}
+        _params["type"] = type
+        if modifiers is not None:
+            _params["modifiers"] = modifiers
+        if timestamp is not None:
+            _params["timestamp"] = _encode_value(timestamp)
+        if text is not None:
+            _params["text"] = text
+        if unmodified_text is not None:
+            _params["unmodifiedText"] = unmodified_text
+        if key_identifier is not None:
+            _params["keyIdentifier"] = key_identifier
+        if code is not None:
+            _params["code"] = code
+        if key is not None:
+            _params["key"] = key
+        if windows_virtual_key_code is not None:
+            _params["windowsVirtualKeyCode"] = windows_virtual_key_code
+        if native_virtual_key_code is not None:
+            _params["nativeVirtualKeyCode"] = native_virtual_key_code
+        if auto_repeat is not None:
+            _params["autoRepeat"] = auto_repeat
+        if is_keypad is not None:
+            _params["isKeypad"] = is_keypad
+        if is_system_key is not None:
+            _params["isSystemKey"] = is_system_key
+        if location is not None:
+            _params["location"] = location
+        if commands is not None:
+            _params["commands"] = _encode_value(commands)
 
         await self._executor.execute(
             method=InputCommand.DISPATCH_KEY_EVENT,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def insert_text(
@@ -112,11 +117,12 @@ class Input:
         This method emulates inserting text that doesn't come from a key press, for
         example an emoji keyboard or an IME.
         """
-        params = InsertTextParams(text=text)
+        _params: dict[str, Any] = {}
+        _params["text"] = text
 
         await self._executor.execute(
             method=InputCommand.INSERT_TEXT,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def ime_set_composition(
@@ -133,17 +139,18 @@ class Input:
         to commit the final text. Use imeSetComposition with empty string as text to
         cancel composition.
         """
-        params = ImeSetCompositionParams(
-            text=text,
-            selection_start=selection_start,
-            selection_end=selection_end,
-            replacement_start=replacement_start,
-            replacement_end=replacement_end,
-        )
+        _params: dict[str, Any] = {}
+        _params["text"] = text
+        _params["selectionStart"] = selection_start
+        _params["selectionEnd"] = selection_end
+        if replacement_start is not None:
+            _params["replacementStart"] = replacement_start
+        if replacement_end is not None:
+            _params["replacementEnd"] = replacement_end
 
         await self._executor.execute(
             method=InputCommand.IME_SET_COMPOSITION,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def dispatch_mouse_event(
@@ -169,28 +176,40 @@ class Input:
         """
         Dispatches a mouse event to the page.
         """
-        params = DispatchMouseEventParams(
-            type=type,
-            x=x,
-            y=y,
-            modifiers=modifiers,
-            timestamp=timestamp,
-            button=button,
-            buttons=buttons,
-            click_count=click_count,
-            force=force,
-            tangential_pressure=tangential_pressure,
-            tilt_x=tilt_x,
-            tilt_y=tilt_y,
-            twist=twist,
-            delta_x=delta_x,
-            delta_y=delta_y,
-            pointer_type=pointer_type,
-        )
+        _params: dict[str, Any] = {}
+        _params["type"] = type
+        _params["x"] = x
+        _params["y"] = y
+        if modifiers is not None:
+            _params["modifiers"] = modifiers
+        if timestamp is not None:
+            _params["timestamp"] = _encode_value(timestamp)
+        if button is not None:
+            _params["button"] = _encode_value(button)
+        if buttons is not None:
+            _params["buttons"] = buttons
+        if click_count is not None:
+            _params["clickCount"] = click_count
+        if force is not None:
+            _params["force"] = force
+        if tangential_pressure is not None:
+            _params["tangentialPressure"] = tangential_pressure
+        if tilt_x is not None:
+            _params["tiltX"] = tilt_x
+        if tilt_y is not None:
+            _params["tiltY"] = tilt_y
+        if twist is not None:
+            _params["twist"] = twist
+        if delta_x is not None:
+            _params["deltaX"] = delta_x
+        if delta_y is not None:
+            _params["deltaY"] = delta_y
+        if pointer_type is not None:
+            _params["pointerType"] = pointer_type
 
         await self._executor.execute(
             method=InputCommand.DISPATCH_MOUSE_EVENT,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def dispatch_touch_event(
@@ -204,16 +223,17 @@ class Input:
         """
         Dispatches a touch event to the page.
         """
-        params = DispatchTouchEventParams(
-            type=type,
-            touch_points=touch_points,
-            modifiers=modifiers,
-            timestamp=timestamp,
-        )
+        _params: dict[str, Any] = {}
+        _params["type"] = type
+        _params["touchPoints"] = _encode_value(touch_points)
+        if modifiers is not None:
+            _params["modifiers"] = modifiers
+        if timestamp is not None:
+            _params["timestamp"] = _encode_value(timestamp)
 
         await self._executor.execute(
             method=InputCommand.DISPATCH_TOUCH_EVENT,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def cancel_dragging(
@@ -243,21 +263,25 @@ class Input:
         """
         Emulates touch event from the mouse event parameters.
         """
-        params = EmulateTouchFromMouseEventParams(
-            type=type,
-            x=x,
-            y=y,
-            button=button,
-            timestamp=timestamp,
-            delta_x=delta_x,
-            delta_y=delta_y,
-            modifiers=modifiers,
-            click_count=click_count,
-        )
+        _params: dict[str, Any] = {}
+        _params["type"] = type
+        _params["x"] = x
+        _params["y"] = y
+        _params["button"] = _encode_value(button)
+        if timestamp is not None:
+            _params["timestamp"] = _encode_value(timestamp)
+        if delta_x is not None:
+            _params["deltaX"] = delta_x
+        if delta_y is not None:
+            _params["deltaY"] = delta_y
+        if modifiers is not None:
+            _params["modifiers"] = modifiers
+        if click_count is not None:
+            _params["clickCount"] = click_count
 
         await self._executor.execute(
             method=InputCommand.EMULATE_TOUCH_FROM_MOUSE_EVENT,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_ignore_input_events(
@@ -268,11 +292,12 @@ class Input:
         """
         Ignores input events (useful while auditing page).
         """
-        params = SetIgnoreInputEventsParams(ignore=ignore)
+        _params: dict[str, Any] = {}
+        _params["ignore"] = ignore
 
         await self._executor.execute(
             method=InputCommand.SET_IGNORE_INPUT_EVENTS,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_intercept_drags(
@@ -285,11 +310,12 @@ class Input:
         `Input.dragIntercepted` events. Drag and drop behavior can be directly
         controlled via `Input.dispatchDragEvent`.
         """
-        params = SetInterceptDragsParams(enabled=enabled)
+        _params: dict[str, Any] = {}
+        _params["enabled"] = enabled
 
         await self._executor.execute(
             method=InputCommand.SET_INTERCEPT_DRAGS,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def synthesize_pinch_gesture(
@@ -305,17 +331,18 @@ class Input:
         Synthesizes a pinch gesture over a time period by issuing appropriate touch
         events.
         """
-        params = SynthesizePinchGestureParams(
-            x=x,
-            y=y,
-            scale_factor=scale_factor,
-            relative_speed=relative_speed,
-            gesture_source_type=gesture_source_type,
-        )
+        _params: dict[str, Any] = {}
+        _params["x"] = x
+        _params["y"] = y
+        _params["scaleFactor"] = scale_factor
+        if relative_speed is not None:
+            _params["relativeSpeed"] = relative_speed
+        if gesture_source_type is not None:
+            _params["gestureSourceType"] = _encode_value(gesture_source_type)
 
         await self._executor.execute(
             method=InputCommand.SYNTHESIZE_PINCH_GESTURE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def synthesize_scroll_gesture(
@@ -338,24 +365,33 @@ class Input:
         Synthesizes a scroll gesture over a time period by issuing appropriate touch
         events.
         """
-        params = SynthesizeScrollGestureParams(
-            x=x,
-            y=y,
-            x_distance=x_distance,
-            y_distance=y_distance,
-            x_overscroll=x_overscroll,
-            y_overscroll=y_overscroll,
-            prevent_fling=prevent_fling,
-            speed=speed,
-            gesture_source_type=gesture_source_type,
-            repeat_count=repeat_count,
-            repeat_delay_ms=repeat_delay_ms,
-            interaction_marker_name=interaction_marker_name,
-        )
+        _params: dict[str, Any] = {}
+        _params["x"] = x
+        _params["y"] = y
+        if x_distance is not None:
+            _params["xDistance"] = x_distance
+        if y_distance is not None:
+            _params["yDistance"] = y_distance
+        if x_overscroll is not None:
+            _params["xOverscroll"] = x_overscroll
+        if y_overscroll is not None:
+            _params["yOverscroll"] = y_overscroll
+        if prevent_fling is not None:
+            _params["preventFling"] = prevent_fling
+        if speed is not None:
+            _params["speed"] = speed
+        if gesture_source_type is not None:
+            _params["gestureSourceType"] = _encode_value(gesture_source_type)
+        if repeat_count is not None:
+            _params["repeatCount"] = repeat_count
+        if repeat_delay_ms is not None:
+            _params["repeatDelayMs"] = repeat_delay_ms
+        if interaction_marker_name is not None:
+            _params["interactionMarkerName"] = interaction_marker_name
 
         await self._executor.execute(
             method=InputCommand.SYNTHESIZE_SCROLL_GESTURE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def synthesize_tap_gesture(
@@ -371,15 +407,17 @@ class Input:
         Synthesizes a tap gesture over a time period by issuing appropriate touch
         events.
         """
-        params = SynthesizeTapGestureParams(
-            x=x,
-            y=y,
-            duration=duration,
-            tap_count=tap_count,
-            gesture_source_type=gesture_source_type,
-        )
+        _params: dict[str, Any] = {}
+        _params["x"] = x
+        _params["y"] = y
+        if duration is not None:
+            _params["duration"] = duration
+        if tap_count is not None:
+            _params["tapCount"] = tap_count
+        if gesture_source_type is not None:
+            _params["gestureSourceType"] = _encode_value(gesture_source_type)
 
         await self._executor.execute(
             method=InputCommand.SYNTHESIZE_TAP_GESTURE,
-            params=encode_cdp(params),
+            params=_params,
         )

@@ -21,6 +21,8 @@ def generate(domain: Domain) -> str:
 
     if ctx.cross_domain_modules:
         ctx.use_typing("TYPE_CHECKING")
+    if any(method.parameters for method in methods):
+        ctx.use_typing("Any")
 
     return render_template(
         "domain.py.jinja2",
@@ -42,15 +44,10 @@ def _command_imports(domain: Domain) -> tuple[str, ...]:
         return ()
 
     model_names = {
-        f"{to_pascal_case(command.name)}Params"
-        for command in domain.commands
-        if command.parameters
-    }
-    model_names.update(
         f"{to_pascal_case(command.name)}Result"
         for command in domain.commands
         if command.returns
-    )
+    }
     return (f"{domain.domain}Command", *sorted(model_names))
 
 
@@ -104,4 +101,7 @@ def _build_parameter_view(parameter: Parameter, ctx: GenerationContext) -> Field
         name=to_identifier(parameter.name),
         annotation=annotation,
         optional=parameter.optional,
+        cdp_name=parameter.name,
+        encode_value=bool(parameter.ref)
+        or parameter.type in ("array", "object", "any"),
     )

@@ -4,15 +4,13 @@
 
 from __future__ import annotations
 
-from cdpify.codec import encode_cdp
+from typing import Any
+
+from cdpify.codec import _encode_value
 from cdpify.executor import CommandExecutor
 
 from .commands import (
     BackgroundServiceCommand,
-    ClearEventsParams,
-    SetRecordingParams,
-    StartObservingParams,
-    StopObservingParams,
 )
 from .types import (
     ServiceName,
@@ -31,11 +29,12 @@ class BackgroundService:
         """
         Enables event updates for the service.
         """
-        params = StartObservingParams(service=service)
+        _params: dict[str, Any] = {}
+        _params["service"] = _encode_value(service)
 
         await self._executor.execute(
             method=BackgroundServiceCommand.START_OBSERVING,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def stop_observing(
@@ -46,11 +45,12 @@ class BackgroundService:
         """
         Disables event updates for the service.
         """
-        params = StopObservingParams(service=service)
+        _params: dict[str, Any] = {}
+        _params["service"] = _encode_value(service)
 
         await self._executor.execute(
             method=BackgroundServiceCommand.STOP_OBSERVING,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_recording(
@@ -62,11 +62,13 @@ class BackgroundService:
         """
         Set the recording state for the service.
         """
-        params = SetRecordingParams(should_record=should_record, service=service)
+        _params: dict[str, Any] = {}
+        _params["shouldRecord"] = should_record
+        _params["service"] = _encode_value(service)
 
         await self._executor.execute(
             method=BackgroundServiceCommand.SET_RECORDING,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def clear_events(
@@ -77,9 +79,10 @@ class BackgroundService:
         """
         Clears all stored data for the service.
         """
-        params = ClearEventsParams(service=service)
+        _params: dict[str, Any] = {}
+        _params["service"] = _encode_value(service)
 
         await self._executor.execute(
             method=BackgroundServiceCommand.CLEAR_EVENTS,
-            params=encode_cdp(params),
+            params=_params,
         )

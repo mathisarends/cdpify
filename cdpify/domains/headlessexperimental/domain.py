@@ -4,12 +4,13 @@
 
 from __future__ import annotations
 
-from cdpify.codec import decode_cdp, encode_cdp
+from typing import Any
+
+from cdpify.codec import _encode_value, decode_cdp
 from cdpify.executor import CommandExecutor
 from cdpify.shared.decorators import deprecated
 
 from .commands import (
-    BeginFrameParams,
     BeginFrameResult,
     HeadlessExperimentalCommand,
 )
@@ -37,16 +38,19 @@ class HeadlessExperimental:
         --run-all-compositor-stages-before-draw, see also
         https://goo.gle/chrome-headless-rendering for more background.
         """
-        params = BeginFrameParams(
-            frame_time_ticks=frame_time_ticks,
-            interval=interval,
-            no_display_updates=no_display_updates,
-            screenshot=screenshot,
-        )
+        _params: dict[str, Any] = {}
+        if frame_time_ticks is not None:
+            _params["frameTimeTicks"] = frame_time_ticks
+        if interval is not None:
+            _params["interval"] = interval
+        if no_display_updates is not None:
+            _params["noDisplayUpdates"] = no_display_updates
+        if screenshot is not None:
+            _params["screenshot"] = _encode_value(screenshot)
 
         result = await self._executor.execute(
             method=HeadlessExperimentalCommand.BEGIN_FRAME,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(BeginFrameResult, result)
 

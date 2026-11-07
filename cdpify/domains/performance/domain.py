@@ -4,17 +4,15 @@
 
 from __future__ import annotations
 
-from typing import Literal
+from typing import Any, Literal
 
-from cdpify.codec import decode_cdp, encode_cdp
+from cdpify.codec import decode_cdp
 from cdpify.executor import CommandExecutor
 from cdpify.shared.decorators import deprecated
 
 from .commands import (
-    EnableParams,
     GetMetricsResult,
     PerformanceCommand,
-    SetTimeDomainParams,
 )
 
 
@@ -41,11 +39,13 @@ class Performance:
         """
         Enable collecting and reporting metrics.
         """
-        params = EnableParams(time_domain=time_domain)
+        _params: dict[str, Any] = {}
+        if time_domain is not None:
+            _params["timeDomain"] = time_domain
 
         await self._executor.execute(
             method=PerformanceCommand.ENABLE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     @deprecated("Performance.setTimeDomain is deprecated")
@@ -59,11 +59,12 @@ class Performance:
         that this must be called before enabling metrics collection. Calling this method
         while metrics collection is enabled returns an error.
         """
-        params = SetTimeDomainParams(time_domain=time_domain)
+        _params: dict[str, Any] = {}
+        _params["timeDomain"] = time_domain
 
         await self._executor.execute(
             method=PerformanceCommand.SET_TIME_DOMAIN,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def get_metrics(

@@ -4,28 +4,16 @@
 
 from __future__ import annotations
 
-from cdpify.codec import decode_cdp, encode_cdp
+from typing import Any
+
+from cdpify.codec import _encode_value, decode_cdp
 from cdpify.executor import CommandExecutor
 
 from .commands import (
-    AddCharacteristicParams,
     AddCharacteristicResult,
-    AddDescriptorParams,
     AddDescriptorResult,
-    AddServiceParams,
     AddServiceResult,
     BluetoothEmulationCommand,
-    EnableParams,
-    RemoveCharacteristicParams,
-    RemoveDescriptorParams,
-    RemoveServiceParams,
-    SetSimulatedCentralStateParams,
-    SimulateAdvertisementParams,
-    SimulateCharacteristicOperationResponseParams,
-    SimulateDescriptorOperationResponseParams,
-    SimulateGATTDisconnectionParams,
-    SimulateGATTOperationResponseParams,
-    SimulatePreconnectedPeripheralParams,
 )
 from .types import (
     CentralState,
@@ -51,11 +39,13 @@ class BluetoothEmulation:
         """
         Enable the BluetoothEmulation domain.
         """
-        params = EnableParams(state=state, le_supported=le_supported)
+        _params: dict[str, Any] = {}
+        _params["state"] = _encode_value(state)
+        _params["leSupported"] = le_supported
 
         await self._executor.execute(
             method=BluetoothEmulationCommand.ENABLE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_simulated_central_state(
@@ -66,11 +56,12 @@ class BluetoothEmulation:
         """
         Set the state of the simulated central.
         """
-        params = SetSimulatedCentralStateParams(state=state)
+        _params: dict[str, Any] = {}
+        _params["state"] = _encode_value(state)
 
         await self._executor.execute(
             method=BluetoothEmulationCommand.SET_SIMULATED_CENTRAL_STATE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def disable(
@@ -96,16 +87,15 @@ class BluetoothEmulation:
         Simulates a peripheral with |address|, |name| and |knownServiceUuids| that has
         already been connected to the system.
         """
-        params = SimulatePreconnectedPeripheralParams(
-            address=address,
-            name=name,
-            manufacturer_data=manufacturer_data,
-            known_service_uuids=known_service_uuids,
-        )
+        _params: dict[str, Any] = {}
+        _params["address"] = address
+        _params["name"] = name
+        _params["manufacturerData"] = _encode_value(manufacturer_data)
+        _params["knownServiceUuids"] = _encode_value(known_service_uuids)
 
         await self._executor.execute(
             method=BluetoothEmulationCommand.SIMULATE_PRECONNECTED_PERIPHERAL,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def simulate_advertisement(
@@ -117,11 +107,12 @@ class BluetoothEmulation:
         Simulates an advertisement packet described in |entry| being received by the
         central.
         """
-        params = SimulateAdvertisementParams(entry=entry)
+        _params: dict[str, Any] = {}
+        _params["entry"] = _encode_value(entry)
 
         await self._executor.execute(
             method=BluetoothEmulationCommand.SIMULATE_ADVERTISEMENT,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def simulate_gatt_operation_response(
@@ -136,13 +127,14 @@ class BluetoothEmulation:
         operation of |type|. The |code| value follows the HCI Error Codes from Bluetooth
         Core Specification Vol 2 Part D 1.3 List Of Error Codes.
         """
-        params = SimulateGATTOperationResponseParams(
-            address=address, type=type, code=code
-        )
+        _params: dict[str, Any] = {}
+        _params["address"] = address
+        _params["type"] = _encode_value(type)
+        _params["code"] = code
 
         await self._executor.execute(
             method=BluetoothEmulationCommand.SIMULATE_GATT_OPERATION_RESPONSE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def simulate_characteristic_operation_response(
@@ -160,13 +152,16 @@ class BluetoothEmulation:
         |data| is expected to exist when simulating a successful read operation
         response.
         """
-        params = SimulateCharacteristicOperationResponseParams(
-            characteristic_id=characteristic_id, type=type, code=code, data=data
-        )
+        _params: dict[str, Any] = {}
+        _params["characteristicId"] = characteristic_id
+        _params["type"] = _encode_value(type)
+        _params["code"] = code
+        if data is not None:
+            _params["data"] = data
 
         await self._executor.execute(
             method=BluetoothEmulationCommand.SIMULATE_CHARACTERISTIC_OPERATION_RESPONSE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def simulate_descriptor_operation_response(
@@ -183,13 +178,16 @@ class BluetoothEmulation:
         Core Specification Vol 3 Part F 3.4.1.1 Error Response. The |data| is expected
         to exist when simulating a successful read operation response.
         """
-        params = SimulateDescriptorOperationResponseParams(
-            descriptor_id=descriptor_id, type=type, code=code, data=data
-        )
+        _params: dict[str, Any] = {}
+        _params["descriptorId"] = descriptor_id
+        _params["type"] = _encode_value(type)
+        _params["code"] = code
+        if data is not None:
+            _params["data"] = data
 
         await self._executor.execute(
             method=BluetoothEmulationCommand.SIMULATE_DESCRIPTOR_OPERATION_RESPONSE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def add_service(
@@ -201,11 +199,13 @@ class BluetoothEmulation:
         """
         Adds a service with |serviceUuid| to the peripheral with |address|.
         """
-        params = AddServiceParams(address=address, service_uuid=service_uuid)
+        _params: dict[str, Any] = {}
+        _params["address"] = address
+        _params["serviceUuid"] = service_uuid
 
         result = await self._executor.execute(
             method=BluetoothEmulationCommand.ADD_SERVICE,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(AddServiceResult, result)
 
@@ -217,11 +217,12 @@ class BluetoothEmulation:
         """
         Removes the service respresented by |serviceId| from the simulated central.
         """
-        params = RemoveServiceParams(service_id=service_id)
+        _params: dict[str, Any] = {}
+        _params["serviceId"] = service_id
 
         await self._executor.execute(
             method=BluetoothEmulationCommand.REMOVE_SERVICE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def add_characteristic(
@@ -235,15 +236,14 @@ class BluetoothEmulation:
         Adds a characteristic with |characteristicUuid| and |properties| to the service
         represented by |serviceId|.
         """
-        params = AddCharacteristicParams(
-            service_id=service_id,
-            characteristic_uuid=characteristic_uuid,
-            properties=properties,
-        )
+        _params: dict[str, Any] = {}
+        _params["serviceId"] = service_id
+        _params["characteristicUuid"] = characteristic_uuid
+        _params["properties"] = _encode_value(properties)
 
         result = await self._executor.execute(
             method=BluetoothEmulationCommand.ADD_CHARACTERISTIC,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(AddCharacteristicResult, result)
 
@@ -256,11 +256,12 @@ class BluetoothEmulation:
         Removes the characteristic respresented by |characteristicId| from the
         simulated central.
         """
-        params = RemoveCharacteristicParams(characteristic_id=characteristic_id)
+        _params: dict[str, Any] = {}
+        _params["characteristicId"] = characteristic_id
 
         await self._executor.execute(
             method=BluetoothEmulationCommand.REMOVE_CHARACTERISTIC,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def add_descriptor(
@@ -273,13 +274,13 @@ class BluetoothEmulation:
         Adds a descriptor with |descriptorUuid| to the characteristic respresented by
         |characteristicId|.
         """
-        params = AddDescriptorParams(
-            characteristic_id=characteristic_id, descriptor_uuid=descriptor_uuid
-        )
+        _params: dict[str, Any] = {}
+        _params["characteristicId"] = characteristic_id
+        _params["descriptorUuid"] = descriptor_uuid
 
         result = await self._executor.execute(
             method=BluetoothEmulationCommand.ADD_DESCRIPTOR,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(AddDescriptorResult, result)
 
@@ -291,11 +292,12 @@ class BluetoothEmulation:
         """
         Removes the descriptor with |descriptorId| from the simulated central.
         """
-        params = RemoveDescriptorParams(descriptor_id=descriptor_id)
+        _params: dict[str, Any] = {}
+        _params["descriptorId"] = descriptor_id
 
         await self._executor.execute(
             method=BluetoothEmulationCommand.REMOVE_DESCRIPTOR,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def simulate_gatt_disconnection(
@@ -306,9 +308,10 @@ class BluetoothEmulation:
         """
         Simulates a GATT disconnection from the peripheral with |address|.
         """
-        params = SimulateGATTDisconnectionParams(address=address)
+        _params: dict[str, Any] = {}
+        _params["address"] = address
 
         await self._executor.execute(
             method=BluetoothEmulationCommand.SIMULATE_GATT_DISCONNECTION,
-            params=encode_cdp(params),
+            params=_params,
         )

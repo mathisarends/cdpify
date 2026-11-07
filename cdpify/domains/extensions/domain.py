@@ -6,21 +6,14 @@ from __future__ import annotations
 
 from typing import Any
 
-from cdpify.codec import decode_cdp, encode_cdp
+from cdpify.codec import _encode_value, decode_cdp
 from cdpify.executor import CommandExecutor
 
 from .commands import (
-    ClearStorageItemsParams,
     ExtensionsCommand,
     GetExtensionsResult,
-    GetStorageItemsParams,
     GetStorageItemsResult,
-    LoadUnpackedParams,
     LoadUnpackedResult,
-    RemoveStorageItemsParams,
-    SetStorageItemsParams,
-    TriggerActionParams,
-    UninstallParams,
 )
 from .types import (
     StorageArea,
@@ -40,11 +33,13 @@ class Extensions:
         """
         Runs an extension default action.
         """
-        params = TriggerActionParams(id=id, target_id=target_id)
+        _params: dict[str, Any] = {}
+        _params["id"] = id
+        _params["targetId"] = target_id
 
         await self._executor.execute(
             method=ExtensionsCommand.TRIGGER_ACTION,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def load_unpacked(
@@ -57,11 +52,14 @@ class Extensions:
         Installs an unpacked extension from the filesystem similar to --load-extension
         CLI flags. Returns extension ID once the extension has been installed.
         """
-        params = LoadUnpackedParams(path=path, enable_in_incognito=enable_in_incognito)
+        _params: dict[str, Any] = {}
+        _params["path"] = path
+        if enable_in_incognito is not None:
+            _params["enableInIncognito"] = enable_in_incognito
 
         result = await self._executor.execute(
             method=ExtensionsCommand.LOAD_UNPACKED,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(LoadUnpackedResult, result)
 
@@ -85,11 +83,12 @@ class Extensions:
         """
         Uninstalls an unpacked extension (others not supported) from the profile.
         """
-        params = UninstallParams(id=id)
+        _params: dict[str, Any] = {}
+        _params["id"] = id
 
         await self._executor.execute(
             method=ExtensionsCommand.UNINSTALL,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def get_storage_items(
@@ -103,11 +102,15 @@ class Extensions:
         Gets data from extension storage in the given `storageArea`. If `keys` is
         specified, these are used to filter the result.
         """
-        params = GetStorageItemsParams(id=id, storage_area=storage_area, keys=keys)
+        _params: dict[str, Any] = {}
+        _params["id"] = id
+        _params["storageArea"] = _encode_value(storage_area)
+        if keys is not None:
+            _params["keys"] = _encode_value(keys)
 
         result = await self._executor.execute(
             method=ExtensionsCommand.GET_STORAGE_ITEMS,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetStorageItemsResult, result)
 
@@ -121,11 +124,14 @@ class Extensions:
         """
         Removes `keys` from extension storage in the given `storageArea`.
         """
-        params = RemoveStorageItemsParams(id=id, storage_area=storage_area, keys=keys)
+        _params: dict[str, Any] = {}
+        _params["id"] = id
+        _params["storageArea"] = _encode_value(storage_area)
+        _params["keys"] = _encode_value(keys)
 
         await self._executor.execute(
             method=ExtensionsCommand.REMOVE_STORAGE_ITEMS,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def clear_storage_items(
@@ -137,11 +143,13 @@ class Extensions:
         """
         Clears extension storage in the given `storageArea`.
         """
-        params = ClearStorageItemsParams(id=id, storage_area=storage_area)
+        _params: dict[str, Any] = {}
+        _params["id"] = id
+        _params["storageArea"] = _encode_value(storage_area)
 
         await self._executor.execute(
             method=ExtensionsCommand.CLEAR_STORAGE_ITEMS,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_storage_items(
@@ -155,9 +163,12 @@ class Extensions:
         Sets `values` in extension storage in the given `storageArea`. The provided
         `values` will be merged with existing values in the storage area.
         """
-        params = SetStorageItemsParams(id=id, storage_area=storage_area, values=values)
+        _params: dict[str, Any] = {}
+        _params["id"] = id
+        _params["storageArea"] = _encode_value(storage_area)
+        _params["values"] = _encode_value(values)
 
         await self._executor.execute(
             method=ExtensionsCommand.SET_STORAGE_ITEMS,
-            params=encode_cdp(params),
+            params=_params,
         )

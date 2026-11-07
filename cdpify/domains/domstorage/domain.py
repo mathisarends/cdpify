@@ -4,16 +4,14 @@
 
 from __future__ import annotations
 
-from cdpify.codec import decode_cdp, encode_cdp
+from typing import Any
+
+from cdpify.codec import _encode_value, decode_cdp
 from cdpify.executor import CommandExecutor
 
 from .commands import (
-    ClearParams,
     DOMStorageCommand,
-    GetDOMStorageItemsParams,
     GetDOMStorageItemsResult,
-    RemoveDOMStorageItemParams,
-    SetDOMStorageItemParams,
 )
 from .types import (
     StorageId,
@@ -29,11 +27,12 @@ class DOMStorage:
         *,
         storage_id: StorageId,
     ) -> None:
-        params = ClearParams(storage_id=storage_id)
+        _params: dict[str, Any] = {}
+        _params["storageId"] = _encode_value(storage_id)
 
         await self._executor.execute(
             method=DOMStorageCommand.CLEAR,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def disable(
@@ -64,11 +63,12 @@ class DOMStorage:
         *,
         storage_id: StorageId,
     ) -> GetDOMStorageItemsResult:
-        params = GetDOMStorageItemsParams(storage_id=storage_id)
+        _params: dict[str, Any] = {}
+        _params["storageId"] = _encode_value(storage_id)
 
         result = await self._executor.execute(
             method=DOMStorageCommand.GET_DOM_STORAGE_ITEMS,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetDOMStorageItemsResult, result)
 
@@ -78,11 +78,13 @@ class DOMStorage:
         storage_id: StorageId,
         key: str,
     ) -> None:
-        params = RemoveDOMStorageItemParams(storage_id=storage_id, key=key)
+        _params: dict[str, Any] = {}
+        _params["storageId"] = _encode_value(storage_id)
+        _params["key"] = key
 
         await self._executor.execute(
             method=DOMStorageCommand.REMOVE_DOM_STORAGE_ITEM,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_dom_storage_item(
@@ -92,9 +94,12 @@ class DOMStorage:
         key: str,
         value: str,
     ) -> None:
-        params = SetDOMStorageItemParams(storage_id=storage_id, key=key, value=value)
+        _params: dict[str, Any] = {}
+        _params["storageId"] = _encode_value(storage_id)
+        _params["key"] = key
+        _params["value"] = value
 
         await self._executor.execute(
             method=DOMStorageCommand.SET_DOM_STORAGE_ITEM,
-            params=encode_cdp(params),
+            params=_params,
         )

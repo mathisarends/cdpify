@@ -4,16 +4,13 @@
 
 from __future__ import annotations
 
-from cdpify.codec import encode_cdp
+from typing import Any
+
+from cdpify.codec import _encode_value
 from cdpify.executor import CommandExecutor
 
 from .commands import (
-    ClickDialogButtonParams,
-    DismissDialogParams,
-    EnableParams,
     FedCmCommand,
-    OpenUrlParams,
-    SelectAccountParams,
 )
 from .types import (
     AccountUrlType,
@@ -30,11 +27,13 @@ class FedCm:
         *,
         disable_rejection_delay: bool | None = None,
     ) -> None:
-        params = EnableParams(disable_rejection_delay=disable_rejection_delay)
+        _params: dict[str, Any] = {}
+        if disable_rejection_delay is not None:
+            _params["disableRejectionDelay"] = disable_rejection_delay
 
         await self._executor.execute(
             method=FedCmCommand.ENABLE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def disable(
@@ -51,11 +50,13 @@ class FedCm:
         dialog_id: str,
         account_index: int,
     ) -> None:
-        params = SelectAccountParams(dialog_id=dialog_id, account_index=account_index)
+        _params: dict[str, Any] = {}
+        _params["dialogId"] = dialog_id
+        _params["accountIndex"] = account_index
 
         await self._executor.execute(
             method=FedCmCommand.SELECT_ACCOUNT,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def click_dialog_button(
@@ -64,13 +65,13 @@ class FedCm:
         dialog_id: str,
         dialog_button: DialogButton,
     ) -> None:
-        params = ClickDialogButtonParams(
-            dialog_id=dialog_id, dialog_button=dialog_button
-        )
+        _params: dict[str, Any] = {}
+        _params["dialogId"] = dialog_id
+        _params["dialogButton"] = _encode_value(dialog_button)
 
         await self._executor.execute(
             method=FedCmCommand.CLICK_DIALOG_BUTTON,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def open_url(
@@ -80,15 +81,14 @@ class FedCm:
         account_index: int,
         account_url_type: AccountUrlType,
     ) -> None:
-        params = OpenUrlParams(
-            dialog_id=dialog_id,
-            account_index=account_index,
-            account_url_type=account_url_type,
-        )
+        _params: dict[str, Any] = {}
+        _params["dialogId"] = dialog_id
+        _params["accountIndex"] = account_index
+        _params["accountUrlType"] = _encode_value(account_url_type)
 
         await self._executor.execute(
             method=FedCmCommand.OPEN_URL,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def dismiss_dialog(
@@ -97,13 +97,14 @@ class FedCm:
         dialog_id: str,
         trigger_cooldown: bool | None = None,
     ) -> None:
-        params = DismissDialogParams(
-            dialog_id=dialog_id, trigger_cooldown=trigger_cooldown
-        )
+        _params: dict[str, Any] = {}
+        _params["dialogId"] = dialog_id
+        if trigger_cooldown is not None:
+            _params["triggerCooldown"] = trigger_cooldown
 
         await self._executor.execute(
             method=FedCmCommand.DISMISS_DIALOG,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def reset_cooldown(

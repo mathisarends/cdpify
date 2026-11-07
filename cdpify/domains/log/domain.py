@@ -4,12 +4,13 @@
 
 from __future__ import annotations
 
-from cdpify.codec import encode_cdp
+from typing import Any
+
+from cdpify.codec import _encode_value
 from cdpify.executor import CommandExecutor
 
 from .commands import (
     LogCommand,
-    StartViolationsReportParams,
 )
 from .types import (
     ViolationSetting,
@@ -63,11 +64,12 @@ class Log:
         """
         start violation reporting.
         """
-        params = StartViolationsReportParams(config=config)
+        _params: dict[str, Any] = {}
+        _params["config"] = _encode_value(config)
 
         await self._executor.execute(
             method=LogCommand.START_VIOLATIONS_REPORT,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def stop_violations_report(

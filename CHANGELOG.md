@@ -34,6 +34,11 @@ Breaking changes are listed first in each release.
 
 ### Performance
 
+- Generated command methods build wire dictionaries directly, avoiding an
+  intermediate Params dataclass and reflective field traversal. Public Params
+  models and keyword-only command signatures are retained. Nested models still
+  serialize through the shared codec.
+
 - The orjson transport sends UTF-8 bytes directly as text frames and receives
   bytes without first decoding to a Python string. This removes redundant
   UTF-8 conversions while preserving the CDP wire format.

@@ -4,25 +4,15 @@
 
 from __future__ import annotations
 
-from cdpify.codec import decode_cdp, encode_cdp
+from typing import Any
+
+from cdpify.codec import _encode_value, decode_cdp
 from cdpify.executor import CommandExecutor
 
 from .commands import (
-    AddCredentialParams,
-    AddVirtualAuthenticatorParams,
     AddVirtualAuthenticatorResult,
-    ClearCredentialsParams,
-    EnableParams,
-    GetCredentialParams,
     GetCredentialResult,
-    GetCredentialsParams,
     GetCredentialsResult,
-    RemoveCredentialParams,
-    RemoveVirtualAuthenticatorParams,
-    SetAutomaticPresenceSimulationParams,
-    SetCredentialPropertiesParams,
-    SetResponseOverrideBitsParams,
-    SetUserVerifiedParams,
     WebAuthnCommand,
 )
 from .types import (
@@ -45,11 +35,13 @@ class WebAuthn:
         Enable the WebAuthn domain and start intercepting credential storage and
         retrieval with a virtual authenticator.
         """
-        params = EnableParams(enable_ui=enable_ui)
+        _params: dict[str, Any] = {}
+        if enable_ui is not None:
+            _params["enableUI"] = enable_ui
 
         await self._executor.execute(
             method=WebAuthnCommand.ENABLE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def disable(
@@ -71,11 +63,12 @@ class WebAuthn:
         """
         Creates and adds a virtual authenticator.
         """
-        params = AddVirtualAuthenticatorParams(options=options)
+        _params: dict[str, Any] = {}
+        _params["options"] = _encode_value(options)
 
         result = await self._executor.execute(
             method=WebAuthnCommand.ADD_VIRTUAL_AUTHENTICATOR,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(AddVirtualAuthenticatorResult, result)
 
@@ -91,16 +84,18 @@ class WebAuthn:
         Resets parameters isBogusSignature, isBadUV, isBadUP to false if they are not
         present.
         """
-        params = SetResponseOverrideBitsParams(
-            authenticator_id=authenticator_id,
-            is_bogus_signature=is_bogus_signature,
-            is_bad_uv=is_bad_uv,
-            is_bad_up=is_bad_up,
-        )
+        _params: dict[str, Any] = {}
+        _params["authenticatorId"] = _encode_value(authenticator_id)
+        if is_bogus_signature is not None:
+            _params["isBogusSignature"] = is_bogus_signature
+        if is_bad_uv is not None:
+            _params["isBadUV"] = is_bad_uv
+        if is_bad_up is not None:
+            _params["isBadUP"] = is_bad_up
 
         await self._executor.execute(
             method=WebAuthnCommand.SET_RESPONSE_OVERRIDE_BITS,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def remove_virtual_authenticator(
@@ -111,11 +106,12 @@ class WebAuthn:
         """
         Removes the given authenticator.
         """
-        params = RemoveVirtualAuthenticatorParams(authenticator_id=authenticator_id)
+        _params: dict[str, Any] = {}
+        _params["authenticatorId"] = _encode_value(authenticator_id)
 
         await self._executor.execute(
             method=WebAuthnCommand.REMOVE_VIRTUAL_AUTHENTICATOR,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def add_credential(
@@ -127,13 +123,13 @@ class WebAuthn:
         """
         Adds the credential to the specified authenticator.
         """
-        params = AddCredentialParams(
-            authenticator_id=authenticator_id, credential=credential
-        )
+        _params: dict[str, Any] = {}
+        _params["authenticatorId"] = _encode_value(authenticator_id)
+        _params["credential"] = _encode_value(credential)
 
         await self._executor.execute(
             method=WebAuthnCommand.ADD_CREDENTIAL,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def get_credential(
@@ -146,13 +142,13 @@ class WebAuthn:
         Returns a single credential stored in the given virtual authenticator that
         matches the credential ID.
         """
-        params = GetCredentialParams(
-            authenticator_id=authenticator_id, credential_id=credential_id
-        )
+        _params: dict[str, Any] = {}
+        _params["authenticatorId"] = _encode_value(authenticator_id)
+        _params["credentialId"] = credential_id
 
         result = await self._executor.execute(
             method=WebAuthnCommand.GET_CREDENTIAL,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetCredentialResult, result)
 
@@ -164,11 +160,12 @@ class WebAuthn:
         """
         Returns all the credentials stored in the given virtual authenticator.
         """
-        params = GetCredentialsParams(authenticator_id=authenticator_id)
+        _params: dict[str, Any] = {}
+        _params["authenticatorId"] = _encode_value(authenticator_id)
 
         result = await self._executor.execute(
             method=WebAuthnCommand.GET_CREDENTIALS,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetCredentialsResult, result)
 
@@ -181,13 +178,13 @@ class WebAuthn:
         """
         Removes a credential from the authenticator.
         """
-        params = RemoveCredentialParams(
-            authenticator_id=authenticator_id, credential_id=credential_id
-        )
+        _params: dict[str, Any] = {}
+        _params["authenticatorId"] = _encode_value(authenticator_id)
+        _params["credentialId"] = credential_id
 
         await self._executor.execute(
             method=WebAuthnCommand.REMOVE_CREDENTIAL,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def clear_credentials(
@@ -198,11 +195,12 @@ class WebAuthn:
         """
         Clears all the credentials from the specified device.
         """
-        params = ClearCredentialsParams(authenticator_id=authenticator_id)
+        _params: dict[str, Any] = {}
+        _params["authenticatorId"] = _encode_value(authenticator_id)
 
         await self._executor.execute(
             method=WebAuthnCommand.CLEAR_CREDENTIALS,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_user_verified(
@@ -215,13 +213,13 @@ class WebAuthn:
         Sets whether User Verification succeeds or fails for an authenticator. The
         default is true.
         """
-        params = SetUserVerifiedParams(
-            authenticator_id=authenticator_id, is_user_verified=is_user_verified
-        )
+        _params: dict[str, Any] = {}
+        _params["authenticatorId"] = _encode_value(authenticator_id)
+        _params["isUserVerified"] = is_user_verified
 
         await self._executor.execute(
             method=WebAuthnCommand.SET_USER_VERIFIED,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_automatic_presence_simulation(
@@ -234,13 +232,13 @@ class WebAuthn:
         Sets whether tests of user presence will succeed immediately (if true) or fail
         to resolve (if false) for an authenticator. The default is true.
         """
-        params = SetAutomaticPresenceSimulationParams(
-            authenticator_id=authenticator_id, enabled=enabled
-        )
+        _params: dict[str, Any] = {}
+        _params["authenticatorId"] = _encode_value(authenticator_id)
+        _params["enabled"] = enabled
 
         await self._executor.execute(
             method=WebAuthnCommand.SET_AUTOMATIC_PRESENCE_SIMULATION,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_credential_properties(
@@ -258,17 +256,23 @@ class WebAuthn:
         Allows setting credential properties.
         https://w3c.github.io/webauthn/#sctn-automation-set-credential-properties
         """
-        params = SetCredentialPropertiesParams(
-            authenticator_id=authenticator_id,
-            credential_id=credential_id,
-            backup_eligibility=backup_eligibility,
-            backup_state=backup_state,
-            active_cmtg_key_index=active_cmtg_key_index,
-            generate_cmtg_key_on_next_operation=generate_cmtg_key_on_next_operation,
-            sign_count=sign_count,
-        )
+        _params: dict[str, Any] = {}
+        _params["authenticatorId"] = _encode_value(authenticator_id)
+        _params["credentialId"] = credential_id
+        if backup_eligibility is not None:
+            _params["backupEligibility"] = backup_eligibility
+        if backup_state is not None:
+            _params["backupState"] = backup_state
+        if active_cmtg_key_index is not None:
+            _params["activeCmtgKeyIndex"] = active_cmtg_key_index
+        if generate_cmtg_key_on_next_operation is not None:
+            _params["generateCmtgKeyOnNextOperation"] = (
+                generate_cmtg_key_on_next_operation
+            )
+        if sign_count is not None:
+            _params["signCount"] = sign_count
 
         await self._executor.execute(
             method=WebAuthnCommand.SET_CREDENTIAL_PROPERTIES,
-            params=encode_cdp(params),
+            params=_params,
         )

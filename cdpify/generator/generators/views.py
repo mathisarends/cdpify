@@ -1,5 +1,5 @@
 from collections.abc import Iterable
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 
 
 @dataclass(frozen=True, slots=True)
@@ -8,10 +8,19 @@ class FieldView:
     annotation: str
     optional: bool = False
     cdp_name: str | None = None
+    encode_value: bool = False
 
     @property
     def uses_unset(self) -> bool:
         return self.optional and self.annotation == "Any"
+
+    @property
+    def encoded_value(self) -> str:
+        return f"_encode_value({self.name})" if self.encode_value else self.name
+
+    @property
+    def parameter_declaration(self) -> str:
+        return replace(self, cdp_name=None).declaration
 
     @property
     def needs_field(self) -> bool:
@@ -82,6 +91,14 @@ class MethodView:
     params_model: str | None = None
     constructor_args: str = ""
     result_model: str | None = None
+
+    @property
+    def wire_params_name(self) -> str:
+        name = "_params"
+        names = {p.name for p in self.parameters}
+        while name in names:
+            name += "_"
+        return name
 
 
 @dataclass(frozen=True, slots=True)

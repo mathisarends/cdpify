@@ -4,38 +4,24 @@
 
 from __future__ import annotations
 
-from cdpify.codec import decode_cdp, encode_cdp
+from typing import Any
+
+from cdpify.codec import _encode_value, decode_cdp
 from cdpify.executor import CommandExecutor
 
 from .commands import (
-    AddBindingParams,
-    AwaitPromiseParams,
     AwaitPromiseResult,
-    CallFunctionOnParams,
     CallFunctionOnResult,
-    CompileScriptParams,
     CompileScriptResult,
-    EvaluateParams,
     EvaluateResult,
-    GetExceptionDetailsParams,
     GetExceptionDetailsResult,
     GetHeapUsageResult,
     GetIsolateIdResult,
-    GetPropertiesParams,
     GetPropertiesResult,
-    GlobalLexicalScopeNamesParams,
     GlobalLexicalScopeNamesResult,
-    QueryObjectsParams,
     QueryObjectsResult,
-    ReleaseObjectGroupParams,
-    ReleaseObjectParams,
-    RemoveBindingParams,
-    RunScriptParams,
     RunScriptResult,
     RuntimeCommand,
-    SetAsyncCallStackDepthParams,
-    SetCustomObjectFormatterEnabledParams,
-    SetMaxCallStackSizeToCaptureParams,
 )
 from .types import (
     CallArgument,
@@ -61,15 +47,16 @@ class Runtime:
         """
         Add handler to promise with given promise object id.
         """
-        params = AwaitPromiseParams(
-            promise_object_id=promise_object_id,
-            return_by_value=return_by_value,
-            generate_preview=generate_preview,
-        )
+        _params: dict[str, Any] = {}
+        _params["promiseObjectId"] = _encode_value(promise_object_id)
+        if return_by_value is not None:
+            _params["returnByValue"] = return_by_value
+        if generate_preview is not None:
+            _params["generatePreview"] = generate_preview
 
         result = await self._executor.execute(
             method=RuntimeCommand.AWAIT_PROMISE,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(AwaitPromiseResult, result)
 
@@ -94,25 +81,36 @@ class Runtime:
         Calls function with given declaration on the given object. Object group of the
         result is inherited from the target object.
         """
-        params = CallFunctionOnParams(
-            function_declaration=function_declaration,
-            object_id=object_id,
-            arguments=arguments,
-            silent=silent,
-            return_by_value=return_by_value,
-            generate_preview=generate_preview,
-            user_gesture=user_gesture,
-            await_promise=await_promise,
-            execution_context_id=execution_context_id,
-            object_group=object_group,
-            throw_on_side_effect=throw_on_side_effect,
-            unique_context_id=unique_context_id,
-            serialization_options=serialization_options,
-        )
+        _params: dict[str, Any] = {}
+        _params["functionDeclaration"] = function_declaration
+        if object_id is not None:
+            _params["objectId"] = _encode_value(object_id)
+        if arguments is not None:
+            _params["arguments"] = _encode_value(arguments)
+        if silent is not None:
+            _params["silent"] = silent
+        if return_by_value is not None:
+            _params["returnByValue"] = return_by_value
+        if generate_preview is not None:
+            _params["generatePreview"] = generate_preview
+        if user_gesture is not None:
+            _params["userGesture"] = user_gesture
+        if await_promise is not None:
+            _params["awaitPromise"] = await_promise
+        if execution_context_id is not None:
+            _params["executionContextId"] = _encode_value(execution_context_id)
+        if object_group is not None:
+            _params["objectGroup"] = object_group
+        if throw_on_side_effect is not None:
+            _params["throwOnSideEffect"] = throw_on_side_effect
+        if unique_context_id is not None:
+            _params["uniqueContextId"] = unique_context_id
+        if serialization_options is not None:
+            _params["serializationOptions"] = _encode_value(serialization_options)
 
         result = await self._executor.execute(
             method=RuntimeCommand.CALL_FUNCTION_ON,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(CallFunctionOnResult, result)
 
@@ -127,16 +125,16 @@ class Runtime:
         """
         Compiles expression.
         """
-        params = CompileScriptParams(
-            expression=expression,
-            source_url=source_url,
-            persist_script=persist_script,
-            execution_context_id=execution_context_id,
-        )
+        _params: dict[str, Any] = {}
+        _params["expression"] = expression
+        _params["sourceURL"] = source_url
+        _params["persistScript"] = persist_script
+        if execution_context_id is not None:
+            _params["executionContextId"] = _encode_value(execution_context_id)
 
         result = await self._executor.execute(
             method=RuntimeCommand.COMPILE_SCRIPT,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(CompileScriptResult, result)
 
@@ -198,28 +196,42 @@ class Runtime:
         """
         Evaluates expression on global object.
         """
-        params = EvaluateParams(
-            expression=expression,
-            object_group=object_group,
-            include_command_line_api=include_command_line_api,
-            silent=silent,
-            context_id=context_id,
-            return_by_value=return_by_value,
-            generate_preview=generate_preview,
-            user_gesture=user_gesture,
-            await_promise=await_promise,
-            throw_on_side_effect=throw_on_side_effect,
-            timeout=timeout,
-            disable_breaks=disable_breaks,
-            repl_mode=repl_mode,
-            allow_unsafe_eval_blocked_by_csp=allow_unsafe_eval_blocked_by_csp,
-            unique_context_id=unique_context_id,
-            serialization_options=serialization_options,
-        )
+        _params: dict[str, Any] = {}
+        _params["expression"] = expression
+        if object_group is not None:
+            _params["objectGroup"] = object_group
+        if include_command_line_api is not None:
+            _params["includeCommandLineAPI"] = include_command_line_api
+        if silent is not None:
+            _params["silent"] = silent
+        if context_id is not None:
+            _params["contextId"] = _encode_value(context_id)
+        if return_by_value is not None:
+            _params["returnByValue"] = return_by_value
+        if generate_preview is not None:
+            _params["generatePreview"] = generate_preview
+        if user_gesture is not None:
+            _params["userGesture"] = user_gesture
+        if await_promise is not None:
+            _params["awaitPromise"] = await_promise
+        if throw_on_side_effect is not None:
+            _params["throwOnSideEffect"] = throw_on_side_effect
+        if timeout is not None:
+            _params["timeout"] = _encode_value(timeout)
+        if disable_breaks is not None:
+            _params["disableBreaks"] = disable_breaks
+        if repl_mode is not None:
+            _params["replMode"] = repl_mode
+        if allow_unsafe_eval_blocked_by_csp is not None:
+            _params["allowUnsafeEvalBlockedByCSP"] = allow_unsafe_eval_blocked_by_csp
+        if unique_context_id is not None:
+            _params["uniqueContextId"] = unique_context_id
+        if serialization_options is not None:
+            _params["serializationOptions"] = _encode_value(serialization_options)
 
         result = await self._executor.execute(
             method=RuntimeCommand.EVALUATE,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(EvaluateResult, result)
 
@@ -261,17 +273,20 @@ class Runtime:
         Returns properties of a given object. Object group of the result is inherited
         from the target object.
         """
-        params = GetPropertiesParams(
-            object_id=object_id,
-            own_properties=own_properties,
-            accessor_properties_only=accessor_properties_only,
-            generate_preview=generate_preview,
-            non_indexed_properties_only=non_indexed_properties_only,
-        )
+        _params: dict[str, Any] = {}
+        _params["objectId"] = _encode_value(object_id)
+        if own_properties is not None:
+            _params["ownProperties"] = own_properties
+        if accessor_properties_only is not None:
+            _params["accessorPropertiesOnly"] = accessor_properties_only
+        if generate_preview is not None:
+            _params["generatePreview"] = generate_preview
+        if non_indexed_properties_only is not None:
+            _params["nonIndexedPropertiesOnly"] = non_indexed_properties_only
 
         result = await self._executor.execute(
             method=RuntimeCommand.GET_PROPERTIES,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetPropertiesResult, result)
 
@@ -283,13 +298,13 @@ class Runtime:
         """
         Returns all let, const and class variables from global scope.
         """
-        params = GlobalLexicalScopeNamesParams(
-            execution_context_id=execution_context_id
-        )
+        _params: dict[str, Any] = {}
+        if execution_context_id is not None:
+            _params["executionContextId"] = _encode_value(execution_context_id)
 
         result = await self._executor.execute(
             method=RuntimeCommand.GLOBAL_LEXICAL_SCOPE_NAMES,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GlobalLexicalScopeNamesResult, result)
 
@@ -299,13 +314,14 @@ class Runtime:
         prototype_object_id: RemoteObjectId,
         object_group: str | None = None,
     ) -> QueryObjectsResult:
-        params = QueryObjectsParams(
-            prototype_object_id=prototype_object_id, object_group=object_group
-        )
+        _params: dict[str, Any] = {}
+        _params["prototypeObjectId"] = _encode_value(prototype_object_id)
+        if object_group is not None:
+            _params["objectGroup"] = object_group
 
         result = await self._executor.execute(
             method=RuntimeCommand.QUERY_OBJECTS,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(QueryObjectsResult, result)
 
@@ -317,11 +333,12 @@ class Runtime:
         """
         Releases remote object with given id.
         """
-        params = ReleaseObjectParams(object_id=object_id)
+        _params: dict[str, Any] = {}
+        _params["objectId"] = _encode_value(object_id)
 
         await self._executor.execute(
             method=RuntimeCommand.RELEASE_OBJECT,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def release_object_group(
@@ -332,11 +349,12 @@ class Runtime:
         """
         Releases all remote objects that belong to a given group.
         """
-        params = ReleaseObjectGroupParams(object_group=object_group)
+        _params: dict[str, Any] = {}
+        _params["objectGroup"] = object_group
 
         await self._executor.execute(
             method=RuntimeCommand.RELEASE_OBJECT_GROUP,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def run_if_waiting_for_debugger(
@@ -365,20 +383,26 @@ class Runtime:
         """
         Runs script with given id in a given context.
         """
-        params = RunScriptParams(
-            script_id=script_id,
-            execution_context_id=execution_context_id,
-            object_group=object_group,
-            silent=silent,
-            include_command_line_api=include_command_line_api,
-            return_by_value=return_by_value,
-            generate_preview=generate_preview,
-            await_promise=await_promise,
-        )
+        _params: dict[str, Any] = {}
+        _params["scriptId"] = _encode_value(script_id)
+        if execution_context_id is not None:
+            _params["executionContextId"] = _encode_value(execution_context_id)
+        if object_group is not None:
+            _params["objectGroup"] = object_group
+        if silent is not None:
+            _params["silent"] = silent
+        if include_command_line_api is not None:
+            _params["includeCommandLineAPI"] = include_command_line_api
+        if return_by_value is not None:
+            _params["returnByValue"] = return_by_value
+        if generate_preview is not None:
+            _params["generatePreview"] = generate_preview
+        if await_promise is not None:
+            _params["awaitPromise"] = await_promise
 
         result = await self._executor.execute(
             method=RuntimeCommand.RUN_SCRIPT,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(RunScriptResult, result)
 
@@ -390,11 +414,12 @@ class Runtime:
         """
         Enables or disables async call stacks tracking.
         """
-        params = SetAsyncCallStackDepthParams(max_depth=max_depth)
+        _params: dict[str, Any] = {}
+        _params["maxDepth"] = max_depth
 
         await self._executor.execute(
             method=RuntimeCommand.SET_ASYNC_CALL_STACK_DEPTH,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_custom_object_formatter_enabled(
@@ -402,11 +427,12 @@ class Runtime:
         *,
         enabled: bool,
     ) -> None:
-        params = SetCustomObjectFormatterEnabledParams(enabled=enabled)
+        _params: dict[str, Any] = {}
+        _params["enabled"] = enabled
 
         await self._executor.execute(
             method=RuntimeCommand.SET_CUSTOM_OBJECT_FORMATTER_ENABLED,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_max_call_stack_size_to_capture(
@@ -414,11 +440,12 @@ class Runtime:
         *,
         size: int,
     ) -> None:
-        params = SetMaxCallStackSizeToCaptureParams(size=size)
+        _params: dict[str, Any] = {}
+        _params["size"] = size
 
         await self._executor.execute(
             method=RuntimeCommand.SET_MAX_CALL_STACK_SIZE_TO_CAPTURE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def terminate_execution(
@@ -447,15 +474,16 @@ class Runtime:
         should be string, in case of any other input, function throws an exception. Each
         binding function call produces Runtime.bindingCalled notification.
         """
-        params = AddBindingParams(
-            name=name,
-            execution_context_id=execution_context_id,
-            execution_context_name=execution_context_name,
-        )
+        _params: dict[str, Any] = {}
+        _params["name"] = name
+        if execution_context_id is not None:
+            _params["executionContextId"] = _encode_value(execution_context_id)
+        if execution_context_name is not None:
+            _params["executionContextName"] = execution_context_name
 
         await self._executor.execute(
             method=RuntimeCommand.ADD_BINDING,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def remove_binding(
@@ -467,11 +495,12 @@ class Runtime:
         This method does not remove binding function from global object but
         unsubscribes current runtime agent from Runtime.bindingCalled notifications.
         """
-        params = RemoveBindingParams(name=name)
+        _params: dict[str, Any] = {}
+        _params["name"] = name
 
         await self._executor.execute(
             method=RuntimeCommand.REMOVE_BINDING,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def get_exception_details(
@@ -485,10 +514,11 @@ class Runtime:
         will only be populated if the Runtime domain was enabled at the time when the
         Error was thrown.
         """
-        params = GetExceptionDetailsParams(error_object_id=error_object_id)
+        _params: dict[str, Any] = {}
+        _params["errorObjectId"] = _encode_value(error_object_id)
 
         result = await self._executor.execute(
             method=RuntimeCommand.GET_EXCEPTION_DETAILS,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetExceptionDetailsResult, result)

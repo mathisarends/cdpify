@@ -4,20 +4,12 @@
 
 from __future__ import annotations
 
-from cdpify.codec import encode_cdp
+from typing import Any
+
+from cdpify.codec import _encode_value
 from cdpify.executor import CommandExecutor
 
 from .commands import (
-    ReportBeginTransactionResultParams,
-    ReportConnectResultParams,
-    ReportDataResultParams,
-    ReportErrorParams,
-    ReportEstablishContextResultParams,
-    ReportGetStatusChangeResultParams,
-    ReportListReadersResultParams,
-    ReportPlainResultParams,
-    ReportReleaseContextResultParams,
-    ReportStatusResultParams,
     SmartCardEmulationCommand,
 )
 from .types import (
@@ -67,13 +59,13 @@ class SmartCardEmulation:
         Microsoft:
         https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardestablishcontext
         """
-        params = ReportEstablishContextResultParams(
-            request_id=request_id, context_id=context_id
-        )
+        _params: dict[str, Any] = {}
+        _params["requestId"] = request_id
+        _params["contextId"] = context_id
 
         await self._executor.execute(
             method=SmartCardEmulationCommand.REPORT_ESTABLISH_CONTEXT_RESULT,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def report_release_context_result(
@@ -88,11 +80,12 @@ class SmartCardEmulation:
         Microsoft:
         https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardreleasecontext
         """
-        params = ReportReleaseContextResultParams(request_id=request_id)
+        _params: dict[str, Any] = {}
+        _params["requestId"] = request_id
 
         await self._executor.execute(
             method=SmartCardEmulationCommand.REPORT_RELEASE_CONTEXT_RESULT,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def report_list_readers_result(
@@ -108,11 +101,13 @@ class SmartCardEmulation:
         Microsoft:
         https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardlistreadersa
         """
-        params = ReportListReadersResultParams(request_id=request_id, readers=readers)
+        _params: dict[str, Any] = {}
+        _params["requestId"] = request_id
+        _params["readers"] = _encode_value(readers)
 
         await self._executor.execute(
             method=SmartCardEmulationCommand.REPORT_LIST_READERS_RESULT,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def report_get_status_change_result(
@@ -128,13 +123,13 @@ class SmartCardEmulation:
         Microsoft:
         https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardgetstatuschangea
         """
-        params = ReportGetStatusChangeResultParams(
-            request_id=request_id, reader_states=reader_states
-        )
+        _params: dict[str, Any] = {}
+        _params["requestId"] = request_id
+        _params["readerStates"] = _encode_value(reader_states)
 
         await self._executor.execute(
             method=SmartCardEmulationCommand.REPORT_GET_STATUS_CHANGE_RESULT,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def report_begin_transaction_result(
@@ -150,13 +145,13 @@ class SmartCardEmulation:
         Microsoft:
         https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardbegintransaction
         """
-        params = ReportBeginTransactionResultParams(
-            request_id=request_id, handle=handle
-        )
+        _params: dict[str, Any] = {}
+        _params["requestId"] = request_id
+        _params["handle"] = handle
 
         await self._executor.execute(
             method=SmartCardEmulationCommand.REPORT_BEGIN_TRANSACTION_RESULT,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def report_plain_result(
@@ -184,11 +179,12 @@ class SmartCardEmulation:
         Microsoft:
         https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardendtransaction
         """
-        params = ReportPlainResultParams(request_id=request_id)
+        _params: dict[str, Any] = {}
+        _params["requestId"] = request_id
 
         await self._executor.execute(
             method=SmartCardEmulationCommand.REPORT_PLAIN_RESULT,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def report_connect_result(
@@ -205,13 +201,15 @@ class SmartCardEmulation:
         Microsoft:
         https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardconnecta
         """
-        params = ReportConnectResultParams(
-            request_id=request_id, handle=handle, active_protocol=active_protocol
-        )
+        _params: dict[str, Any] = {}
+        _params["requestId"] = request_id
+        _params["handle"] = handle
+        if active_protocol is not None:
+            _params["activeProtocol"] = _encode_value(active_protocol)
 
         await self._executor.execute(
             method=SmartCardEmulationCommand.REPORT_CONNECT_RESULT,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def report_data_result(
@@ -236,11 +234,13 @@ class SmartCardEmulation:
         Microsoft:
         https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardgetattrib
         """
-        params = ReportDataResultParams(request_id=request_id, data=data)
+        _params: dict[str, Any] = {}
+        _params["requestId"] = request_id
+        _params["data"] = data
 
         await self._executor.execute(
             method=SmartCardEmulationCommand.REPORT_DATA_RESULT,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def report_status_result(
@@ -259,17 +259,17 @@ class SmartCardEmulation:
         Microsoft:
         https://learn.microsoft.com/en-us/windows/win32/api/winscard/nf-winscard-scardstatusa
         """
-        params = ReportStatusResultParams(
-            request_id=request_id,
-            reader_name=reader_name,
-            state=state,
-            atr=atr,
-            protocol=protocol,
-        )
+        _params: dict[str, Any] = {}
+        _params["requestId"] = request_id
+        _params["readerName"] = reader_name
+        _params["state"] = _encode_value(state)
+        _params["atr"] = atr
+        if protocol is not None:
+            _params["protocol"] = _encode_value(protocol)
 
         await self._executor.execute(
             method=SmartCardEmulationCommand.REPORT_STATUS_RESULT,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def report_error(
@@ -281,9 +281,11 @@ class SmartCardEmulation:
         """
         Reports an error result for the given request.
         """
-        params = ReportErrorParams(request_id=request_id, result_code=result_code)
+        _params: dict[str, Any] = {}
+        _params["requestId"] = request_id
+        _params["resultCode"] = _encode_value(result_code)
 
         await self._executor.execute(
             method=SmartCardEmulationCommand.REPORT_ERROR,
-            params=encode_cdp(params),
+            params=_params,
         )

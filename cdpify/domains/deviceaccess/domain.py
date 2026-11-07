@@ -4,13 +4,13 @@
 
 from __future__ import annotations
 
-from cdpify.codec import encode_cdp
+from typing import Any
+
+from cdpify.codec import _encode_value
 from cdpify.executor import CommandExecutor
 
 from .commands import (
-    CancelPromptParams,
     DeviceAccessCommand,
-    SelectPromptParams,
 )
 from .types import (
     DeviceId,
@@ -53,11 +53,13 @@ class DeviceAccess:
         """
         Select a device in response to a DeviceAccess.deviceRequestPrompted event.
         """
-        params = SelectPromptParams(id=id, device_id=device_id)
+        _params: dict[str, Any] = {}
+        _params["id"] = _encode_value(id)
+        _params["deviceId"] = _encode_value(device_id)
 
         await self._executor.execute(
             method=DeviceAccessCommand.SELECT_PROMPT,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def cancel_prompt(
@@ -68,9 +70,10 @@ class DeviceAccess:
         """
         Cancel a prompt in response to a DeviceAccess.deviceRequestPrompted event.
         """
-        params = CancelPromptParams(id=id)
+        _params: dict[str, Any] = {}
+        _params["id"] = _encode_value(id)
 
         await self._executor.execute(
             method=DeviceAccessCommand.CANCEL_PROMPT,
-            params=encode_cdp(params),
+            params=_params,
         )

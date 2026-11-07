@@ -4,11 +4,12 @@
 
 from __future__ import annotations
 
-from cdpify.codec import decode_cdp, encode_cdp
+from typing import Any
+
+from cdpify.codec import decode_cdp
 from cdpify.executor import CommandExecutor
 
 from .commands import (
-    GetFeatureStateParams,
     GetFeatureStateResult,
     GetInfoResult,
     GetProcessInfoResult,
@@ -40,11 +41,12 @@ class SystemInfo:
         """
         Returns information about the feature state.
         """
-        params = GetFeatureStateParams(feature_state=feature_state)
+        _params: dict[str, Any] = {}
+        _params["featureState"] = feature_state
 
         result = await self._executor.execute(
             method=SystemInfoCommand.GET_FEATURE_STATE,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetFeatureStateResult, result)
 

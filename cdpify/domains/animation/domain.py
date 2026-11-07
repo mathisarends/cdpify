@@ -4,21 +4,16 @@
 
 from __future__ import annotations
 
-from cdpify.codec import decode_cdp, encode_cdp
+from typing import Any
+
+from cdpify.codec import _encode_value, decode_cdp
 from cdpify.executor import CommandExecutor
 
 from .commands import (
     AnimationCommand,
-    GetCurrentTimeParams,
     GetCurrentTimeResult,
     GetPlaybackRateResult,
-    ReleaseAnimationsParams,
-    ResolveAnimationParams,
     ResolveAnimationResult,
-    SeekAnimationsParams,
-    SetPausedParams,
-    SetPlaybackRateParams,
-    SetTimingParams,
 )
 
 
@@ -56,11 +51,12 @@ class Animation:
         """
         Returns the current time of the an animation.
         """
-        params = GetCurrentTimeParams(id=id)
+        _params: dict[str, Any] = {}
+        _params["id"] = id
 
         result = await self._executor.execute(
             method=AnimationCommand.GET_CURRENT_TIME,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetCurrentTimeResult, result)
 
@@ -84,11 +80,12 @@ class Animation:
         """
         Releases a set of animations to no longer be manipulated.
         """
-        params = ReleaseAnimationsParams(animations=animations)
+        _params: dict[str, Any] = {}
+        _params["animations"] = _encode_value(animations)
 
         await self._executor.execute(
             method=AnimationCommand.RELEASE_ANIMATIONS,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def resolve_animation(
@@ -99,11 +96,12 @@ class Animation:
         """
         Gets the remote object of the Animation.
         """
-        params = ResolveAnimationParams(animation_id=animation_id)
+        _params: dict[str, Any] = {}
+        _params["animationId"] = animation_id
 
         result = await self._executor.execute(
             method=AnimationCommand.RESOLVE_ANIMATION,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(ResolveAnimationResult, result)
 
@@ -117,15 +115,16 @@ class Animation:
         """
         Seek a set of animations to a particular time within each animation.
         """
-        params = SeekAnimationsParams(
-            animations=animations,
-            current_time=current_time,
-            current_times=current_times,
-        )
+        _params: dict[str, Any] = {}
+        _params["animations"] = _encode_value(animations)
+        if current_time is not None:
+            _params["currentTime"] = current_time
+        if current_times is not None:
+            _params["currentTimes"] = _encode_value(current_times)
 
         await self._executor.execute(
             method=AnimationCommand.SEEK_ANIMATIONS,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_paused(
@@ -137,11 +136,13 @@ class Animation:
         """
         Sets the paused state of a set of animations.
         """
-        params = SetPausedParams(animations=animations, paused=paused)
+        _params: dict[str, Any] = {}
+        _params["animations"] = _encode_value(animations)
+        _params["paused"] = paused
 
         await self._executor.execute(
             method=AnimationCommand.SET_PAUSED,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_playback_rate(
@@ -152,11 +153,12 @@ class Animation:
         """
         Sets the playback rate of the document timeline.
         """
-        params = SetPlaybackRateParams(playback_rate=playback_rate)
+        _params: dict[str, Any] = {}
+        _params["playbackRate"] = playback_rate
 
         await self._executor.execute(
             method=AnimationCommand.SET_PLAYBACK_RATE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_timing(
@@ -169,11 +171,12 @@ class Animation:
         """
         Sets the timing of an animation node.
         """
-        params = SetTimingParams(
-            animation_id=animation_id, duration=duration, delay=delay
-        )
+        _params: dict[str, Any] = {}
+        _params["animationId"] = animation_id
+        _params["duration"] = duration
+        _params["delay"] = delay
 
         await self._executor.execute(
             method=AnimationCommand.SET_TIMING,
-            params=encode_cdp(params),
+            params=_params,
         )

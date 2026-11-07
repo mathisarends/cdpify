@@ -6,12 +6,10 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from cdpify.codec import decode_cdp, encode_cdp
+from cdpify.codec import _encode_value, decode_cdp
 from cdpify.executor import CommandExecutor
 
 from .commands import (
-    CancelInvocationParams,
-    InvokeToolParams,
     InvokeToolResult,
     WebMCPCommand,
 )
@@ -57,11 +55,14 @@ class WebMCP:
         """
         Invokes a registered tool.
         """
-        params = InvokeToolParams(frame_id=frame_id, tool_name=tool_name, input=input)
+        _params: dict[str, Any] = {}
+        _params["frameId"] = _encode_value(frame_id)
+        _params["toolName"] = tool_name
+        _params["input"] = _encode_value(input)
 
         result = await self._executor.execute(
             method=WebMCPCommand.INVOKE_TOOL,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(InvokeToolResult, result)
 
@@ -73,9 +74,10 @@ class WebMCP:
         """
         Cancels a pending tool invocation.
         """
-        params = CancelInvocationParams(invocation_id=invocation_id)
+        _params: dict[str, Any] = {}
+        _params["invocationId"] = invocation_id
 
         await self._executor.execute(
             method=WebMCPCommand.CANCEL_INVOCATION,
-            params=encode_cdp(params),
+            params=_params,
         )
