@@ -21,11 +21,13 @@ from cdpify.transports.websocket import (
 
 class _FakeWebSocket:
     def __init__(self) -> None:
-        self.sent_messages: list[str] = []
+        self.sent_messages: list[str | bytes] = []
+        self.sent_text: list[bool | None] = []
         self.closed = False
 
-    async def send(self, payload: str) -> None:
+    async def send(self, payload: str | bytes, *, text: bool | None = None) -> None:
         self.sent_messages.append(payload)
+        self.sent_text.append(text)
 
     async def close(self) -> None:
         self.closed = True
@@ -107,7 +109,7 @@ async def test_send_serializes_payload_as_json() -> None:
     )
 
     payload = transport._ws.sent_messages[0]  # type: ignore[union-attr]
-    assert isinstance(payload, str)
+    assert transport._ws.sent_text == [True]
     assert json.loads(payload) == {"id": 3, "method": "Page.enable", "params": {}}
 
 
@@ -186,9 +188,32 @@ class _ScriptedWebSocket(_FakeWebSocket):
         super().__init__()
         self._messages = messages
 
-    async def __aiter__(self):
-        for message in self._messages:
-            yield message
+    async def recv(self, decode=None):
+        assert decode is False
+        if not self._messages:
+            raise ConnectionClosedOK(None, None)
+        return self._messages.pop(0).encode()
+
+
+@pytest.mark.asyncio
+async def test_client_forwards_explicit_connection_options(monkeypatch) -> None:
+    from cdpify import CdpClient
+
+    dial = AsyncMock(return_value=_ScriptedWebSocket([]))
+    monkeypatch.setattr(websocket_module, "connect", dial)
+    client = CdpClient(
+        "ws://example", compression="deflate", open_timeout=4, close_timeout=3
+    )
+    await client.connect()
+    dial.assert_awaited_once_with(
+        "ws://example",
+        max_size=100 * 1024 * 1024,
+        additional_headers=None,
+        compression="deflate",
+        open_timeout=4,
+        close_timeout=3,
+    )
+    await client.disconnect()
 
 
 @pytest.mark.asyncio
@@ -278,7 +303,8 @@ async def test_json_backends_send_text_and_decode_events_and_responses(
     payload = {"id": 1, "method": "Test.command", "params": {"text": "Grüße 🌍"}}
 
     await transport._send(1, "Test.command", payload)
-    assert isinstance(socket.sent_messages[0], str)
+    assert isinstance(socket.sent_messages[0], bytes if backend == "orjson" else str)
+    assert socket.sent_text == [True]
     assert json.loads(socket.sent_messages[0]) == payload
     pending = _create_pending_request(transport._pending_requests, 1)
     await transport._process_message(b'{"id":1,"result":{"ok":true}}')
@@ -352,7 +378,7 @@ async def test_disconnect_during_send_handles_error_without_future_leak() -> Non
             self.sending = asyncio.Event()
             self.finished = asyncio.Event()
 
-        async def send(self, payload: str) -> None:
+        async def send(self, payload: str | bytes, *, text=None) -> None:
             self.sending.set()
             await self.finished.wait()
             raise ConnectionClosedOK(None, None)

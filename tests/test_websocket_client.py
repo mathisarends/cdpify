@@ -6,6 +6,7 @@ from unittest.mock import AsyncMock
 
 import pytest
 from websockets.asyncio.server import ServerConnection, serve
+from websockets.exceptions import ConnectionClosedOK
 
 from cdpify import CdpClient
 from cdpify.exceptions import CDPConnectionError, CDPStreamClosedError
@@ -22,7 +23,9 @@ class _Event:
 @pytest.mark.asyncio
 async def test_websocket_client_routes_bursts_without_blocking_responses() -> None:
     async def respond(socket: ServerConnection) -> None:
-        command = json.loads(await socket.recv())
+        raw_command = await socket.recv()
+        assert isinstance(raw_command, str)
+        command = json.loads(raw_command)
         for session_id in (None, "S1"):
             for value in range(5):
                 await socket.send(
@@ -40,6 +43,7 @@ async def test_websocket_client_routes_bursts_without_blocking_responses() -> No
     async with serve(respond, "127.0.0.1", 0) as server:
         port = server.sockets[0].getsockname()[1]
         async with CdpClient(f"ws://127.0.0.1:{port}", max_queue_size=2) as client:
+            assert client.transport._ws.protocol.extensions == []
             root_events = client.listen(_Event)
             session_events = client.session("S1").listen(_Event, max_queue_size=1)
             all_events = client.listen_all(_Event, max_queue_size=0)
@@ -115,10 +119,9 @@ class _ClosingWebSocket:
         self.finish_close = asyncio.Event()
         self.close_calls = 0
 
-    async def __aiter__(self):
+    async def recv(self, decode=None):
         await self.peer_closed.wait()
-        if False:
-            yield ""
+        raise ConnectionClosedOK(None, None)
 
     async def close(self) -> None:
         self.close_calls += 1

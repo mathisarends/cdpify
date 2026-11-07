@@ -1,6 +1,6 @@
 import asyncio
 import logging
-from typing import Any, Self
+from typing import Any, Literal, Self
 
 from cdpify.domains import DomainAccessors
 from cdpify.events import EventRouter, EventSubscription, ReceivedEvent
@@ -24,6 +24,9 @@ class CdpClient(DomainAccessors, EventSource):
         max_frame_size: int = 100 * 1024 * 1024,
         default_timeout: float | None = 30.0,
         max_queue_size: int = 0,
+        compression: Literal["deflate"] | None = None,
+        open_timeout: float | None = 10.0,
+        close_timeout: float | None = 10.0,
     ) -> None:
         if transport is not None and url is not None:
             raise TypeError("Pass either url or transport, not both")
@@ -35,6 +38,9 @@ class CdpClient(DomainAccessors, EventSource):
                 additional_headers=additional_headers,
                 max_frame_size=max_frame_size,
                 max_queue_size=max_queue_size,
+                compression=compression,
+                open_timeout=open_timeout,
+                close_timeout=close_timeout,
             )
 
         self._transport = transport
@@ -184,6 +190,9 @@ def _create_websocket_transport(
     additional_headers: dict[str, str] | None,
     max_frame_size: int,
     max_queue_size: int,
+    compression: Literal["deflate"] | None,
+    open_timeout: float | None,
+    close_timeout: float | None,
 ) -> Transport:
     try:
         from cdpify.transports.websocket import WebSocketTransport
@@ -199,4 +208,7 @@ def _create_websocket_transport(
         additional_headers=additional_headers,
         max_frame_size=max_frame_size,
         max_queue_size=max_queue_size,
+        compression=compression,
+        open_timeout=open_timeout,
+        close_timeout=close_timeout,
     )

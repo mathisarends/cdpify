@@ -23,6 +23,20 @@ Breaking changes are listed first in each release.
   `CdpClient` instead. Standalone transport calls have no deadline unless
   `execute(timeout=seconds)` is specified. Generated methods retain only CDP's
   own parameters; use `asyncio.timeout(seconds)` for an individual caller budget.
+- WebSocket compression is disabled by default for lower local latency. Pass
+  `compression="deflate"` to `CdpClient` or `WebSocketTransport` to opt into
+  compression when bandwidth matters more.
+
+### Added
+
+- `compression`, `open_timeout` and `close_timeout` options for URL-based clients
+  and the standalone WebSocket transport. Connection timeouts are in seconds.
+
+### Performance
+
+- The orjson transport sends UTF-8 bytes directly as text frames and receives
+  bytes without first decoding to a Python string. This removes redundant
+  UTF-8 conversions while preserving the CDP wire format.
 
 ## [0.4.0] - 2026-10-25
 

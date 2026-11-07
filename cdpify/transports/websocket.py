@@ -3,7 +3,7 @@ import itertools
 import json
 import logging
 from collections.abc import AsyncIterator
-from typing import Any, Self
+from typing import Any, Literal, Self
 
 import websockets
 from websockets.asyncio.client import ClientConnection, connect
@@ -29,11 +29,17 @@ class WebSocketTransport:
         additional_headers: dict[str, str] | None = None,
         max_frame_size: int = 100 * 1024 * 1024,
         max_queue_size: int = 0,
+        compression: Literal["deflate"] | None = None,
+        open_timeout: float | None = 10.0,
+        close_timeout: float | None = 10.0,
     ) -> None:
         self.url = url
         self._additional_headers = additional_headers
         self._max_frame_size = max_frame_size
         self._max_queue_size = max_queue_size
+        self._compression = compression
+        self._open_timeout = open_timeout
+        self._close_timeout = close_timeout
 
         self._ws: ClientConnection | None = None
         self._message_ids = itertools.count()
@@ -79,6 +85,9 @@ class WebSocketTransport:
                 self.url,
                 max_size=self._max_frame_size,
                 additional_headers=self._additional_headers,
+                compression=self._compression,
+                open_timeout=self._open_timeout,
+                close_timeout=self._close_timeout,
             )
         except Exception as error:
             raise CDPConnectionError(f"Connection failed: {error}") from error
@@ -171,7 +180,8 @@ class WebSocketTransport:
             return
 
         try:
-            async for raw_message in connection:
+            while True:
+                raw_message = await connection.recv(decode=False)
                 if self._is_shutting_down:
                     break
                 try:
@@ -265,13 +275,9 @@ class WebSocketTransport:
         if connection is None:
             raise CDPConnectionError("Not connected")
         logger.debug("-> #%s: %s", message_id, method)
-        payload = (
-            orjson.dumps(message).decode("utf-8")
-            if orjson is not None
-            else json.dumps(message)
-        )
+        payload = orjson.dumps(message) if orjson is not None else json.dumps(message)
         try:
-            await connection.send(payload)
+            await connection.send(payload, text=True)
         except websockets.exceptions.ConnectionClosed as error:
             raise CDPConnectionError("Connection closed while sending") from error
 
