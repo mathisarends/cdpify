@@ -67,10 +67,6 @@ def _build_method(
         result_model = None
 
     params_model = f"{pascal_name}Params" if command.parameters else None
-    constructor_args = ", ".join(
-        f"{to_identifier(parameter.name)}={to_identifier(parameter.name)}"
-        for parameter in command.parameters
-    )
 
     return MethodView(
         name=to_snake_case(command.name),
@@ -84,7 +80,6 @@ def _build_method(
             else None
         ),
         params_model=params_model,
-        constructor_args=constructor_args,
         result_model=result_model,
     )
 

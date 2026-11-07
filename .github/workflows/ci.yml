@@ -37,3 +37,25 @@ jobs:
 
       - name: Run tests
         run: uv run --python ${{ matrix.python-version }} --extra orjson pytest tests -v
+
+  api-and-integration:
+    name: generated API, typing and headless Chrome
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v4
+      - run: uv python install 3.14
+      - run: uv sync --python 3.14 --dev --extra orjson --locked
+      - name: Check public API types and library sources
+        run: uv run --python 3.14 --extra orjson pyright
+      - name: Check generated code against bundled specs
+        run: uv run --python 3.14 --extra orjson python scripts/check_generated.py
+      - name: Benchmark smoke run
+        run: uv run --python 3.14 --extra orjson python benchmarks/runtime.py --iterations 1000 --samples 3
+      - name: Set up Chrome
+        id: chrome
+        uses: browser-actions/setup-chrome@v2
+      - name: Test against headless Chrome
+        env:
+          CHROME_PATH: ${{ steps.chrome.outputs.chrome-path }}
+        run: uv run --python 3.14 --extra orjson pytest -m integration -v

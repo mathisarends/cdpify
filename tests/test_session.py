@@ -71,7 +71,7 @@ async def test_generated_commands_are_bound_to_session() -> None:
         method="Page.enable",
         params={},
         session_id="session-2",
-        timeout=30.0,
+        timeout=None,
     )
 
 
@@ -86,7 +86,7 @@ async def test_low_level_execute_cannot_override_bound_session() -> None:
         method="Runtime.evaluate",
         params={"expression": "1 + 1"},
         session_id="session-2",
-        timeout=30.0,
+        timeout=None,
     )
     with pytest.raises(TypeError):
         await session.execute(  # type: ignore[call-arg]
@@ -113,13 +113,13 @@ async def test_sessions_are_safe_to_use_concurrently() -> None:
                 method="Page.enable",
                 params={},
                 session_id="A",
-                timeout=30.0,
+                timeout=None,
             ),
             call(
                 method="Page.enable",
                 params={},
                 session_id="B",
-                timeout=30.0,
+                timeout=None,
             ),
         ],
         any_order=True,

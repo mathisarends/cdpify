@@ -48,7 +48,7 @@ class CdpClient(DomainAccessors, EventSource):
 
         self._transport = transport
         self._default_timeout = default_timeout
-        self._executor = BoundCommandExecutor(
+        self._executor: BoundCommandExecutor = BoundCommandExecutor(
             transport, default_timeout=default_timeout
         )
         EventSource.__init__(

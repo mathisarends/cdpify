@@ -37,16 +37,20 @@ Breaking changes are listed first in each release.
   from the spec. Model fields retain their attribute documentation. Experimental
   and deprecated markers are preserved on types, events and fields as well as
   commands.
-
 - `listen_raw(method=None)` on clients and sessions, and `listen_all_raw()` on
   clients, return `TransportEvent` values with wire names, parameter dictionaries
   and session IDs. None matches every method in the selected scope.
 - Per-subscription overflow overrides and structured `CDPEventOverflowError`
   details (`max_queue_size`, `dropped_events`). Overflow never blocks responses
   or other subscriptions; failed listeners unregister immediately.
-
 - `compression`, `open_timeout` and `close_timeout` options for URL-based clients
   and the standalone WebSocket transport. Connection timeouts are in seconds.
+- Reproducible codec, dispatch and optional Chrome round-trip benchmarks in
+  `benchmarks/runtime.py`; offline regeneration and generated-code drift checks
+  in `scripts/check_generated.py`.
+- CI checks the library and public API with Pyright and runs isolated headless
+  Chrome tests. Run those locally with `pytest -m integration` and optionally
+  `CHROME_PATH`; they are excluded from the default unit-test run.
 
 ### Performance
 
@@ -54,7 +58,6 @@ Breaking changes are listed first in each release.
   intermediate Params dataclass and reflective field traversal. Public Params
   models and keyword-only command signatures are retained. Nested models still
   serialize through the shared codec.
-
 - The orjson transport sends UTF-8 bytes directly as text frames and receives
   bytes without first decoding to a Python string. This removes redundant
   UTF-8 conversions while preserving the CDP wire format.

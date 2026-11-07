@@ -34,7 +34,7 @@ async def test_client_deadline_enforces_custom_transports(scope) -> None:
                 "Runtime.enable", session_id="S1" if scope == "raw_session" else None
             )
     assert transport.cancelled
-    assert transport.timeout == 0.01
+    assert transport.timeout is None
 
 
 @pytest.mark.asyncio

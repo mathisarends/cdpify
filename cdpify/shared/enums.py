@@ -11,7 +11,9 @@ class CDPStrEnum(StrEnum):
             return None
 
         member = str.__new__(cls, value)
-        member._name_ = None
+        # Unknown values deliberately have no declared member name. Enum's
+        # annotation only describes declared members, whose names are strings.
+        member._name_ = None  # pyright: ignore[reportAttributeAccessIssue]
         member._value_ = value
         # Do not cache arbitrary browser values in the enum's member maps.
         return member

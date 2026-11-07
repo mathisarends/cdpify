@@ -27,8 +27,9 @@ class Transport(Protocol):
     ) -> dict[str, Any]:
         """Send and await a command; timeout is a total budget in seconds.
 
-        None disables the transport deadline. CdpClient also enforces its
-        resolved deadline, even if a custom transport ignores this argument.
+        None disables the transport deadline. CdpClient owns its deadline and
+        passes None here, avoiding duplicate timers. Custom transports must
+        allow that outer cancellation to propagate.
         Cancellation must release resources associated with the request.
         """
         ...

@@ -156,7 +156,7 @@ async def test_execute_delegates_to_transport() -> None:
             "method": "Runtime.evaluate",
             "params": {"expression": "6 * 7"},
             "session_id": "S1",
-            "timeout": 2.0,
+            "timeout": None,
         }
     ]
 
@@ -173,7 +173,7 @@ async def test_generated_domain_uses_transport_execute() -> None:
             "method": "Tracing.end",
             "params": None,
             "session_id": None,
-            "timeout": 30.0,
+            "timeout": None,
         }
     ]
 

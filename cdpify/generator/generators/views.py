@@ -103,7 +103,6 @@ class MethodView:
     docstring: str | None = None
     deprecation: str | None = None
     params_model: str | None = None
-    constructor_args: str = ""
     result_model: str | None = None
 
     @property

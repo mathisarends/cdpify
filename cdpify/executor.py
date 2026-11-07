@@ -14,7 +14,7 @@ class CommandExecutor(Protocol):
         self,
         method: str,
         params: dict[str, Any] | None = None,
-        timeout: float | None | UnsetType = UNSET,
+        timeout: float | None = None,
     ) -> dict[str, Any]: ...
 
 
@@ -50,7 +50,9 @@ class BoundCommandExecutor:
                 method=method,
                 params=params,
                 session_id=self._session_id,
-                timeout=request_timeout,
+                # The client owns this deadline. Disable a second transport
+                # timer; standalone transport callers can still set a budget.
+                timeout=None,
             ),
         )
 

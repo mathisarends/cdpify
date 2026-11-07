@@ -24,7 +24,7 @@ class CdpSession(DomainAccessors, EventSource):
 
         EventSource.__init__(self, event_router, session_id)
         self._session_id: str = session_id
-        self._executor = BoundCommandExecutor(
+        self._executor: BoundCommandExecutor = BoundCommandExecutor(
             transport, session_id, default_timeout=default_timeout
         )
 
