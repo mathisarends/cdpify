@@ -11,12 +11,14 @@ without working with raw JSON messages.
 
 - [Why cdpify?](#why-cdpify)
 - [Installation](#installation)
+- [Upgrading from 0.4.0](#upgrading-from-040)
 - [Quick start](#quick-start)
 - [Supported domains](#supported-domains)
 - [Listening for events](#listening-for-events)
 - [Working with target sessions](#working-with-target-sessions)
 - [Configuration](#configuration)
 - [Development](#development)
+- [Releasing](RELEASING.md)
 - [Resources](#resources)
 
 ## Why cdpify?
@@ -61,10 +63,36 @@ Install the generator dependencies only when regenerating protocol modules:
 pip install "cdpify[generator]"
 ```
 
+## Upgrading from 0.4.0
+
+Version 0.5.0 includes breaking changes. Review these before updating:
+
+| Area | Update for 0.5.0 |
+| --- | --- |
+| Error imports | Replace `cdpify.exceptions` with `cdpify.error`, or import errors from `cdpify`. The old module is removed. |
+| Optional `Any` values | Use `UNSET` to omit a value. `None` now sends JSON `null`; ordinary optional scalar fields still omit `None`. |
+| Required response fields | Generated responses and typed events now raise `CDPDecodeError` when required fields are missing. For tolerant manual decoding, use `decode_cdp(Model, payload, strict=False)`. |
+| Command deadlines | Configure `default_timeout` on `CdpClient`, including for custom transports. The budget covers sending and receiving. `WebSocketTransport` no longer accepts `default_timeout`. |
+| Bounded event buffers | Overflow now raises `CDPEventOverflowError`. Set `overflow="drop_oldest"` to keep lossy buffering. The default buffer remains unlimited. |
+| WebSocket compression | Compression now defaults to `None`. Set `compression="deflate"` to enable it. |
+
+Generated methods accept only CDP parameters. For an individual caller deadline,
+wrap the call in `asyncio.timeout(seconds)`; a CDP parameter named `timeout`
+keeps the units and meaning defined by the protocol. The raw `execute()` method
+accepts a client timeout in seconds: omit it to inherit the client default or
+pass `None` to disable that deadline for the call.
+
+See the [0.5.0 changelog](CHANGELOG.md#050---unreleased) for the complete release
+notes, including raw event streams and performance changes.
+
 ## Quick start
 
 Start Chrome or Chromium with remote debugging enabled, then obtain a page's
-`webSocketDebuggerUrl` from `http://localhost:9222/json`.
+`webSocketDebuggerUrl` from `http://localhost:9222/json`. Launch with
+`--remote-debugging-port=9222 --user-data-dir=<dedicated-profile-directory>`
+and open a tab first. The scripts in [examples](examples) can launch Chrome
+with these options for you, for example `uv run python examples/navigate.py`
+from a development checkout.
 
 ```python
 import asyncio
@@ -72,18 +100,28 @@ import json
 from urllib.request import urlopen
 
 from cdpify import CdpClient
+from cdpify.domains.page import LoadEventFiredEvent
 
 
 def get_websocket_url() -> str:
     with urlopen("http://localhost:9222/json", timeout=5) as response:
-        return json.load(response)[0]["webSocketDebuggerUrl"]
+        return next(
+            target["webSocketDebuggerUrl"]
+            for target in json.load(response)
+            if target.get("type") == "page"
+        )
 
 
 async def main() -> None:
     ws_url = get_websocket_url()
 
     async with CdpClient(ws_url) as client:
-        await client.page.navigate(url="https://example.com")
+        await client.page.enable()
+        async with client.listen(LoadEventFiredEvent) as loaded:
+            navigation = await client.page.navigate(url="https://example.com")
+            if navigation.error_text:
+                raise RuntimeError(navigation.error_text)
+            await loaded.next(timeout=10)
 
         result = await client.runtime.evaluate(
             expression="document.title",
@@ -180,6 +218,7 @@ triggers, subscribe first and then send the command:
 from cdpify.domains.page.events import LoadEventFiredEvent
 
 
+await client.page.enable()
 async with client.listen(LoadEventFiredEvent) as events:
     await client.page.navigate(url="https://example.com")
     await events.next(timeout=10)
@@ -461,6 +500,7 @@ Install the project and its development dependencies with
 uv sync --dev
 uv run pytest
 uv run ruff check . --exclude cdpify/domains
+uv run ruff format --check . --exclude cdpify/domains
 uv run pyright
 uv run python scripts/check_generated.py
 ```
@@ -501,8 +541,12 @@ uv run python -m cdpify.generator
 Generate only selected domains by repeating `--domain`:
 
 ```bash
-uv run python -m cdpify.generator --domain Page --domain Runtime
+uv run python -m cdpify.generator --domain Page --domain Runtime --output-dir build/selected-domains
 ```
+
+Generation replaces the entire output directory, including for selected domains.
+Use a separate `--output-dir` for partial generation to keep the full bundled
+client intact. Selected domains may also reference types from other domains.
 
 Use `--spec-dir` and `--output-dir` to override where downloaded specifications
 and generated modules are written.
@@ -516,6 +560,8 @@ once a week and opens a pull request when generated code changes.
 - [Chrome DevTools Protocol documentation](https://chromedevtools.github.io/devtools-protocol/)
 - [Chrome DevTools Protocol repository](https://github.com/ChromeDevTools/devtools-protocol)
 - [Examples](examples)
+- [Changelog and migration notes](CHANGELOG.md)
+- [Release checklist](RELEASING.md)
 
 The code-generation approach was inspired by
 [`cdp-use`](https://github.com/browser-use/cdp-use).

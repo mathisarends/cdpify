@@ -3,7 +3,10 @@
 All notable changes to this project are documented here.
 Breaking changes are listed first in each release.
 
-## [Unreleased]
+## [0.5.0] - Unreleased
+
+Release preparation; the publication date will be recorded when 0.5.0 ships.
+See the [migration guide](README.md#upgrading-from-040) before upgrading.
 
 ### Breaking changes
 
@@ -20,10 +23,11 @@ Breaking changes are listed first in each release.
   nested models. Unknown fields and future enum values remain supported. Use
   `decode_cdp(Model, payload, strict=False)` for the previous tolerant behavior
   that logs a warning and fills missing required fields with `None`.
-- Command timeouts now cover sending and receiving. `CdpClient.default_timeout`
-  is enforced for every transport and inherited by session views. Omit the raw
-  `execute(timeout=...)` argument to inherit the default; pass `None` to disable
-  it. Set `default_timeout=None` to disable the client default entirely.
+- Command timeouts now cover sending and receiving. The
+  `CdpClient(default_timeout=...)` setting is enforced for every transport and
+  inherited by session views. Omit the raw `execute(timeout=...)` argument to
+  inherit the default; pass `None` to disable it. Set `default_timeout=None` to
+  disable the client default entirely.
 - `WebSocketTransport` no longer accepts `default_timeout`; configure it on
   `CdpClient` instead. Standalone transport calls have no deadline unless
   `execute(timeout=seconds)` is specified. Generated methods retain only CDP's
