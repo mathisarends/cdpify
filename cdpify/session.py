@@ -5,6 +5,7 @@ from cdpify.events import EventRouter
 from cdpify.events.source import EventSource
 from cdpify.executor import BoundCommandExecutor
 from cdpify.transport import Transport
+from cdpify.unset import UNSET, UnsetType
 
 
 class CdpSession(DomainAccessors, EventSource):
@@ -15,13 +16,17 @@ class CdpSession(DomainAccessors, EventSource):
         transport: Transport,
         event_router: EventRouter,
         session_id: str,
+        *,
+        default_timeout: float | None = 30.0,
     ) -> None:
         if not session_id:
             raise ValueError("session_id must not be empty")
 
         EventSource.__init__(self, event_router, session_id)
         self._session_id: str = session_id
-        self._executor = BoundCommandExecutor(transport, session_id)
+        self._executor = BoundCommandExecutor(
+            transport, session_id, default_timeout=default_timeout
+        )
 
     @property
     def session_id(self) -> str:
@@ -31,7 +36,7 @@ class CdpSession(DomainAccessors, EventSource):
         self,
         method: str,
         params: dict[str, Any] | None = None,
-        timeout: float | None = None,
+        timeout: float | None | UnsetType = UNSET,
     ) -> dict[str, Any]:
         return await self._executor.execute(
             method=method,

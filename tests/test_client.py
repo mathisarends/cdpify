@@ -173,7 +173,7 @@ async def test_generated_domain_uses_transport_execute() -> None:
             "method": "Tracing.end",
             "params": None,
             "session_id": None,
-            "timeout": None,
+            "timeout": 30.0,
         }
     ]
 

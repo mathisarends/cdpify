@@ -55,7 +55,7 @@ async def test_await_response_returns_result() -> None:
     future = _create_pending_request(transport._pending_requests, 1)
 
     transport._handle_response({"id": 1, "result": {"ok": True}})
-    result = await transport._await_response(1, "Page.enable", future, timeout=1.0)
+    result = await transport._await_response(1, "Page.enable", future)
 
     assert result == {"ok": True}
 
@@ -68,7 +68,7 @@ async def test_await_response_raises_command_error_with_method() -> None:
     transport._handle_response({"id": 2, "error": {"code": 9, "message": "failed"}})
 
     with pytest.raises(CDPCommandError) as error_info:
-        await transport._await_response(2, "Page.enable", future, timeout=1.0)
+        await transport._await_response(2, "Page.enable", future)
 
     assert error_info.value.method == "Page.enable"
     assert error_info.value.code == 9
@@ -112,17 +112,22 @@ async def test_send_serializes_payload_as_json() -> None:
 
 
 @pytest.mark.asyncio
-async def test_await_response_raises_timeout() -> None:
+async def test_execute_timeout_includes_sending_and_cleans_pending_requests() -> None:
     transport = WebSocketTransport("ws://example")
-    unresolved: asyncio.Future[dict[str, object]] = asyncio.Future()
+    transport._ws = _FakeWebSocket()  # type: ignore[assignment]
+    cancelled = asyncio.Event()
 
+    async def blocked_send(*args) -> None:
+        try:
+            await asyncio.Event().wait()
+        finally:
+            cancelled.set()
+
+    transport._send = blocked_send  # type: ignore[method-assign]
     with pytest.raises(CDPTimeoutError):
-        await transport._await_response(
-            1,
-            "Page.enable",
-            unresolved,  # type: ignore[arg-type]
-            timeout=0.001,
-        )
+        await transport.execute("Runtime.enable", timeout=0.01)
+    assert cancelled.is_set()
+    assert transport._pending_requests == {}
 
 
 @pytest.mark.asyncio
@@ -277,9 +282,7 @@ async def test_json_backends_send_text_and_decode_events_and_responses(
     assert json.loads(socket.sent_messages[0]) == payload
     pending = _create_pending_request(transport._pending_requests, 1)
     await transport._process_message(b'{"id":1,"result":{"ok":true}}')
-    assert await transport._await_response(1, "Test.command", pending, 1.0) == {
-        "ok": True
-    }
+    assert await transport._await_response(1, "Test.command", pending) == {"ok": True}
     await transport._process_message(
         json.dumps({"method": "Test.event", "params": {"text": "Grüße 🌍"}}).encode()
     )

@@ -9,6 +9,7 @@ from cdpify.exceptions import CDPConnectionError
 from cdpify.executor import BoundCommandExecutor
 from cdpify.session import CdpSession
 from cdpify.transport import CallbackTransport, Transport, TransportEvent
+from cdpify.unset import UNSET, UnsetType
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +22,7 @@ class CdpClient(DomainAccessors, EventSource):
         transport: Transport | None = None,
         additional_headers: dict[str, str] | None = None,
         max_frame_size: int = 100 * 1024 * 1024,
-        default_timeout: float = 30.0,
+        default_timeout: float | None = 30.0,
         max_queue_size: int = 0,
     ) -> None:
         if transport is not None and url is not None:
@@ -33,12 +34,14 @@ class CdpClient(DomainAccessors, EventSource):
                 url,
                 additional_headers=additional_headers,
                 max_frame_size=max_frame_size,
-                default_timeout=default_timeout,
                 max_queue_size=max_queue_size,
             )
 
         self._transport = transport
-        self._executor = BoundCommandExecutor(transport)
+        self._default_timeout = default_timeout
+        self._executor = BoundCommandExecutor(
+            transport, default_timeout=default_timeout
+        )
         EventSource.__init__(self, EventRouter(max_queue_size=max_queue_size), None)
         self._event_loop_task: asyncio.Task[None] | None = None
         self._disconnect_task: asyncio.Task[None] | None = None
@@ -97,20 +100,31 @@ class CdpClient(DomainAccessors, EventSource):
 
     def session(self, session_id: str) -> CdpSession:
         """Create an immutable domain view bound to ``session_id``."""
-        return CdpSession(self._transport, self._event_router, session_id)
+        return CdpSession(
+            self._transport,
+            self._event_router,
+            session_id,
+            default_timeout=self._default_timeout,
+        )
 
     async def execute(
         self,
         method: str,
         params: dict[str, Any] | None = None,
         session_id: str | None = None,
-        timeout: float | None = None,
+        timeout: float | None | UnsetType = UNSET,
     ) -> dict[str, Any]:
         """Execute a low-level command, optionally routed to a target session."""
-        return await self._transport.execute(
+        executor = (
+            self._executor
+            if session_id is None
+            else BoundCommandExecutor(
+                self._transport, session_id, default_timeout=self._default_timeout
+            )
+        )
+        return await executor.execute(
             method=method,
             params=params,
-            session_id=session_id,
             timeout=timeout,
         )
 
@@ -169,7 +183,6 @@ def _create_websocket_transport(
     *,
     additional_headers: dict[str, str] | None,
     max_frame_size: int,
-    default_timeout: float,
     max_queue_size: int,
 ) -> Transport:
     try:
@@ -185,6 +198,5 @@ def _create_websocket_transport(
         url,
         additional_headers=additional_headers,
         max_frame_size=max_frame_size,
-        default_timeout=default_timeout,
         max_queue_size=max_queue_size,
     )
