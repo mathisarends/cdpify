@@ -8,8 +8,8 @@ from typing import Any, Literal, Self
 import websockets
 from websockets.asyncio.client import ClientConnection, connect
 
+from cdpify.error import CDPCommandError, CDPConnectionError
 from cdpify.event_queue import EventQueue, OverflowPolicy
-from cdpify.exceptions import CDPCommandError, CDPConnectionError
 from cdpify.executor import _with_timeout
 from cdpify.transport import EventHandler, TransportEvent
 

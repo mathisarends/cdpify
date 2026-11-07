@@ -9,8 +9,8 @@ from unittest.mock import Mock
 import pytest
 
 from cdpify.codec import decode_cdp
+from cdpify.error import CDPStreamClosedError
 from cdpify.events import EventRouter
-from cdpify.exceptions import CDPStreamClosedError
 from cdpify.transport import TransportEvent
 
 

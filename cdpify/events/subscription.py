@@ -3,8 +3,8 @@ from collections.abc import Callable
 from types import TracebackType
 from typing import Self
 
+from cdpify.error import CDPEventOverflowError, CDPStreamClosedError
 from cdpify.event_queue import EventQueue
-from cdpify.exceptions import CDPEventOverflowError, CDPStreamClosedError
 from cdpify.unset import UNSET, UnsetType
 
 from .dispatcher import RawCDPEvent

@@ -2,7 +2,7 @@ import asyncio
 from collections import deque
 from typing import Literal
 
-from cdpify.exceptions import CDPEventOverflowError
+from cdpify.error import CDPEventOverflowError
 
 type OverflowPolicy = Literal["error", "drop_oldest"]
 
