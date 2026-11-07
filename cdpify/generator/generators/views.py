@@ -1,5 +1,7 @@
 from collections.abc import Iterable
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
+
+from cdpify.generator.generators.utils import api_description, format_docstring
 
 
 @dataclass(frozen=True, slots=True)
@@ -8,6 +10,31 @@ class FieldView:
     annotation: str
     optional: bool = False
     cdp_name: str | None = None
+    encode_value: bool = False
+    description: str | None = None
+    experimental: bool = False
+    deprecated: bool = False
+
+    @property
+    def docstring(self) -> str:
+        description = api_description(
+            self.description, experimental=self.experimental, deprecated=self.deprecated
+        )
+        if self.uses_unset:
+            description += " Omit with UNSET; None encodes JSON null."
+        return format_docstring(description.strip(), indent=4)
+
+    @property
+    def uses_unset(self) -> bool:
+        return self.optional and self.annotation == "Any"
+
+    @property
+    def encoded_value(self) -> str:
+        return f"_encode_value({self.name})" if self.encode_value else self.name
+
+    @property
+    def parameter_declaration(self) -> str:
+        return replace(self, cdp_name=None).declaration
 
     @property
     def needs_field(self) -> bool:
@@ -16,14 +43,17 @@ class FieldView:
 
     @property
     def declaration(self) -> str:
-        annotation = f"{self.annotation} | None" if self.optional else self.annotation
+        annotation = self.annotation
+        default_value = "UNSET" if self.uses_unset else "None"
+        if self.optional:
+            annotation += " | UnsetType" if self.uses_unset else " | None"
         if not self.needs_field:
-            default = " = None" if self.optional else ""
+            default = f" = {default_value}" if self.optional else ""
             return f"{self.name}: {annotation}{default}"
 
         arguments = []
         if self.optional:
-            arguments.append("default=None")
+            arguments.append(f"default={default_value}")
         arguments.append(f'metadata={{"cdp_name": "{self.cdp_name}"}}')
         declaration = f"{self.name}: {annotation}"
         if len(declaration) + len(" = field(") + 4 > 88:
@@ -73,8 +103,15 @@ class MethodView:
     docstring: str | None = None
     deprecation: str | None = None
     params_model: str | None = None
-    constructor_args: str = ""
     result_model: str | None = None
+
+    @property
+    def wire_params_name(self) -> str:
+        name = "_params"
+        names = {p.name for p in self.parameters}
+        while name in names:
+            name += "_"
+        return name
 
 
 @dataclass(frozen=True, slots=True)

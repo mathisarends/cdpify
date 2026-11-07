@@ -28,8 +28,14 @@ class ConsoleProfileFinishedEvent:
 
     id: str
     location: debugger.Location
+    """
+    Location of console.profileEnd().
+    """
     profile: Profile
     title: str | None = None
+    """
+    Profile title passed as an argument to console.profile().
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -42,7 +48,13 @@ class ConsoleProfileStartedEvent:
 
     id: str
     location: debugger.Location
+    """
+    Location of console.profile().
+    """
     title: str | None = None
+    """
+    Profile title passed as an argument to console.profile().
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -52,10 +64,21 @@ class PreciseCoverageDeltaUpdateEvent:
     `takePreciseCoverage` for the current isolate. May only be sent if precise code
     coverage has been started. This event can be trigged by the embedder to, for
     example, trigger collection of coverage data immediately at a certain point in time.
+    Experimental: this API may change or be removed.
     """
 
     __cdp_event__: ClassVar[ProfilerEvent] = ProfilerEvent.PRECISE_COVERAGE_DELTA_UPDATE
 
     timestamp: float
+    """
+    Monotonically increasing time (in seconds) when the coverage update was taken in
+    the backend.
+    """
     occasion: str
+    """
+    Identifier for distinguishing coverage events.
+    """
     result: list[ScriptCoverage]
+    """
+    Coverage data for the current isolate.
+    """

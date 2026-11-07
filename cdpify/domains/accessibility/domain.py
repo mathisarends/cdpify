@@ -4,24 +4,18 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
-from cdpify.codec import decode_cdp, encode_cdp
+from cdpify.codec import _encode_value, decode_cdp
 from cdpify.executor import CommandExecutor
 
 from .commands import (
     AccessibilityCommand,
-    GetAXNodeAndAncestorsParams,
     GetAXNodeAndAncestorsResult,
-    GetChildAXNodesParams,
     GetChildAXNodesResult,
-    GetFullAXTreeParams,
     GetFullAXTreeResult,
-    GetPartialAXTreeParams,
     GetPartialAXTreeResult,
-    GetRootAXNodeParams,
     GetRootAXNodeResult,
-    QueryAXTreeParams,
     QueryAXTreeResult,
 )
 from .types import (
@@ -70,18 +64,30 @@ class Accessibility:
     ) -> GetPartialAXTreeResult:
         """
         Fetches the accessibility node and partial accessibility tree for this DOM
-        node, if it exists.
+        node, if it exists. Experimental: this API may change or be removed.
+
+        Args:
+            node_id: Identifier of the node to get the partial accessibility tree for.
+            backend_node_id: Identifier of the backend node to get the partial
+                accessibility tree for.
+            object_id: JavaScript object id of the node wrapper to get the partial
+                accessibility tree for.
+            fetch_relatives: Whether to fetch this node's ancestors, siblings and
+                children. Defaults to true.
         """
-        params = GetPartialAXTreeParams(
-            node_id=node_id,
-            backend_node_id=backend_node_id,
-            object_id=object_id,
-            fetch_relatives=fetch_relatives,
-        )
+        _params: dict[str, Any] = {}
+        if node_id is not None:
+            _params["nodeId"] = _encode_value(node_id)
+        if backend_node_id is not None:
+            _params["backendNodeId"] = _encode_value(backend_node_id)
+        if object_id is not None:
+            _params["objectId"] = _encode_value(object_id)
+        if fetch_relatives is not None:
+            _params["fetchRelatives"] = fetch_relatives
 
         result = await self._executor.execute(
             method=AccessibilityCommand.GET_PARTIAL_AX_TREE,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetPartialAXTreeResult, result)
 
@@ -92,13 +98,24 @@ class Accessibility:
         frame_id: page.FrameId | None = None,
     ) -> GetFullAXTreeResult:
         """
-        Fetches the entire accessibility tree for the root Document
+        Fetches the entire accessibility tree for the root Document Experimental: this
+        API may change or be removed.
+
+        Args:
+            depth: The maximum depth at which descendants of the root node should be
+                retrieved. If omitted, the full tree is returned.
+            frame_id: The frame for whose document the AX tree should be retrieved. If
+                omitted, the root frame is used.
         """
-        params = GetFullAXTreeParams(depth=depth, frame_id=frame_id)
+        _params: dict[str, Any] = {}
+        if depth is not None:
+            _params["depth"] = depth
+        if frame_id is not None:
+            _params["frameId"] = _encode_value(frame_id)
 
         result = await self._executor.execute(
             method=AccessibilityCommand.GET_FULL_AX_TREE,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetFullAXTreeResult, result)
 
@@ -109,12 +126,19 @@ class Accessibility:
     ) -> GetRootAXNodeResult:
         """
         Fetches the root node. Requires `enable()` to have been called previously.
+        Experimental: this API may change or be removed.
+
+        Args:
+            frame_id: The frame in whose document the node resides. If omitted, the root
+                frame is used.
         """
-        params = GetRootAXNodeParams(frame_id=frame_id)
+        _params: dict[str, Any] = {}
+        if frame_id is not None:
+            _params["frameId"] = _encode_value(frame_id)
 
         result = await self._executor.execute(
             method=AccessibilityCommand.GET_ROOT_AX_NODE,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetRootAXNodeResult, result)
 
@@ -127,15 +151,25 @@ class Accessibility:
     ) -> GetAXNodeAndAncestorsResult:
         """
         Fetches a node and all ancestors up to and including the root. Requires
-        `enable()` to have been called previously.
+        `enable()` to have been called previously. Experimental: this API may change or
+        be removed.
+
+        Args:
+            node_id: Identifier of the node to get.
+            backend_node_id: Identifier of the backend node to get.
+            object_id: JavaScript object id of the node wrapper to get.
         """
-        params = GetAXNodeAndAncestorsParams(
-            node_id=node_id, backend_node_id=backend_node_id, object_id=object_id
-        )
+        _params: dict[str, Any] = {}
+        if node_id is not None:
+            _params["nodeId"] = _encode_value(node_id)
+        if backend_node_id is not None:
+            _params["backendNodeId"] = _encode_value(backend_node_id)
+        if object_id is not None:
+            _params["objectId"] = _encode_value(object_id)
 
         result = await self._executor.execute(
             method=AccessibilityCommand.GET_AX_NODE_AND_ANCESTORS,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetAXNodeAndAncestorsResult, result)
 
@@ -147,13 +181,20 @@ class Accessibility:
     ) -> GetChildAXNodesResult:
         """
         Fetches a particular accessibility node by AXNodeId. Requires `enable()` to
-        have been called previously.
+        have been called previously. Experimental: this API may change or be removed.
+
+        Args:
+            frame_id: The frame in whose document the node resides. If omitted, the root
+                frame is used.
         """
-        params = GetChildAXNodesParams(id=id, frame_id=frame_id)
+        _params: dict[str, Any] = {}
+        _params["id"] = _encode_value(id)
+        if frame_id is not None:
+            _params["frameId"] = _encode_value(frame_id)
 
         result = await self._executor.execute(
             method=AccessibilityCommand.GET_CHILD_AX_NODES,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetChildAXNodesResult, result)
 
@@ -172,18 +213,30 @@ class Accessibility:
         that are ignored for accessibility, and returns those that match the specified
         name and role. If no DOM node is specified, or the DOM node does not exist, the
         command returns an error. If neither `accessibleName` or `role` is specified, it
-        returns all the accessibility nodes in the subtree.
+        returns all the accessibility nodes in the subtree. Experimental: this API may
+        change or be removed.
+
+        Args:
+            node_id: Identifier of the node for the root to query.
+            backend_node_id: Identifier of the backend node for the root to query.
+            object_id: JavaScript object id of the node wrapper for the root to query.
+            accessible_name: Find nodes with this computed name.
+            role: Find nodes with this computed role.
         """
-        params = QueryAXTreeParams(
-            node_id=node_id,
-            backend_node_id=backend_node_id,
-            object_id=object_id,
-            accessible_name=accessible_name,
-            role=role,
-        )
+        _params: dict[str, Any] = {}
+        if node_id is not None:
+            _params["nodeId"] = _encode_value(node_id)
+        if backend_node_id is not None:
+            _params["backendNodeId"] = _encode_value(backend_node_id)
+        if object_id is not None:
+            _params["objectId"] = _encode_value(object_id)
+        if accessible_name is not None:
+            _params["accessibleName"] = accessible_name
+        if role is not None:
+            _params["role"] = role
 
         result = await self._executor.execute(
             method=AccessibilityCommand.QUERY_AX_TREE,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(QueryAXTreeResult, result)

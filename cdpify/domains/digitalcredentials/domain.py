@@ -6,12 +6,11 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from cdpify.codec import encode_cdp
+from cdpify.codec import _encode_value
 from cdpify.executor import CommandExecutor
 
 from .commands import (
     DigitalCredentialsCommand,
-    SetVirtualWalletBehaviorParams,
 )
 from .types import (
     VirtualWalletAction,
@@ -36,12 +35,25 @@ class DigitalCredentials:
         """
         Sets the behavior of the virtual wallet for digital credential requests issued
         from this frame.
+
+        Args:
+            action: The action of the virtual wallet.
+            protocol: The protocol identifier (e.g. "openid4vp"). Required when |action|
+                is "respond", forbidden otherwise.
+            response: The response data object returned by the wallet. Required when
+                |action| is "respond", forbidden otherwise.
+            frame_id: The frame to scope the virtual wallet behavior to.
         """
-        params = SetVirtualWalletBehaviorParams(
-            action=action, protocol=protocol, response=response, frame_id=frame_id
-        )
+        _params: dict[str, Any] = {}
+        _params["action"] = _encode_value(action)
+        if protocol is not None:
+            _params["protocol"] = protocol
+        if response is not None:
+            _params["response"] = _encode_value(response)
+        if frame_id is not None:
+            _params["frameId"] = _encode_value(frame_id)
 
         await self._executor.execute(
             method=DigitalCredentialsCommand.SET_VIRTUAL_WALLET_BEHAVIOR,
-            params=encode_cdp(params),
+            params=_params,
         )

@@ -22,35 +22,81 @@ Unique identifier of attached debugging session.
 class TargetInfo:
     target_id: TargetID = field(metadata={"cdp_name": "targetId"})
     type: str
+    """
+    List of types:
+    https://source.chromium.org/chromium/chromium/src/+/main:content/browser/devtools/devtools_agent_host_impl.cc?ss=chromium&q=f:devtools%20-f:out%20%22::kTypeTab%5B%5D%22
+    """
     title: str
     url: str
     attached: bool
+    """
+    Whether the target has an attached client.
+    """
     parent_id: TargetID | None = field(default=None, metadata={"cdp_name": "parentId"})
+    """
+    Id of the parent target, if any. For example, "iframe" target may have a "page"
+    parent.
+    """
     opener_id: TargetID | None = field(default=None, metadata={"cdp_name": "openerId"})
+    """
+    Opener target Id
+    """
     can_access_opener: bool = field(metadata={"cdp_name": "canAccessOpener"})
+    """
+    Whether the target has access to the originating window. Experimental: this API may
+    change or be removed.
+    """
     opener_frame_id: page.FrameId | None = field(
         default=None, metadata={"cdp_name": "openerFrameId"}
     )
+    """
+    Frame id of originating window (is only set if target has an opener). Experimental:
+    this API may change or be removed.
+    """
     parent_frame_id: page.FrameId | None = field(
         default=None, metadata={"cdp_name": "parentFrameId"}
     )
+    """
+    Id of the parent frame, present for "iframe" and "worker" targets. For nested
+    workers, this is the "ancestor" frame that created the first worker in the nested
+    chain. Experimental: this API may change or be removed.
+    """
     browser_context_id: browser.BrowserContextID | None = field(
         default=None, metadata={"cdp_name": "browserContextId"}
     )
+    """
+    Experimental: this API may change or be removed.
+    """
     subtype: str | None = None
+    """
+    Provides additional details for specific target types. For example, for the type of
+    "page", this may be set to "prerender". Experimental: this API may change or be
+    removed.
+    """
     embedder_data: dict[str, Any] | None = field(
         default=None, metadata={"cdp_name": "embedderData"}
     )
+    """
+    Embedder-specific target metadata. This is only set for targets of type "tab".
+    Experimental: this API may change or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class FilterEntry:
     """
-    A filter used by target query/discovery/auto-attach operations.
+    A filter used by target query/discovery/auto-attach operations. Experimental: this
+    API may change or be removed.
     """
 
     exclude: bool | None = None
+    """
+    If set, causes exclusion of matching targets from the list.
+    """
     type: str | None = None
+    """
+    If not present, matches any type.
+    """
 
 
 type TargetFilter = list[FilterEntry]
@@ -59,19 +105,23 @@ The entries in TargetFilter are matched sequentially against targets and the fir
 entry that matches determines if the target is included or not, depending on the value
 of `exclude` field in the entry. If filter is not specified, the one assumed is [{type:
 "browser", exclude: true}, {type: "tab", exclude: true}, {}] (i.e. include everything
-but `browser` and `tab`).
+but `browser` and `tab`). Experimental: this API may change or be removed.
 """
 
 
 @dataclass(kw_only=True, slots=True)
 class RemoteLocation:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     host: str
     port: int
 
 
 class WindowState(CDPStrEnum):
     """
-    The state of the target window.
+    The state of the target window. Experimental: this API may change or be removed.
     """
 
     NORMAL = "normal"

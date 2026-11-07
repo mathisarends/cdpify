@@ -24,7 +24,15 @@ class Transport(Protocol):
         params: dict[str, Any] | None = None,
         session_id: str | None = None,
         timeout: float | None = None,
-    ) -> dict[str, Any]: ...
+    ) -> dict[str, Any]:
+        """Send and await a command; timeout is a total budget in seconds.
+
+        None disables the transport deadline. CdpClient owns its deadline and
+        passes None here, avoiding duplicate timers. Custom transports must
+        allow that outer cancellation to propagate.
+        Cancellation must release resources associated with the request.
+        """
+        ...
 
     def events(self) -> AsyncIterator[TransportEvent]:
         """Yield incoming events until the connection closes.

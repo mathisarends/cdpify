@@ -27,6 +27,10 @@ class DialogShownEvent:
     dialog_type: DialogType = field(metadata={"cdp_name": "dialogType"})
     accounts: list[Account]
     title: str
+    """
+    These exist primarily so that the caller can verify the RP context was used
+    appropriately.
+    """
     subtitle: str | None = None
 
 

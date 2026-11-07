@@ -4,20 +4,13 @@
 
 from __future__ import annotations
 
-from cdpify.codec import encode_cdp
+from typing import Any
+
+from cdpify.codec import _encode_value
 from cdpify.executor import CommandExecutor
 
 from .commands import (
-    DeliverPushMessageParams,
-    DispatchPeriodicSyncEventParams,
-    DispatchSyncEventParams,
     ServiceWorkerCommand,
-    SetForceUpdateOnPageLoadParams,
-    SkipWaitingParams,
-    StartWorkerParams,
-    StopWorkerParams,
-    UnregisterParams,
-    UpdateRegistrationParams,
 )
 from .types import (
     RegistrationID,
@@ -35,13 +28,14 @@ class ServiceWorker:
         registration_id: RegistrationID,
         data: str,
     ) -> None:
-        params = DeliverPushMessageParams(
-            origin=origin, registration_id=registration_id, data=data
-        )
+        _params: dict[str, Any] = {}
+        _params["origin"] = origin
+        _params["registrationId"] = _encode_value(registration_id)
+        _params["data"] = data
 
         await self._executor.execute(
             method=ServiceWorkerCommand.DELIVER_PUSH_MESSAGE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def disable(
@@ -60,16 +54,15 @@ class ServiceWorker:
         tag: str,
         last_chance: bool,
     ) -> None:
-        params = DispatchSyncEventParams(
-            origin=origin,
-            registration_id=registration_id,
-            tag=tag,
-            last_chance=last_chance,
-        )
+        _params: dict[str, Any] = {}
+        _params["origin"] = origin
+        _params["registrationId"] = _encode_value(registration_id)
+        _params["tag"] = tag
+        _params["lastChance"] = last_chance
 
         await self._executor.execute(
             method=ServiceWorkerCommand.DISPATCH_SYNC_EVENT,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def dispatch_periodic_sync_event(
@@ -79,13 +72,14 @@ class ServiceWorker:
         registration_id: RegistrationID,
         tag: str,
     ) -> None:
-        params = DispatchPeriodicSyncEventParams(
-            origin=origin, registration_id=registration_id, tag=tag
-        )
+        _params: dict[str, Any] = {}
+        _params["origin"] = origin
+        _params["registrationId"] = _encode_value(registration_id)
+        _params["tag"] = tag
 
         await self._executor.execute(
             method=ServiceWorkerCommand.DISPATCH_PERIODIC_SYNC_EVENT,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def enable(
@@ -101,13 +95,12 @@ class ServiceWorker:
         *,
         force_update_on_page_load: bool,
     ) -> None:
-        params = SetForceUpdateOnPageLoadParams(
-            force_update_on_page_load=force_update_on_page_load
-        )
+        _params: dict[str, Any] = {}
+        _params["forceUpdateOnPageLoad"] = force_update_on_page_load
 
         await self._executor.execute(
             method=ServiceWorkerCommand.SET_FORCE_UPDATE_ON_PAGE_LOAD,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def skip_waiting(
@@ -115,11 +108,12 @@ class ServiceWorker:
         *,
         scope_url: str,
     ) -> None:
-        params = SkipWaitingParams(scope_url=scope_url)
+        _params: dict[str, Any] = {}
+        _params["scopeURL"] = scope_url
 
         await self._executor.execute(
             method=ServiceWorkerCommand.SKIP_WAITING,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def start_worker(
@@ -127,11 +121,12 @@ class ServiceWorker:
         *,
         scope_url: str,
     ) -> None:
-        params = StartWorkerParams(scope_url=scope_url)
+        _params: dict[str, Any] = {}
+        _params["scopeURL"] = scope_url
 
         await self._executor.execute(
             method=ServiceWorkerCommand.START_WORKER,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def stop_all_workers(
@@ -147,11 +142,12 @@ class ServiceWorker:
         *,
         version_id: str,
     ) -> None:
-        params = StopWorkerParams(version_id=version_id)
+        _params: dict[str, Any] = {}
+        _params["versionId"] = version_id
 
         await self._executor.execute(
             method=ServiceWorkerCommand.STOP_WORKER,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def unregister(
@@ -159,11 +155,12 @@ class ServiceWorker:
         *,
         scope_url: str,
     ) -> None:
-        params = UnregisterParams(scope_url=scope_url)
+        _params: dict[str, Any] = {}
+        _params["scopeURL"] = scope_url
 
         await self._executor.execute(
             method=ServiceWorkerCommand.UNREGISTER,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def update_registration(
@@ -171,9 +168,10 @@ class ServiceWorker:
         *,
         scope_url: str,
     ) -> None:
-        params = UpdateRegistrationParams(scope_url=scope_url)
+        _params: dict[str, Any] = {}
+        _params["scopeURL"] = scope_url
 
         await self._executor.execute(
             method=ServiceWorkerCommand.UPDATE_REGISTRATION,
-            params=encode_cdp(params),
+            params=_params,
         )

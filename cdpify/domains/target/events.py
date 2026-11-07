@@ -29,11 +29,15 @@ class TargetEvent(StrEnum):
 class AttachedToTargetEvent:
     """
     Issued when attached to target because of auto-attach or `attachToTarget` command.
+    Experimental: this API may change or be removed.
     """
 
     __cdp_event__: ClassVar[TargetEvent] = TargetEvent.ATTACHED_TO_TARGET
 
     session_id: SessionID = field(metadata={"cdp_name": "sessionId"})
+    """
+    Identifier assigned to the session used to send/receive messages.
+    """
     target_info: TargetInfo = field(metadata={"cdp_name": "targetInfo"})
     waiting_for_debugger: bool = field(metadata={"cdp_name": "waitingForDebugger"})
 
@@ -43,13 +47,19 @@ class DetachedFromTargetEvent:
     """
     Issued when detached from target for any reason (including `detachFromTarget`
     command). Can be issued multiple times per target if multiple sessions have been
-    attached to it.
+    attached to it. Experimental: this API may change or be removed.
     """
 
     __cdp_event__: ClassVar[TargetEvent] = TargetEvent.DETACHED_FROM_TARGET
 
     session_id: SessionID = field(metadata={"cdp_name": "sessionId"})
+    """
+    Detached session identifier.
+    """
     target_id: TargetID | None = field(default=None, metadata={"cdp_name": "targetId"})
+    """
+    Deprecated. Deprecated in the Chrome DevTools Protocol.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -62,8 +72,14 @@ class ReceivedMessageFromTargetEvent:
     __cdp_event__: ClassVar[TargetEvent] = TargetEvent.RECEIVED_MESSAGE_FROM_TARGET
 
     session_id: SessionID = field(metadata={"cdp_name": "sessionId"})
+    """
+    Identifier of a session which sends a message.
+    """
     message: str
     target_id: TargetID | None = field(default=None, metadata={"cdp_name": "targetId"})
+    """
+    Deprecated. Deprecated in the Chrome DevTools Protocol.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -98,7 +114,13 @@ class TargetCrashedEvent:
 
     target_id: TargetID = field(metadata={"cdp_name": "targetId"})
     status: str
+    """
+    Termination status type.
+    """
     error_code: int = field(metadata={"cdp_name": "errorCode"})
+    """
+    Termination error code.
+    """
 
 
 @dataclass(kw_only=True, slots=True)

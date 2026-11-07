@@ -4,12 +4,13 @@
 
 from __future__ import annotations
 
-from cdpify.codec import decode_cdp, encode_cdp
+from typing import Any
+
+from cdpify.codec import _encode_value, decode_cdp
 from cdpify.executor import CommandExecutor
 
 from .commands import (
     FileSystemCommand,
-    GetDirectoryParams,
     GetDirectoryResult,
 )
 from .types import (
@@ -26,12 +27,11 @@ class FileSystem:
         *,
         bucket_file_system_locator: BucketFileSystemLocator,
     ) -> GetDirectoryResult:
-        params = GetDirectoryParams(
-            bucket_file_system_locator=bucket_file_system_locator
-        )
+        _params: dict[str, Any] = {}
+        _params["bucketFileSystemLocator"] = _encode_value(bucket_file_system_locator)
 
         result = await self._executor.execute(
             method=FileSystemCommand.GET_DIRECTORY,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetDirectoryResult, result)

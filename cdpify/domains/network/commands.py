@@ -70,16 +70,25 @@ class NetworkCommand(StrEnum):
 @dataclass(kw_only=True, slots=True)
 class CanClearBrowserCacheResult:
     result: bool
+    """
+    True if browser cache can be cleared.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class CanClearBrowserCookiesResult:
     result: bool
+    """
+    True if browser cookies can be cleared.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class CanEmulateNetworkConditionsResult:
     result: bool
+    """
+    True if emulation of network conditions is supported.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -90,12 +99,30 @@ class DeleteCookiesParams:
     """
 
     name: str
+    """
+    Name of the cookies to remove.
+    """
     url: str | None = None
+    """
+    If specified, deletes all the cookies with the given name where domain and path
+    match provided URL.
+    """
     domain: str | None = None
+    """
+    If specified, deletes only cookies with the exact domain.
+    """
     path: str | None = None
+    """
+    If specified, deletes only cookies with the exact path.
+    """
     partition_key: CookiePartitionKey | None = field(
         default=None, metadata={"cdp_name": "partitionKey"}
     )
+    """
+    If specified, deletes only cookies with the the given name and partitionKey where
+    all partition key attributes match the cookie partition key attribute. Experimental:
+    this API may change or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -103,23 +130,50 @@ class EmulateNetworkConditionsParams:
     """
     Activates emulation of network conditions. This command is deprecated in favor of
     the emulateNetworkConditionsByRule and overrideNetworkState commands, which can be
-    used together to the same effect.
+    used together to the same effect. Deprecated in the Chrome DevTools Protocol.
     """
 
     offline: bool
+    """
+    True to emulate internet disconnection.
+    """
     latency: float
+    """
+    Minimum latency from request sent to response headers received (ms).
+    """
     download_throughput: float = field(metadata={"cdp_name": "downloadThroughput"})
+    """
+    Maximal aggregated download throughput (bytes/sec). -1 disables download
+    throttling.
+    """
     upload_throughput: float = field(metadata={"cdp_name": "uploadThroughput"})
+    """
+    Maximal aggregated upload throughput (bytes/sec). -1 disables upload throttling.
+    """
     connection_type: ConnectionType | None = field(
         default=None, metadata={"cdp_name": "connectionType"}
     )
+    """
+    Connection type if known.
+    """
     packet_loss: float | None = field(default=None, metadata={"cdp_name": "packetLoss"})
+    """
+    WebRTC packet loss (percent, 0-100). 0 disables packet loss emulation, 100 drops
+    all the packets. Experimental: this API may change or be removed.
+    """
     packet_queue_length: int | None = field(
         default=None, metadata={"cdp_name": "packetQueueLength"}
     )
+    """
+    WebRTC packet queue length (packet). 0 removes any queue length limitations.
+    Experimental: this API may change or be removed.
+    """
     packet_reordering: bool | None = field(
         default=None, metadata={"cdp_name": "packetReordering"}
     )
+    """
+    WebRTC packetReordering feature. Experimental: this API may change or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -128,36 +182,71 @@ class EmulateNetworkConditionsByRuleParams:
     Activates emulation of network conditions for individual requests using URL match
     patterns. Unlike the deprecated Network.emulateNetworkConditions this method does
     not affect `navigator` state. Use Network.overrideNetworkState to explicitly modify
-    `navigator` behavior.
+    `navigator` behavior. Experimental: this API may change or be removed.
     """
 
     offline: bool | None = None
+    """
+    True to emulate internet disconnection. Deprecated, use the offline property in
+    matchedNetworkConditions or emulateOfflineServiceWorker instead. Deprecated in the
+    Chrome DevTools Protocol.
+    """
     emulate_offline_service_worker: bool | None = field(
         default=None, metadata={"cdp_name": "emulateOfflineServiceWorker"}
     )
+    """
+    True to emulate offline service worker.
+    """
     matched_network_conditions: list[NetworkConditions] = field(
         metadata={"cdp_name": "matchedNetworkConditions"}
     )
+    """
+    Configure conditions for matching requests. If multiple entries match a request,
+    the first entry wins. Global conditions can be configured by leaving the urlPattern
+    for the conditions empty. These global conditions are also applied for throttling of
+    p2p connections.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class EmulateNetworkConditionsByRuleResult:
     rule_ids: list[str] = field(metadata={"cdp_name": "ruleIds"})
+    """
+    An id for each entry in matchedNetworkConditions. The id will be included in the
+    requestWillBeSentExtraInfo for requests affected by a rule.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class OverrideNetworkStateParams:
     """
-    Override the state of navigator.onLine and navigator.connection.
+    Override the state of navigator.onLine and navigator.connection. Experimental: this
+    API may change or be removed.
     """
 
     offline: bool
+    """
+    True to emulate internet disconnection.
+    """
     latency: float
+    """
+    Minimum latency from request sent to response headers received (ms).
+    """
     download_throughput: float = field(metadata={"cdp_name": "downloadThroughput"})
+    """
+    Maximal aggregated download throughput (bytes/sec). -1 disables download
+    throttling.
+    """
     upload_throughput: float = field(metadata={"cdp_name": "uploadThroughput"})
+    """
+    Maximal aggregated upload throughput (bytes/sec). -1 disables upload throttling.
+    """
     connection_type: ConnectionType | None = field(
         default=None, metadata={"cdp_name": "connectionType"}
     )
+    """
+    Connection type if known.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -169,18 +258,43 @@ class EnableParams:
     max_total_buffer_size: int | None = field(
         default=None, metadata={"cdp_name": "maxTotalBufferSize"}
     )
+    """
+    Buffer size in bytes to use when preserving network payloads (XHRs, etc). This is
+    the maximum number of bytes that will be collected by this DevTools session.
+    Experimental: this API may change or be removed.
+    """
     max_resource_buffer_size: int | None = field(
         default=None, metadata={"cdp_name": "maxResourceBufferSize"}
     )
+    """
+    Per-resource buffer size in bytes to use when preserving network payloads (XHRs,
+    etc). Experimental: this API may change or be removed.
+    """
     max_post_data_size: int | None = field(
         default=None, metadata={"cdp_name": "maxPostDataSize"}
     )
+    """
+    Longest post body size (in bytes) that would be included in requestWillBeSent
+    notification
+    """
     report_direct_socket_traffic: bool | None = field(
         default=None, metadata={"cdp_name": "reportDirectSocketTraffic"}
     )
+    """
+    Whether DirectSocket chunk send/receive events should be reported. Experimental:
+    this API may change or be removed.
+    """
     enable_durable_messages: bool | None = field(
         default=None, metadata={"cdp_name": "enableDurableMessages"}
     )
+    """
+    Enable storing response bodies outside of renderer, so that these survive a
+    cross-process navigation. Requires maxTotalBufferSize to be set. Currently defaults
+    to false. This field is being deprecated in favor of the dedicated
+    configureDurableMessages command, due to the possibility of deadlocks when awaiting
+    Network.enable before issuing Runtime.runIfWaitingForDebugger. Experimental: this
+    API may change or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -188,29 +302,43 @@ class ConfigureDurableMessagesParams:
     """
     Configures storing response bodies outside of renderer, so that these survive a
     cross-process navigation. If maxTotalBufferSize is not set, durable messages are
-    disabled.
+    disabled. Experimental: this API may change or be removed.
     """
 
     max_total_buffer_size: int | None = field(
         default=None, metadata={"cdp_name": "maxTotalBufferSize"}
     )
+    """
+    Buffer size in bytes to use when preserving network payloads (XHRs, etc).
+    """
     max_resource_buffer_size: int | None = field(
         default=None, metadata={"cdp_name": "maxResourceBufferSize"}
     )
+    """
+    Per-resource buffer size in bytes to use when preserving network payloads (XHRs,
+    etc).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetAllCookiesResult:
     cookies: list[Cookie]
+    """
+    Array of cookie objects.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetCertificateParams:
     """
-    Returns the DER-encoded certificate.
+    Returns the DER-encoded certificate. Experimental: this API may change or be
+    removed.
     """
 
     origin: str
+    """
+    Origin to get certificate for.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -226,11 +354,19 @@ class GetCookiesParams:
     """
 
     urls: list[str] | None = None
+    """
+    The list of URLs for which applicable cookies will be fetched. If not specified,
+    it's assumed to be set to the list containing the URLs of the page and all of its
+    subframes.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetCookiesResult:
     cookies: list[Cookie]
+    """
+    Array of cookie objects.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -240,12 +376,21 @@ class GetResponseBodyParams:
     """
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
+    """
+    Identifier of the network request to get content for.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetResponseBodyResult:
     body: str
+    """
+    Response body.
+    """
     base64_encoded: bool = field(metadata={"cdp_name": "base64Encoded"})
+    """
+    True, if content was sent as base64.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -256,12 +401,21 @@ class GetRequestPostDataParams:
     """
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
+    """
+    Identifier of the network request to get content for.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetRequestPostDataResult:
     post_data: str = field(metadata={"cdp_name": "postData"})
+    """
+    Request body string, omitting files from multipart requests
+    """
     base64_encoded: bool = field(metadata={"cdp_name": "base64Encoded"})
+    """
+    True, if content was sent as base64.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -269,41 +423,69 @@ class ReplayXHRParams:
     """
     This method sends a new XMLHttpRequest which is identical to the original one. The
     following parameters should be identical: method, url, async, request body, extra
-    headers, withCredentials attribute, user, password.
+    headers, withCredentials attribute, user, password. Experimental: this API may
+    change or be removed.
     """
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
+    """
+    Identifier of XHR to replay.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SearchInResponseBodyParams:
     """
-    Searches for given string in response content.
+    Searches for given string in response content. Experimental: this API may change or
+    be removed.
     """
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
+    """
+    Identifier of the network response to search.
+    """
     query: str
+    """
+    String to search for.
+    """
     case_sensitive: bool | None = field(
         default=None, metadata={"cdp_name": "caseSensitive"}
     )
+    """
+    If true, search is case sensitive.
+    """
     is_regex: bool | None = field(default=None, metadata={"cdp_name": "isRegex"})
+    """
+    If true, treats string parameter as regex.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SearchInResponseBodyResult:
     result: list[debugger.SearchMatch]
+    """
+    List of search matches.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SetBlockedURLsParams:
     """
-    Blocks URLs from loading.
+    Blocks URLs from loading. Experimental: this API may change or be removed.
     """
 
     url_patterns: list[BlockPattern] | None = field(
         default=None, metadata={"cdp_name": "urlPatterns"}
     )
+    """
+    Patterns to match in the order in which they are given. These patterns also take
+    precedence over any wildcard patterns defined in `urls`.
+    """
     urls: list[str] | None = None
+    """
+    URL patterns to block. Wildcards ('*') are allowed. Deprecated in the Chrome
+    DevTools Protocol.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -313,6 +495,9 @@ class SetBypassServiceWorkerParams:
     """
 
     bypass: bool
+    """
+    Bypass service worker and load from network.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -322,6 +507,9 @@ class SetCacheDisabledParams:
     """
 
     cache_disabled: bool = field(metadata={"cdp_name": "cacheDisabled"})
+    """
+    Cache disabled state.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -332,29 +520,78 @@ class SetCookieParams:
     """
 
     name: str
+    """
+    Cookie name.
+    """
     value: str
+    """
+    Cookie value.
+    """
     url: str | None = None
+    """
+    The request-URI to associate with the setting of the cookie. This value can affect
+    the default domain, path, source port, and source scheme values of the created
+    cookie.
+    """
     domain: str | None = None
+    """
+    Cookie domain.
+    """
     path: str | None = None
+    """
+    Cookie path.
+    """
     secure: bool | None = None
+    """
+    True if cookie is secure.
+    """
     http_only: bool | None = field(default=None, metadata={"cdp_name": "httpOnly"})
+    """
+    True if cookie is http-only.
+    """
     same_site: CookieSameSite | None = field(
         default=None, metadata={"cdp_name": "sameSite"}
     )
+    """
+    Cookie SameSite type.
+    """
     expires: TimeSinceEpoch | None = None
+    """
+    Cookie expiration date, session cookie if not set
+    """
     priority: CookiePriority | None = None
+    """
+    Cookie Priority type. Experimental: this API may change or be removed.
+    """
     source_scheme: CookieSourceScheme | None = field(
         default=None, metadata={"cdp_name": "sourceScheme"}
     )
+    """
+    Cookie source scheme type. Experimental: this API may change or be removed.
+    """
     source_port: int | None = field(default=None, metadata={"cdp_name": "sourcePort"})
+    """
+    Cookie source port. Valid values are {-1, [1, 65535]}, -1 indicates an unspecified
+    port. An unspecified port value allows protocol clients to emulate legacy cookie
+    scope for the port. This is a temporary ability and it will be removed in the
+    future. Experimental: this API may change or be removed.
+    """
     partition_key: CookiePartitionKey | None = field(
         default=None, metadata={"cdp_name": "partitionKey"}
     )
+    """
+    Cookie partition key. If not set, the cookie will be set as not partitioned.
+    Experimental: this API may change or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SetCookieResult:
     success: bool
+    """
+    Always set to true. If an error occurs, the response indicates protocol error.
+    Deprecated in the Chrome DevTools Protocol.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -364,6 +601,9 @@ class SetCookiesParams:
     """
 
     cookies: list[CookieParam]
+    """
+    Cookies to be set.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -374,15 +614,22 @@ class SetExtraHTTPHeadersParams:
     """
 
     headers: Headers
+    """
+    Map with extra HTTP headers.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SetAttachDebugStackParams:
     """
-    Specifies whether to attach a page script stack id in requests
+    Specifies whether to attach a page script stack id in requests Experimental: this
+    API may change or be removed.
     """
 
     enabled: bool
+    """
+    Whether to attach a page script stack for debugging purpose.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -392,13 +639,26 @@ class SetUserAgentOverrideParams:
     """
 
     user_agent: str = field(metadata={"cdp_name": "userAgent"})
+    """
+    User agent to use.
+    """
     accept_language: str | None = field(
         default=None, metadata={"cdp_name": "acceptLanguage"}
     )
+    """
+    Browser language to emulate.
+    """
     platform: str | None = None
+    """
+    The platform navigator.platform should return.
+    """
     user_agent_metadata: emulation.UserAgentMetadata | None = field(
         default=None, metadata={"cdp_name": "userAgentMetadata"}
     )
+    """
+    To be sent in Sec-CH-UA-* headers and returned in navigator.userAgentData
+    Experimental: this API may change or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -406,25 +666,37 @@ class StreamResourceContentParams:
     """
     Enables streaming of the response for the given requestId. If enabled, the
     dataReceived event contains the data that was received during streaming.
+    Experimental: this API may change or be removed.
     """
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
+    """
+    Identifier of the request to stream.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class StreamResourceContentResult:
     buffered_data: str = field(metadata={"cdp_name": "bufferedData"})
+    """
+    Data that has been buffered until streaming is enabled. (Encoded as a base64 string
+    when passed over JSON)
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetSecurityIsolationStatusParams:
     """
-    Returns information about the COEP/COOP isolation status.
+    Returns information about the COEP/COOP isolation status. Experimental: this API
+    may change or be removed.
     """
 
     frame_id: page.FrameId | None = field(
         default=None, metadata={"cdp_name": "frameId"}
     )
+    """
+    If no frameId is provided, the status of the target is provided.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -437,25 +709,32 @@ class EnableReportingApiParams:
     """
     Enables tracking for the Reporting API, events generated by the Reporting API will
     now be delivered to the client. Enabling triggers 'reportingApiReportAdded' for all
-    existing reports.
+    existing reports. Experimental: this API may change or be removed.
     """
 
     enable: bool
+    """
+    Whether to enable or disable events for the Reporting API
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class EnableDeviceBoundSessionsParams:
     """
     Sets up tracking device bound sessions and fetching of initial set of sessions.
+    Experimental: this API may change or be removed.
     """
 
     enable: bool
+    """
+    Whether to enable or disable events.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class DeleteDeviceBoundSessionParams:
     """
-    Deletes a device bound session.
+    Deletes a device bound session. Experimental: this API may change or be removed.
     """
 
     key: DeviceBoundSessionKey
@@ -464,28 +743,46 @@ class DeleteDeviceBoundSessionParams:
 @dataclass(kw_only=True, slots=True)
 class FetchSchemefulSiteParams:
     """
-    Fetches the schemeful site for a specific origin.
+    Fetches the schemeful site for a specific origin. Experimental: this API may change
+    or be removed.
     """
 
     origin: str
+    """
+    The URL origin.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class FetchSchemefulSiteResult:
     schemeful_site: str = field(metadata={"cdp_name": "schemefulSite"})
+    """
+    The corresponding schemeful site.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class LoadNetworkResourceParams:
     """
-    Fetches the resource and returns the content.
+    Fetches the resource and returns the content. Experimental: this API may change or
+    be removed.
     """
 
     frame_id: page.FrameId | None = field(
         default=None, metadata={"cdp_name": "frameId"}
     )
+    """
+    Frame id to get the resource for. Mandatory for frame targets, and should be
+    omitted for worker targets.
+    """
     url: str
+    """
+    URL of the resource to get content for.
+    """
     options: LoadNetworkResourceOptions
+    """
+    Options for the request.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -497,9 +794,12 @@ class LoadNetworkResourceResult:
 class SetCookieControlsParams:
     """
     Sets Controls for third-party cookie access Page reload is required before the new
-    cookie behavior will be observed
+    cookie behavior will be observed Experimental: this API may change or be removed.
     """
 
     enable_third_party_cookie_restriction: bool = field(
         metadata={"cdp_name": "enableThirdPartyCookieRestriction"}
     )
+    """
+    Whether 3pc restriction is enabled.
+    """

@@ -38,11 +38,17 @@ class AddInspectedHeapObjectParams:
     """
 
     heap_object_id: HeapSnapshotObjectId = field(metadata={"cdp_name": "heapObjectId"})
+    """
+    Heap snapshot object id to be accessible by means of $x command line API.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetHeapObjectIdParams:
     object_id: runtime.RemoteObjectId = field(metadata={"cdp_name": "objectId"})
+    """
+    Identifier of the object to get heap object id for.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -50,22 +56,34 @@ class GetHeapObjectIdResult:
     heap_snapshot_object_id: HeapSnapshotObjectId = field(
         metadata={"cdp_name": "heapSnapshotObjectId"}
     )
+    """
+    Id of the heap snapshot object corresponding to the passed remote object id.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetObjectByHeapObjectIdParams:
     object_id: HeapSnapshotObjectId = field(metadata={"cdp_name": "objectId"})
     object_group: str | None = field(default=None, metadata={"cdp_name": "objectGroup"})
+    """
+    Symbolic group name that can be used to release multiple objects.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetObjectByHeapObjectIdResult:
     result: runtime.RemoteObject
+    """
+    Evaluation result.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetSamplingProfileResult:
     profile: SamplingHeapProfile
+    """
+    Return the sampling profile being collected.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -73,13 +91,36 @@ class StartSamplingParams:
     sampling_interval: float | None = field(
         default=None, metadata={"cdp_name": "samplingInterval"}
     )
+    """
+    Average sample interval in bytes. Poisson distribution is used for the intervals.
+    The default value is 32768 bytes.
+    """
     stack_depth: float | None = field(default=None, metadata={"cdp_name": "stackDepth"})
+    """
+    Maximum stack depth. The default value is 128.
+    """
     include_objects_collected_by_major_gc: bool | None = field(
         default=None, metadata={"cdp_name": "includeObjectsCollectedByMajorGC"}
     )
+    """
+    By default, the sampling heap profiler reports only objects which are still alive
+    when the profile is returned via getSamplingProfile or stopSampling, which is useful
+    for determining what functions contribute the most to steady-state memory usage.
+    This flag instructs the sampling heap profiler to also include information about
+    objects discarded by major GC, which will show which functions cause large temporary
+    memory usage or long GC pauses.
+    """
     include_objects_collected_by_minor_gc: bool | None = field(
         default=None, metadata={"cdp_name": "includeObjectsCollectedByMinorGC"}
     )
+    """
+    By default, the sampling heap profiler reports only objects which are still alive
+    when the profile is returned via getSamplingProfile or stopSampling, which is useful
+    for determining what functions contribute the most to steady-state memory usage.
+    This flag instructs the sampling heap profiler to also include information about
+    objects discarded by minor GC, which is useful when tuning a latency-sensitive
+    application for minimal GC activity.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -92,6 +133,9 @@ class StartTrackingHeapObjectsParams:
 @dataclass(kw_only=True, slots=True)
 class StopSamplingResult:
     profile: SamplingHeapProfile
+    """
+    Recorded sampling heap profile.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -99,15 +143,30 @@ class StopTrackingHeapObjectsParams:
     report_progress: bool | None = field(
         default=None, metadata={"cdp_name": "reportProgress"}
     )
+    """
+    If true 'reportHeapSnapshotProgress' events will be generated while snapshot is
+    being taken when the tracking is stopped.
+    """
     treat_global_objects_as_roots: bool | None = field(
         default=None, metadata={"cdp_name": "treatGlobalObjectsAsRoots"}
     )
+    """
+    Deprecated in favor of `exposeInternals`. Deprecated in the Chrome DevTools
+    Protocol.
+    """
     capture_numeric_value: bool | None = field(
         default=None, metadata={"cdp_name": "captureNumericValue"}
     )
+    """
+    If true, numerical values are included in the snapshot
+    """
     expose_internals: bool | None = field(
         default=None, metadata={"cdp_name": "exposeInternals"}
     )
+    """
+    If true, exposes internals of the snapshot. Experimental: this API may change or be
+    removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -115,12 +174,27 @@ class TakeHeapSnapshotParams:
     report_progress: bool | None = field(
         default=None, metadata={"cdp_name": "reportProgress"}
     )
+    """
+    If true 'reportHeapSnapshotProgress' events will be generated while snapshot is
+    being taken.
+    """
     treat_global_objects_as_roots: bool | None = field(
         default=None, metadata={"cdp_name": "treatGlobalObjectsAsRoots"}
     )
+    """
+    If true, a raw snapshot without artificial roots will be generated. Deprecated in
+    favor of `exposeInternals`. Deprecated in the Chrome DevTools Protocol.
+    """
     capture_numeric_value: bool | None = field(
         default=None, metadata={"cdp_name": "captureNumericValue"}
     )
+    """
+    If true, numerical values are included in the snapshot
+    """
     expose_internals: bool | None = field(
         default=None, metadata={"cdp_name": "exposeInternals"}
     )
+    """
+    If true, exposes internals of the snapshot. Experimental: this API may change or be
+    removed.
+    """

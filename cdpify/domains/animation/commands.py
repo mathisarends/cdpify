@@ -30,16 +30,25 @@ class GetCurrentTimeParams:
     """
 
     id: str
+    """
+    Id of animation.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetCurrentTimeResult:
     current_time: float = field(metadata={"cdp_name": "currentTime"})
+    """
+    Current time of the page.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetPlaybackRateResult:
     playback_rate: float = field(metadata={"cdp_name": "playbackRate"})
+    """
+    Playback rate for animations on page.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -49,6 +58,9 @@ class ReleaseAnimationsParams:
     """
 
     animations: list[str]
+    """
+    List of animation ids to seek.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -58,11 +70,17 @@ class ResolveAnimationParams:
     """
 
     animation_id: str = field(metadata={"cdp_name": "animationId"})
+    """
+    Animation id.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class ResolveAnimationResult:
     remote_object: runtime.RemoteObject = field(metadata={"cdp_name": "remoteObject"})
+    """
+    Corresponding remote object.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -72,12 +90,22 @@ class SeekAnimationsParams:
     """
 
     animations: list[str]
+    """
+    List of animation ids to seek.
+    """
     current_time: float | None = field(
         default=None, metadata={"cdp_name": "currentTime"}
     )
+    """
+    Set each animation to the same time.
+    """
     current_times: list[float] | None = field(
         default=None, metadata={"cdp_name": "currentTimes"}
     )
+    """
+    Set each animation to a different time. If set, should have the same length as
+    animations. Exactly one of currentTime or currentTimes should be set.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -87,7 +115,13 @@ class SetPausedParams:
     """
 
     animations: list[str]
+    """
+    Animations to set the pause state of.
+    """
     paused: bool
+    """
+    Paused state to set to.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -97,6 +131,9 @@ class SetPlaybackRateParams:
     """
 
     playback_rate: float = field(metadata={"cdp_name": "playbackRate"})
+    """
+    Playback rate for animations on page
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -106,5 +143,14 @@ class SetTimingParams:
     """
 
     animation_id: str = field(metadata={"cdp_name": "animationId"})
+    """
+    Animation id.
+    """
     duration: float
+    """
+    Duration of the animation.
+    """
     delay: float
+    """
+    Delay of the animation.
+    """

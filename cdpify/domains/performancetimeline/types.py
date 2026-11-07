@@ -18,8 +18,17 @@ class LargestContentfulPaint:
     render_time: network.TimeSinceEpoch = field(metadata={"cdp_name": "renderTime"})
     load_time: network.TimeSinceEpoch = field(metadata={"cdp_name": "loadTime"})
     size: float
+    """
+    The number of pixels being painted.
+    """
     element_id: str | None = field(default=None, metadata={"cdp_name": "elementId"})
+    """
+    The id attribute of the element, if available.
+    """
     url: str | None = None
+    """
+    The URL of the image (may be trimmed).
+    """
     node_id: dom.BackendNodeId | None = field(
         default=None, metadata={"cdp_name": "nodeId"}
     )
@@ -42,6 +51,9 @@ class LayoutShift:
     """
 
     value: float
+    """
+    Score increment produced by this event.
+    """
     had_recent_input: bool = field(metadata={"cdp_name": "hadRecentInput"})
     last_input_time: network.TimeSinceEpoch = field(
         metadata={"cdp_name": "lastInputTime"}
@@ -52,10 +64,27 @@ class LayoutShift:
 @dataclass(kw_only=True, slots=True)
 class TimelineEvent:
     frame_id: page.FrameId = field(metadata={"cdp_name": "frameId"})
+    """
+    Identifies the frame that this event is related to. Empty for non-frame targets.
+    """
     type: str
+    """
+    The event type, as specified in
+    https://w3c.github.io/performance-timeline/#dom-performanceentry-entrytype This
+    determines which of the optional "details" fields is present.
+    """
     name: str
+    """
+    Name may be empty depending on the type.
+    """
     time: network.TimeSinceEpoch
+    """
+    Time in seconds since Epoch, monotonically increasing within document lifetime.
+    """
     duration: float | None = None
+    """
+    Event duration, if applicable.
+    """
     lcp_details: LargestContentfulPaint | None = field(
         default=None, metadata={"cdp_name": "lcpDetails"}
     )

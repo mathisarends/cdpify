@@ -37,14 +37,20 @@ class UsageForType:
     """
 
     storage_type: StorageType = field(metadata={"cdp_name": "storageType"})
+    """
+    Name of storage type.
+    """
     usage: float
+    """
+    Storage usage (bytes).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class TrustTokens:
     """
     Pair of issuer origin and number of available (signed, but not used) Trust Tokens
-    from that issuer.
+    from that issuer. Experimental: this API may change or be removed.
     """
 
     issuer_origin: str = field(metadata={"cdp_name": "issuerOrigin"})
@@ -54,26 +60,55 @@ class TrustTokens:
 @dataclass(kw_only=True, slots=True)
 class PrivateVerificationToken:
     """
-    Details of a stored Private Verification Token.
+    Details of a stored Private Verification Token. Experimental: this API may change
+    or be removed.
     """
 
     id: str
+    """
+    Unique identifier of the token in the database.
+    """
     issuer_origin: str = field(metadata={"cdp_name": "issuerOrigin"})
+    """
+    Origin of the token issuer.
+    """
     key_id: int = field(metadata={"cdp_name": "keyId"})
+    """
+    Public key ID used to issue the token.
+    """
     expiration: network.TimeSinceEpoch
+    """
+    Expiration timestamp in seconds since the epoch.
+    """
     creation_time: network.TimeSinceEpoch = field(metadata={"cdp_name": "creationTime"})
+    """
+    Token creation timestamp in seconds since the epoch.
+    """
     version: int
+    """
+    Token protocol version.
+    """
     token: str
+    """
+    Base64-encoded serialized token.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class PrivateVerificationTokensIssuerConfig:
     """
-    Configuration for a Private Verification Tokens issuer.
+    Configuration for a Private Verification Tokens issuer. Experimental: this API may
+    change or be removed.
     """
 
     issuer_origin: str = field(metadata={"cdp_name": "issuerOrigin"})
+    """
+    Origin of the token issuer.
+    """
     redeemer_origins: list[str] = field(metadata={"cdp_name": "redeemerOrigins"})
+    """
+    Origins authorized to redeem tokens from this issuer.
+    """
 
 
 class StorageBucketsDurability(CDPStrEnum):
@@ -85,6 +120,9 @@ class StorageBucketsDurability(CDPStrEnum):
 class StorageBucket:
     storage_key: SerializedStorageKey = field(metadata={"cdp_name": "storageKey"})
     name: str | None = None
+    """
+    If not specified, it is the default bucket of the storageKey.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -93,5 +131,8 @@ class StorageBucketInfo:
     id: str
     expiration: network.TimeSinceEpoch
     quota: float
+    """
+    Storage quota (bytes).
+    """
     persistent: bool
     durability: StorageBucketsDurability

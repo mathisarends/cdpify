@@ -30,36 +30,61 @@ class AccessibilityCommand(StrEnum):
 class GetPartialAXTreeParams:
     """
     Fetches the accessibility node and partial accessibility tree for this DOM node, if
-    it exists.
+    it exists. Experimental: this API may change or be removed.
     """
 
     node_id: dom.NodeId | None = field(default=None, metadata={"cdp_name": "nodeId"})
+    """
+    Identifier of the node to get the partial accessibility tree for.
+    """
     backend_node_id: dom.BackendNodeId | None = field(
         default=None, metadata={"cdp_name": "backendNodeId"}
     )
+    """
+    Identifier of the backend node to get the partial accessibility tree for.
+    """
     object_id: runtime.RemoteObjectId | None = field(
         default=None, metadata={"cdp_name": "objectId"}
     )
+    """
+    JavaScript object id of the node wrapper to get the partial accessibility tree for.
+    """
     fetch_relatives: bool | None = field(
         default=None, metadata={"cdp_name": "fetchRelatives"}
     )
+    """
+    Whether to fetch this node's ancestors, siblings and children. Defaults to true.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetPartialAXTreeResult:
     nodes: list[AXNode]
+    """
+    The `Accessibility.AXNode` for this DOM node, if it exists, plus its ancestors,
+    siblings and children, if requested.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetFullAXTreeParams:
     """
-    Fetches the entire accessibility tree for the root Document
+    Fetches the entire accessibility tree for the root Document Experimental: this API
+    may change or be removed.
     """
 
     depth: int | None = None
+    """
+    The maximum depth at which descendants of the root node should be retrieved. If
+    omitted, the full tree is returned.
+    """
     frame_id: page.FrameId | None = field(
         default=None, metadata={"cdp_name": "frameId"}
     )
+    """
+    The frame for whose document the AX tree should be retrieved. If omitted, the root
+    frame is used.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -71,11 +96,15 @@ class GetFullAXTreeResult:
 class GetRootAXNodeParams:
     """
     Fetches the root node. Requires `enable()` to have been called previously.
+    Experimental: this API may change or be removed.
     """
 
     frame_id: page.FrameId | None = field(
         default=None, metadata={"cdp_name": "frameId"}
     )
+    """
+    The frame in whose document the node resides. If omitted, the root frame is used.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -87,16 +116,25 @@ class GetRootAXNodeResult:
 class GetAXNodeAndAncestorsParams:
     """
     Fetches a node and all ancestors up to and including the root. Requires `enable()`
-    to have been called previously.
+    to have been called previously. Experimental: this API may change or be removed.
     """
 
     node_id: dom.NodeId | None = field(default=None, metadata={"cdp_name": "nodeId"})
+    """
+    Identifier of the node to get.
+    """
     backend_node_id: dom.BackendNodeId | None = field(
         default=None, metadata={"cdp_name": "backendNodeId"}
     )
+    """
+    Identifier of the backend node to get.
+    """
     object_id: runtime.RemoteObjectId | None = field(
         default=None, metadata={"cdp_name": "objectId"}
     )
+    """
+    JavaScript object id of the node wrapper to get.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -108,13 +146,16 @@ class GetAXNodeAndAncestorsResult:
 class GetChildAXNodesParams:
     """
     Fetches a particular accessibility node by AXNodeId. Requires `enable()` to have
-    been called previously.
+    been called previously. Experimental: this API may change or be removed.
     """
 
     id: AXNodeId
     frame_id: page.FrameId | None = field(
         default=None, metadata={"cdp_name": "frameId"}
     )
+    """
+    The frame in whose document the node resides. If omitted, the root frame is used.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -130,22 +171,41 @@ class QueryAXTreeParams:
     ignored for accessibility, and returns those that match the specified name and role.
     If no DOM node is specified, or the DOM node does not exist, the command returns an
     error. If neither `accessibleName` or `role` is specified, it returns all the
-    accessibility nodes in the subtree.
+    accessibility nodes in the subtree. Experimental: this API may change or be removed.
     """
 
     node_id: dom.NodeId | None = field(default=None, metadata={"cdp_name": "nodeId"})
+    """
+    Identifier of the node for the root to query.
+    """
     backend_node_id: dom.BackendNodeId | None = field(
         default=None, metadata={"cdp_name": "backendNodeId"}
     )
+    """
+    Identifier of the backend node for the root to query.
+    """
     object_id: runtime.RemoteObjectId | None = field(
         default=None, metadata={"cdp_name": "objectId"}
     )
+    """
+    JavaScript object id of the node wrapper for the root to query.
+    """
     accessible_name: str | None = field(
         default=None, metadata={"cdp_name": "accessibleName"}
     )
+    """
+    Find nodes with this computed name.
+    """
     role: str | None = None
+    """
+    Find nodes with this computed role.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class QueryAXTreeResult:
     nodes: list[AXNode]
+    """
+    A list of `Accessibility.AXNode` matching the specified attributes, including nodes
+    that are ignored for accessibility.
+    """

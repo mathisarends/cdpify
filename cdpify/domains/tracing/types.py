@@ -12,6 +12,7 @@ from cdpify.shared.enums import CDPStrEnum
 type MemoryDumpConfig = dict[str, Any]
 """
 Configuration for memory dump. Used only when "memory-infra" category is enabled.
+Experimental: this API may change or be removed.
 """
 
 
@@ -29,36 +30,70 @@ class TraceConfig:
         default=None,
         metadata={"cdp_name": "recordMode"},
     )
+    """
+    Controls how the trace buffer stores data. The default is `recordUntilFull`.
+    Experimental: this API may change or be removed.
+    """
     trace_buffer_size_in_kb: float | None = field(
         default=None, metadata={"cdp_name": "traceBufferSizeInKb"}
     )
+    """
+    Size of the trace buffer in kilobytes. If not specified or zero is passed, a
+    default value of 200 MB would be used. Experimental: this API may change or be
+    removed.
+    """
     enable_sampling: bool | None = field(
         default=None, metadata={"cdp_name": "enableSampling"}
     )
+    """
+    Turns on JavaScript stack sampling. Experimental: this API may change or be
+    removed.
+    """
     enable_systrace: bool | None = field(
         default=None, metadata={"cdp_name": "enableSystrace"}
     )
+    """
+    Turns on system tracing. Experimental: this API may change or be removed.
+    """
     enable_argument_filter: bool | None = field(
         default=None, metadata={"cdp_name": "enableArgumentFilter"}
     )
+    """
+    Turns on argument filter. Experimental: this API may change or be removed.
+    """
     included_categories: list[str] | None = field(
         default=None, metadata={"cdp_name": "includedCategories"}
     )
+    """
+    Included category filters.
+    """
     excluded_categories: list[str] | None = field(
         default=None, metadata={"cdp_name": "excludedCategories"}
     )
+    """
+    Excluded category filters.
+    """
     synthetic_delays: list[str] | None = field(
         default=None, metadata={"cdp_name": "syntheticDelays"}
     )
+    """
+    Configuration to synthesize the delays in tracing. Experimental: this API may
+    change or be removed.
+    """
     memory_dump_config: MemoryDumpConfig | None = field(
         default=None, metadata={"cdp_name": "memoryDumpConfig"}
     )
+    """
+    Configuration for memory dump triggers. Used only when "memory-infra" category is
+    enabled. Experimental: this API may change or be removed.
+    """
 
 
 class StreamFormat(CDPStrEnum):
     """
     Data format of a trace. Can be either the legacy JSON format or the protocol buffer
-    format. Note that the JSON format will be deprecated soon.
+    format. Note that the JSON format will be deprecated soon. Experimental: this API
+    may change or be removed.
     """
 
     JSON = "json"
@@ -67,7 +102,8 @@ class StreamFormat(CDPStrEnum):
 
 class StreamCompression(CDPStrEnum):
     """
-    Compression type to use for traces returned via streams.
+    Compression type to use for traces returned via streams. Experimental: this API may
+    change or be removed.
     """
 
     NONE = "none"
@@ -77,7 +113,8 @@ class StreamCompression(CDPStrEnum):
 class MemoryDumpLevelOfDetail(CDPStrEnum):
     """
     Details exposed when memory request explicitly declared. Keep consistent with
-    memory_dump_request_args.h and memory_instrumentation.mojom
+    memory_dump_request_args.h and memory_instrumentation.mojom Experimental: this API
+    may change or be removed.
     """
 
     BACKGROUND = "background"
@@ -91,7 +128,7 @@ class TracingBackend(CDPStrEnum):
     service and is supported on all platforms. `system` is only supported on Chrome OS
     and uses the Perfetto system tracing service. `auto` chooses `system` when the
     perfettoConfig provided to Tracing.start specifies at least one non-Chrome data
-    source; otherwise uses `chrome`.
+    source; otherwise uses `chrome`. Experimental: this API may change or be removed.
     """
 
     AUTO = "auto"

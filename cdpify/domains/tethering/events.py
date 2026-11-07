@@ -22,4 +22,10 @@ class AcceptedEvent:
     __cdp_event__: ClassVar[TetheringEvent] = TetheringEvent.ACCEPTED
 
     port: int
+    """
+    Port number that was successfully bound.
+    """
     connection_id: str = field(metadata={"cdp_name": "connectionId"})
+    """
+    Connection id to be used.
+    """

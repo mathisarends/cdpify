@@ -102,6 +102,9 @@ class GetStatusChangeRequestedEvent:
     context_id: int = field(metadata={"cdp_name": "contextId"})
     reader_states: list[ReaderStateIn] = field(metadata={"cdp_name": "readerStates"})
     timeout: int | None = None
+    """
+    in milliseconds, if absent, it means "infinite"
+    """
 
 
 @dataclass(kw_only=True, slots=True)

@@ -28,32 +28,55 @@ class GetSnapshotParams:
     Returns a document snapshot, including the full DOM tree of the root node
     (including iframes, template contents, and imported documents) in a flattened array,
     as well as layout and white-listed computed style information for the nodes. Shadow
-    DOM in the returned DOM tree is flattened.
+    DOM in the returned DOM tree is flattened. Deprecated in the Chrome DevTools
+    Protocol.
     """
 
     computed_style_whitelist: list[str] = field(
         metadata={"cdp_name": "computedStyleWhitelist"}
     )
+    """
+    Whitelist of computed styles to return.
+    """
     include_event_listeners: bool | None = field(
         default=None, metadata={"cdp_name": "includeEventListeners"}
     )
+    """
+    Whether or not to retrieve details of DOM listeners (default false).
+    """
     include_paint_order: bool | None = field(
         default=None, metadata={"cdp_name": "includePaintOrder"}
     )
+    """
+    Whether to determine and include the paint order index of LayoutTreeNodes (default
+    false).
+    """
     include_user_agent_shadow_tree: bool | None = field(
         default=None, metadata={"cdp_name": "includeUserAgentShadowTree"}
     )
+    """
+    Whether to include UA shadow tree in the snapshot (default false).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetSnapshotResult:
     dom_nodes: list[DOMNode] = field(metadata={"cdp_name": "domNodes"})
+    """
+    The nodes in the DOM tree. The DOMNode at index 0 corresponds to the root document.
+    """
     layout_tree_nodes: list[LayoutTreeNode] = field(
         metadata={"cdp_name": "layoutTreeNodes"}
     )
+    """
+    The nodes in the layout tree.
+    """
     computed_styles: list[ComputedStyle] = field(
         metadata={"cdp_name": "computedStyles"}
     )
+    """
+    Whitelisted ComputedStyle properties for each node in the layout tree.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -66,21 +89,49 @@ class CaptureSnapshotParams:
     """
 
     computed_styles: list[str] = field(metadata={"cdp_name": "computedStyles"})
+    """
+    Whitelist of computed styles to return.
+    """
     include_paint_order: bool | None = field(
         default=None, metadata={"cdp_name": "includePaintOrder"}
     )
+    """
+    Whether to include layout object paint orders into the snapshot.
+    """
     include_dom_rects: bool | None = field(
         default=None, metadata={"cdp_name": "includeDOMRects"}
     )
+    """
+    Whether to include DOM rectangles (offsetRects, clientRects, scrollRects) into the
+    snapshot
+    """
     include_blended_background_colors: bool | None = field(
         default=None, metadata={"cdp_name": "includeBlendedBackgroundColors"}
     )
+    """
+    Whether to include blended background colors in the snapshot (default: false).
+    Blended background color is achieved by blending background colors of all elements
+    that overlap with the current element. Experimental: this API may change or be
+    removed.
+    """
     include_text_color_opacities: bool | None = field(
         default=None, metadata={"cdp_name": "includeTextColorOpacities"}
     )
+    """
+    Whether to include text color opacity in the snapshot (default: false). An element
+    might have the opacity property set that affects the text color of the element. The
+    final text color opacity is computed based on the opacity of all overlapping
+    elements. Experimental: this API may change or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class CaptureSnapshotResult:
     documents: list[DocumentSnapshot]
+    """
+    The nodes in the DOM tree. The DOMNode at index 0 corresponds to the root document.
+    """
     strings: list[str]
+    """
+    Shared string table that all string properties refer to with indexes.
+    """

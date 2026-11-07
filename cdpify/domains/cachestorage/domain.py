@@ -4,20 +4,15 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
-from cdpify.codec import decode_cdp, encode_cdp
+from cdpify.codec import _encode_value, decode_cdp
 from cdpify.executor import CommandExecutor
 
 from .commands import (
     CacheStorageCommand,
-    DeleteCacheParams,
-    DeleteEntryParams,
-    RequestCachedResponseParams,
     RequestCachedResponseResult,
-    RequestCacheNamesParams,
     RequestCacheNamesResult,
-    RequestEntriesParams,
     RequestEntriesResult,
 )
 from .types import (
@@ -40,12 +35,16 @@ class CacheStorage:
     ) -> None:
         """
         Deletes a cache.
+
+        Args:
+            cache_id: Id of cache for deletion.
         """
-        params = DeleteCacheParams(cache_id=cache_id)
+        _params: dict[str, Any] = {}
+        _params["cacheId"] = _encode_value(cache_id)
 
         await self._executor.execute(
             method=CacheStorageCommand.DELETE_CACHE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def delete_entry(
@@ -56,12 +55,18 @@ class CacheStorage:
     ) -> None:
         """
         Deletes a cache entry.
+
+        Args:
+            cache_id: Id of cache where the entry will be deleted.
+            request: URL spec of the request.
         """
-        params = DeleteEntryParams(cache_id=cache_id, request=request)
+        _params: dict[str, Any] = {}
+        _params["cacheId"] = _encode_value(cache_id)
+        _params["request"] = request
 
         await self._executor.execute(
             method=CacheStorageCommand.DELETE_ENTRY,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def request_cache_names(
@@ -73,16 +78,25 @@ class CacheStorage:
     ) -> RequestCacheNamesResult:
         """
         Requests cache names.
+
+        Args:
+            security_origin: At least and at most one of securityOrigin, storageKey,
+                storageBucket must be specified. Security origin.
+            storage_key: Storage key.
+            storage_bucket: Storage bucket. If not specified, it uses the default
+                bucket.
         """
-        params = RequestCacheNamesParams(
-            security_origin=security_origin,
-            storage_key=storage_key,
-            storage_bucket=storage_bucket,
-        )
+        _params: dict[str, Any] = {}
+        if security_origin is not None:
+            _params["securityOrigin"] = security_origin
+        if storage_key is not None:
+            _params["storageKey"] = storage_key
+        if storage_bucket is not None:
+            _params["storageBucket"] = _encode_value(storage_bucket)
 
         result = await self._executor.execute(
             method=CacheStorageCommand.REQUEST_CACHE_NAMES,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(RequestCacheNamesResult, result)
 
@@ -95,14 +109,20 @@ class CacheStorage:
     ) -> RequestCachedResponseResult:
         """
         Fetches cache entry.
+
+        Args:
+            cache_id: Id of cache that contains the entry.
+            request_url: URL spec of the request.
+            request_headers: headers of the request.
         """
-        params = RequestCachedResponseParams(
-            cache_id=cache_id, request_url=request_url, request_headers=request_headers
-        )
+        _params: dict[str, Any] = {}
+        _params["cacheId"] = _encode_value(cache_id)
+        _params["requestURL"] = request_url
+        _params["requestHeaders"] = _encode_value(request_headers)
 
         result = await self._executor.execute(
             method=CacheStorageCommand.REQUEST_CACHED_RESPONSE,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(RequestCachedResponseResult, result)
 
@@ -116,16 +136,25 @@ class CacheStorage:
     ) -> RequestEntriesResult:
         """
         Requests data from cache.
+
+        Args:
+            cache_id: ID of cache to get entries from.
+            skip_count: Number of records to skip.
+            page_size: Number of records to fetch.
+            path_filter: If present, only return the entries containing this substring
+                in the path
         """
-        params = RequestEntriesParams(
-            cache_id=cache_id,
-            skip_count=skip_count,
-            page_size=page_size,
-            path_filter=path_filter,
-        )
+        _params: dict[str, Any] = {}
+        _params["cacheId"] = _encode_value(cache_id)
+        if skip_count is not None:
+            _params["skipCount"] = skip_count
+        if page_size is not None:
+            _params["pageSize"] = page_size
+        if path_filter is not None:
+            _params["pathFilter"] = path_filter
 
         result = await self._executor.execute(
             method=CacheStorageCommand.REQUEST_ENTRIES,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(RequestEntriesResult, result)

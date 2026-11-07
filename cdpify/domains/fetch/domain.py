@@ -4,22 +4,14 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
-from cdpify.codec import decode_cdp, encode_cdp
+from cdpify.codec import _encode_value, decode_cdp
 from cdpify.executor import CommandExecutor
 
 from .commands import (
-    ContinueRequestParams,
-    ContinueResponseParams,
-    ContinueWithAuthParams,
-    EnableParams,
-    FailRequestParams,
     FetchCommand,
-    FulfillRequestParams,
-    GetResponseBodyParams,
     GetResponseBodyResult,
-    TakeResponseBodyAsStreamParams,
     TakeResponseBodyAsStreamResult,
 )
 from .types import (
@@ -57,14 +49,23 @@ class Fetch:
         """
         Enables issuing of requestPaused events. A request will be paused until client
         calls one of failRequest, fulfillRequest or continueRequest/continueWithAuth.
+
+        Args:
+            patterns: If specified, only requests matching any of these patterns will
+                produce fetchRequested event and will be paused until clients response.
+                If not set, all requests will be affected.
+            handle_auth_requests: If true, authRequired events will be issued and
+                requests will be paused expecting a call to continueWithAuth.
         """
-        params = EnableParams(
-            patterns=patterns, handle_auth_requests=handle_auth_requests
-        )
+        _params: dict[str, Any] = {}
+        if patterns is not None:
+            _params["patterns"] = _encode_value(patterns)
+        if handle_auth_requests is not None:
+            _params["handleAuthRequests"] = handle_auth_requests
 
         await self._executor.execute(
             method=FetchCommand.ENABLE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def fail_request(
@@ -75,12 +76,18 @@ class Fetch:
     ) -> None:
         """
         Causes the request to fail with specified reason.
+
+        Args:
+            request_id: An id the client received in requestPaused event.
+            error_reason: Causes the request to fail with the given reason.
         """
-        params = FailRequestParams(request_id=request_id, error_reason=error_reason)
+        _params: dict[str, Any] = {}
+        _params["requestId"] = _encode_value(request_id)
+        _params["errorReason"] = _encode_value(error_reason)
 
         await self._executor.execute(
             method=FetchCommand.FAIL_REQUEST,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def fulfill_request(
@@ -95,19 +102,38 @@ class Fetch:
     ) -> None:
         """
         Provides response to the request.
+
+        Args:
+            request_id: An id the client received in requestPaused event.
+            response_code: An HTTP response code.
+            response_headers: Response headers.
+            binary_response_headers: Alternative way of specifying response headers as a
+                \\0-separated series of name: value pairs. Prefer the above method
+                unless you need to represent some non-UTF8 values that can't be
+                transmitted over the protocol as text. (Encoded as a base64 string when
+                passed over JSON)
+            body: A response body. If absent, original response body will be used if the
+                request is intercepted at the response stage and empty body will be used
+                if the request is intercepted at the request stage. (Encoded as a base64
+                string when passed over JSON)
+            response_phrase: A textual representation of responseCode. If absent, a
+                standard phrase matching responseCode is used.
         """
-        params = FulfillRequestParams(
-            request_id=request_id,
-            response_code=response_code,
-            response_headers=response_headers,
-            binary_response_headers=binary_response_headers,
-            body=body,
-            response_phrase=response_phrase,
-        )
+        _params: dict[str, Any] = {}
+        _params["requestId"] = _encode_value(request_id)
+        _params["responseCode"] = response_code
+        if response_headers is not None:
+            _params["responseHeaders"] = _encode_value(response_headers)
+        if binary_response_headers is not None:
+            _params["binaryResponseHeaders"] = binary_response_headers
+        if body is not None:
+            _params["body"] = body
+        if response_phrase is not None:
+            _params["responsePhrase"] = response_phrase
 
         await self._executor.execute(
             method=FetchCommand.FULFILL_REQUEST,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def continue_request(
@@ -122,19 +148,36 @@ class Fetch:
     ) -> None:
         """
         Continues the request, optionally modifying some of its parameters.
+
+        Args:
+            request_id: An id the client received in requestPaused event.
+            url: If set, the request url will be modified in a way that's not observable
+                by page.
+            method: If set, the request method is overridden.
+            post_data: If set, overrides the post data in the request. (Encoded as a
+                base64 string when passed over JSON)
+            headers: If set, overrides the request headers. Note that the overrides do
+                not extend to subsequent redirect hops, if a redirect happens. Another
+                override may be applied to a different request produced by a redirect.
+            intercept_response: If set, overrides response interception behavior for
+                this request. Experimental: this API may change or be removed.
         """
-        params = ContinueRequestParams(
-            request_id=request_id,
-            url=url,
-            method=method,
-            post_data=post_data,
-            headers=headers,
-            intercept_response=intercept_response,
-        )
+        _params: dict[str, Any] = {}
+        _params["requestId"] = _encode_value(request_id)
+        if url is not None:
+            _params["url"] = url
+        if method is not None:
+            _params["method"] = method
+        if post_data is not None:
+            _params["postData"] = post_data
+        if headers is not None:
+            _params["headers"] = _encode_value(headers)
+        if intercept_response is not None:
+            _params["interceptResponse"] = intercept_response
 
         await self._executor.execute(
             method=FetchCommand.CONTINUE_REQUEST,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def continue_with_auth(
@@ -146,14 +189,18 @@ class Fetch:
         """
         Continues a request supplying authChallengeResponse following authRequired
         event.
+
+        Args:
+            request_id: An id the client received in authRequired event.
+            auth_challenge_response: Response to  with an authChallenge.
         """
-        params = ContinueWithAuthParams(
-            request_id=request_id, auth_challenge_response=auth_challenge_response
-        )
+        _params: dict[str, Any] = {}
+        _params["requestId"] = _encode_value(request_id)
+        _params["authChallengeResponse"] = _encode_value(auth_challenge_response)
 
         await self._executor.execute(
             method=FetchCommand.CONTINUE_WITH_AUTH,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def continue_response(
@@ -168,19 +215,36 @@ class Fetch:
         """
         Continues loading of the paused response, optionally modifying the response
         headers. If either responseCode or headers are modified, all of them must be
-        present.
+        present. Experimental: this API may change or be removed.
+
+        Args:
+            request_id: An id the client received in requestPaused event.
+            response_code: An HTTP response code. If absent, original response code will
+                be used.
+            response_phrase: A textual representation of responseCode. If absent, a
+                standard phrase matching responseCode is used.
+            response_headers: Response headers. If absent, original response headers
+                will be used.
+            binary_response_headers: Alternative way of specifying response headers as a
+                \\0-separated series of name: value pairs. Prefer the above method
+                unless you need to represent some non-UTF8 values that can't be
+                transmitted over the protocol as text. (Encoded as a base64 string when
+                passed over JSON)
         """
-        params = ContinueResponseParams(
-            request_id=request_id,
-            response_code=response_code,
-            response_phrase=response_phrase,
-            response_headers=response_headers,
-            binary_response_headers=binary_response_headers,
-        )
+        _params: dict[str, Any] = {}
+        _params["requestId"] = _encode_value(request_id)
+        if response_code is not None:
+            _params["responseCode"] = response_code
+        if response_phrase is not None:
+            _params["responsePhrase"] = response_phrase
+        if response_headers is not None:
+            _params["responseHeaders"] = _encode_value(response_headers)
+        if binary_response_headers is not None:
+            _params["binaryResponseHeaders"] = binary_response_headers
 
         await self._executor.execute(
             method=FetchCommand.CONTINUE_RESPONSE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def get_response_body(
@@ -197,12 +261,16 @@ class Fetch:
         is not available for redirects. Requests paused in the _redirect received_ state
         may be differentiated by `responseCode` and presence of `location` response
         header, see comments to `requestPaused` for details.
+
+        Args:
+            request_id: Identifier for the intercepted request to get body for.
         """
-        params = GetResponseBodyParams(request_id=request_id)
+        _params: dict[str, Any] = {}
+        _params["requestId"] = _encode_value(request_id)
 
         result = await self._executor.execute(
             method=FetchCommand.GET_RESPONSE_BODY,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetResponseBodyResult, result)
 
@@ -220,10 +288,11 @@ class Fetch:
         getResponseBody. Calling other methods that affect the request or disabling
         fetch domain before body is received results in an undefined behavior.
         """
-        params = TakeResponseBodyAsStreamParams(request_id=request_id)
+        _params: dict[str, Any] = {}
+        _params["requestId"] = _encode_value(request_id)
 
         result = await self._executor.execute(
             method=FetchCommand.TAKE_RESPONSE_BODY_AS_STREAM,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(TakeResponseBodyAsStreamResult, result)

@@ -14,4 +14,10 @@ class Metric:
     """
 
     name: str
+    """
+    Metric name.
+    """
     value: float
+    """
+    Metric value.
+    """

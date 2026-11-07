@@ -26,6 +26,9 @@ class DetachedEvent:
     __cdp_event__: ClassVar[InspectorEvent] = InspectorEvent.DETACHED
 
     reason: str
+    """
+    The reason why connection has been terminated.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -50,7 +53,7 @@ class TargetReloadedAfterCrashEvent:
 class WorkerScriptLoadedEvent:
     """
     Fired on worker targets when main worker script and any imported scripts have been
-    evaluated.
+    evaluated. Experimental: this API may change or be removed.
     """
 
     __cdp_event__: ClassVar[InspectorEvent] = InspectorEvent.WORKER_SCRIPT_LOADED

@@ -4,24 +4,17 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
-from cdpify.codec import decode_cdp, encode_cdp
+from cdpify.codec import _encode_value, decode_cdp
 from cdpify.executor import CommandExecutor
 
 from .commands import (
-    AddInspectedHeapObjectParams,
-    GetHeapObjectIdParams,
     GetHeapObjectIdResult,
-    GetObjectByHeapObjectIdParams,
     GetObjectByHeapObjectIdResult,
     GetSamplingProfileResult,
     HeapProfilerCommand,
-    StartSamplingParams,
-    StartTrackingHeapObjectsParams,
     StopSamplingResult,
-    StopTrackingHeapObjectsParams,
-    TakeHeapSnapshotParams,
 )
 from .types import (
     HeapSnapshotObjectId,
@@ -43,12 +36,17 @@ class HeapProfiler:
         """
         Enables console to refer to the node with given id via $x (see Command Line API
         for more details $x functions).
+
+        Args:
+            heap_object_id: Heap snapshot object id to be accessible by means of $x
+                command line API.
         """
-        params = AddInspectedHeapObjectParams(heap_object_id=heap_object_id)
+        _params: dict[str, Any] = {}
+        _params["heapObjectId"] = _encode_value(heap_object_id)
 
         await self._executor.execute(
             method=HeapProfilerCommand.ADD_INSPECTED_HEAP_OBJECT,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def collect_garbage(
@@ -80,11 +78,16 @@ class HeapProfiler:
         *,
         object_id: runtime.RemoteObjectId,
     ) -> GetHeapObjectIdResult:
-        params = GetHeapObjectIdParams(object_id=object_id)
+        """
+        Args:
+            object_id: Identifier of the object to get heap object id for.
+        """
+        _params: dict[str, Any] = {}
+        _params["objectId"] = _encode_value(object_id)
 
         result = await self._executor.execute(
             method=HeapProfilerCommand.GET_HEAP_OBJECT_ID,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetHeapObjectIdResult, result)
 
@@ -94,13 +97,19 @@ class HeapProfiler:
         object_id: HeapSnapshotObjectId,
         object_group: str | None = None,
     ) -> GetObjectByHeapObjectIdResult:
-        params = GetObjectByHeapObjectIdParams(
-            object_id=object_id, object_group=object_group
-        )
+        """
+        Args:
+            object_group: Symbolic group name that can be used to release multiple
+                objects.
+        """
+        _params: dict[str, Any] = {}
+        _params["objectId"] = _encode_value(object_id)
+        if object_group is not None:
+            _params["objectGroup"] = object_group
 
         result = await self._executor.execute(
             method=HeapProfilerCommand.GET_OBJECT_BY_HEAP_OBJECT_ID,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetObjectByHeapObjectIdResult, result)
 
@@ -121,16 +130,43 @@ class HeapProfiler:
         include_objects_collected_by_major_gc: bool | None = None,
         include_objects_collected_by_minor_gc: bool | None = None,
     ) -> None:
-        params = StartSamplingParams(
-            sampling_interval=sampling_interval,
-            stack_depth=stack_depth,
-            include_objects_collected_by_major_gc=include_objects_collected_by_major_gc,
-            include_objects_collected_by_minor_gc=include_objects_collected_by_minor_gc,
-        )
+        """
+        Args:
+            sampling_interval: Average sample interval in bytes. Poisson distribution is
+                used for the intervals. The default value is 32768 bytes.
+            stack_depth: Maximum stack depth. The default value is 128.
+            include_objects_collected_by_major_gc: By default, the sampling heap
+                profiler reports only objects which are still alive when the profile is
+                returned via getSamplingProfile or stopSampling, which is useful for
+                determining what functions contribute the most to steady-state memory
+                usage. This flag instructs the sampling heap profiler to also include
+                information about objects discarded by major GC, which will show which
+                functions cause large temporary memory usage or long GC pauses.
+            include_objects_collected_by_minor_gc: By default, the sampling heap
+                profiler reports only objects which are still alive when the profile is
+                returned via getSamplingProfile or stopSampling, which is useful for
+                determining what functions contribute the most to steady-state memory
+                usage. This flag instructs the sampling heap profiler to also include
+                information about objects discarded by minor GC, which is useful when
+                tuning a latency-sensitive application for minimal GC activity.
+        """
+        _params: dict[str, Any] = {}
+        if sampling_interval is not None:
+            _params["samplingInterval"] = sampling_interval
+        if stack_depth is not None:
+            _params["stackDepth"] = stack_depth
+        if include_objects_collected_by_major_gc is not None:
+            _params["includeObjectsCollectedByMajorGC"] = (
+                include_objects_collected_by_major_gc
+            )
+        if include_objects_collected_by_minor_gc is not None:
+            _params["includeObjectsCollectedByMinorGC"] = (
+                include_objects_collected_by_minor_gc
+            )
 
         await self._executor.execute(
             method=HeapProfilerCommand.START_SAMPLING,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def start_tracking_heap_objects(
@@ -138,11 +174,13 @@ class HeapProfiler:
         *,
         track_allocations: bool | None = None,
     ) -> None:
-        params = StartTrackingHeapObjectsParams(track_allocations=track_allocations)
+        _params: dict[str, Any] = {}
+        if track_allocations is not None:
+            _params["trackAllocations"] = track_allocations
 
         await self._executor.execute(
             method=HeapProfilerCommand.START_TRACKING_HEAP_OBJECTS,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def stop_sampling(
@@ -162,16 +200,30 @@ class HeapProfiler:
         capture_numeric_value: bool | None = None,
         expose_internals: bool | None = None,
     ) -> None:
-        params = StopTrackingHeapObjectsParams(
-            report_progress=report_progress,
-            treat_global_objects_as_roots=treat_global_objects_as_roots,
-            capture_numeric_value=capture_numeric_value,
-            expose_internals=expose_internals,
-        )
+        """
+        Args:
+            report_progress: If true 'reportHeapSnapshotProgress' events will be
+                generated while snapshot is being taken when the tracking is stopped.
+            treat_global_objects_as_roots: Deprecated in favor of `exposeInternals`.
+                Deprecated in the Chrome DevTools Protocol.
+            capture_numeric_value: If true, numerical values are included in the
+                snapshot
+            expose_internals: If true, exposes internals of the snapshot. Experimental:
+                this API may change or be removed.
+        """
+        _params: dict[str, Any] = {}
+        if report_progress is not None:
+            _params["reportProgress"] = report_progress
+        if treat_global_objects_as_roots is not None:
+            _params["treatGlobalObjectsAsRoots"] = treat_global_objects_as_roots
+        if capture_numeric_value is not None:
+            _params["captureNumericValue"] = capture_numeric_value
+        if expose_internals is not None:
+            _params["exposeInternals"] = expose_internals
 
         await self._executor.execute(
             method=HeapProfilerCommand.STOP_TRACKING_HEAP_OBJECTS,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def take_heap_snapshot(
@@ -182,14 +234,29 @@ class HeapProfiler:
         capture_numeric_value: bool | None = None,
         expose_internals: bool | None = None,
     ) -> None:
-        params = TakeHeapSnapshotParams(
-            report_progress=report_progress,
-            treat_global_objects_as_roots=treat_global_objects_as_roots,
-            capture_numeric_value=capture_numeric_value,
-            expose_internals=expose_internals,
-        )
+        """
+        Args:
+            report_progress: If true 'reportHeapSnapshotProgress' events will be
+                generated while snapshot is being taken.
+            treat_global_objects_as_roots: If true, a raw snapshot without artificial
+                roots will be generated. Deprecated in favor of `exposeInternals`.
+                Deprecated in the Chrome DevTools Protocol.
+            capture_numeric_value: If true, numerical values are included in the
+                snapshot
+            expose_internals: If true, exposes internals of the snapshot. Experimental:
+                this API may change or be removed.
+        """
+        _params: dict[str, Any] = {}
+        if report_progress is not None:
+            _params["reportProgress"] = report_progress
+        if treat_global_objects_as_roots is not None:
+            _params["treatGlobalObjectsAsRoots"] = treat_global_objects_as_roots
+        if capture_numeric_value is not None:
+            _params["captureNumericValue"] = capture_numeric_value
+        if expose_internals is not None:
+            _params["exposeInternals"] = expose_internals
 
         await self._executor.execute(
             method=HeapProfilerCommand.TAKE_HEAP_SNAPSHOT,
-            params=encode_cdp(params),
+            params=_params,
         )

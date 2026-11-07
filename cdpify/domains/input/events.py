@@ -21,7 +21,8 @@ class InputEvent(StrEnum):
 class DragInterceptedEvent:
     """
     Emitted only when `Input.setInterceptDrags` is enabled. Use this data with
-    `Input.dispatchDragEvent` to restore normal drag and drop behavior.
+    `Input.dispatchDragEvent` to restore normal drag and drop behavior. Experimental:
+    this API may change or be removed.
     """
 
     __cdp_event__: ClassVar[InputEvent] = InputEvent.DRAG_INTERCEPTED

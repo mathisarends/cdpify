@@ -4,11 +4,11 @@
 
 from __future__ import annotations
 
-from cdpify.codec import encode_cdp
+from typing import Any
+
 from cdpify.executor import CommandExecutor
 
 from .commands import (
-    FindFirstParams,
     FindInPageCommand,
 )
 
@@ -26,11 +26,12 @@ class FindInPage:
         Forwards `query` to the find-in-page facility, starting a new find session.
         Where exactly the search starts from is implementation-specific.
         """
-        params = FindFirstParams(query=query)
+        _params: dict[str, Any] = {}
+        _params["query"] = query
 
         await self._executor.execute(
             method=FindInPageCommand.FIND_FIRST,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def find_next(

@@ -4,11 +4,12 @@
 
 from __future__ import annotations
 
-from cdpify.codec import encode_cdp
+from typing import Any
+
+from cdpify.codec import _encode_value
 from cdpify.executor import CommandExecutor
 
 from .commands import (
-    EnableParams,
     PerformanceTimelineCommand,
 )
 
@@ -25,10 +26,18 @@ class PerformanceTimeline:
         """
         Previously buffered events would be reported before method returns. See also:
         timelineEventAdded
+
+        Args:
+            event_types: The types of event to report, as specified in
+                https://w3c.github.io/performance-timeline/#dom-performanceentry-entrytype
+                The specified filter overrides any previous filters, passing empty
+                filter disables recording. Note that not all types exposed to the web
+                platform are currently supported.
         """
-        params = EnableParams(event_types=event_types)
+        _params: dict[str, Any] = {}
+        _params["eventTypes"] = _encode_value(event_types)
 
         await self._executor.execute(
             method=PerformanceTimelineCommand.ENABLE,
-            params=encode_cdp(params),
+            params=_params,
         )

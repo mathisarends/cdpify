@@ -55,20 +55,35 @@ class AwaitPromiseParams:
     """
 
     promise_object_id: RemoteObjectId = field(metadata={"cdp_name": "promiseObjectId"})
+    """
+    Identifier of the promise.
+    """
     return_by_value: bool | None = field(
         default=None, metadata={"cdp_name": "returnByValue"}
     )
+    """
+    Whether the result is expected to be a JSON object that should be sent by value.
+    """
     generate_preview: bool | None = field(
         default=None, metadata={"cdp_name": "generatePreview"}
     )
+    """
+    Whether preview should be generated for the result.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class AwaitPromiseResult:
     result: RemoteObject
+    """
+    Promise result. Will contain rejected value if promise was rejected.
+    """
     exception_details: ExceptionDetails | None = field(
         default=None, metadata={"cdp_name": "exceptionDetails"}
     )
+    """
+    Exception details if stack strace is available.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -79,44 +94,104 @@ class CallFunctionOnParams:
     """
 
     function_declaration: str = field(metadata={"cdp_name": "functionDeclaration"})
+    """
+    Declaration of the function to call.
+    """
     object_id: RemoteObjectId | None = field(
         default=None, metadata={"cdp_name": "objectId"}
     )
+    """
+    Identifier of the object to call function on. Either objectId or executionContextId
+    should be specified.
+    """
     arguments: list[CallArgument] | None = None
+    """
+    Call arguments. All call arguments must belong to the same JavaScript world as the
+    target object.
+    """
     silent: bool | None = None
+    """
+    In silent mode exceptions thrown during evaluation are not reported and do not
+    pause execution. Overrides `setPauseOnException` state.
+    """
     return_by_value: bool | None = field(
         default=None, metadata={"cdp_name": "returnByValue"}
     )
+    """
+    Whether the result is expected to be a JSON object which should be sent by value.
+    Can be overriden by `serializationOptions`.
+    """
     generate_preview: bool | None = field(
         default=None, metadata={"cdp_name": "generatePreview"}
     )
+    """
+    Whether preview should be generated for the result. Experimental: this API may
+    change or be removed.
+    """
     user_gesture: bool | None = field(
         default=None, metadata={"cdp_name": "userGesture"}
     )
+    """
+    Whether execution should be treated as initiated by user in the UI.
+    """
     await_promise: bool | None = field(
         default=None, metadata={"cdp_name": "awaitPromise"}
     )
+    """
+    Whether execution should `await` for resulting value and return once awaited
+    promise is resolved.
+    """
     execution_context_id: ExecutionContextId | None = field(
         default=None, metadata={"cdp_name": "executionContextId"}
     )
+    """
+    Specifies execution context which global object will be used to call function on.
+    Either executionContextId or objectId should be specified.
+    """
     object_group: str | None = field(default=None, metadata={"cdp_name": "objectGroup"})
+    """
+    Symbolic group name that can be used to release multiple objects. If objectGroup is
+    not specified and objectId is, objectGroup will be inherited from object.
+    """
     throw_on_side_effect: bool | None = field(
         default=None, metadata={"cdp_name": "throwOnSideEffect"}
     )
+    """
+    Whether to throw an exception if side effect cannot be ruled out during evaluation.
+    Experimental: this API may change or be removed.
+    """
     unique_context_id: str | None = field(
         default=None, metadata={"cdp_name": "uniqueContextId"}
     )
+    """
+    An alternative way to specify the execution context to call function on. Compared
+    to contextId that may be reused across processes, this is guaranteed to be
+    system-unique, so it can be used to prevent accidental function call in context
+    different than intended (e.g. as a result of navigation across process boundaries).
+    This is mutually exclusive with `executionContextId`. Experimental: this API may
+    change or be removed.
+    """
     serialization_options: SerializationOptions | None = field(
         default=None, metadata={"cdp_name": "serializationOptions"}
     )
+    """
+    Specifies the result serialization. If provided, overrides `generatePreview` and
+    `returnByValue`. Experimental: this API may change or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class CallFunctionOnResult:
     result: RemoteObject
+    """
+    Call result.
+    """
     exception_details: ExceptionDetails | None = field(
         default=None, metadata={"cdp_name": "exceptionDetails"}
     )
+    """
+    Exception details.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -126,19 +201,38 @@ class CompileScriptParams:
     """
 
     expression: str
+    """
+    Expression to compile.
+    """
     source_url: str = field(metadata={"cdp_name": "sourceURL"})
+    """
+    Source url to be set for the script.
+    """
     persist_script: bool = field(metadata={"cdp_name": "persistScript"})
+    """
+    Specifies whether the compiled script should be persisted.
+    """
     execution_context_id: ExecutionContextId | None = field(
         default=None, metadata={"cdp_name": "executionContextId"}
     )
+    """
+    Specifies in which execution context to perform script run. If the parameter is
+    omitted the evaluation will be performed in the context of the inspected page.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class CompileScriptResult:
     script_id: ScriptId | None = field(default=None, metadata={"cdp_name": "scriptId"})
+    """
+    Id of the script.
+    """
     exception_details: ExceptionDetails | None = field(
         default=None, metadata={"cdp_name": "exceptionDetails"}
     )
+    """
+    Exception details.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -148,66 +242,155 @@ class EvaluateParams:
     """
 
     expression: str
+    """
+    Expression to evaluate.
+    """
     object_group: str | None = field(default=None, metadata={"cdp_name": "objectGroup"})
+    """
+    Symbolic group name that can be used to release multiple objects.
+    """
     include_command_line_api: bool | None = field(
         default=None, metadata={"cdp_name": "includeCommandLineAPI"}
     )
+    """
+    Determines whether Command Line API should be available during the evaluation.
+    """
     silent: bool | None = None
+    """
+    In silent mode exceptions thrown during evaluation are not reported and do not
+    pause execution. Overrides `setPauseOnException` state.
+    """
     context_id: ExecutionContextId | None = field(
         default=None, metadata={"cdp_name": "contextId"}
     )
+    """
+    Specifies in which execution context to perform evaluation. If the parameter is
+    omitted the evaluation will be performed in the context of the inspected page. This
+    is mutually exclusive with `uniqueContextId`, which offers an alternative way to
+    identify the execution context that is more reliable in a multi-process environment.
+    """
     return_by_value: bool | None = field(
         default=None, metadata={"cdp_name": "returnByValue"}
     )
+    """
+    Whether the result is expected to be a JSON object that should be sent by value.
+    """
     generate_preview: bool | None = field(
         default=None, metadata={"cdp_name": "generatePreview"}
     )
+    """
+    Whether preview should be generated for the result. Experimental: this API may
+    change or be removed.
+    """
     user_gesture: bool | None = field(
         default=None, metadata={"cdp_name": "userGesture"}
     )
+    """
+    Whether execution should be treated as initiated by user in the UI.
+    """
     await_promise: bool | None = field(
         default=None, metadata={"cdp_name": "awaitPromise"}
     )
+    """
+    Whether execution should `await` for resulting value and return once awaited
+    promise is resolved.
+    """
     throw_on_side_effect: bool | None = field(
         default=None, metadata={"cdp_name": "throwOnSideEffect"}
     )
+    """
+    Whether to throw an exception if side effect cannot be ruled out during evaluation.
+    This implies `disableBreaks` below. Experimental: this API may change or be removed.
+    """
     timeout: TimeDelta | None = None
+    """
+    Terminate execution after timing out (number of milliseconds). Experimental: this
+    API may change or be removed.
+    """
     disable_breaks: bool | None = field(
         default=None, metadata={"cdp_name": "disableBreaks"}
     )
+    """
+    Disable breakpoints during execution. Experimental: this API may change or be
+    removed.
+    """
     repl_mode: bool | None = field(default=None, metadata={"cdp_name": "replMode"})
+    """
+    Setting this flag to true enables `let` re-declaration and top-level `await`. Note
+    that `let` variables can only be re-declared if they originate from `replMode`
+    themselves. Experimental: this API may change or be removed.
+    """
     allow_unsafe_eval_blocked_by_csp: bool | None = field(
         default=None, metadata={"cdp_name": "allowUnsafeEvalBlockedByCSP"}
     )
+    """
+    The Content Security Policy (CSP) for the target might block 'unsafe-eval' which
+    includes eval(), Function(), setTimeout() and setInterval() when called with
+    non-callable arguments. This flag bypasses CSP for this evaluation and allows
+    unsafe-eval. Defaults to true. Experimental: this API may change or be removed.
+    """
     unique_context_id: str | None = field(
         default=None, metadata={"cdp_name": "uniqueContextId"}
     )
+    """
+    An alternative way to specify the execution context to evaluate in. Compared to
+    contextId that may be reused across processes, this is guaranteed to be
+    system-unique, so it can be used to prevent accidental evaluation of the expression
+    in context different than intended (e.g. as a result of navigation across process
+    boundaries). This is mutually exclusive with `contextId`. Experimental: this API may
+    change or be removed.
+    """
     serialization_options: SerializationOptions | None = field(
         default=None, metadata={"cdp_name": "serializationOptions"}
     )
+    """
+    Specifies the result serialization. If provided, overrides `generatePreview` and
+    `returnByValue`. Experimental: this API may change or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class EvaluateResult:
     result: RemoteObject
+    """
+    Evaluation result.
+    """
     exception_details: ExceptionDetails | None = field(
         default=None, metadata={"cdp_name": "exceptionDetails"}
     )
+    """
+    Exception details.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetIsolateIdResult:
     id: str
+    """
+    The isolate id.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetHeapUsageResult:
     used_size: float = field(metadata={"cdp_name": "usedSize"})
+    """
+    Used JavaScript heap size in bytes.
+    """
     total_size: float = field(metadata={"cdp_name": "totalSize"})
+    """
+    Allocated JavaScript heap size in bytes.
+    """
     embedder_heap_used_size: float = field(
         metadata={"cdp_name": "embedderHeapUsedSize"}
     )
+    """
+    Used size in bytes in the embedder's garbage-collected heap.
+    """
     backing_storage_size: float = field(metadata={"cdp_name": "backingStorageSize"})
+    """
+    Size in bytes of backing storage for array buffers and external strings.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -218,32 +401,63 @@ class GetPropertiesParams:
     """
 
     object_id: RemoteObjectId = field(metadata={"cdp_name": "objectId"})
+    """
+    Identifier of the object to return properties for.
+    """
     own_properties: bool | None = field(
         default=None, metadata={"cdp_name": "ownProperties"}
     )
+    """
+    If true, returns properties belonging only to the element itself, not to its
+    prototype chain.
+    """
     accessor_properties_only: bool | None = field(
         default=None, metadata={"cdp_name": "accessorPropertiesOnly"}
     )
+    """
+    If true, returns accessor properties (with getter/setter) only; internal properties
+    are not returned either. Experimental: this API may change or be removed.
+    """
     generate_preview: bool | None = field(
         default=None, metadata={"cdp_name": "generatePreview"}
     )
+    """
+    Whether preview should be generated for the results. Experimental: this API may
+    change or be removed.
+    """
     non_indexed_properties_only: bool | None = field(
         default=None, metadata={"cdp_name": "nonIndexedPropertiesOnly"}
     )
+    """
+    If true, returns non-indexed properties only. Experimental: this API may change or
+    be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetPropertiesResult:
     result: list[PropertyDescriptor]
+    """
+    Object properties.
+    """
     internal_properties: list[InternalPropertyDescriptor] | None = field(
         default=None, metadata={"cdp_name": "internalProperties"}
     )
+    """
+    Internal object properties (only of the element itself).
+    """
     private_properties: list[PrivatePropertyDescriptor] | None = field(
         default=None, metadata={"cdp_name": "privateProperties"}
     )
+    """
+    Object private properties. Experimental: this API may change or be removed.
+    """
     exception_details: ExceptionDetails | None = field(
         default=None, metadata={"cdp_name": "exceptionDetails"}
     )
+    """
+    Exception details.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -255,6 +469,9 @@ class GlobalLexicalScopeNamesParams:
     execution_context_id: ExecutionContextId | None = field(
         default=None, metadata={"cdp_name": "executionContextId"}
     )
+    """
+    Specifies in which execution context to lookup global scope variables.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -267,12 +484,21 @@ class QueryObjectsParams:
     prototype_object_id: RemoteObjectId = field(
         metadata={"cdp_name": "prototypeObjectId"}
     )
+    """
+    Identifier of the prototype to return objects for.
+    """
     object_group: str | None = field(default=None, metadata={"cdp_name": "objectGroup"})
+    """
+    Symbolic group name that can be used to release the results.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class QueryObjectsResult:
     objects: RemoteObject
+    """
+    Array with objects.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -282,6 +508,9 @@ class ReleaseObjectParams:
     """
 
     object_id: RemoteObjectId = field(metadata={"cdp_name": "objectId"})
+    """
+    Identifier of the object to release.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -291,6 +520,9 @@ class ReleaseObjectGroupParams:
     """
 
     object_group: str = field(metadata={"cdp_name": "objectGroup"})
+    """
+    Symbolic object group name.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -300,31 +532,64 @@ class RunScriptParams:
     """
 
     script_id: ScriptId = field(metadata={"cdp_name": "scriptId"})
+    """
+    Id of the script to run.
+    """
     execution_context_id: ExecutionContextId | None = field(
         default=None, metadata={"cdp_name": "executionContextId"}
     )
+    """
+    Specifies in which execution context to perform script run. If the parameter is
+    omitted the evaluation will be performed in the context of the inspected page.
+    """
     object_group: str | None = field(default=None, metadata={"cdp_name": "objectGroup"})
+    """
+    Symbolic group name that can be used to release multiple objects.
+    """
     silent: bool | None = None
+    """
+    In silent mode exceptions thrown during evaluation are not reported and do not
+    pause execution. Overrides `setPauseOnException` state.
+    """
     include_command_line_api: bool | None = field(
         default=None, metadata={"cdp_name": "includeCommandLineAPI"}
     )
+    """
+    Determines whether Command Line API should be available during the evaluation.
+    """
     return_by_value: bool | None = field(
         default=None, metadata={"cdp_name": "returnByValue"}
     )
+    """
+    Whether the result is expected to be a JSON object which should be sent by value.
+    """
     generate_preview: bool | None = field(
         default=None, metadata={"cdp_name": "generatePreview"}
     )
+    """
+    Whether preview should be generated for the result.
+    """
     await_promise: bool | None = field(
         default=None, metadata={"cdp_name": "awaitPromise"}
     )
+    """
+    Whether execution should `await` for resulting value and return once awaited
+    promise is resolved.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class RunScriptResult:
     result: RemoteObject
+    """
+    Run result.
+    """
     exception_details: ExceptionDetails | None = field(
         default=None, metadata={"cdp_name": "exceptionDetails"}
     )
+    """
+    Exception details.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -334,15 +599,27 @@ class SetAsyncCallStackDepthParams:
     """
 
     max_depth: int = field(metadata={"cdp_name": "maxDepth"})
+    """
+    Maximum depth of async call stacks. Setting to `0` will effectively disable
+    collecting async call stacks (default).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SetCustomObjectFormatterEnabledParams:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     enabled: bool
 
 
 @dataclass(kw_only=True, slots=True)
 class SetMaxCallStackSizeToCaptureParams:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     size: int
 
 
@@ -360,9 +637,25 @@ class AddBindingParams:
     execution_context_id: ExecutionContextId | None = field(
         default=None, metadata={"cdp_name": "executionContextId"}
     )
+    """
+    If specified, the binding would only be exposed to the specified execution context.
+    If omitted and `executionContextName` is not set, the binding is exposed to all
+    execution contexts of the target. This parameter is mutually exclusive with
+    `executionContextName`. Deprecated in favor of `executionContextName` due to an
+    unclear use case and bugs in implementation (crbug.com/1169639).
+    `executionContextId` will be removed in the future. Experimental: this API may
+    change or be removed. Deprecated in the Chrome DevTools Protocol.
+    """
     execution_context_name: str | None = field(
         default=None, metadata={"cdp_name": "executionContextName"}
     )
+    """
+    If specified, the binding is exposed to the executionContext with matching name,
+    even for contexts created after the binding is added. See also
+    `ExecutionContext.name` and `worldName` parameter to
+    `Page.addScriptToEvaluateOnNewDocument`. This parameter is mutually exclusive with
+    `executionContextId`.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -381,10 +674,13 @@ class GetExceptionDetailsParams:
     This method tries to lookup and populate exception details for a JavaScript Error
     object. Note that the stackTrace portion of the resulting exceptionDetails will only
     be populated if the Runtime domain was enabled at the time when the Error was
-    thrown.
+    thrown. Experimental: this API may change or be removed.
     """
 
     error_object_id: RemoteObjectId = field(metadata={"cdp_name": "errorObjectId"})
+    """
+    The error object for which to resolve the exception details.
+    """
 
 
 @dataclass(kw_only=True, slots=True)

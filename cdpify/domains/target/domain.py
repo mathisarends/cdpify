@@ -4,40 +4,23 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
-from cdpify.codec import decode_cdp, encode_cdp
+from cdpify.codec import _encode_value, decode_cdp
 from cdpify.executor import CommandExecutor
 from cdpify.shared.decorators import deprecated
 
 from .commands import (
-    ActivateTargetParams,
     AttachToBrowserTargetResult,
-    AttachToTargetParams,
     AttachToTargetResult,
-    AutoAttachRelatedParams,
-    CloseTargetParams,
     CloseTargetResult,
-    CreateBrowserContextParams,
     CreateBrowserContextResult,
-    CreateTargetParams,
     CreateTargetResult,
-    DetachFromTargetParams,
-    DisposeBrowserContextParams,
-    ExposeDevToolsProtocolParams,
     GetBrowserContextsResult,
-    GetDevToolsTargetParams,
     GetDevToolsTargetResult,
-    GetTargetInfoParams,
     GetTargetInfoResult,
-    GetTargetsParams,
     GetTargetsResult,
-    OpenDevToolsParams,
     OpenDevToolsResult,
-    SendMessageToTargetParams,
-    SetAutoAttachParams,
-    SetDiscoverTargetsParams,
-    SetRemoteLocationsParams,
     TargetCommand,
 )
 from .types import (
@@ -64,11 +47,12 @@ class Target:
         """
         Activates (focuses) the target.
         """
-        params = ActivateTargetParams(target_id=target_id)
+        _params: dict[str, Any] = {}
+        _params["targetId"] = _encode_value(target_id)
 
         await self._executor.execute(
             method=TargetCommand.ACTIVATE_TARGET,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def attach_to_target(
@@ -79,12 +63,20 @@ class Target:
     ) -> AttachToTargetResult:
         """
         Attaches to the target with given id.
+
+        Args:
+            flatten: Enables "flat" access to the session via specifying sessionId
+                attribute in the commands. We plan to make this the default, deprecate
+                non-flattened mode, and eventually retire it. See crbug.com/991325.
         """
-        params = AttachToTargetParams(target_id=target_id, flatten=flatten)
+        _params: dict[str, Any] = {}
+        _params["targetId"] = _encode_value(target_id)
+        if flatten is not None:
+            _params["flatten"] = flatten
 
         result = await self._executor.execute(
             method=TargetCommand.ATTACH_TO_TARGET,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(AttachToTargetResult, result)
 
@@ -92,7 +84,8 @@ class Target:
         self,
     ) -> AttachToBrowserTargetResult:
         """
-        Attaches to the browser target, only uses flat sessionId mode.
+        Attaches to the browser target, only uses flat sessionId mode. Experimental:
+        this API may change or be removed.
         """
         result = await self._executor.execute(
             method=TargetCommand.ATTACH_TO_BROWSER_TARGET,
@@ -108,11 +101,12 @@ class Target:
         """
         Closes the target. If the target is a page that gets closed too.
         """
-        params = CloseTargetParams(target_id=target_id)
+        _params: dict[str, Any] = {}
+        _params["targetId"] = _encode_value(target_id)
 
         result = await self._executor.execute(
             method=TargetCommand.CLOSE_TARGET,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(CloseTargetResult, result)
 
@@ -129,17 +123,24 @@ class Target:
         The object has the following API: - `binding.send(json)` - a method to send
         messages over the remote debugging protocol - `binding.onmessage = json =>
         handleMessage(json)` - a callback that will be called for the protocol
-        notifications and command responses.
+        notifications and command responses. Experimental: this API may change or be
+        removed.
+
+        Args:
+            binding_name: Binding name, 'cdp' if not specified.
+            inherit_permissions: If true, inherits the current root session's
+                permissions (default: false).
         """
-        params = ExposeDevToolsProtocolParams(
-            target_id=target_id,
-            binding_name=binding_name,
-            inherit_permissions=inherit_permissions,
-        )
+        _params: dict[str, Any] = {}
+        _params["targetId"] = _encode_value(target_id)
+        if binding_name is not None:
+            _params["bindingName"] = binding_name
+        if inherit_permissions is not None:
+            _params["inheritPermissions"] = inherit_permissions
 
         await self._executor.execute(
             method=TargetCommand.EXPOSE_DEV_TOOLS_PROTOCOL,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def create_browser_context(
@@ -153,17 +154,34 @@ class Target:
         """
         Creates a new empty BrowserContext. Similar to an incognito profile but you can
         have more than one.
+
+        Args:
+            dispose_on_detach: If specified, disposes this context when debugging
+                session disconnects. Experimental: this API may change or be removed.
+            proxy_server: Proxy server, similar to the one passed to --proxy-server
+                Experimental: this API may change or be removed.
+            proxy_bypass_list: Proxy bypass list, similar to the one passed to
+                --proxy-bypass-list Experimental: this API may change or be removed.
+            origins_with_universal_network_access: An optional list of origins to grant
+                unlimited cross-origin access to. Parts of the URL other than those
+                constituting origin are ignored. Experimental: this API may change or be
+                removed.
         """
-        params = CreateBrowserContextParams(
-            dispose_on_detach=dispose_on_detach,
-            proxy_server=proxy_server,
-            proxy_bypass_list=proxy_bypass_list,
-            origins_with_universal_network_access=origins_with_universal_network_access,
-        )
+        _params: dict[str, Any] = {}
+        if dispose_on_detach is not None:
+            _params["disposeOnDetach"] = dispose_on_detach
+        if proxy_server is not None:
+            _params["proxyServer"] = proxy_server
+        if proxy_bypass_list is not None:
+            _params["proxyBypassList"] = proxy_bypass_list
+        if origins_with_universal_network_access is not None:
+            _params["originsWithUniversalNetworkAccess"] = _encode_value(
+                origins_with_universal_network_access
+            )
 
         result = await self._executor.execute(
             method=TargetCommand.CREATE_BROWSER_CONTEXT,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(CreateBrowserContextResult, result)
 
@@ -198,26 +216,75 @@ class Target:
     ) -> CreateTargetResult:
         """
         Creates a new page.
+
+        Args:
+            url: The initial URL the page will be navigated to. An empty string
+                indicates about:blank.
+            left: Frame left origin in DIP (requires newWindow to be true or headless
+                shell). Experimental: this API may change or be removed.
+            top: Frame top origin in DIP (requires newWindow to be true or headless
+                shell). Experimental: this API may change or be removed.
+            width: Frame width in DIP (requires newWindow to be true or headless shell).
+            height: Frame height in DIP (requires newWindow to be true or headless
+                shell).
+            window_state: Frame window state (requires newWindow to be true or headless
+                shell). Default is normal.
+            browser_context_id: The browser context to create the page in. Experimental:
+                this API may change or be removed.
+            enable_begin_frame_control: Whether BeginFrames for this target will be
+                controlled via DevTools (headless shell only, not supported on MacOS
+                yet, false by default). Experimental: this API may change or be removed.
+            new_window: Whether to create a new Window or Tab (false by default, not
+                supported by headless shell).
+            background: Whether to create the target in background or foreground (false
+                by default, not supported by headless shell).
+            for_tab: Whether to create the target of type "tab". Experimental: this API
+                may change or be removed.
+            hidden: Whether to create a hidden target. The hidden target is observable
+                via protocol, but not present in the tab UI strip. Cannot be created
+                with `forTab: true`, `newWindow: true` or `background: false`. The
+                life-time of the tab is limited to the life-time of the session.
+                Experimental: this API may change or be removed.
+            focus: If specified, determines whether the new target should be focused. By
+                default, the focus behavior depends on the `background` parameter: - If
+                `background` is false (default) and `focus` is omitted, the new target
+                is focused and the browser window is brought to the foreground. - If
+                `background` is false and `focus` is false, the target is opened but the
+                browser window's focus remains unchanged (e.g., if the window was in the
+                background, it stays there). - If `background` is true, setting `focus`
+                to true is not supported and will result in an error. Experimental: this
+                API may change or be removed.
         """
-        params = CreateTargetParams(
-            url=url,
-            left=left,
-            top=top,
-            width=width,
-            height=height,
-            window_state=window_state,
-            browser_context_id=browser_context_id,
-            enable_begin_frame_control=enable_begin_frame_control,
-            new_window=new_window,
-            background=background,
-            for_tab=for_tab,
-            hidden=hidden,
-            focus=focus,
-        )
+        _params: dict[str, Any] = {}
+        _params["url"] = url
+        if left is not None:
+            _params["left"] = left
+        if top is not None:
+            _params["top"] = top
+        if width is not None:
+            _params["width"] = width
+        if height is not None:
+            _params["height"] = height
+        if window_state is not None:
+            _params["windowState"] = _encode_value(window_state)
+        if browser_context_id is not None:
+            _params["browserContextId"] = _encode_value(browser_context_id)
+        if enable_begin_frame_control is not None:
+            _params["enableBeginFrameControl"] = enable_begin_frame_control
+        if new_window is not None:
+            _params["newWindow"] = new_window
+        if background is not None:
+            _params["background"] = background
+        if for_tab is not None:
+            _params["forTab"] = for_tab
+        if hidden is not None:
+            _params["hidden"] = hidden
+        if focus is not None:
+            _params["focus"] = focus
 
         result = await self._executor.execute(
             method=TargetCommand.CREATE_TARGET,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(CreateTargetResult, result)
 
@@ -229,12 +296,20 @@ class Target:
     ) -> None:
         """
         Detaches session with given id.
+
+        Args:
+            session_id: Session to detach.
+            target_id: Deprecated. Deprecated in the Chrome DevTools Protocol.
         """
-        params = DetachFromTargetParams(session_id=session_id, target_id=target_id)
+        _params: dict[str, Any] = {}
+        if session_id is not None:
+            _params["sessionId"] = _encode_value(session_id)
+        if target_id is not None:
+            _params["targetId"] = _encode_value(target_id)
 
         await self._executor.execute(
             method=TargetCommand.DETACH_FROM_TARGET,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def dispose_browser_context(
@@ -246,11 +321,12 @@ class Target:
         Deletes a BrowserContext. All the belonging pages will be closed without
         calling their beforeunload hooks.
         """
-        params = DisposeBrowserContextParams(browser_context_id=browser_context_id)
+        _params: dict[str, Any] = {}
+        _params["browserContextId"] = _encode_value(browser_context_id)
 
         await self._executor.execute(
             method=TargetCommand.DISPOSE_BROWSER_CONTEXT,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def get_target_info(
@@ -259,13 +335,16 @@ class Target:
         target_id: TargetID | None = None,
     ) -> GetTargetInfoResult:
         """
-        Returns information about a target.
+        Returns information about a target. Experimental: this API may change or be
+        removed.
         """
-        params = GetTargetInfoParams(target_id=target_id)
+        _params: dict[str, Any] = {}
+        if target_id is not None:
+            _params["targetId"] = _encode_value(target_id)
 
         result = await self._executor.execute(
             method=TargetCommand.GET_TARGET_INFO,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetTargetInfoResult, result)
 
@@ -276,12 +355,20 @@ class Target:
     ) -> GetTargetsResult:
         """
         Retrieves a list of available targets.
+
+        Args:
+            filter: Only targets matching filter will be reported. If filter is not
+                specified and target discovery is currently enabled, a filter used for
+                target discovery is used for consistency. Experimental: this API may
+                change or be removed.
         """
-        params = GetTargetsParams(filter=filter)
+        _params: dict[str, Any] = {}
+        if filter is not None:
+            _params["filter"] = _encode_value(filter)
 
         result = await self._executor.execute(
             method=TargetCommand.GET_TARGETS,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetTargetsResult, result)
 
@@ -296,14 +383,22 @@ class Target:
         """
         Sends protocol message over session with given id. Consider using flat mode
         instead; see commands attachToTarget, setAutoAttach, and crbug.com/991325.
+        Deprecated in the Chrome DevTools Protocol.
+
+        Args:
+            session_id: Identifier of the session.
+            target_id: Deprecated. Deprecated in the Chrome DevTools Protocol.
         """
-        params = SendMessageToTargetParams(
-            message=message, session_id=session_id, target_id=target_id
-        )
+        _params: dict[str, Any] = {}
+        _params["message"] = message
+        if session_id is not None:
+            _params["sessionId"] = _encode_value(session_id)
+        if target_id is not None:
+            _params["targetId"] = _encode_value(target_id)
 
         await self._executor.execute(
             method=TargetCommand.SEND_MESSAGE_TO_TARGET,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_auto_attach(
@@ -322,17 +417,29 @@ class Target:
         targets added by `autoAttachRelated` from the list of targets to watch for
         creation of related targets. You might want to call this recursively for
         auto-attached targets to attach to all available targets.
+
+        Args:
+            auto_attach: Whether to auto-attach to related targets.
+            wait_for_debugger_on_start: Whether to pause new targets when attaching to
+                them. Use `Runtime.runIfWaitingForDebugger` to run paused targets.
+            flatten: Enables "flat" access to the session via specifying sessionId
+                attribute in the commands. We plan to make this the default, deprecate
+                non-flattened mode, and eventually retire it. See crbug.com/991325.
+                Experimental: this API may change or be removed.
+            filter: Only targets matching filter will be attached. Experimental: this
+                API may change or be removed.
         """
-        params = SetAutoAttachParams(
-            auto_attach=auto_attach,
-            wait_for_debugger_on_start=wait_for_debugger_on_start,
-            flatten=flatten,
-            filter=filter,
-        )
+        _params: dict[str, Any] = {}
+        _params["autoAttach"] = auto_attach
+        _params["waitForDebuggerOnStart"] = wait_for_debugger_on_start
+        if flatten is not None:
+            _params["flatten"] = flatten
+        if filter is not None:
+            _params["filter"] = _encode_value(filter)
 
         await self._executor.execute(
             method=TargetCommand.SET_AUTO_ATTACH,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def auto_attach_related(
@@ -348,17 +455,23 @@ class Target:
         service worker) and reported through `attachedToTarget`. The specified target is
         also auto-attached. This cancels the effect of any previous `setAutoAttach` and
         is also cancelled by subsequent `setAutoAttach`. Only available at the Browser
-        target.
+        target. Experimental: this API may change or be removed.
+
+        Args:
+            wait_for_debugger_on_start: Whether to pause new targets when attaching to
+                them. Use `Runtime.runIfWaitingForDebugger` to run paused targets.
+            filter: Only targets matching filter will be attached. Experimental: this
+                API may change or be removed.
         """
-        params = AutoAttachRelatedParams(
-            target_id=target_id,
-            wait_for_debugger_on_start=wait_for_debugger_on_start,
-            filter=filter,
-        )
+        _params: dict[str, Any] = {}
+        _params["targetId"] = _encode_value(target_id)
+        _params["waitForDebuggerOnStart"] = wait_for_debugger_on_start
+        if filter is not None:
+            _params["filter"] = _encode_value(filter)
 
         await self._executor.execute(
             method=TargetCommand.AUTO_ATTACH_RELATED,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_discover_targets(
@@ -370,12 +483,21 @@ class Target:
         """
         Controls whether to discover available targets and notify via
         `targetCreated/targetInfoChanged/targetDestroyed` events.
+
+        Args:
+            discover: Whether to discover available targets.
+            filter: Only targets matching filter will be attached. If `discover` is
+                false, `filter` must be omitted or empty. Experimental: this API may
+                change or be removed.
         """
-        params = SetDiscoverTargetsParams(discover=discover, filter=filter)
+        _params: dict[str, Any] = {}
+        _params["discover"] = discover
+        if filter is not None:
+            _params["filter"] = _encode_value(filter)
 
         await self._executor.execute(
             method=TargetCommand.SET_DISCOVER_TARGETS,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_remote_locations(
@@ -385,13 +507,17 @@ class Target:
     ) -> None:
         """
         Enables target discovery for the specified locations, when `setDiscoverTargets`
-        was set to `true`.
+        was set to `true`. Experimental: this API may change or be removed.
+
+        Args:
+            locations: List of remote locations.
         """
-        params = SetRemoteLocationsParams(locations=locations)
+        _params: dict[str, Any] = {}
+        _params["locations"] = _encode_value(locations)
 
         await self._executor.execute(
             method=TargetCommand.SET_REMOTE_LOCATIONS,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def get_dev_tools_target(
@@ -401,13 +527,17 @@ class Target:
     ) -> GetDevToolsTargetResult:
         """
         Gets the targetId of the DevTools page target opened for the given target (if
-        any).
+        any). Experimental: this API may change or be removed.
+
+        Args:
+            target_id: Page or tab target ID.
         """
-        params = GetDevToolsTargetParams(target_id=target_id)
+        _params: dict[str, Any] = {}
+        _params["targetId"] = _encode_value(target_id)
 
         result = await self._executor.execute(
             method=TargetCommand.GET_DEV_TOOLS_TARGET,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetDevToolsTargetResult, result)
 
@@ -418,12 +548,22 @@ class Target:
         panel_id: str | None = None,
     ) -> OpenDevToolsResult:
         """
-        Opens a DevTools window for the target.
+        Opens a DevTools window for the target. Experimental: this API may change or be
+        removed.
+
+        Args:
+            target_id: This can be the page or tab target ID.
+            panel_id: The id of the panel we want DevTools to open initially. Currently
+                supported panels are elements, console, network, sources, resources,
+                timeline, chrome-recorder, heap-profiler, lighthouse, and security.
         """
-        params = OpenDevToolsParams(target_id=target_id, panel_id=panel_id)
+        _params: dict[str, Any] = {}
+        _params["targetId"] = _encode_value(target_id)
+        if panel_id is not None:
+            _params["panelId"] = panel_id
 
         result = await self._executor.execute(
             method=TargetCommand.OPEN_DEV_TOOLS,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(OpenDevToolsResult, result)

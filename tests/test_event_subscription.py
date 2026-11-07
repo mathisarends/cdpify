@@ -170,7 +170,7 @@ async def test_event_name_overrides_cdp_event() -> None:
 
 @pytest.mark.asyncio
 async def test_bounded_listeners_drop_oldest_independently_and_drain_on_close() -> None:
-    router = EventRouter(max_queue_size=2)
+    router = EventRouter(max_queue_size=2, overflow="drop_oldest")
     bounded = router.listen(_Event, session_id=None)
     unlimited = router.listen(_Event, session_id=None, max_queue_size=0)
     global_events = router.listen_all(_Event, max_queue_size=1)

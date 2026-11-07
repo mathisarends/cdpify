@@ -70,23 +70,41 @@ class GetHighlightObjectForTestParams:
     """
 
     node_id: dom.NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    Id of the node to get highlight object for.
+    """
     include_distance: bool | None = field(
         default=None, metadata={"cdp_name": "includeDistance"}
     )
+    """
+    Whether to include distance info.
+    """
     include_style: bool | None = field(
         default=None, metadata={"cdp_name": "includeStyle"}
     )
+    """
+    Whether to include style info.
+    """
     color_format: ColorFormat | None = field(
         default=None, metadata={"cdp_name": "colorFormat"}
     )
+    """
+    The color format to get config with (default: hex).
+    """
     show_accessibility_info: bool | None = field(
         default=None, metadata={"cdp_name": "showAccessibilityInfo"}
     )
+    """
+    Whether to show accessibility info (default: true).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetHighlightObjectForTestResult:
     highlight: dict[str, Any]
+    """
+    Highlight data for the node.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -96,11 +114,17 @@ class GetGridHighlightObjectsForTestParams:
     """
 
     node_ids: list[dom.NodeId] = field(metadata={"cdp_name": "nodeIds"})
+    """
+    Ids of the node to get highlight object for.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetGridHighlightObjectsForTestResult:
     highlights: dict[str, Any]
+    """
+    Grid Highlight data for the node ids provided.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -110,11 +134,17 @@ class GetSourceOrderHighlightObjectForTestParams:
     """
 
     node_id: dom.NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    Id of the node to highlight.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetSourceOrderHighlightObjectForTestResult:
     highlight: dict[str, Any]
+    """
+    Source order highlight data for the node id provided.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -123,15 +153,25 @@ class HighlightFrameParams:
     Highlights owner element of the frame with given id. Deprecated: Doesn't work
     reliably and cannot be fixed due to process separation (the owner node might be in a
     different process). Determine the owner node in the client and use highlightNode.
+    Deprecated in the Chrome DevTools Protocol.
     """
 
     frame_id: page.FrameId = field(metadata={"cdp_name": "frameId"})
+    """
+    Identifier of the frame to highlight.
+    """
     content_color: dom.RGBA | None = field(
         default=None, metadata={"cdp_name": "contentColor"}
     )
+    """
+    The content box highlight fill color (default: transparent).
+    """
     content_outline_color: dom.RGBA | None = field(
         default=None, metadata={"cdp_name": "contentOutlineColor"}
     )
+    """
+    The content box highlight outline color (default: transparent).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -142,14 +182,29 @@ class HighlightNodeParams:
     """
 
     highlight_config: HighlightConfig = field(metadata={"cdp_name": "highlightConfig"})
+    """
+    A descriptor for the highlight appearance.
+    """
     node_id: dom.NodeId | None = field(default=None, metadata={"cdp_name": "nodeId"})
+    """
+    Identifier of the node to highlight.
+    """
     backend_node_id: dom.BackendNodeId | None = field(
         default=None, metadata={"cdp_name": "backendNodeId"}
     )
+    """
+    Identifier of the backend node to highlight.
+    """
     object_id: runtime.RemoteObjectId | None = field(
         default=None, metadata={"cdp_name": "objectId"}
     )
+    """
+    JavaScript object id of the node to be highlighted.
+    """
     selector: str | None = None
+    """
+    Selectors to highlight relevant nodes.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -160,10 +215,19 @@ class HighlightQuadParams:
     """
 
     quad: dom.Quad
+    """
+    Quad to highlight
+    """
     color: dom.RGBA | None = None
+    """
+    The highlight fill color (default: transparent).
+    """
     outline_color: dom.RGBA | None = field(
         default=None, metadata={"cdp_name": "outlineColor"}
     )
+    """
+    The highlight outline color (default: transparent).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -176,13 +240,31 @@ class HighlightRectParams:
     """
 
     x: int
+    """
+    X coordinate
+    """
     y: int
+    """
+    Y coordinate
+    """
     width: int
+    """
+    Rectangle width
+    """
     height: int
+    """
+    Rectangle height
+    """
     color: dom.RGBA | None = None
+    """
+    The highlight fill color (default: transparent).
+    """
     outline_color: dom.RGBA | None = field(
         default=None, metadata={"cdp_name": "outlineColor"}
     )
+    """
+    The highlight outline color (default: transparent).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -195,13 +277,25 @@ class HighlightSourceOrderParams:
     source_order_config: SourceOrderConfig = field(
         metadata={"cdp_name": "sourceOrderConfig"}
     )
+    """
+    A descriptor for the appearance of the overlay drawing.
+    """
     node_id: dom.NodeId | None = field(default=None, metadata={"cdp_name": "nodeId"})
+    """
+    Identifier of the node to highlight.
+    """
     backend_node_id: dom.BackendNodeId | None = field(
         default=None, metadata={"cdp_name": "backendNodeId"}
     )
+    """
+    Identifier of the backend node to highlight.
+    """
     object_id: runtime.RemoteObjectId | None = field(
         default=None, metadata={"cdp_name": "objectId"}
     )
+    """
+    JavaScript object id of the node to be highlighted.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -213,9 +307,16 @@ class SetInspectModeParams:
     """
 
     mode: InspectMode
+    """
+    Set an inspection mode.
+    """
     highlight_config: HighlightConfig | None = field(
         default=None, metadata={"cdp_name": "highlightConfig"}
     )
+    """
+    A descriptor for the highlight appearance of hovered-over nodes. May be omitted if
+    `enabled == false`.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -225,11 +326,17 @@ class SetShowAdHighlightsParams:
     """
 
     show: bool
+    """
+    True for showing ad highlights
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SetPausedInDebuggerMessageParams:
     message: str | None = None
+    """
+    The message to display, also triggers resume and step over controls.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -239,6 +346,9 @@ class SetShowDebugBordersParams:
     """
 
     show: bool
+    """
+    True for showing debug borders
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -248,6 +358,9 @@ class SetShowFPSCounterParams:
     """
 
     show: bool
+    """
+    True for showing the FPS counter
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -259,6 +372,9 @@ class SetShowGridOverlaysParams:
     grid_node_highlight_configs: list[GridNodeHighlightConfig] = field(
         metadata={"cdp_name": "gridNodeHighlightConfigs"}
     )
+    """
+    An array of node identifiers and descriptors for the highlight appearance.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -266,6 +382,9 @@ class SetShowFlexOverlaysParams:
     flex_node_highlight_configs: list[FlexNodeHighlightConfig] = field(
         metadata={"cdp_name": "flexNodeHighlightConfigs"}
     )
+    """
+    An array of node identifiers and descriptors for the highlight appearance.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -273,6 +392,9 @@ class SetShowScrollSnapOverlaysParams:
     scroll_snap_highlight_configs: list[ScrollSnapHighlightConfig] = field(
         metadata={"cdp_name": "scrollSnapHighlightConfigs"}
     )
+    """
+    An array of node identifiers and descriptors for the highlight appearance.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -280,6 +402,9 @@ class SetShowContainerQueryOverlaysParams:
     container_query_highlight_configs: list[ContainerQueryHighlightConfig] = field(
         metadata={"cdp_name": "containerQueryHighlightConfigs"}
     )
+    """
+    An array of node identifiers and descriptors for the highlight appearance.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -287,6 +412,9 @@ class SetShowInspectedElementAnchorParams:
     inspected_element_anchor_config: InspectedElementAnchorConfig = field(
         metadata={"cdp_name": "inspectedElementAnchorConfig"}
     )
+    """
+    Node identifier for which to show an anchor for.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -296,6 +424,9 @@ class SetShowPaintRectsParams:
     """
 
     result: bool
+    """
+    True for showing paint rectangles
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -305,6 +436,9 @@ class SetShowLayoutShiftRegionsParams:
     """
 
     result: bool
+    """
+    True for showing layout shift regions
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -314,21 +448,27 @@ class SetShowScrollBottleneckRectsParams:
     """
 
     show: bool
+    """
+    True for showing scroll bottleneck rects
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SetShowHitTestBordersParams:
     """
-    Deprecated, no longer has any effect.
+    Deprecated, no longer has any effect. Deprecated in the Chrome DevTools Protocol.
     """
 
     show: bool
+    """
+    True for showing hit-test borders
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SetShowWebVitalsParams:
     """
-    Deprecated, no longer has any effect.
+    Deprecated, no longer has any effect. Deprecated in the Chrome DevTools Protocol.
     """
 
     show: bool
@@ -341,6 +481,9 @@ class SetShowViewportSizeOnResizeParams:
     """
 
     show: bool
+    """
+    Whether to paint size or not.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -352,6 +495,9 @@ class SetShowHingeParams:
     hinge_config: HingeConfig | None = field(
         default=None, metadata={"cdp_name": "hingeConfig"}
     )
+    """
+    hinge data, null means hideHinge
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -363,6 +509,9 @@ class SetShowDisplayCutoutParams:
     display_cutout_config: DisplayCutoutConfig | None = field(
         default=None, metadata={"cdp_name": "displayCutoutConfig"}
     )
+    """
+    display cutout data, null means hide display cutout
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -374,6 +523,9 @@ class SetShowIsolatedElementsParams:
     isolated_element_highlight_configs: list[IsolatedElementHighlightConfig] = field(
         metadata={"cdp_name": "isolatedElementHighlightConfigs"}
     )
+    """
+    An array of node identifiers and descriptors for the highlight appearance.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -385,3 +537,6 @@ class SetShowWindowControlsOverlayParams:
     window_controls_overlay_config: WindowControlsOverlayConfig | None = field(
         default=None, metadata={"cdp_name": "windowControlsOverlayConfig"}
     )
+    """
+    Window Controls Overlay data, null means hide Window Controls Overlay
+    """

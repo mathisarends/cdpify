@@ -24,6 +24,15 @@ class PlayerMessage:
     """
 
     level: Literal["error", "warning", "info", "debug"]
+    """
+    Keep in sync with MediaLogMessageLevel We are currently keeping the message level
+    'error' separate from the PlayerError type because right now they represent
+    different things, this one being a DVLOG(ERROR) style log message that gets printed
+    based on what log level is selected in the UI, and the other is a representation of
+    a media::PipelineStatus object. Soon however we're going to be moving away from
+    using PipelineStatus for errors and introducing a new error type which should
+    hopefully let us integrate the error log level into the PlayerError type.
+    """
     message: str
 
 
@@ -66,9 +75,23 @@ class PlayerError:
 
     error_type: str = field(metadata={"cdp_name": "errorType"})
     code: int
+    """
+    Code is the numeric enum entry for a specific set of error codes, such as
+    PipelineStatusCodes in media/base/pipeline_status.h
+    """
     stack: list[PlayerErrorSourceLocation]
+    """
+    A trace of where this error was caused / where it passed through.
+    """
     cause: list[PlayerError]
+    """
+    Errors potentially have a root cause error, ie, a DecoderError might be caused by
+    an WindowsError
+    """
     data: dict[str, Any]
+    """
+    Extra data attached to an error, such as an HRESULT, Video Codec, etc.
+    """
 
 
 @dataclass(kw_only=True, slots=True)

@@ -49,22 +49,38 @@ class AttributeModifiedEvent:
     __cdp_event__: ClassVar[DOMEvent] = DOMEvent.ATTRIBUTE_MODIFIED
 
     node_id: NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    Id of the node that has changed.
+    """
     name: str
+    """
+    Attribute name.
+    """
     value: str
+    """
+    Attribute value.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class AdoptedStyleSheetsModifiedEvent:
     """
-    Fired when `Element`'s adoptedStyleSheets are modified.
+    Fired when `Element`'s adoptedStyleSheets are modified. Experimental: this API may
+    change or be removed.
     """
 
     __cdp_event__: ClassVar[DOMEvent] = DOMEvent.ADOPTED_STYLE_SHEETS_MODIFIED
 
     node_id: NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    Id of the node that has changed.
+    """
     adopted_style_sheets: list[StyleSheetId] = field(
         metadata={"cdp_name": "adoptedStyleSheets"}
     )
+    """
+    New adoptedStyleSheets array. Experimental: this API may change or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -76,7 +92,13 @@ class AttributeRemovedEvent:
     __cdp_event__: ClassVar[DOMEvent] = DOMEvent.ATTRIBUTE_REMOVED
 
     node_id: NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    Id of the node that has changed.
+    """
     name: str
+    """
+    A ttribute name.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -88,7 +110,13 @@ class CharacterDataModifiedEvent:
     __cdp_event__: ClassVar[DOMEvent] = DOMEvent.CHARACTER_DATA_MODIFIED
 
     node_id: NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    Id of the node that has changed.
+    """
     character_data: str = field(metadata={"cdp_name": "characterData"})
+    """
+    New text value.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -100,7 +128,13 @@ class ChildNodeCountUpdatedEvent:
     __cdp_event__: ClassVar[DOMEvent] = DOMEvent.CHILD_NODE_COUNT_UPDATED
 
     node_id: NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    Id of the node that has changed.
+    """
     child_node_count: int = field(metadata={"cdp_name": "childNodeCount"})
+    """
+    New node count.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -112,8 +146,17 @@ class ChildNodeInsertedEvent:
     __cdp_event__: ClassVar[DOMEvent] = DOMEvent.CHILD_NODE_INSERTED
 
     parent_node_id: NodeId = field(metadata={"cdp_name": "parentNodeId"})
+    """
+    Id of the node that has changed.
+    """
     previous_node_id: NodeId = field(metadata={"cdp_name": "previousNodeId"})
+    """
+    Id of the previous sibling.
+    """
     node: Node
+    """
+    Inserted node data.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -125,21 +168,34 @@ class ChildNodeRemovedEvent:
     __cdp_event__: ClassVar[DOMEvent] = DOMEvent.CHILD_NODE_REMOVED
 
     parent_node_id: NodeId = field(metadata={"cdp_name": "parentNodeId"})
+    """
+    Parent id.
+    """
     node_id: NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    Id of the node that has been removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class DistributedNodesUpdatedEvent:
     """
-    Called when distribution is changed.
+    Called when distribution is changed. Experimental: this API may change or be
+    removed.
     """
 
     __cdp_event__: ClassVar[DOMEvent] = DOMEvent.DISTRIBUTED_NODES_UPDATED
 
     insertion_point_id: NodeId = field(metadata={"cdp_name": "insertionPointId"})
+    """
+    Insertion point where distributed nodes were updated.
+    """
     distributed_nodes: list[BackendNode] = field(
         metadata={"cdp_name": "distributedNodes"}
     )
+    """
+    Distributed nodes for given insertion point.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -155,29 +211,41 @@ class DocumentUpdatedEvent:
 class InlineStyleInvalidatedEvent:
     """
     Fired when `Element`'s inline style is modified via a CSS property modification.
+    Experimental: this API may change or be removed.
     """
 
     __cdp_event__: ClassVar[DOMEvent] = DOMEvent.INLINE_STYLE_INVALIDATED
 
     node_ids: list[NodeId] = field(metadata={"cdp_name": "nodeIds"})
+    """
+    Ids of the nodes for which the inline styles have been invalidated.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class PseudoElementAddedEvent:
     """
-    Called when a pseudo element is added to an element.
+    Called when a pseudo element is added to an element. Experimental: this API may
+    change or be removed.
     """
 
     __cdp_event__: ClassVar[DOMEvent] = DOMEvent.PSEUDO_ELEMENT_ADDED
 
     parent_id: NodeId = field(metadata={"cdp_name": "parentId"})
+    """
+    Pseudo element's parent element id.
+    """
     pseudo_element: Node = field(metadata={"cdp_name": "pseudoElement"})
+    """
+    The added pseudo element.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class TopLayerElementsUpdatedEvent:
     """
-    Called when top layer elements are changed.
+    Called when top layer elements are changed. Experimental: this API may change or be
+    removed.
     """
 
     __cdp_event__: ClassVar[DOMEvent] = DOMEvent.TOP_LAYER_ELEMENTS_UPDATED
@@ -186,33 +254,48 @@ class TopLayerElementsUpdatedEvent:
 @dataclass(kw_only=True, slots=True)
 class ScrollableFlagUpdatedEvent:
     """
-    Fired when a node's scrollability state changes.
+    Fired when a node's scrollability state changes. Experimental: this API may change
+    or be removed.
     """
 
     __cdp_event__: ClassVar[DOMEvent] = DOMEvent.SCROLLABLE_FLAG_UPDATED
 
     node_id: dom.NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    The id of the node.
+    """
     is_scrollable: bool = field(metadata={"cdp_name": "isScrollable"})
+    """
+    If the node is scrollable.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class AdRelatedStateUpdatedEvent:
     """
-    Fired when a node's ad related state changes.
+    Fired when a node's ad related state changes. Experimental: this API may change or
+    be removed.
     """
 
     __cdp_event__: ClassVar[DOMEvent] = DOMEvent.AD_RELATED_STATE_UPDATED
 
     node_id: dom.NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    The id of the node.
+    """
     ad_provenance: network.AdProvenance | None = field(
         default=None, metadata={"cdp_name": "adProvenance"}
     )
+    """
+    The provenance of the ad related node, if it is ad related.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class AffectedByStartingStylesFlagUpdatedEvent:
     """
-    Fired when a node's starting styles changes.
+    Fired when a node's starting styles changes. Experimental: this API may change or
+    be removed.
     """
 
     __cdp_event__: ClassVar[DOMEvent] = (
@@ -220,21 +303,34 @@ class AffectedByStartingStylesFlagUpdatedEvent:
     )
 
     node_id: dom.NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    The id of the node.
+    """
     affected_by_starting_styles: bool = field(
         metadata={"cdp_name": "affectedByStartingStyles"}
     )
+    """
+    If the node has starting styles.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class PseudoElementRemovedEvent:
     """
-    Called when a pseudo element is removed from an element.
+    Called when a pseudo element is removed from an element. Experimental: this API may
+    change or be removed.
     """
 
     __cdp_event__: ClassVar[DOMEvent] = DOMEvent.PSEUDO_ELEMENT_REMOVED
 
     parent_id: NodeId = field(metadata={"cdp_name": "parentId"})
+    """
+    Pseudo element's parent element id.
+    """
     pseudo_element_id: NodeId = field(metadata={"cdp_name": "pseudoElementId"})
+    """
+    The removed pseudo element id.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -247,28 +343,48 @@ class SetChildNodesEvent:
     __cdp_event__: ClassVar[DOMEvent] = DOMEvent.SET_CHILD_NODES
 
     parent_id: NodeId = field(metadata={"cdp_name": "parentId"})
+    """
+    Parent node id to populate with children.
+    """
     nodes: list[Node]
+    """
+    Child nodes array.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class ShadowRootPoppedEvent:
     """
-    Called when shadow root is popped from the element.
+    Called when shadow root is popped from the element. Experimental: this API may
+    change or be removed.
     """
 
     __cdp_event__: ClassVar[DOMEvent] = DOMEvent.SHADOW_ROOT_POPPED
 
     host_id: NodeId = field(metadata={"cdp_name": "hostId"})
+    """
+    Host element id.
+    """
     root_id: NodeId = field(metadata={"cdp_name": "rootId"})
+    """
+    Shadow root id.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class ShadowRootPushedEvent:
     """
-    Called when shadow root is pushed into the element.
+    Called when shadow root is pushed into the element. Experimental: this API may
+    change or be removed.
     """
 
     __cdp_event__: ClassVar[DOMEvent] = DOMEvent.SHADOW_ROOT_PUSHED
 
     host_id: NodeId = field(metadata={"cdp_name": "hostId"})
+    """
+    Host element id.
+    """
     root: Node
+    """
+    Shadow root.
+    """

@@ -65,7 +65,15 @@ class ManufacturerData:
     """
 
     key: int
+    """
+    Company identifier
+    https://bitbucket.org/bluetooth-SIG/public/src/main/assigned_numbers/company_identifiers/company_identifiers.yaml
+    https://usb.org/developers
+    """
     data: str
+    """
+    Manufacturer-specific data (Encoded as a base64 string when passed over JSON)
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -77,10 +85,20 @@ class ScanRecord:
     name: str | None = None
     uuids: list[str] | None = None
     appearance: int | None = None
+    """
+    Stores the external appearance description of the device.
+    """
     tx_power: int | None = field(default=None, metadata={"cdp_name": "txPower"})
+    """
+    Stores the transmission power of a broadcasting device.
+    """
     manufacturer_data: list[ManufacturerData] | None = field(
         default=None, metadata={"cdp_name": "manufacturerData"}
     )
+    """
+    Key is the company identifier and the value is an array of bytes of manufacturer
+    specific data.
+    """
 
 
 @dataclass(kw_only=True, slots=True)

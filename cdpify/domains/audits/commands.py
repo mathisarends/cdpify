@@ -30,16 +30,38 @@ class GetEncodedResponseParams:
     """
 
     request_id: network.RequestId = field(metadata={"cdp_name": "requestId"})
+    """
+    Identifier of the network request to get content for.
+    """
     encoding: Literal["webp", "jpeg", "png"]
+    """
+    The encoding to use.
+    """
     quality: float | None = None
+    """
+    The quality of the encoding (0-1). (defaults to 1)
+    """
     size_only: bool | None = field(default=None, metadata={"cdp_name": "sizeOnly"})
+    """
+    Whether to only return the size information (defaults to false).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetEncodedResponseResult:
     body: str | None = None
+    """
+    The encoded body as a base64 string. Omitted if sizeOnly is true. (Encoded as a
+    base64 string when passed over JSON)
+    """
     original_size: int = field(metadata={"cdp_name": "originalSize"})
+    """
+    Size before re-encoding.
+    """
     encoded_size: int = field(metadata={"cdp_name": "encodedSize"})
+    """
+    Size after re-encoding.
+    """
 
 
 @dataclass(kw_only=True, slots=True)

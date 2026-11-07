@@ -4,18 +4,15 @@
 
 from __future__ import annotations
 
-from typing import Literal
+from typing import Any, Literal
 
-from cdpify.codec import decode_cdp, encode_cdp
+from cdpify.codec import _encode_value, decode_cdp
 from cdpify.executor import CommandExecutor
 
 from .commands import (
     GetCategoriesResult,
     GetTrackEventDescriptorResult,
-    RecordClockSyncMarkerParams,
-    RequestMemoryDumpParams,
     RequestMemoryDumpResult,
-    StartParams,
     TracingCommand,
 )
 from .types import (
@@ -46,7 +43,8 @@ class Tracing:
         self,
     ) -> GetCategoriesResult:
         """
-        Gets supported tracing categories.
+        Gets supported tracing categories. Experimental: this API may change or be
+        removed.
         """
         result = await self._executor.execute(
             method=TracingCommand.GET_CATEGORIES,
@@ -58,7 +56,8 @@ class Tracing:
         self,
     ) -> GetTrackEventDescriptorResult:
         """
-        Return a descriptor for all available tracing categories.
+        Return a descriptor for all available tracing categories. Experimental: this
+        API may change or be removed.
         """
         result = await self._executor.execute(
             method=TracingCommand.GET_TRACK_EVENT_DESCRIPTOR,
@@ -72,13 +71,18 @@ class Tracing:
         sync_id: str,
     ) -> None:
         """
-        Record a clock sync marker in the trace.
+        Record a clock sync marker in the trace. Experimental: this API may change or
+        be removed.
+
+        Args:
+            sync_id: The ID of this clock sync marker
         """
-        params = RecordClockSyncMarkerParams(sync_id=sync_id)
+        _params: dict[str, Any] = {}
+        _params["syncId"] = sync_id
 
         await self._executor.execute(
             method=TracingCommand.RECORD_CLOCK_SYNC_MARKER,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def request_memory_dump(
@@ -88,15 +92,23 @@ class Tracing:
         level_of_detail: MemoryDumpLevelOfDetail | None = None,
     ) -> RequestMemoryDumpResult:
         """
-        Request a global memory dump.
+        Request a global memory dump. Experimental: this API may change or be removed.
+
+        Args:
+            deterministic: Enables more deterministic results by forcing garbage
+                collection
+            level_of_detail: Specifies level of details in memory dump. Defaults to
+                "detailed".
         """
-        params = RequestMemoryDumpParams(
-            deterministic=deterministic, level_of_detail=level_of_detail
-        )
+        _params: dict[str, Any] = {}
+        if deterministic is not None:
+            _params["deterministic"] = deterministic
+        if level_of_detail is not None:
+            _params["levelOfDetail"] = _encode_value(level_of_detail)
 
         result = await self._executor.execute(
             method=TracingCommand.REQUEST_MEMORY_DUMP,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(RequestMemoryDumpResult, result)
 
@@ -117,22 +129,66 @@ class Tracing:
     ) -> None:
         """
         Start trace events collection.
+
+        Args:
+            categories: Category/tag filter Experimental: this API may change or be
+                removed. Deprecated in the Chrome DevTools Protocol.
+            options: Tracing options Experimental: this API may change or be removed.
+                Deprecated in the Chrome DevTools Protocol.
+            buffer_usage_reporting_interval: If set, the agent will issue bufferUsage
+                events at this interval, specified in milliseconds Experimental: this
+                API may change or be removed.
+            transfer_mode: Whether to report trace events as series of dataCollected
+                events or to save trace to a stream (defaults to `ReportEvents`).
+            stream_format: Trace data format to use. This only applies when using
+                `ReturnAsStream` transfer mode (defaults to `json`).
+            stream_compression: Compression format to use. This only applies when using
+                `ReturnAsStream` transfer mode (defaults to `none`) Experimental: this
+                API may change or be removed.
+            perfetto_config: Base64-encoded serialized perfetto.protos.TraceConfig
+                protobuf message When specified, the parameters `categories`, `options`,
+                `traceConfig` are ignored. (Encoded as a base64 string when passed over
+                JSON) Experimental: this API may change or be removed.
+            tracing_backend: Backend type (defaults to `auto`) Experimental: this API
+                may change or be removed.
+            screenshot_max_size: Maximum width and height (in pixels) of each captured
+                screenshot. Only used when the `disabled-by-default-devtools.screenshot`
+                category is enabled. Defaults to 500. The combined memory footprint of
+                screenshots (`screenshotMaxSize` * `screenshotMaxSize` * 4 *
+                `screenshotMaxCount`) is clamped to the existing per-session budget.
+                Experimental: this API may change or be removed.
+            screenshot_max_count: Maximum number of screenshots captured during a single
+                tracing session. Only used when the
+                `disabled-by-default-devtools.screenshot` category is enabled. Defaults
+                to 450. Clamped together with `screenshotMaxSize` to stay within the
+                per-session screenshot memory budget. Experimental: this API may change
+                or be removed.
         """
-        params = StartParams(
-            categories=categories,
-            options=options,
-            buffer_usage_reporting_interval=buffer_usage_reporting_interval,
-            transfer_mode=transfer_mode,
-            stream_format=stream_format,
-            stream_compression=stream_compression,
-            trace_config=trace_config,
-            perfetto_config=perfetto_config,
-            tracing_backend=tracing_backend,
-            screenshot_max_size=screenshot_max_size,
-            screenshot_max_count=screenshot_max_count,
-        )
+        _params: dict[str, Any] = {}
+        if categories is not None:
+            _params["categories"] = categories
+        if options is not None:
+            _params["options"] = options
+        if buffer_usage_reporting_interval is not None:
+            _params["bufferUsageReportingInterval"] = buffer_usage_reporting_interval
+        if transfer_mode is not None:
+            _params["transferMode"] = transfer_mode
+        if stream_format is not None:
+            _params["streamFormat"] = _encode_value(stream_format)
+        if stream_compression is not None:
+            _params["streamCompression"] = _encode_value(stream_compression)
+        if trace_config is not None:
+            _params["traceConfig"] = _encode_value(trace_config)
+        if perfetto_config is not None:
+            _params["perfettoConfig"] = perfetto_config
+        if tracing_backend is not None:
+            _params["tracingBackend"] = _encode_value(tracing_backend)
+        if screenshot_max_size is not None:
+            _params["screenshotMaxSize"] = screenshot_max_size
+        if screenshot_max_count is not None:
+            _params["screenshotMaxCount"] = screenshot_max_count
 
         await self._executor.execute(
             method=TracingCommand.START,
-            params=encode_cdp(params),
+            params=_params,
         )

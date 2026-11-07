@@ -4,15 +4,15 @@
 
 from __future__ import annotations
 
-from cdpify.codec import decode_cdp, encode_cdp
+from typing import Any
+
+from cdpify.codec import _encode_value, decode_cdp
 from cdpify.executor import CommandExecutor
 from cdpify.shared.decorators import deprecated
 
 from .commands import (
-    CaptureSnapshotParams,
     CaptureSnapshotResult,
     DOMSnapshotCommand,
-    GetSnapshotParams,
     GetSnapshotResult,
 )
 
@@ -56,18 +56,30 @@ class DOMSnapshot:
         Returns a document snapshot, including the full DOM tree of the root node
         (including iframes, template contents, and imported documents) in a flattened
         array, as well as layout and white-listed computed style information for the
-        nodes. Shadow DOM in the returned DOM tree is flattened.
+        nodes. Shadow DOM in the returned DOM tree is flattened. Deprecated in the
+        Chrome DevTools Protocol.
+
+        Args:
+            computed_style_whitelist: Whitelist of computed styles to return.
+            include_event_listeners: Whether or not to retrieve details of DOM listeners
+                (default false).
+            include_paint_order: Whether to determine and include the paint order index
+                of LayoutTreeNodes (default false).
+            include_user_agent_shadow_tree: Whether to include UA shadow tree in the
+                snapshot (default false).
         """
-        params = GetSnapshotParams(
-            computed_style_whitelist=computed_style_whitelist,
-            include_event_listeners=include_event_listeners,
-            include_paint_order=include_paint_order,
-            include_user_agent_shadow_tree=include_user_agent_shadow_tree,
-        )
+        _params: dict[str, Any] = {}
+        _params["computedStyleWhitelist"] = _encode_value(computed_style_whitelist)
+        if include_event_listeners is not None:
+            _params["includeEventListeners"] = include_event_listeners
+        if include_paint_order is not None:
+            _params["includePaintOrder"] = include_paint_order
+        if include_user_agent_shadow_tree is not None:
+            _params["includeUserAgentShadowTree"] = include_user_agent_shadow_tree
 
         result = await self._executor.execute(
             method=DOMSnapshotCommand.GET_SNAPSHOT,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetSnapshotResult, result)
 
@@ -85,17 +97,38 @@ class DOMSnapshot:
         (including iframes, template contents, and imported documents) in a flattened
         array, as well as layout and white-listed computed style information for the
         nodes. Shadow DOM in the returned DOM tree is flattened.
+
+        Args:
+            computed_styles: Whitelist of computed styles to return.
+            include_paint_order: Whether to include layout object paint orders into the
+                snapshot.
+            include_dom_rects: Whether to include DOM rectangles (offsetRects,
+                clientRects, scrollRects) into the snapshot
+            include_blended_background_colors: Whether to include blended background
+                colors in the snapshot (default: false). Blended background color is
+                achieved by blending background colors of all elements that overlap with
+                the current element. Experimental: this API may change or be removed.
+            include_text_color_opacities: Whether to include text color opacity in the
+                snapshot (default: false). An element might have the opacity property
+                set that affects the text color of the element. The final text color
+                opacity is computed based on the opacity of all overlapping elements.
+                Experimental: this API may change or be removed.
         """
-        params = CaptureSnapshotParams(
-            computed_styles=computed_styles,
-            include_paint_order=include_paint_order,
-            include_dom_rects=include_dom_rects,
-            include_blended_background_colors=include_blended_background_colors,
-            include_text_color_opacities=include_text_color_opacities,
-        )
+        _params: dict[str, Any] = {}
+        _params["computedStyles"] = _encode_value(computed_styles)
+        if include_paint_order is not None:
+            _params["includePaintOrder"] = include_paint_order
+        if include_dom_rects is not None:
+            _params["includeDOMRects"] = include_dom_rects
+        if include_blended_background_colors is not None:
+            _params["includeBlendedBackgroundColors"] = (
+                include_blended_background_colors
+            )
+        if include_text_color_opacities is not None:
+            _params["includeTextColorOpacities"] = include_text_color_opacities
 
         result = await self._executor.execute(
             method=DOMSnapshotCommand.CAPTURE_SNAPSHOT,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(CaptureSnapshotResult, result)

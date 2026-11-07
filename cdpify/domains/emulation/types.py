@@ -12,14 +12,42 @@ from cdpify.shared.enums import CDPStrEnum
 
 @dataclass(kw_only=True, slots=True)
 class SafeAreaInsets:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     top: int | None = None
+    """
+    Overrides safe-area-inset-top.
+    """
     top_max: int | None = field(default=None, metadata={"cdp_name": "topMax"})
+    """
+    Overrides safe-area-max-inset-top.
+    """
     left: int | None = None
+    """
+    Overrides safe-area-inset-left.
+    """
     left_max: int | None = field(default=None, metadata={"cdp_name": "leftMax"})
+    """
+    Overrides safe-area-max-inset-left.
+    """
     bottom: int | None = None
+    """
+    Overrides safe-area-inset-bottom.
+    """
     bottom_max: int | None = field(default=None, metadata={"cdp_name": "bottomMax"})
+    """
+    Overrides safe-area-max-inset-bottom.
+    """
     right: int | None = None
+    """
+    Overrides safe-area-inset-right.
+    """
     right_max: int | None = field(default=None, metadata={"cdp_name": "rightMax"})
+    """
+    Overrides safe-area-max-inset-right.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -31,19 +59,40 @@ class ScreenOrientation:
     type: Literal[
         "portraitPrimary", "portraitSecondary", "landscapePrimary", "landscapeSecondary"
     ]
+    """
+    Orientation type.
+    """
     angle: int
+    """
+    Orientation angle.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class DisplayFeature:
     orientation: Literal["vertical", "horizontal"]
+    """
+    Orientation of a display feature in relation to screen
+    """
     offset: int
+    """
+    The offset from the screen origin in either the x (for vertical orientation) or y
+    (for horizontal orientation) direction.
+    """
     mask_length: int = field(metadata={"cdp_name": "maskLength"})
+    """
+    A display feature may mask content such that it is not physically displayed - this
+    length along with the offset describes this area. A display feature that only splits
+    content will have a 0 mask_length.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class DevicePosture:
     type: Literal["continuous", "folded"]
+    """
+    Current posture of the device
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -57,7 +106,8 @@ class VirtualTimePolicy(CDPStrEnum):
     advance: If the scheduler runs out of immediate work, the virtual time base may
     fast forward to allow the next delayed task (if any) to run; pause: The virtual time
     base may not advance; pauseIfNetworkFetchesPending: The virtual time base may not
-    advance if there are any pending resource fetches.
+    advance if there are any pending resource fetches. Experimental: this API may change
+    or be removed.
     """
 
     ADVANCE = "advance"
@@ -69,7 +119,8 @@ class VirtualTimePolicy(CDPStrEnum):
 class UserAgentBrandVersion:
     """
     Used to specify User Agent Client Hints to emulate. See
-    https://wicg.github.io/ua-client-hints
+    https://wicg.github.io/ua-client-hints Experimental: this API may change or be
+    removed.
     """
 
     brand: str
@@ -81,14 +132,24 @@ class UserAgentMetadata:
     """
     Used to specify User Agent Client Hints to emulate. See
     https://wicg.github.io/ua-client-hints Missing optional values will be filled in by
-    the target with what it would normally use.
+    the target with what it would normally use. Experimental: this API may change or be
+    removed.
     """
 
     brands: list[UserAgentBrandVersion] | None = None
+    """
+    Brands appearing in Sec-CH-UA.
+    """
     full_version_list: list[UserAgentBrandVersion] | None = field(
         default=None, metadata={"cdp_name": "fullVersionList"}
     )
+    """
+    Brands appearing in Sec-CH-UA-Full-Version-List.
+    """
     full_version: str | None = field(default=None, metadata={"cdp_name": "fullVersion"})
+    """
+    Deprecated in the Chrome DevTools Protocol.
+    """
     platform: str
     platform_version: str = field(metadata={"cdp_name": "platformVersion"})
     architecture: str
@@ -99,12 +160,17 @@ class UserAgentMetadata:
     form_factors: list[str] | None = field(
         default=None, metadata={"cdp_name": "formFactors"}
     )
+    """
+    Used to specify User Agent form-factor values. See
+    https://wicg.github.io/ua-client-hints/#sec-ch-ua-form-factors
+    """
 
 
 class SensorType(CDPStrEnum):
     """
     Used to specify sensor types to emulate. See
-    https://w3c.github.io/sensors/#automation for more information.
+    https://w3c.github.io/sensors/#automation for more information. Experimental: this
+    API may change or be removed.
     """
 
     ABSOLUTE_ORIENTATION = "absolute-orientation"
@@ -119,6 +185,10 @@ class SensorType(CDPStrEnum):
 
 @dataclass(kw_only=True, slots=True)
 class SensorMetadata:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     available: bool | None = None
     minimum_frequency: float | None = field(
         default=None, metadata={"cdp_name": "minimumFrequency"}
@@ -130,11 +200,19 @@ class SensorMetadata:
 
 @dataclass(kw_only=True, slots=True)
 class SensorReadingSingle:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     value: float
 
 
 @dataclass(kw_only=True, slots=True)
 class SensorReadingXYZ:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     x: float
     y: float
     z: float
@@ -142,6 +220,10 @@ class SensorReadingXYZ:
 
 @dataclass(kw_only=True, slots=True)
 class SensorReadingQuaternion:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     x: float
     y: float
     z: float
@@ -150,16 +232,28 @@ class SensorReadingQuaternion:
 
 @dataclass(kw_only=True, slots=True)
 class SensorReading:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     single: SensorReadingSingle | None = None
     xyz: SensorReadingXYZ | None = None
     quaternion: SensorReadingQuaternion | None = None
 
 
 class PressureSource(CDPStrEnum):
+    """
+    Experimental: this API may change or be removed.
+    """
+
     CPU = "cpu"
 
 
 class PressureState(CDPStrEnum):
+    """
+    Experimental: this API may change or be removed.
+    """
+
     NOMINAL = "nominal"
     FAIR = "fair"
     SERIOUS = "serious"
@@ -168,48 +262,122 @@ class PressureState(CDPStrEnum):
 
 @dataclass(kw_only=True, slots=True)
 class PressureMetadata:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     available: bool | None = None
 
 
 @dataclass(kw_only=True, slots=True)
 class WorkAreaInsets:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     top: int | None = None
+    """
+    Work area top inset in pixels. Default is 0;
+    """
     left: int | None = None
+    """
+    Work area left inset in pixels. Default is 0;
+    """
     bottom: int | None = None
+    """
+    Work area bottom inset in pixels. Default is 0;
+    """
     right: int | None = None
+    """
+    Work area right inset in pixels. Default is 0;
+    """
 
 
 type ScreenId = str
+"""
+Experimental: this API may change or be removed.
+"""
 
 
 @dataclass(kw_only=True, slots=True)
 class ScreenInfo:
     """
     Screen information similar to the one returned by window.getScreenDetails() method,
-    see https://w3c.github.io/window-management/#screendetailed.
+    see https://w3c.github.io/window-management/#screendetailed. Experimental: this API
+    may change or be removed.
     """
 
     left: int
+    """
+    Offset of the left edge of the screen.
+    """
     top: int
+    """
+    Offset of the top edge of the screen.
+    """
     width: int
+    """
+    Width of the screen.
+    """
     height: int
+    """
+    Height of the screen.
+    """
     avail_left: int = field(metadata={"cdp_name": "availLeft"})
+    """
+    Offset of the left edge of the available screen area.
+    """
     avail_top: int = field(metadata={"cdp_name": "availTop"})
+    """
+    Offset of the top edge of the available screen area.
+    """
     avail_width: int = field(metadata={"cdp_name": "availWidth"})
+    """
+    Width of the available screen area.
+    """
     avail_height: int = field(metadata={"cdp_name": "availHeight"})
+    """
+    Height of the available screen area.
+    """
     device_pixel_ratio: float = field(metadata={"cdp_name": "devicePixelRatio"})
+    """
+    Specifies the screen's device pixel ratio.
+    """
     orientation: ScreenOrientation
+    """
+    Specifies the screen's orientation.
+    """
     color_depth: int = field(metadata={"cdp_name": "colorDepth"})
+    """
+    Specifies the screen's color depth in bits.
+    """
     is_extended: bool = field(metadata={"cdp_name": "isExtended"})
+    """
+    Indicates whether the device has multiple screens.
+    """
     is_internal: bool = field(metadata={"cdp_name": "isInternal"})
+    """
+    Indicates whether the screen is internal to the device or external, attached to the
+    device.
+    """
     is_primary: bool = field(metadata={"cdp_name": "isPrimary"})
+    """
+    Indicates whether the screen is set as the the operating system primary screen.
+    """
     label: str
+    """
+    Specifies the descriptive label for the screen.
+    """
     id: ScreenId
+    """
+    Specifies the unique identifier of the screen.
+    """
 
 
 class DisabledImageType(CDPStrEnum):
     """
-    Enum of image types that can be disabled.
+    Enum of image types that can be disabled. Experimental: this API may change or be
+    removed.
     """
 
     AVIF = "avif"

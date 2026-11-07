@@ -4,9 +4,9 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
-from cdpify.codec import decode_cdp, encode_cdp
+from cdpify.codec import _encode_value, decode_cdp
 from cdpify.executor import CommandExecutor
 from cdpify.shared.decorators import deprecated
 
@@ -14,46 +14,18 @@ from .commands import (
     CanClearBrowserCacheResult,
     CanClearBrowserCookiesResult,
     CanEmulateNetworkConditionsResult,
-    ConfigureDurableMessagesParams,
-    DeleteCookiesParams,
-    DeleteDeviceBoundSessionParams,
-    EmulateNetworkConditionsByRuleParams,
     EmulateNetworkConditionsByRuleResult,
-    EmulateNetworkConditionsParams,
-    EnableDeviceBoundSessionsParams,
-    EnableParams,
-    EnableReportingApiParams,
-    FetchSchemefulSiteParams,
     FetchSchemefulSiteResult,
     GetAllCookiesResult,
-    GetCertificateParams,
     GetCertificateResult,
-    GetCookiesParams,
     GetCookiesResult,
-    GetRequestPostDataParams,
     GetRequestPostDataResult,
-    GetResponseBodyParams,
     GetResponseBodyResult,
-    GetSecurityIsolationStatusParams,
     GetSecurityIsolationStatusResult,
-    LoadNetworkResourceParams,
     LoadNetworkResourceResult,
     NetworkCommand,
-    OverrideNetworkStateParams,
-    ReplayXHRParams,
-    SearchInResponseBodyParams,
     SearchInResponseBodyResult,
-    SetAttachDebugStackParams,
-    SetBlockedURLsParams,
-    SetBypassServiceWorkerParams,
-    SetCacheDisabledParams,
-    SetCookieControlsParams,
-    SetCookieParams,
     SetCookieResult,
-    SetCookiesParams,
-    SetExtraHTTPHeadersParams,
-    SetUserAgentOverrideParams,
-    StreamResourceContentParams,
     StreamResourceContentResult,
 )
 from .types import (
@@ -85,7 +57,8 @@ class Network:
         self,
     ) -> CanClearBrowserCacheResult:
         """
-        Tells whether clearing browser cache is supported.
+        Tells whether clearing browser cache is supported. Deprecated in the Chrome
+        DevTools Protocol.
         """
         result = await self._executor.execute(
             method=NetworkCommand.CAN_CLEAR_BROWSER_CACHE,
@@ -98,7 +71,8 @@ class Network:
         self,
     ) -> CanClearBrowserCookiesResult:
         """
-        Tells whether clearing browser cookies is supported.
+        Tells whether clearing browser cookies is supported. Deprecated in the Chrome
+        DevTools Protocol.
         """
         result = await self._executor.execute(
             method=NetworkCommand.CAN_CLEAR_BROWSER_COOKIES,
@@ -111,7 +85,8 @@ class Network:
         self,
     ) -> CanEmulateNetworkConditionsResult:
         """
-        Tells whether emulation of network conditions is supported.
+        Tells whether emulation of network conditions is supported. Deprecated in the
+        Chrome DevTools Protocol.
         """
         result = await self._executor.execute(
             method=NetworkCommand.CAN_EMULATE_NETWORK_CONDITIONS,
@@ -153,14 +128,32 @@ class Network:
         """
         Deletes browser cookies with matching name and url or domain/path/partitionKey
         pair.
+
+        Args:
+            name: Name of the cookies to remove.
+            url: If specified, deletes all the cookies with the given name where domain
+                and path match provided URL.
+            domain: If specified, deletes only cookies with the exact domain.
+            path: If specified, deletes only cookies with the exact path.
+            partition_key: If specified, deletes only cookies with the the given name
+                and partitionKey where all partition key attributes match the cookie
+                partition key attribute. Experimental: this API may change or be
+                removed.
         """
-        params = DeleteCookiesParams(
-            name=name, url=url, domain=domain, path=path, partition_key=partition_key
-        )
+        _params: dict[str, Any] = {}
+        _params["name"] = name
+        if url is not None:
+            _params["url"] = url
+        if domain is not None:
+            _params["domain"] = domain
+        if path is not None:
+            _params["path"] = path
+        if partition_key is not None:
+            _params["partitionKey"] = _encode_value(partition_key)
 
         await self._executor.execute(
             method=NetworkCommand.DELETE_COOKIES,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def disable(
@@ -191,22 +184,44 @@ class Network:
         """
         Activates emulation of network conditions. This command is deprecated in favor
         of the emulateNetworkConditionsByRule and overrideNetworkState commands, which
-        can be used together to the same effect.
+        can be used together to the same effect. Deprecated in the Chrome DevTools
+        Protocol.
+
+        Args:
+            offline: True to emulate internet disconnection.
+            latency: Minimum latency from request sent to response headers received
+                (ms).
+            download_throughput: Maximal aggregated download throughput (bytes/sec). -1
+                disables download throttling.
+            upload_throughput: Maximal aggregated upload throughput (bytes/sec).  -1
+                disables upload throttling.
+            connection_type: Connection type if known.
+            packet_loss: WebRTC packet loss (percent, 0-100). 0 disables packet loss
+                emulation, 100 drops all the packets. Experimental: this API may change
+                or be removed.
+            packet_queue_length: WebRTC packet queue length (packet). 0 removes any
+                queue length limitations. Experimental: this API may change or be
+                removed.
+            packet_reordering: WebRTC packetReordering feature. Experimental: this API
+                may change or be removed.
         """
-        params = EmulateNetworkConditionsParams(
-            offline=offline,
-            latency=latency,
-            download_throughput=download_throughput,
-            upload_throughput=upload_throughput,
-            connection_type=connection_type,
-            packet_loss=packet_loss,
-            packet_queue_length=packet_queue_length,
-            packet_reordering=packet_reordering,
-        )
+        _params: dict[str, Any] = {}
+        _params["offline"] = offline
+        _params["latency"] = latency
+        _params["downloadThroughput"] = download_throughput
+        _params["uploadThroughput"] = upload_throughput
+        if connection_type is not None:
+            _params["connectionType"] = _encode_value(connection_type)
+        if packet_loss is not None:
+            _params["packetLoss"] = packet_loss
+        if packet_queue_length is not None:
+            _params["packetQueueLength"] = packet_queue_length
+        if packet_reordering is not None:
+            _params["packetReordering"] = packet_reordering
 
         await self._executor.execute(
             method=NetworkCommand.EMULATE_NETWORK_CONDITIONS,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def emulate_network_conditions_by_rule(
@@ -220,17 +235,30 @@ class Network:
         Activates emulation of network conditions for individual requests using URL
         match patterns. Unlike the deprecated Network.emulateNetworkConditions this
         method does not affect `navigator` state. Use Network.overrideNetworkState to
-        explicitly modify `navigator` behavior.
+        explicitly modify `navigator` behavior. Experimental: this API may change or be
+        removed.
+
+        Args:
+            offline: True to emulate internet disconnection. Deprecated, use the offline
+                property in matchedNetworkConditions or emulateOfflineServiceWorker
+                instead. Deprecated in the Chrome DevTools Protocol.
+            emulate_offline_service_worker: True to emulate offline service worker.
+            matched_network_conditions: Configure conditions for matching requests. If
+                multiple entries match a request, the first entry wins.  Global
+                conditions can be configured by leaving the urlPattern for the
+                conditions empty. These global conditions are also applied for
+                throttling of p2p connections.
         """
-        params = EmulateNetworkConditionsByRuleParams(
-            offline=offline,
-            emulate_offline_service_worker=emulate_offline_service_worker,
-            matched_network_conditions=matched_network_conditions,
-        )
+        _params: dict[str, Any] = {}
+        if offline is not None:
+            _params["offline"] = offline
+        if emulate_offline_service_worker is not None:
+            _params["emulateOfflineServiceWorker"] = emulate_offline_service_worker
+        _params["matchedNetworkConditions"] = _encode_value(matched_network_conditions)
 
         result = await self._executor.execute(
             method=NetworkCommand.EMULATE_NETWORK_CONDITIONS_BY_RULE,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(EmulateNetworkConditionsByRuleResult, result)
 
@@ -244,19 +272,30 @@ class Network:
         connection_type: ConnectionType | None = None,
     ) -> None:
         """
-        Override the state of navigator.onLine and navigator.connection.
+        Override the state of navigator.onLine and navigator.connection. Experimental:
+        this API may change or be removed.
+
+        Args:
+            offline: True to emulate internet disconnection.
+            latency: Minimum latency from request sent to response headers received
+                (ms).
+            download_throughput: Maximal aggregated download throughput (bytes/sec). -1
+                disables download throttling.
+            upload_throughput: Maximal aggregated upload throughput (bytes/sec).  -1
+                disables upload throttling.
+            connection_type: Connection type if known.
         """
-        params = OverrideNetworkStateParams(
-            offline=offline,
-            latency=latency,
-            download_throughput=download_throughput,
-            upload_throughput=upload_throughput,
-            connection_type=connection_type,
-        )
+        _params: dict[str, Any] = {}
+        _params["offline"] = offline
+        _params["latency"] = latency
+        _params["downloadThroughput"] = download_throughput
+        _params["uploadThroughput"] = upload_throughput
+        if connection_type is not None:
+            _params["connectionType"] = _encode_value(connection_type)
 
         await self._executor.execute(
             method=NetworkCommand.OVERRIDE_NETWORK_STATE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def enable(
@@ -270,18 +309,42 @@ class Network:
     ) -> None:
         """
         Enables network tracking, network events will now be delivered to the client.
+
+        Args:
+            max_total_buffer_size: Buffer size in bytes to use when preserving network
+                payloads (XHRs, etc). This is the maximum number of bytes that will be
+                collected by this DevTools session. Experimental: this API may change or
+                be removed.
+            max_resource_buffer_size: Per-resource buffer size in bytes to use when
+                preserving network payloads (XHRs, etc). Experimental: this API may
+                change or be removed.
+            max_post_data_size: Longest post body size (in bytes) that would be included
+                in requestWillBeSent notification
+            report_direct_socket_traffic: Whether DirectSocket chunk send/receive events
+                should be reported. Experimental: this API may change or be removed.
+            enable_durable_messages: Enable storing response bodies outside of renderer,
+                so that these survive a cross-process navigation. Requires
+                maxTotalBufferSize to be set. Currently defaults to false. This field is
+                being deprecated in favor of the dedicated configureDurableMessages
+                command, due to the possibility of deadlocks when awaiting
+                Network.enable before issuing Runtime.runIfWaitingForDebugger.
+                Experimental: this API may change or be removed.
         """
-        params = EnableParams(
-            max_total_buffer_size=max_total_buffer_size,
-            max_resource_buffer_size=max_resource_buffer_size,
-            max_post_data_size=max_post_data_size,
-            report_direct_socket_traffic=report_direct_socket_traffic,
-            enable_durable_messages=enable_durable_messages,
-        )
+        _params: dict[str, Any] = {}
+        if max_total_buffer_size is not None:
+            _params["maxTotalBufferSize"] = max_total_buffer_size
+        if max_resource_buffer_size is not None:
+            _params["maxResourceBufferSize"] = max_resource_buffer_size
+        if max_post_data_size is not None:
+            _params["maxPostDataSize"] = max_post_data_size
+        if report_direct_socket_traffic is not None:
+            _params["reportDirectSocketTraffic"] = report_direct_socket_traffic
+        if enable_durable_messages is not None:
+            _params["enableDurableMessages"] = enable_durable_messages
 
         await self._executor.execute(
             method=NetworkCommand.ENABLE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def configure_durable_messages(
@@ -293,16 +356,23 @@ class Network:
         """
         Configures storing response bodies outside of renderer, so that these survive a
         cross-process navigation. If maxTotalBufferSize is not set, durable messages are
-        disabled.
+        disabled. Experimental: this API may change or be removed.
+
+        Args:
+            max_total_buffer_size: Buffer size in bytes to use when preserving network
+                payloads (XHRs, etc).
+            max_resource_buffer_size: Per-resource buffer size in bytes to use when
+                preserving network payloads (XHRs, etc).
         """
-        params = ConfigureDurableMessagesParams(
-            max_total_buffer_size=max_total_buffer_size,
-            max_resource_buffer_size=max_resource_buffer_size,
-        )
+        _params: dict[str, Any] = {}
+        if max_total_buffer_size is not None:
+            _params["maxTotalBufferSize"] = max_total_buffer_size
+        if max_resource_buffer_size is not None:
+            _params["maxResourceBufferSize"] = max_resource_buffer_size
 
         await self._executor.execute(
             method=NetworkCommand.CONFIGURE_DURABLE_MESSAGES,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     @deprecated("Network.getAllCookies is deprecated")
@@ -312,7 +382,7 @@ class Network:
         """
         Returns all browser cookies. Depending on the backend support, will return
         detailed cookie information in the `cookies` field. Deprecated. Use
-        Storage.getCookies instead.
+        Storage.getCookies instead. Deprecated in the Chrome DevTools Protocol.
         """
         result = await self._executor.execute(
             method=NetworkCommand.GET_ALL_COOKIES,
@@ -326,13 +396,18 @@ class Network:
         origin: str,
     ) -> GetCertificateResult:
         """
-        Returns the DER-encoded certificate.
+        Returns the DER-encoded certificate. Experimental: this API may change or be
+        removed.
+
+        Args:
+            origin: Origin to get certificate for.
         """
-        params = GetCertificateParams(origin=origin)
+        _params: dict[str, Any] = {}
+        _params["origin"] = origin
 
         result = await self._executor.execute(
             method=NetworkCommand.GET_CERTIFICATE,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetCertificateResult, result)
 
@@ -344,12 +419,19 @@ class Network:
         """
         Returns all browser cookies for the current URL. Depending on the backend
         support, will return detailed cookie information in the `cookies` field.
+
+        Args:
+            urls: The list of URLs for which applicable cookies will be fetched. If not
+                specified, it's assumed to be set to the list containing the URLs of the
+                page and all of its subframes.
         """
-        params = GetCookiesParams(urls=urls)
+        _params: dict[str, Any] = {}
+        if urls is not None:
+            _params["urls"] = _encode_value(urls)
 
         result = await self._executor.execute(
             method=NetworkCommand.GET_COOKIES,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetCookiesResult, result)
 
@@ -360,12 +442,16 @@ class Network:
     ) -> GetResponseBodyResult:
         """
         Returns content served for the given request.
+
+        Args:
+            request_id: Identifier of the network request to get content for.
         """
-        params = GetResponseBodyParams(request_id=request_id)
+        _params: dict[str, Any] = {}
+        _params["requestId"] = _encode_value(request_id)
 
         result = await self._executor.execute(
             method=NetworkCommand.GET_RESPONSE_BODY,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetResponseBodyResult, result)
 
@@ -377,12 +463,16 @@ class Network:
         """
         Returns post data sent with the request. Returns an error when no data was sent
         with the request.
+
+        Args:
+            request_id: Identifier of the network request to get content for.
         """
-        params = GetRequestPostDataParams(request_id=request_id)
+        _params: dict[str, Any] = {}
+        _params["requestId"] = _encode_value(request_id)
 
         result = await self._executor.execute(
             method=NetworkCommand.GET_REQUEST_POST_DATA,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetRequestPostDataResult, result)
 
@@ -394,13 +484,18 @@ class Network:
         """
         This method sends a new XMLHttpRequest which is identical to the original one.
         The following parameters should be identical: method, url, async, request body,
-        extra headers, withCredentials attribute, user, password.
+        extra headers, withCredentials attribute, user, password. Experimental: this API
+        may change or be removed.
+
+        Args:
+            request_id: Identifier of XHR to replay.
         """
-        params = ReplayXHRParams(request_id=request_id)
+        _params: dict[str, Any] = {}
+        _params["requestId"] = _encode_value(request_id)
 
         await self._executor.execute(
             method=NetworkCommand.REPLAY_XHR,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def search_in_response_body(
@@ -412,18 +507,26 @@ class Network:
         is_regex: bool | None = None,
     ) -> SearchInResponseBodyResult:
         """
-        Searches for given string in response content.
+        Searches for given string in response content. Experimental: this API may
+        change or be removed.
+
+        Args:
+            request_id: Identifier of the network response to search.
+            query: String to search for.
+            case_sensitive: If true, search is case sensitive.
+            is_regex: If true, treats string parameter as regex.
         """
-        params = SearchInResponseBodyParams(
-            request_id=request_id,
-            query=query,
-            case_sensitive=case_sensitive,
-            is_regex=is_regex,
-        )
+        _params: dict[str, Any] = {}
+        _params["requestId"] = _encode_value(request_id)
+        _params["query"] = query
+        if case_sensitive is not None:
+            _params["caseSensitive"] = case_sensitive
+        if is_regex is not None:
+            _params["isRegex"] = is_regex
 
         result = await self._executor.execute(
             method=NetworkCommand.SEARCH_IN_RESPONSE_BODY,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(SearchInResponseBodyResult, result)
 
@@ -434,13 +537,24 @@ class Network:
         urls: list[str] | None = None,
     ) -> None:
         """
-        Blocks URLs from loading.
+        Blocks URLs from loading. Experimental: this API may change or be removed.
+
+        Args:
+            url_patterns: Patterns to match in the order in which they are given. These
+                patterns also take precedence over any wildcard patterns defined in
+                `urls`.
+            urls: URL patterns to block. Wildcards ('*') are allowed. Deprecated in the
+                Chrome DevTools Protocol.
         """
-        params = SetBlockedURLsParams(url_patterns=url_patterns, urls=urls)
+        _params: dict[str, Any] = {}
+        if url_patterns is not None:
+            _params["urlPatterns"] = _encode_value(url_patterns)
+        if urls is not None:
+            _params["urls"] = _encode_value(urls)
 
         await self._executor.execute(
             method=NetworkCommand.SET_BLOCKED_UR_LS,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_bypass_service_worker(
@@ -450,12 +564,16 @@ class Network:
     ) -> None:
         """
         Toggles ignoring of service worker for each request.
+
+        Args:
+            bypass: Bypass service worker and load from network.
         """
-        params = SetBypassServiceWorkerParams(bypass=bypass)
+        _params: dict[str, Any] = {}
+        _params["bypass"] = bypass
 
         await self._executor.execute(
             method=NetworkCommand.SET_BYPASS_SERVICE_WORKER,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_cache_disabled(
@@ -465,12 +583,16 @@ class Network:
     ) -> None:
         """
         Toggles ignoring cache for each request. If `true`, cache will not be used.
+
+        Args:
+            cache_disabled: Cache disabled state.
         """
-        params = SetCacheDisabledParams(cache_disabled=cache_disabled)
+        _params: dict[str, Any] = {}
+        _params["cacheDisabled"] = cache_disabled
 
         await self._executor.execute(
             method=NetworkCommand.SET_CACHE_DISABLED,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_cookie(
@@ -493,26 +615,60 @@ class Network:
         """
         Sets a cookie with the given cookie data; may overwrite equivalent cookies if
         they exist.
+
+        Args:
+            name: Cookie name.
+            value: Cookie value.
+            url: The request-URI to associate with the setting of the cookie. This value
+                can affect the default domain, path, source port, and source scheme
+                values of the created cookie.
+            domain: Cookie domain.
+            path: Cookie path.
+            secure: True if cookie is secure.
+            http_only: True if cookie is http-only.
+            same_site: Cookie SameSite type.
+            expires: Cookie expiration date, session cookie if not set
+            priority: Cookie Priority type. Experimental: this API may change or be
+                removed.
+            source_scheme: Cookie source scheme type. Experimental: this API may change
+                or be removed.
+            source_port: Cookie source port. Valid values are {-1, [1, 65535]}, -1
+                indicates an unspecified port. An unspecified port value allows protocol
+                clients to emulate legacy cookie scope for the port. This is a temporary
+                ability and it will be removed in the future. Experimental: this API may
+                change or be removed.
+            partition_key: Cookie partition key. If not set, the cookie will be set as
+                not partitioned. Experimental: this API may change or be removed.
         """
-        params = SetCookieParams(
-            name=name,
-            value=value,
-            url=url,
-            domain=domain,
-            path=path,
-            secure=secure,
-            http_only=http_only,
-            same_site=same_site,
-            expires=expires,
-            priority=priority,
-            source_scheme=source_scheme,
-            source_port=source_port,
-            partition_key=partition_key,
-        )
+        _params: dict[str, Any] = {}
+        _params["name"] = name
+        _params["value"] = value
+        if url is not None:
+            _params["url"] = url
+        if domain is not None:
+            _params["domain"] = domain
+        if path is not None:
+            _params["path"] = path
+        if secure is not None:
+            _params["secure"] = secure
+        if http_only is not None:
+            _params["httpOnly"] = http_only
+        if same_site is not None:
+            _params["sameSite"] = _encode_value(same_site)
+        if expires is not None:
+            _params["expires"] = _encode_value(expires)
+        if priority is not None:
+            _params["priority"] = _encode_value(priority)
+        if source_scheme is not None:
+            _params["sourceScheme"] = _encode_value(source_scheme)
+        if source_port is not None:
+            _params["sourcePort"] = source_port
+        if partition_key is not None:
+            _params["partitionKey"] = _encode_value(partition_key)
 
         result = await self._executor.execute(
             method=NetworkCommand.SET_COOKIE,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(SetCookieResult, result)
 
@@ -523,12 +679,16 @@ class Network:
     ) -> None:
         """
         Sets given cookies.
+
+        Args:
+            cookies: Cookies to be set.
         """
-        params = SetCookiesParams(cookies=cookies)
+        _params: dict[str, Any] = {}
+        _params["cookies"] = _encode_value(cookies)
 
         await self._executor.execute(
             method=NetworkCommand.SET_COOKIES,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_extra_http_headers(
@@ -539,12 +699,16 @@ class Network:
         """
         Specifies whether to always send extra HTTP headers with the requests from this
         page.
+
+        Args:
+            headers: Map with extra HTTP headers.
         """
-        params = SetExtraHTTPHeadersParams(headers=headers)
+        _params: dict[str, Any] = {}
+        _params["headers"] = _encode_value(headers)
 
         await self._executor.execute(
             method=NetworkCommand.SET_EXTRA_HTTP_HEADERS,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_attach_debug_stack(
@@ -553,13 +717,18 @@ class Network:
         enabled: bool,
     ) -> None:
         """
-        Specifies whether to attach a page script stack id in requests
+        Specifies whether to attach a page script stack id in requests Experimental:
+        this API may change or be removed.
+
+        Args:
+            enabled: Whether to attach a page script stack for debugging purpose.
         """
-        params = SetAttachDebugStackParams(enabled=enabled)
+        _params: dict[str, Any] = {}
+        _params["enabled"] = enabled
 
         await self._executor.execute(
             method=NetworkCommand.SET_ATTACH_DEBUG_STACK,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_user_agent_override(
@@ -572,17 +741,26 @@ class Network:
     ) -> None:
         """
         Allows overriding user agent with the given string.
+
+        Args:
+            user_agent: User agent to use.
+            accept_language: Browser language to emulate.
+            platform: The platform navigator.platform should return.
+            user_agent_metadata: To be sent in Sec-CH-UA-* headers and returned in
+                navigator.userAgentData Experimental: this API may change or be removed.
         """
-        params = SetUserAgentOverrideParams(
-            user_agent=user_agent,
-            accept_language=accept_language,
-            platform=platform,
-            user_agent_metadata=user_agent_metadata,
-        )
+        _params: dict[str, Any] = {}
+        _params["userAgent"] = user_agent
+        if accept_language is not None:
+            _params["acceptLanguage"] = accept_language
+        if platform is not None:
+            _params["platform"] = platform
+        if user_agent_metadata is not None:
+            _params["userAgentMetadata"] = _encode_value(user_agent_metadata)
 
         await self._executor.execute(
             method=NetworkCommand.SET_USER_AGENT_OVERRIDE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def stream_resource_content(
@@ -593,12 +771,17 @@ class Network:
         """
         Enables streaming of the response for the given requestId. If enabled, the
         dataReceived event contains the data that was received during streaming.
+        Experimental: this API may change or be removed.
+
+        Args:
+            request_id: Identifier of the request to stream.
         """
-        params = StreamResourceContentParams(request_id=request_id)
+        _params: dict[str, Any] = {}
+        _params["requestId"] = _encode_value(request_id)
 
         result = await self._executor.execute(
             method=NetworkCommand.STREAM_RESOURCE_CONTENT,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(StreamResourceContentResult, result)
 
@@ -608,13 +791,19 @@ class Network:
         frame_id: page.FrameId | None = None,
     ) -> GetSecurityIsolationStatusResult:
         """
-        Returns information about the COEP/COOP isolation status.
+        Returns information about the COEP/COOP isolation status. Experimental: this
+        API may change or be removed.
+
+        Args:
+            frame_id: If no frameId is provided, the status of the target is provided.
         """
-        params = GetSecurityIsolationStatusParams(frame_id=frame_id)
+        _params: dict[str, Any] = {}
+        if frame_id is not None:
+            _params["frameId"] = _encode_value(frame_id)
 
         result = await self._executor.execute(
             method=NetworkCommand.GET_SECURITY_ISOLATION_STATUS,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetSecurityIsolationStatusResult, result)
 
@@ -626,13 +815,17 @@ class Network:
         """
         Enables tracking for the Reporting API, events generated by the Reporting API
         will now be delivered to the client. Enabling triggers 'reportingApiReportAdded'
-        for all existing reports.
+        for all existing reports. Experimental: this API may change or be removed.
+
+        Args:
+            enable: Whether to enable or disable events for the Reporting API
         """
-        params = EnableReportingApiParams(enable=enable)
+        _params: dict[str, Any] = {}
+        _params["enable"] = enable
 
         await self._executor.execute(
             method=NetworkCommand.ENABLE_REPORTING_API,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def enable_device_bound_sessions(
@@ -642,12 +835,17 @@ class Network:
     ) -> None:
         """
         Sets up tracking device bound sessions and fetching of initial set of sessions.
+        Experimental: this API may change or be removed.
+
+        Args:
+            enable: Whether to enable or disable events.
         """
-        params = EnableDeviceBoundSessionsParams(enable=enable)
+        _params: dict[str, Any] = {}
+        _params["enable"] = enable
 
         await self._executor.execute(
             method=NetworkCommand.ENABLE_DEVICE_BOUND_SESSIONS,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def delete_device_bound_session(
@@ -656,13 +854,15 @@ class Network:
         key: DeviceBoundSessionKey,
     ) -> None:
         """
-        Deletes a device bound session.
+        Deletes a device bound session. Experimental: this API may change or be
+        removed.
         """
-        params = DeleteDeviceBoundSessionParams(key=key)
+        _params: dict[str, Any] = {}
+        _params["key"] = _encode_value(key)
 
         await self._executor.execute(
             method=NetworkCommand.DELETE_DEVICE_BOUND_SESSION,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def fetch_schemeful_site(
@@ -671,13 +871,18 @@ class Network:
         origin: str,
     ) -> FetchSchemefulSiteResult:
         """
-        Fetches the schemeful site for a specific origin.
+        Fetches the schemeful site for a specific origin. Experimental: this API may
+        change or be removed.
+
+        Args:
+            origin: The URL origin.
         """
-        params = FetchSchemefulSiteParams(origin=origin)
+        _params: dict[str, Any] = {}
+        _params["origin"] = origin
 
         result = await self._executor.execute(
             method=NetworkCommand.FETCH_SCHEMEFUL_SITE,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(FetchSchemefulSiteResult, result)
 
@@ -689,13 +894,24 @@ class Network:
         options: LoadNetworkResourceOptions,
     ) -> LoadNetworkResourceResult:
         """
-        Fetches the resource and returns the content.
+        Fetches the resource and returns the content. Experimental: this API may change
+        or be removed.
+
+        Args:
+            frame_id: Frame id to get the resource for. Mandatory for frame targets, and
+                should be omitted for worker targets.
+            url: URL of the resource to get content for.
+            options: Options for the request.
         """
-        params = LoadNetworkResourceParams(frame_id=frame_id, url=url, options=options)
+        _params: dict[str, Any] = {}
+        if frame_id is not None:
+            _params["frameId"] = _encode_value(frame_id)
+        _params["url"] = url
+        _params["options"] = _encode_value(options)
 
         result = await self._executor.execute(
             method=NetworkCommand.LOAD_NETWORK_RESOURCE,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(LoadNetworkResourceResult, result)
 
@@ -706,13 +922,18 @@ class Network:
     ) -> None:
         """
         Sets Controls for third-party cookie access Page reload is required before the
-        new cookie behavior will be observed
+        new cookie behavior will be observed Experimental: this API may change or be
+        removed.
+
+        Args:
+            enable_third_party_cookie_restriction: Whether 3pc restriction is enabled.
         """
-        params = SetCookieControlsParams(
-            enable_third_party_cookie_restriction=enable_third_party_cookie_restriction
+        _params: dict[str, Any] = {}
+        _params["enableThirdPartyCookieRestriction"] = (
+            enable_third_party_cookie_restriction
         )
 
         await self._executor.execute(
             method=NetworkCommand.SET_COOKIE_CONTROLS,
-            params=encode_cdp(params),
+            params=_params,
         )

@@ -27,7 +27,22 @@ class ExtensionInfo:
     """
 
     id: str
+    """
+    Extension id.
+    """
     name: str
+    """
+    Extension name.
+    """
     version: str
+    """
+    Extension version.
+    """
     path: str
+    """
+    The path from which the extension was loaded.
+    """
     enabled: bool
+    """
+    Extension enabled status.
+    """

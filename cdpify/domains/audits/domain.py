@@ -4,15 +4,14 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Literal
+from typing import TYPE_CHECKING, Any, Literal
 
-from cdpify.codec import decode_cdp, encode_cdp
+from cdpify.codec import _encode_value, decode_cdp
 from cdpify.executor import CommandExecutor
 
 from .commands import (
     AuditsCommand,
     CheckFormsIssuesResult,
-    GetEncodedResponseParams,
     GetEncodedResponseResult,
 )
 
@@ -35,17 +34,24 @@ class Audits:
         """
         Returns the response body and size if it were re-encoded with the specified
         settings. Only applies to images.
+
+        Args:
+            request_id: Identifier of the network request to get content for.
+            encoding: The encoding to use.
+            quality: The quality of the encoding (0-1). (defaults to 1)
+            size_only: Whether to only return the size information (defaults to false).
         """
-        params = GetEncodedResponseParams(
-            request_id=request_id,
-            encoding=encoding,
-            quality=quality,
-            size_only=size_only,
-        )
+        _params: dict[str, Any] = {}
+        _params["requestId"] = _encode_value(request_id)
+        _params["encoding"] = encoding
+        if quality is not None:
+            _params["quality"] = quality
+        if size_only is not None:
+            _params["sizeOnly"] = size_only
 
         result = await self._executor.execute(
             method=AuditsCommand.GET_ENCODED_RESPONSE,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetEncodedResponseResult, result)
 

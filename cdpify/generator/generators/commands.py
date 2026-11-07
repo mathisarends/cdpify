@@ -1,6 +1,7 @@
 from cdpify.generator.generators.constants import FUTURE_ANNOTATIONS, HEADER
 from cdpify.generator.generators.context import GenerationContext
 from cdpify.generator.generators.utils import (
+    api_description,
     format_docstring,
     resolve_type,
     to_enum_name,
@@ -44,6 +45,7 @@ def generate(domain: Domain) -> str:
             for command in domain.commands
         ),
         models=models,
+        uses_unset=any(f.uses_unset for m in models for f in m.fields),
         dataclass_import=dataclass_import(models),
     )
 
@@ -69,9 +71,15 @@ def _build_params_model(command: Command, ctx: GenerationContext) -> ModelView:
     return ModelView(
         name=f"{to_pascal_case(command.name)}Params",
         docstring=(
-            format_docstring(command.description, indent=4)
-            if command.description
-            else None
+            format_docstring(
+                api_description(
+                    command.description,
+                    experimental=command.experimental,
+                    deprecated=command.deprecated,
+                ),
+                indent=4,
+            )
+            or None
         ),
         fields=tuple(_build_field_view(param, ctx) for param in command.parameters),
     )
@@ -93,4 +101,7 @@ def _build_field_view(param: Parameter, ctx: GenerationContext) -> FieldView:
         py_type,
         optional=param.optional,
         cdp_name=param.name,
+        description=param.description,
+        experimental=param.experimental,
+        deprecated=param.deprecated,
     )

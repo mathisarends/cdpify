@@ -32,7 +32,8 @@ class RuntimeEvent(StrEnum):
 @dataclass(kw_only=True, slots=True)
 class BindingCalledEvent:
     """
-    Notification is issued every time when binding is called.
+    Notification is issued every time when binding is called. Experimental: this API
+    may change or be removed.
     """
 
     __cdp_event__: ClassVar[RuntimeEvent] = RuntimeEvent.BINDING_CALLED
@@ -42,6 +43,9 @@ class BindingCalledEvent:
     execution_context_id: ExecutionContextId = field(
         metadata={"cdp_name": "executionContextId"}
     )
+    """
+    Identifier of the context where the call was made.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -72,15 +76,39 @@ class ConsoleAPICalledEvent:
         "count",
         "timeEnd",
     ]
+    """
+    Type of the call.
+    """
     args: list[RemoteObject]
+    """
+    Call arguments.
+    """
     execution_context_id: ExecutionContextId = field(
         metadata={"cdp_name": "executionContextId"}
     )
+    """
+    Identifier of the context where the call was made.
+    """
     timestamp: Timestamp
+    """
+    Call timestamp.
+    """
     stack_trace: StackTrace | None = field(
         default=None, metadata={"cdp_name": "stackTrace"}
     )
+    """
+    Stack trace captured when the call was made. The async stack chain is automatically
+    reported for the following call types: `assert`, `error`, `trace`, `warning`. For
+    other types the async call chain can be retrieved using `Debugger.getStackTrace` and
+    `stackTrace.parentId` field.
+    """
     context: str | None = None
+    """
+    Console context descriptor for calls on non-default console context (not
+    console.*): 'anonymous#unique-logger-id' for call on unnamed context,
+    'name#unique-logger-id' for call on named context. Experimental: this API may change
+    or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -92,7 +120,13 @@ class ExceptionRevokedEvent:
     __cdp_event__: ClassVar[RuntimeEvent] = RuntimeEvent.EXCEPTION_REVOKED
 
     reason: str
+    """
+    Reason describing why exception was revoked.
+    """
     exception_id: int = field(metadata={"cdp_name": "exceptionId"})
+    """
+    The id of revoked exception, as reported in `exceptionThrown`.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -104,6 +138,9 @@ class ExceptionThrownEvent:
     __cdp_event__: ClassVar[RuntimeEvent] = RuntimeEvent.EXCEPTION_THROWN
 
     timestamp: Timestamp
+    """
+    Timestamp of the exception.
+    """
     exception_details: ExceptionDetails = field(
         metadata={"cdp_name": "exceptionDetails"}
     )
@@ -118,6 +155,9 @@ class ExecutionContextCreatedEvent:
     __cdp_event__: ClassVar[RuntimeEvent] = RuntimeEvent.EXECUTION_CONTEXT_CREATED
 
     context: ExecutionContextDescription
+    """
+    A newly created execution context.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -131,9 +171,15 @@ class ExecutionContextDestroyedEvent:
     execution_context_id: ExecutionContextId = field(
         metadata={"cdp_name": "executionContextId"}
     )
+    """
+    Id of the destroyed context Deprecated in the Chrome DevTools Protocol.
+    """
     execution_context_unique_id: str = field(
         metadata={"cdp_name": "executionContextUniqueId"}
     )
+    """
+    Unique Id of the destroyed context Experimental: this API may change or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -159,3 +205,7 @@ class InspectRequestedEvent:
     execution_context_id: ExecutionContextId | None = field(
         default=None, metadata={"cdp_name": "executionContextId"}
     )
+    """
+    Identifier of the context where the call was made. Experimental: this API may
+    change or be removed.
+    """

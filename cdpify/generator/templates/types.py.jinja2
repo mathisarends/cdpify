@@ -7,6 +7,10 @@ from typing import {{ typing_names | join(", ") }}
 {% endif %}
 
 {{ dataclass_import }}
+{% if uses_unset %}
+
+from cdpify.unset import UNSET, UnsetType
+{% endif %}
 {% if has_enums %}
 
 from cdpify.shared.enums import CDPStrEnum
@@ -23,7 +27,12 @@ class {{ definition.name }}:
 {% if definition.docstring %}
 {{ definition.docstring }}
 {% endif %}
-    {{ definition.fields | map(attribute="declaration") | join("\n    ") }}
+{% for model_field in definition.fields %}
+    {{ model_field.declaration }}
+{% if model_field.docstring %}
+{{ model_field.docstring }}
+{% endif %}
+{% endfor %}
 {% elif definition.kind == "enum" %}
 class {{ definition.name }}(CDPStrEnum):
 {% if definition.docstring %}

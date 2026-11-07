@@ -4,76 +4,44 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
-from cdpify.codec import decode_cdp, encode_cdp
+from cdpify.codec import _encode_value, decode_cdp
 from cdpify.executor import CommandExecutor
 from cdpify.shared.decorators import deprecated
 
 from .commands import (
-    AddRuleParams,
     AddRuleResult,
-    CollectClassNamesParams,
     CollectClassNamesResult,
-    CreateStyleSheetParams,
     CreateStyleSheetResult,
     CSSCommand,
-    ForcePositionTryOptionParams,
-    ForcePseudoStateParams,
-    ForceStartingStyleParams,
-    GetAnimatedStylesForNodeParams,
     GetAnimatedStylesForNodeResult,
-    GetBackgroundColorsParams,
     GetBackgroundColorsResult,
-    GetComputedStyleForNodeParams,
     GetComputedStyleForNodeResult,
     GetEnvironmentVariablesResult,
-    GetInlineStylesForNodeParams,
     GetInlineStylesForNodeResult,
-    GetLayersForNodeParams,
     GetLayersForNodeResult,
-    GetLocationForSelectorParams,
     GetLocationForSelectorResult,
-    GetLonghandPropertiesParams,
     GetLonghandPropertiesResult,
-    GetMatchedStylesForNodeParams,
     GetMatchedStylesForNodeResult,
     GetMediaQueriesResult,
-    GetPlatformFontsForNodeParams,
     GetPlatformFontsForNodeResult,
-    GetStyleSheetTextParams,
     GetStyleSheetTextResult,
-    ResolveValuesParams,
     ResolveValuesResult,
-    SetContainerQueryConditionTextParams,
     SetContainerQueryConditionTextResult,
-    SetContainerQueryTextParams,
     SetContainerQueryTextResult,
-    SetEffectivePropertyValueForNodeParams,
-    SetKeyframeKeyParams,
     SetKeyframeKeyResult,
-    SetLocalFontsEnabledParams,
-    SetMediaTextParams,
     SetMediaTextResult,
-    SetNavigationTextParams,
     SetNavigationTextResult,
-    SetPropertyRulePropertyNameParams,
     SetPropertyRulePropertyNameResult,
-    SetRuleSelectorParams,
     SetRuleSelectorResult,
-    SetScopeTextParams,
     SetScopeTextResult,
-    SetStyleSheetTextParams,
     SetStyleSheetTextResult,
-    SetStyleTextsParams,
     SetStyleTextsResult,
-    SetSupportsTextParams,
     SetSupportsTextResult,
     StopRuleUsageTrackingResult,
     TakeComputedStyleUpdatesResult,
     TakeCoverageDeltaResult,
-    TrackComputedStyleUpdatesForNodeParams,
-    TrackComputedStyleUpdatesParams,
 )
 from .types import (
     CSSComputedStyleProperty,
@@ -100,17 +68,31 @@ class CSS:
         """
         Inserts a new rule with the given `ruleText` in a stylesheet with given
         `styleSheetId`, at the position specified by `location`.
+
+        Args:
+            style_sheet_id: The css style sheet identifier where a new rule should be
+                inserted.
+            rule_text: The text of a new rule.
+            location: Text position of a new rule in the target style sheet.
+            node_for_property_syntax_validation: NodeId for the DOM node in whose
+                context custom property declarations for registered properties should be
+                validated. If omitted, declarations in the new rule text can only be
+                validated statically, which may produce incorrect results if the
+                declaration contains a var() for example. Experimental: this API may
+                change or be removed.
         """
-        params = AddRuleParams(
-            style_sheet_id=style_sheet_id,
-            rule_text=rule_text,
-            location=location,
-            node_for_property_syntax_validation=node_for_property_syntax_validation,
-        )
+        _params: dict[str, Any] = {}
+        _params["styleSheetId"] = _encode_value(style_sheet_id)
+        _params["ruleText"] = rule_text
+        _params["location"] = _encode_value(location)
+        if node_for_property_syntax_validation is not None:
+            _params["nodeForPropertySyntaxValidation"] = _encode_value(
+                node_for_property_syntax_validation
+            )
 
         result = await self._executor.execute(
             method=CSSCommand.ADD_RULE,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(AddRuleResult, result)
 
@@ -122,11 +104,12 @@ class CSS:
         """
         Returns all class names from specified stylesheet.
         """
-        params = CollectClassNamesParams(style_sheet_id=style_sheet_id)
+        _params: dict[str, Any] = {}
+        _params["styleSheetId"] = _encode_value(style_sheet_id)
 
         result = await self._executor.execute(
             method=CSSCommand.COLLECT_CLASS_NAMES,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(CollectClassNamesResult, result)
 
@@ -139,12 +122,22 @@ class CSS:
         """
         Creates a new special "via-inspector" stylesheet in the frame with given
         `frameId`.
+
+        Args:
+            frame_id: Identifier of the frame where "via-inspector" stylesheet should be
+                created.
+            force: If true, creates a new stylesheet for every call. If false, returns a
+                stylesheet previously created by a call with force=false for the frame's
+                document if it exists or creates a new stylesheet (default: false).
         """
-        params = CreateStyleSheetParams(frame_id=frame_id, force=force)
+        _params: dict[str, Any] = {}
+        _params["frameId"] = _encode_value(frame_id)
+        if force is not None:
+            _params["force"] = force
 
         result = await self._executor.execute(
             method=CSSCommand.CREATE_STYLE_SHEET,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(CreateStyleSheetResult, result)
 
@@ -180,14 +173,19 @@ class CSS:
         """
         Ensures that the given node will have specified pseudo-classes whenever its
         style is computed by the browser.
+
+        Args:
+            node_id: The element id for which to force the pseudo state.
+            forced_pseudo_classes: Element pseudo classes to force when computing the
+                element's style.
         """
-        params = ForcePseudoStateParams(
-            node_id=node_id, forced_pseudo_classes=forced_pseudo_classes
-        )
+        _params: dict[str, Any] = {}
+        _params["nodeId"] = _encode_value(node_id)
+        _params["forcedPseudoClasses"] = _encode_value(forced_pseudo_classes)
 
         await self._executor.execute(
             method=CSSCommand.FORCE_PSEUDO_STATE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def force_starting_style(
@@ -198,12 +196,18 @@ class CSS:
     ) -> None:
         """
         Ensures that the given node is in its starting-style state.
+
+        Args:
+            node_id: The element id for which to force the starting-style state.
+            forced: Boolean indicating if this is on or off.
         """
-        params = ForceStartingStyleParams(node_id=node_id, forced=forced)
+        _params: dict[str, Any] = {}
+        _params["nodeId"] = _encode_value(node_id)
+        _params["forced"] = forced
 
         await self._executor.execute(
             method=CSSCommand.FORCE_STARTING_STYLE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def force_position_try_option(
@@ -214,12 +218,20 @@ class CSS:
     ) -> None:
         """
         Forces a position-try option for the given node.
+
+        Args:
+            node_id: The element id for which to force the position-try option.
+            index: The 1-based index of the position-try fallback option, 0 for base
+                position (no fallback), or omitted to clear the forced state.
         """
-        params = ForcePositionTryOptionParams(node_id=node_id, index=index)
+        _params: dict[str, Any] = {}
+        _params["nodeId"] = _encode_value(node_id)
+        if index is not None:
+            _params["index"] = index
 
         await self._executor.execute(
             method=CSSCommand.FORCE_POSITION_TRY_OPTION,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def get_background_colors(
@@ -227,11 +239,16 @@ class CSS:
         *,
         node_id: dom.NodeId,
     ) -> GetBackgroundColorsResult:
-        params = GetBackgroundColorsParams(node_id=node_id)
+        """
+        Args:
+            node_id: Id of the node to get background colors for.
+        """
+        _params: dict[str, Any] = {}
+        _params["nodeId"] = _encode_value(node_id)
 
         result = await self._executor.execute(
             method=CSSCommand.GET_BACKGROUND_COLORS,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetBackgroundColorsResult, result)
 
@@ -243,11 +260,12 @@ class CSS:
         """
         Returns the computed style for a DOM node identified by `nodeId`.
         """
-        params = GetComputedStyleForNodeParams(node_id=node_id)
+        _params: dict[str, Any] = {}
+        _params["nodeId"] = _encode_value(node_id)
 
         result = await self._executor.execute(
             method=CSSCommand.GET_COMPUTED_STYLE_FOR_NODE,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetComputedStyleForNodeResult, result)
 
@@ -270,18 +288,29 @@ class CSS:
         `propertyName` was provided. If the value cannot be resolved even then, return
         the provided value without any changes. Note: this function currently does not
         resolve CSS random() function, it returns unmodified random() function parts.`
+        Experimental: this API may change or be removed.
+
+        Args:
+            values: Cascade-dependent keywords (revert/revert-layer) do not work.
+            node_id: Id of the node in whose context the expression is evaluated
+            property_name: Only longhands and custom property names are accepted.
+            pseudo_type: Pseudo element type, only works for pseudo elements that
+                generate elements in the tree, such as ::before and ::after.
+            pseudo_identifier: Pseudo element custom ident.
         """
-        params = ResolveValuesParams(
-            values=values,
-            node_id=node_id,
-            property_name=property_name,
-            pseudo_type=pseudo_type,
-            pseudo_identifier=pseudo_identifier,
-        )
+        _params: dict[str, Any] = {}
+        _params["values"] = _encode_value(values)
+        _params["nodeId"] = _encode_value(node_id)
+        if property_name is not None:
+            _params["propertyName"] = property_name
+        if pseudo_type is not None:
+            _params["pseudoType"] = _encode_value(pseudo_type)
+        if pseudo_identifier is not None:
+            _params["pseudoIdentifier"] = pseudo_identifier
 
         result = await self._executor.execute(
             method=CSSCommand.RESOLVE_VALUES,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(ResolveValuesResult, result)
 
@@ -291,11 +320,16 @@ class CSS:
         shorthand_name: str,
         value: str,
     ) -> GetLonghandPropertiesResult:
-        params = GetLonghandPropertiesParams(shorthand_name=shorthand_name, value=value)
+        """
+        Experimental: this API may change or be removed.
+        """
+        _params: dict[str, Any] = {}
+        _params["shorthandName"] = shorthand_name
+        _params["value"] = value
 
         result = await self._executor.execute(
             method=CSSCommand.GET_LONGHAND_PROPERTIES,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetLonghandPropertiesResult, result)
 
@@ -308,11 +342,12 @@ class CSS:
         Returns the styles defined inline (explicitly in the "style" attribute and
         implicitly, using DOM attributes) for a DOM node identified by `nodeId`.
         """
-        params = GetInlineStylesForNodeParams(node_id=node_id)
+        _params: dict[str, Any] = {}
+        _params["nodeId"] = _encode_value(node_id)
 
         result = await self._executor.execute(
             method=CSSCommand.GET_INLINE_STYLES_FOR_NODE,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetInlineStylesForNodeResult, result)
 
@@ -323,13 +358,15 @@ class CSS:
     ) -> GetAnimatedStylesForNodeResult:
         """
         Returns the styles coming from animations & transitions including the animation
-        & transition styles coming from inheritance chain.
+        & transition styles coming from inheritance chain. Experimental: this API may
+        change or be removed.
         """
-        params = GetAnimatedStylesForNodeParams(node_id=node_id)
+        _params: dict[str, Any] = {}
+        _params["nodeId"] = _encode_value(node_id)
 
         result = await self._executor.execute(
             method=CSSCommand.GET_ANIMATED_STYLES_FOR_NODE,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetAnimatedStylesForNodeResult, result)
 
@@ -341,11 +378,12 @@ class CSS:
         """
         Returns requested styles for a DOM node identified by `nodeId`.
         """
-        params = GetMatchedStylesForNodeParams(node_id=node_id)
+        _params: dict[str, Any] = {}
+        _params["nodeId"] = _encode_value(node_id)
 
         result = await self._executor.execute(
             method=CSSCommand.GET_MATCHED_STYLES_FOR_NODE,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetMatchedStylesForNodeResult, result)
 
@@ -354,7 +392,7 @@ class CSS:
     ) -> GetEnvironmentVariablesResult:
         """
         Returns the values of the default UA-defined environment variables used in
-        env()
+        env() Experimental: this API may change or be removed.
         """
         result = await self._executor.execute(
             method=CSSCommand.GET_ENVIRONMENT_VARIABLES,
@@ -383,11 +421,12 @@ class CSS:
         Requests information about platform fonts which we used to render child
         TextNodes in the given node.
         """
-        params = GetPlatformFontsForNodeParams(node_id=node_id)
+        _params: dict[str, Any] = {}
+        _params["nodeId"] = _encode_value(node_id)
 
         result = await self._executor.execute(
             method=CSSCommand.GET_PLATFORM_FONTS_FOR_NODE,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetPlatformFontsForNodeResult, result)
 
@@ -399,11 +438,12 @@ class CSS:
         """
         Returns the current textual content for a stylesheet.
         """
-        params = GetStyleSheetTextParams(style_sheet_id=style_sheet_id)
+        _params: dict[str, Any] = {}
+        _params["styleSheetId"] = _encode_value(style_sheet_id)
 
         result = await self._executor.execute(
             method=CSSCommand.GET_STYLE_SHEET_TEXT,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetStyleSheetTextResult, result)
 
@@ -416,13 +456,15 @@ class CSS:
         Returns all layers parsed by the rendering engine for the tree scope of a node.
         Given a DOM element identified by nodeId, getLayersForNode returns the root
         layer for the nearest ancestor document or shadow root. The layer root contains
-        the full layer tree for the tree scope and their ordering.
+        the full layer tree for the tree scope and their ordering. Experimental: this
+        API may change or be removed.
         """
-        params = GetLayersForNodeParams(node_id=node_id)
+        _params: dict[str, Any] = {}
+        _params["nodeId"] = _encode_value(node_id)
 
         result = await self._executor.execute(
             method=CSSCommand.GET_LAYERS_FOR_NODE,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetLayersForNodeResult, result)
 
@@ -434,15 +476,16 @@ class CSS:
     ) -> GetLocationForSelectorResult:
         """
         Given a CSS selector text and a style sheet ID, getLocationForSelector returns
-        an array of locations of the CSS selector in the style sheet.
+        an array of locations of the CSS selector in the style sheet. Experimental: this
+        API may change or be removed.
         """
-        params = GetLocationForSelectorParams(
-            style_sheet_id=style_sheet_id, selector_text=selector_text
-        )
+        _params: dict[str, Any] = {}
+        _params["styleSheetId"] = _encode_value(style_sheet_id)
+        _params["selectorText"] = selector_text
 
         result = await self._executor.execute(
             method=CSSCommand.GET_LOCATION_FOR_SELECTOR,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetLocationForSelectorResult, result)
 
@@ -456,13 +499,15 @@ class CSS:
         computed style is updated for node, it queues a `computedStyleUpdated` event
         with throttling. There can only be 1 node tracked for computed style updates so
         passing a new node id removes tracking from the previous node. Pass `undefined`
-        to disable tracking.
+        to disable tracking. Experimental: this API may change or be removed.
         """
-        params = TrackComputedStyleUpdatesForNodeParams(node_id=node_id)
+        _params: dict[str, Any] = {}
+        if node_id is not None:
+            _params["nodeId"] = _encode_value(node_id)
 
         await self._executor.execute(
             method=CSSCommand.TRACK_COMPUTED_STYLE_UPDATES_FOR_NODE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def track_computed_style_updates(
@@ -477,22 +522,22 @@ class CSS:
         properties modified. The changes to computed style properties are only tracked
         for nodes pushed to the front-end by the DOM agent. If no changes to the tracked
         properties occur after the node has been pushed to the front-end, no updates
-        will be issued for the node.
+        will be issued for the node. Experimental: this API may change or be removed.
         """
-        params = TrackComputedStyleUpdatesParams(
-            properties_to_track=properties_to_track
-        )
+        _params: dict[str, Any] = {}
+        _params["propertiesToTrack"] = _encode_value(properties_to_track)
 
         await self._executor.execute(
             method=CSSCommand.TRACK_COMPUTED_STYLE_UPDATES,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def take_computed_style_updates(
         self,
     ) -> TakeComputedStyleUpdatesResult:
         """
-        Polls the next batch of computed style updates.
+        Polls the next batch of computed style updates. Experimental: this API may
+        change or be removed.
         """
         result = await self._executor.execute(
             method=CSSCommand.TAKE_COMPUTED_STYLE_UPDATES,
@@ -510,14 +555,18 @@ class CSS:
         """
         Find a rule with the given active property for the given node and set the new
         value for this property
+
+        Args:
+            node_id: The element id for which to set property.
         """
-        params = SetEffectivePropertyValueForNodeParams(
-            node_id=node_id, property_name=property_name, value=value
-        )
+        _params: dict[str, Any] = {}
+        _params["nodeId"] = _encode_value(node_id)
+        _params["propertyName"] = property_name
+        _params["value"] = value
 
         await self._executor.execute(
             method=CSSCommand.SET_EFFECTIVE_PROPERTY_VALUE_FOR_NODE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_property_rule_property_name(
@@ -530,13 +579,14 @@ class CSS:
         """
         Modifies the property rule property name.
         """
-        params = SetPropertyRulePropertyNameParams(
-            style_sheet_id=style_sheet_id, range=range, property_name=property_name
-        )
+        _params: dict[str, Any] = {}
+        _params["styleSheetId"] = _encode_value(style_sheet_id)
+        _params["range"] = _encode_value(range)
+        _params["propertyName"] = property_name
 
         result = await self._executor.execute(
             method=CSSCommand.SET_PROPERTY_RULE_PROPERTY_NAME,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(SetPropertyRulePropertyNameResult, result)
 
@@ -550,13 +600,14 @@ class CSS:
         """
         Modifies the keyframe rule key text.
         """
-        params = SetKeyframeKeyParams(
-            style_sheet_id=style_sheet_id, range=range, key_text=key_text
-        )
+        _params: dict[str, Any] = {}
+        _params["styleSheetId"] = _encode_value(style_sheet_id)
+        _params["range"] = _encode_value(range)
+        _params["keyText"] = key_text
 
         result = await self._executor.execute(
             method=CSSCommand.SET_KEYFRAME_KEY,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(SetKeyframeKeyResult, result)
 
@@ -570,13 +621,14 @@ class CSS:
         """
         Modifies the rule selector.
         """
-        params = SetMediaTextParams(
-            style_sheet_id=style_sheet_id, range=range, text=text
-        )
+        _params: dict[str, Any] = {}
+        _params["styleSheetId"] = _encode_value(style_sheet_id)
+        _params["range"] = _encode_value(range)
+        _params["text"] = text
 
         result = await self._executor.execute(
             method=CSSCommand.SET_MEDIA_TEXT,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(SetMediaTextResult, result)
 
@@ -590,15 +642,17 @@ class CSS:
     ) -> SetContainerQueryTextResult:
         """
         Modifies the expression of a container query. Deprecated. Use
-        setContainerQueryConditionText instead.
+        setContainerQueryConditionText instead. Experimental: this API may change or be
+        removed. Deprecated in the Chrome DevTools Protocol.
         """
-        params = SetContainerQueryTextParams(
-            style_sheet_id=style_sheet_id, range=range, text=text
-        )
+        _params: dict[str, Any] = {}
+        _params["styleSheetId"] = _encode_value(style_sheet_id)
+        _params["range"] = _encode_value(range)
+        _params["text"] = text
 
         result = await self._executor.execute(
             method=CSSCommand.SET_CONTAINER_QUERY_TEXT,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(SetContainerQueryTextResult, result)
 
@@ -609,13 +663,17 @@ class CSS:
         range: SourceRange,
         text: str,
     ) -> SetContainerQueryConditionTextResult:
-        params = SetContainerQueryConditionTextParams(
-            style_sheet_id=style_sheet_id, range=range, text=text
-        )
+        """
+        Experimental: this API may change or be removed.
+        """
+        _params: dict[str, Any] = {}
+        _params["styleSheetId"] = _encode_value(style_sheet_id)
+        _params["range"] = _encode_value(range)
+        _params["text"] = text
 
         result = await self._executor.execute(
             method=CSSCommand.SET_CONTAINER_QUERY_CONDITION_TEXT,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(SetContainerQueryConditionTextResult, result)
 
@@ -627,15 +685,17 @@ class CSS:
         text: str,
     ) -> SetSupportsTextResult:
         """
-        Modifies the expression of a supports at-rule.
+        Modifies the expression of a supports at-rule. Experimental: this API may
+        change or be removed.
         """
-        params = SetSupportsTextParams(
-            style_sheet_id=style_sheet_id, range=range, text=text
-        )
+        _params: dict[str, Any] = {}
+        _params["styleSheetId"] = _encode_value(style_sheet_id)
+        _params["range"] = _encode_value(range)
+        _params["text"] = text
 
         result = await self._executor.execute(
             method=CSSCommand.SET_SUPPORTS_TEXT,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(SetSupportsTextResult, result)
 
@@ -647,15 +707,17 @@ class CSS:
         text: str,
     ) -> SetNavigationTextResult:
         """
-        Modifies the expression of a navigation at-rule.
+        Modifies the expression of a navigation at-rule. Experimental: this API may
+        change or be removed.
         """
-        params = SetNavigationTextParams(
-            style_sheet_id=style_sheet_id, range=range, text=text
-        )
+        _params: dict[str, Any] = {}
+        _params["styleSheetId"] = _encode_value(style_sheet_id)
+        _params["range"] = _encode_value(range)
+        _params["text"] = text
 
         result = await self._executor.execute(
             method=CSSCommand.SET_NAVIGATION_TEXT,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(SetNavigationTextResult, result)
 
@@ -667,15 +729,17 @@ class CSS:
         text: str,
     ) -> SetScopeTextResult:
         """
-        Modifies the expression of a scope at-rule.
+        Modifies the expression of a scope at-rule. Experimental: this API may change
+        or be removed.
         """
-        params = SetScopeTextParams(
-            style_sheet_id=style_sheet_id, range=range, text=text
-        )
+        _params: dict[str, Any] = {}
+        _params["styleSheetId"] = _encode_value(style_sheet_id)
+        _params["range"] = _encode_value(range)
+        _params["text"] = text
 
         result = await self._executor.execute(
             method=CSSCommand.SET_SCOPE_TEXT,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(SetScopeTextResult, result)
 
@@ -689,13 +753,14 @@ class CSS:
         """
         Modifies the rule selector.
         """
-        params = SetRuleSelectorParams(
-            style_sheet_id=style_sheet_id, range=range, selector=selector
-        )
+        _params: dict[str, Any] = {}
+        _params["styleSheetId"] = _encode_value(style_sheet_id)
+        _params["range"] = _encode_value(range)
+        _params["selector"] = selector
 
         result = await self._executor.execute(
             method=CSSCommand.SET_RULE_SELECTOR,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(SetRuleSelectorResult, result)
 
@@ -708,11 +773,13 @@ class CSS:
         """
         Sets the new stylesheet text.
         """
-        params = SetStyleSheetTextParams(style_sheet_id=style_sheet_id, text=text)
+        _params: dict[str, Any] = {}
+        _params["styleSheetId"] = _encode_value(style_sheet_id)
+        _params["text"] = text
 
         result = await self._executor.execute(
             method=CSSCommand.SET_STYLE_SHEET_TEXT,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(SetStyleSheetTextResult, result)
 
@@ -724,15 +791,25 @@ class CSS:
     ) -> SetStyleTextsResult:
         """
         Applies specified style edits one after another in the given order.
+
+        Args:
+            node_for_property_syntax_validation: NodeId for the DOM node in whose
+                context custom property declarations for registered properties should be
+                validated. If omitted, declarations in the new rule text can only be
+                validated statically, which may produce incorrect results if the
+                declaration contains a var() for example. Experimental: this API may
+                change or be removed.
         """
-        params = SetStyleTextsParams(
-            edits=edits,
-            node_for_property_syntax_validation=node_for_property_syntax_validation,
-        )
+        _params: dict[str, Any] = {}
+        _params["edits"] = _encode_value(edits)
+        if node_for_property_syntax_validation is not None:
+            _params["nodeForPropertySyntaxValidation"] = _encode_value(
+                node_for_property_syntax_validation
+            )
 
         result = await self._executor.execute(
             method=CSSCommand.SET_STYLE_TEXTS,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(SetStyleTextsResult, result)
 
@@ -780,10 +857,15 @@ class CSS:
     ) -> None:
         """
         Enables/disables rendering of local CSS fonts (enabled by default).
+        Experimental: this API may change or be removed.
+
+        Args:
+            enabled: Whether rendering of local fonts is enabled.
         """
-        params = SetLocalFontsEnabledParams(enabled=enabled)
+        _params: dict[str, Any] = {}
+        _params["enabled"] = enabled
 
         await self._executor.execute(
             method=CSSCommand.SET_LOCAL_FONTS_ENABLED,
-            params=encode_cdp(params),
+            params=_params,
         )

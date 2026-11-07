@@ -13,7 +13,13 @@ from cdpify.domains import network, storage
 class File:
     name: str
     last_modified: network.TimeSinceEpoch = field(metadata={"cdp_name": "lastModified"})
+    """
+    Timestamp
+    """
     size: float
+    """
+    Size in bytes
+    """
     type: str
 
 
@@ -22,6 +28,9 @@ class Directory:
     name: str
     nested_directories: list[str] = field(metadata={"cdp_name": "nestedDirectories"})
     nested_files: list[File] = field(metadata={"cdp_name": "nestedFiles"})
+    """
+    Files that are directly nested under this directory.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -29,5 +38,15 @@ class BucketFileSystemLocator:
     storage_key: storage.SerializedStorageKey = field(
         metadata={"cdp_name": "storageKey"}
     )
+    """
+    Storage key
+    """
     bucket_name: str | None = field(default=None, metadata={"cdp_name": "bucketName"})
+    """
+    Bucket name. Not passing a `bucketName` will retrieve the default Bucket.
+    (https://developer.mozilla.org/en-US/docs/Web/API/Storage_API#storage_buckets)
+    """
     path_components: list[str] = field(metadata={"cdp_name": "pathComponents"})
+    """
+    Path to the directory using each path component as an array item.
+    """

@@ -16,11 +16,24 @@ class AdFrameData:
     """
 
     frame_id: page.FrameId = field(metadata={"cdp_name": "frameId"})
+    """
+    The DevTools frame token.
+    """
     initial_origin: str | None = field(
         default=None, metadata={"cdp_name": "initialOrigin"}
     )
+    """
+    The initial origin of the frame. To minimize the payload size, this is only sent
+    once per frame.
+    """
     network_bytes: float = field(metadata={"cdp_name": "networkBytes"})
+    """
+    The network bytes of the frame.
+    """
     cpu_time: float = field(metadata={"cdp_name": "cpuTime"})
+    """
+    The CPU time of the frame, in milliseconds.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -32,19 +45,46 @@ class AdMetrics:
     viewport_ad_density_by_area: int = field(
         metadata={"cdp_name": "viewportAdDensityByArea"}
     )
+    """
+    The viewport ad density by area, represented as a percentage (an integer between 0
+    and 100).
+    """
     average_viewport_ad_density_by_area: float = field(
         metadata={"cdp_name": "averageViewportAdDensityByArea"}
     )
+    """
+    The time-weighted average of the viewport ad density by area, measured across the
+    duration of the page.
+    """
     viewport_ad_count: int = field(metadata={"cdp_name": "viewportAdCount"})
+    """
+    The number of ads currently visible within the viewport.
+    """
     average_viewport_ad_count: float = field(
         metadata={"cdp_name": "averageViewportAdCount"}
     )
+    """
+    The time-weighted average of the viewport ad count, measured across the duration of
+    the page.
+    """
     total_ad_cpu_time: float = field(metadata={"cdp_name": "totalAdCpuTime"})
+    """
+    The total ad CPU usage, in milliseconds.
+    """
     total_ad_network_bytes: float = field(metadata={"cdp_name": "totalAdNetworkBytes"})
+    """
+    The total ad network bytes.
+    """
     update_ad_frames: list[AdFrameData] = field(metadata={"cdp_name": "updateAdFrames"})
+    """
+    The list of ad frames that have been updated since the last event.
+    """
     remove_ad_frames: list[page.FrameId] = field(
         metadata={"cdp_name": "removeAdFrames"}
     )
+    """
+    The list of ad frame IDs that have been removed since the last event.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -57,4 +97,10 @@ class AdScript:
     """
 
     script_id: runtime.ScriptId = field(metadata={"cdp_name": "scriptId"})
+    """
+    The script ID.
+    """
     provenance: network.AdProvenance
+    """
+    The ad provenance.
+    """

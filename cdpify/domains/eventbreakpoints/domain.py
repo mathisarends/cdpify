@@ -4,13 +4,12 @@
 
 from __future__ import annotations
 
-from cdpify.codec import encode_cdp
+from typing import Any
+
 from cdpify.executor import CommandExecutor
 
 from .commands import (
     EventBreakpointsCommand,
-    RemoveInstrumentationBreakpointParams,
-    SetInstrumentationBreakpointParams,
 )
 
 
@@ -25,12 +24,16 @@ class EventBreakpoints:
     ) -> None:
         """
         Sets breakpoint on particular native event.
+
+        Args:
+            event_name: Instrumentation name to stop on.
         """
-        params = SetInstrumentationBreakpointParams(event_name=event_name)
+        _params: dict[str, Any] = {}
+        _params["eventName"] = event_name
 
         await self._executor.execute(
             method=EventBreakpointsCommand.SET_INSTRUMENTATION_BREAKPOINT,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def remove_instrumentation_breakpoint(
@@ -40,12 +43,16 @@ class EventBreakpoints:
     ) -> None:
         """
         Removes breakpoint on particular native event.
+
+        Args:
+            event_name: Instrumentation name to stop on.
         """
-        params = RemoveInstrumentationBreakpointParams(event_name=event_name)
+        _params: dict[str, Any] = {}
+        _params["eventName"] = event_name
 
         await self._executor.execute(
             method=EventBreakpointsCommand.REMOVE_INSTRUMENTATION_BREAKPOINT,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def disable(

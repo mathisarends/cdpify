@@ -22,7 +22,7 @@ class EmulationEvent(StrEnum):
 class VirtualTimeBudgetExpiredEvent:
     """
     Notification sent after the virtual time budget for the current VirtualTimePolicy
-    has run out.
+    has run out. Experimental: this API may change or be removed.
     """
 
     __cdp_event__: ClassVar[EmulationEvent] = EmulationEvent.VIRTUAL_TIME_BUDGET_EXPIRED
@@ -33,7 +33,8 @@ class ScreenOrientationLockChangedEvent:
     """
     Fired when a page calls screen.orientation.lock() or screen.orientation.unlock()
     while device emulation is enabled. This allows the DevTools frontend to update the
-    emulated device orientation accordingly.
+    emulated device orientation accordingly. Experimental: this API may change or be
+    removed.
     """
 
     __cdp_event__: ClassVar[EmulationEvent] = (
@@ -41,4 +42,10 @@ class ScreenOrientationLockChangedEvent:
     )
 
     locked: bool
+    """
+    Whether the screen orientation is currently locked.
+    """
     orientation: ScreenOrientation | None = None
+    """
+    The orientation lock type requested by the page. Only set when locked is true.
+    """

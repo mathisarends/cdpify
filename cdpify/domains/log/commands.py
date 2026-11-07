@@ -27,3 +27,6 @@ class StartViolationsReportParams:
     """
 
     config: list[ViolationSetting]
+    """
+    Configuration for violations.
+    """

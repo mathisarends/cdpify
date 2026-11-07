@@ -7,6 +7,8 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Any, Literal
 
+from cdpify.unset import UNSET, UnsetType
+
 type ScriptId = str
 """
 Unique script identifier.
@@ -22,9 +24,18 @@ class SerializationOptions:
 
     serialization: Literal["deep", "json", "idOnly"]
     max_depth: int | None = field(default=None, metadata={"cdp_name": "maxDepth"})
+    """
+    Deep serialization depth. Default is full depth. Respected only in `deep`
+    serialization mode.
+    """
     additional_parameters: dict[str, Any] | None = field(
         default=None, metadata={"cdp_name": "additionalParameters"}
     )
+    """
+    Embedder-specific parameters. For example if connected to V8 in Chrome these
+    control DOM serialization via `maxNodeDepth: integer` and `includeShadowTree: "none"
+    | "open" | "all"`. Values can be only of type string or integer.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -59,11 +70,19 @@ class DeepSerializedValue:
         "window",
         "generator",
     ]
-    value: Any | None = None
+    value: Any | UnsetType = UNSET
+    """
+    Omit with UNSET; None encodes JSON null.
+    """
     object_id: str | None = field(default=None, metadata={"cdp_name": "objectId"})
     weak_local_object_reference: int | None = field(
         default=None, metadata={"cdp_name": "weakLocalObjectReference"}
     )
+    """
+    Set if value reference met more then once during serialization. In such case, value
+    is provided only to one of the serialized values. Unique per value in the scope of
+    one CDP call.
+    """
 
 
 type RemoteObjectId = str
@@ -94,6 +113,9 @@ class RemoteObject:
         "symbol",
         "bigint",
     ]
+    """
+    Object type.
+    """
     subtype: (
         Literal[
             "array",
@@ -120,36 +142,82 @@ class RemoteObject:
         ]
         | None
     ) = None
+    """
+    Object subtype hint. Specified for `object` type values only. NOTE: If you change
+    anything here, make sure to also update `subtype` in `ObjectPreview` and
+    `PropertyPreview` below.
+    """
     class_name: str | None = field(default=None, metadata={"cdp_name": "className"})
-    value: Any | None = None
+    """
+    Object class (constructor) name. Specified for `object` type values only.
+    """
+    value: Any | UnsetType = UNSET
+    """
+    Remote object value in case of primitive values or JSON values (if it was
+    requested). Omit with UNSET; None encodes JSON null.
+    """
     unserializable_value: UnserializableValue | None = field(
         default=None, metadata={"cdp_name": "unserializableValue"}
     )
+    """
+    Primitive value which can not be JSON-stringified does not have `value`, but gets
+    this property.
+    """
     description: str | None = None
+    """
+    String representation of the object.
+    """
     deep_serialized_value: DeepSerializedValue | None = field(
         default=None, metadata={"cdp_name": "deepSerializedValue"}
     )
+    """
+    Deep serialized value. Experimental: this API may change or be removed.
+    """
     object_id: RemoteObjectId | None = field(
         default=None, metadata={"cdp_name": "objectId"}
     )
+    """
+    Unique object identifier (for non-primitive values).
+    """
     preview: ObjectPreview | None = None
+    """
+    Preview containing abbreviated property values. Specified for `object` type values
+    only. Experimental: this API may change or be removed.
+    """
     custom_preview: CustomPreview | None = field(
         default=None, metadata={"cdp_name": "customPreview"}
     )
+    """
+    Experimental: this API may change or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class CustomPreview:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     header: str
+    """
+    The JSON-stringified result of formatter.header(object, config) call. It contains
+    json ML array that represents RemoteObject.
+    """
     body_getter_id: RemoteObjectId | None = field(
         default=None, metadata={"cdp_name": "bodyGetterId"}
     )
+    """
+    If formatter returns true as a result of formatter.hasBody call then bodyGetterId
+    will contain RemoteObjectId for the function that returns result of
+    formatter.body(object, config) call. The result value is json ML array.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class ObjectPreview:
     """
-    Object containing abbreviated remote object value.
+    Object containing abbreviated remote object value. Experimental: this API may
+    change or be removed.
     """
 
     type: Literal[
@@ -162,6 +230,9 @@ class ObjectPreview:
         "symbol",
         "bigint",
     ]
+    """
+    Object type.
+    """
     subtype: (
         Literal[
             "array",
@@ -188,15 +259,37 @@ class ObjectPreview:
         ]
         | None
     ) = None
+    """
+    Object subtype hint. Specified for `object` type values only.
+    """
     description: str | None = None
+    """
+    String representation of the object.
+    """
     overflow: bool
+    """
+    True iff some of the properties or entries of the original object did not fit.
+    """
     properties: list[PropertyPreview]
+    """
+    List of the properties.
+    """
     entries: list[EntryPreview] | None = None
+    """
+    List of the entries. Specified for `map` and `set` subtype values only.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class PropertyPreview:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     name: str
+    """
+    Property name.
+    """
     type: Literal[
         "object",
         "function",
@@ -208,10 +301,19 @@ class PropertyPreview:
         "accessor",
         "bigint",
     ]
+    """
+    Object type. Accessor means that the property itself is an accessor property.
+    """
     value: str | None = None
+    """
+    User-friendly property value string.
+    """
     value_preview: ObjectPreview | None = field(
         default=None, metadata={"cdp_name": "valuePreview"}
     )
+    """
+    Nested value preview.
+    """
     subtype: (
         Literal[
             "array",
@@ -238,12 +340,25 @@ class PropertyPreview:
         ]
         | None
     ) = None
+    """
+    Object subtype hint. Specified for `object` type values only.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class EntryPreview:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     key: ObjectPreview | None = None
+    """
+    Preview of the key. Specified for map-like collection entries.
+    """
     value: ObjectPreview
+    """
+    Preview of the value.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -253,15 +368,50 @@ class PropertyDescriptor:
     """
 
     name: str
+    """
+    Property name or symbol description.
+    """
     value: RemoteObject | None = None
+    """
+    The value associated with the property.
+    """
     writable: bool | None = None
+    """
+    True if the value associated with the property may be changed (data descriptors
+    only).
+    """
     get: RemoteObject | None = None
+    """
+    A function which serves as a getter for the property, or `undefined` if there is no
+    getter (accessor descriptors only).
+    """
     set: RemoteObject | None = None
+    """
+    A function which serves as a setter for the property, or `undefined` if there is no
+    setter (accessor descriptors only).
+    """
     configurable: bool
+    """
+    True if the type of this property descriptor may be changed and if the property may
+    be deleted from the corresponding object.
+    """
     enumerable: bool
+    """
+    True if this property shows up during enumeration of the properties on the
+    corresponding object.
+    """
     was_thrown: bool | None = field(default=None, metadata={"cdp_name": "wasThrown"})
+    """
+    True if the result was thrown during the evaluation.
+    """
     is_own: bool | None = field(default=None, metadata={"cdp_name": "isOwn"})
+    """
+    True if the property is owned for the object.
+    """
     symbol: RemoteObject | None = None
+    """
+    Property symbol object, if the property is of the `symbol` type.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -272,19 +422,39 @@ class InternalPropertyDescriptor:
     """
 
     name: str
+    """
+    Conventional property name.
+    """
     value: RemoteObject | None = None
+    """
+    The value associated with the property.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class PrivatePropertyDescriptor:
     """
-    Object private field descriptor.
+    Object private field descriptor. Experimental: this API may change or be removed.
     """
 
     name: str
+    """
+    Private property name.
+    """
     value: RemoteObject | None = None
+    """
+    The value associated with the private property.
+    """
     get: RemoteObject | None = None
+    """
+    A function which serves as a getter for the private property, or `undefined` if
+    there is no getter (accessor descriptors only).
+    """
     set: RemoteObject | None = None
+    """
+    A function which serves as a setter for the private property, or `undefined` if
+    there is no setter (accessor descriptors only).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -295,13 +465,23 @@ class CallArgument:
     specified.
     """
 
-    value: Any | None = None
+    value: Any | UnsetType = UNSET
+    """
+    Primitive value or serializable javascript object. Omit with UNSET; None encodes
+    JSON null.
+    """
     unserializable_value: UnserializableValue | None = field(
         default=None, metadata={"cdp_name": "unserializableValue"}
     )
+    """
+    Primitive value which can not be JSON-stringified.
+    """
     object_id: RemoteObjectId | None = field(
         default=None, metadata={"cdp_name": "objectId"}
     )
+    """
+    Remote object handle.
+    """
 
 
 type ExecutionContextId = int
@@ -317,12 +497,32 @@ class ExecutionContextDescription:
     """
 
     id: ExecutionContextId
+    """
+    Unique id of the execution context. It can be used to specify in which execution
+    context script evaluation should be performed.
+    """
     origin: str
+    """
+    Execution context origin.
+    """
     name: str
+    """
+    Human readable name describing given context.
+    """
     unique_id: str = field(metadata={"cdp_name": "uniqueId"})
+    """
+    A system-unique execution context identifier. Unlike the id, this is unique across
+    multiple processes, so can be reliably used to identify specific context while
+    backend performs a cross-process navigation. Experimental: this API may change or be
+    removed.
+    """
     aux_data: dict[str, Any] | None = field(
         default=None, metadata={"cdp_name": "auxData"}
     )
+    """
+    Embedder-specific auxiliary data likely matching {isDefault: boolean, type:
+    'default'|'isolated'|'worker', frameId: string}
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -333,21 +533,53 @@ class ExceptionDetails:
     """
 
     exception_id: int = field(metadata={"cdp_name": "exceptionId"})
+    """
+    Exception id.
+    """
     text: str
+    """
+    Exception text, which should be used together with exception object when available.
+    """
     line_number: int = field(metadata={"cdp_name": "lineNumber"})
+    """
+    Line number of the exception location (0-based).
+    """
     column_number: int = field(metadata={"cdp_name": "columnNumber"})
+    """
+    Column number of the exception location (0-based).
+    """
     script_id: ScriptId | None = field(default=None, metadata={"cdp_name": "scriptId"})
+    """
+    Script ID of the exception location.
+    """
     url: str | None = None
+    """
+    URL of the exception location, to be used when the script was not reported.
+    """
     stack_trace: StackTrace | None = field(
         default=None, metadata={"cdp_name": "stackTrace"}
     )
+    """
+    JavaScript stack trace if available.
+    """
     exception: RemoteObject | None = None
+    """
+    Exception object if available.
+    """
     execution_context_id: ExecutionContextId | None = field(
         default=None, metadata={"cdp_name": "executionContextId"}
     )
+    """
+    Identifier of the context where exception happened.
+    """
     exception_meta_data: dict[str, Any] | None = field(
         default=None, metadata={"cdp_name": "exceptionMetaData"}
     )
+    """
+    Dictionary with entries of meta data that the client associated with this
+    exception, such as information about associated network requests, etc. Experimental:
+    this API may change or be removed.
+    """
 
 
 type Timestamp = float
@@ -368,10 +600,25 @@ class CallFrame:
     """
 
     function_name: str = field(metadata={"cdp_name": "functionName"})
+    """
+    JavaScript function name.
+    """
     script_id: ScriptId = field(metadata={"cdp_name": "scriptId"})
+    """
+    JavaScript script id.
+    """
     url: str
+    """
+    JavaScript script name or url.
+    """
     line_number: int = field(metadata={"cdp_name": "lineNumber"})
+    """
+    JavaScript script line number (0-based).
+    """
     column_number: int = field(metadata={"cdp_name": "columnNumber"})
+    """
+    JavaScript script column number (0-based).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -381,16 +628,30 @@ class StackTrace:
     """
 
     description: str | None = None
+    """
+    String label of this stack trace. For async traces this may be a name of the
+    function that initiated the async call.
+    """
     call_frames: list[CallFrame] = field(metadata={"cdp_name": "callFrames"})
+    """
+    JavaScript function name.
+    """
     parent: StackTrace | None = None
+    """
+    Asynchronous JavaScript stack trace that preceded this stack, if available.
+    """
     parent_id: StackTraceId | None = field(
         default=None, metadata={"cdp_name": "parentId"}
     )
+    """
+    Asynchronous JavaScript stack trace that preceded this stack, if available.
+    Experimental: this API may change or be removed.
+    """
 
 
 type UniqueDebuggerId = str
 """
-Unique identifier of current debugger.
+Unique identifier of current debugger. Experimental: this API may change or be removed.
 """
 
 
@@ -399,7 +660,7 @@ class StackTraceId:
     """
     If `debuggerId` is set stack trace comes from another debugger and can be resolved
     there. This allows to track cross-debugger calls. See `Runtime.StackTrace` and
-    `Debugger.paused` for usages.
+    `Debugger.paused` for usages. Experimental: this API may change or be removed.
     """
 
     id: str

@@ -24,11 +24,12 @@ def test_method_with_params(simple_domain: Domain) -> None:
     assert "node_id: NodeId," in output
     assert "session_id: str | None = None," not in output
     assert "-> GetNodeResult:" in output
-    assert "params = GetNodeParams(node_id=node_id)" in output
+    assert "GetNodeParams(" not in output
+    assert '_params["nodeId"] = _encode_value(node_id)' in output
     assert "method=SampleCommand.GET_NODE" in output
     assert "result = await self._executor.execute(" in output
-    assert "from cdpify.codec import decode_cdp, encode_cdp" in output
-    assert "params=encode_cdp(params)" in output
+    assert "from cdpify.codec import _encode_value, decode_cdp" in output
+    assert "params=_params" in output
     assert "return decode_cdp(GetNodeResult, result)" in output
 
 
@@ -79,7 +80,7 @@ def test_protocol_session_id_keeps_its_natural_name() -> None:
     output = domain_generator.generate(domain)
 
     assert "session_id: str," in output
-    assert "AttachToTargetParams(session_id=session_id)" in output
+    assert '_params["sessionId"] = session_id' in output
 
 
 def test_cross_domain_param_resolved_via_type_checking() -> None:
@@ -105,9 +106,9 @@ def test_command_imports_include_enum_and_classes(simple_domain: Domain) -> None
 
     imports_section = output.split("from .commands import (")[1].split(")")[0]
     assert "SampleCommand" in imports_section
-    assert "GetNodeParams" in imports_section
+    assert "GetNodeParams" not in imports_section
     assert "GetNodeResult" in imports_section
-    assert "LegacyOpParams" in imports_section
+    assert "LegacyOpParams" not in imports_section
 
 
 def test_kw_only_marker_appears_when_command_has_params(simple_domain: Domain) -> None:

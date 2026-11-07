@@ -1,6 +1,7 @@
 from cdpify.generator.generators.constants import FUTURE_ANNOTATIONS, HEADER
 from cdpify.generator.generators.context import GenerationContext
 from cdpify.generator.generators.utils import (
+    api_description,
     format_docstring,
     resolve_type,
     to_enum_name,
@@ -49,6 +50,7 @@ def generate(domain: Domain) -> str:
             for event in domain.events
         ),
         models=models,
+        uses_unset=any(f.uses_unset for m in models for f in m.fields),
         dataclass_import=dataclass_import(models),
     )
 
@@ -82,7 +84,15 @@ def _build_event_model(
     return ModelView(
         name=class_name,
         docstring=(
-            format_docstring(event.description, indent=4) if event.description else None
+            format_docstring(
+                api_description(
+                    event.description,
+                    experimental=event.experimental,
+                    deprecated=event.deprecated,
+                ),
+                indent=4,
+            )
+            or None
         ),
         fields=tuple(
             _build_field_view(param, event_fqn, aliases, ctx)
@@ -110,4 +120,7 @@ def _build_field_view(
         py_type,
         optional=is_optional,
         cdp_name=param.name,
+        description=param.description,
+        experimental=param.experimental,
+        deprecated=param.deprecated,
     )

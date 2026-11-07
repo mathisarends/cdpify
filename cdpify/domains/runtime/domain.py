@@ -4,38 +4,24 @@
 
 from __future__ import annotations
 
-from cdpify.codec import decode_cdp, encode_cdp
+from typing import Any
+
+from cdpify.codec import _encode_value, decode_cdp
 from cdpify.executor import CommandExecutor
 
 from .commands import (
-    AddBindingParams,
-    AwaitPromiseParams,
     AwaitPromiseResult,
-    CallFunctionOnParams,
     CallFunctionOnResult,
-    CompileScriptParams,
     CompileScriptResult,
-    EvaluateParams,
     EvaluateResult,
-    GetExceptionDetailsParams,
     GetExceptionDetailsResult,
     GetHeapUsageResult,
     GetIsolateIdResult,
-    GetPropertiesParams,
     GetPropertiesResult,
-    GlobalLexicalScopeNamesParams,
     GlobalLexicalScopeNamesResult,
-    QueryObjectsParams,
     QueryObjectsResult,
-    ReleaseObjectGroupParams,
-    ReleaseObjectParams,
-    RemoveBindingParams,
-    RunScriptParams,
     RunScriptResult,
     RuntimeCommand,
-    SetAsyncCallStackDepthParams,
-    SetCustomObjectFormatterEnabledParams,
-    SetMaxCallStackSizeToCaptureParams,
 )
 from .types import (
     CallArgument,
@@ -60,16 +46,23 @@ class Runtime:
     ) -> AwaitPromiseResult:
         """
         Add handler to promise with given promise object id.
+
+        Args:
+            promise_object_id: Identifier of the promise.
+            return_by_value: Whether the result is expected to be a JSON object that
+                should be sent by value.
+            generate_preview: Whether preview should be generated for the result.
         """
-        params = AwaitPromiseParams(
-            promise_object_id=promise_object_id,
-            return_by_value=return_by_value,
-            generate_preview=generate_preview,
-        )
+        _params: dict[str, Any] = {}
+        _params["promiseObjectId"] = _encode_value(promise_object_id)
+        if return_by_value is not None:
+            _params["returnByValue"] = return_by_value
+        if generate_preview is not None:
+            _params["generatePreview"] = generate_preview
 
         result = await self._executor.execute(
             method=RuntimeCommand.AWAIT_PROMISE,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(AwaitPromiseResult, result)
 
@@ -93,26 +86,73 @@ class Runtime:
         """
         Calls function with given declaration on the given object. Object group of the
         result is inherited from the target object.
+
+        Args:
+            function_declaration: Declaration of the function to call.
+            object_id: Identifier of the object to call function on. Either objectId or
+                executionContextId should be specified.
+            arguments: Call arguments. All call arguments must belong to the same
+                JavaScript world as the target object.
+            silent: In silent mode exceptions thrown during evaluation are not reported
+                and do not pause execution. Overrides `setPauseOnException` state.
+            return_by_value: Whether the result is expected to be a JSON object which
+                should be sent by value. Can be overriden by `serializationOptions`.
+            generate_preview: Whether preview should be generated for the result.
+                Experimental: this API may change or be removed.
+            user_gesture: Whether execution should be treated as initiated by user in
+                the UI.
+            await_promise: Whether execution should `await` for resulting value and
+                return once awaited promise is resolved.
+            execution_context_id: Specifies execution context which global object will
+                be used to call function on. Either executionContextId or objectId
+                should be specified.
+            object_group: Symbolic group name that can be used to release multiple
+                objects. If objectGroup is not specified and objectId is, objectGroup
+                will be inherited from object.
+            throw_on_side_effect: Whether to throw an exception if side effect cannot be
+                ruled out during evaluation. Experimental: this API may change or be
+                removed.
+            unique_context_id: An alternative way to specify the execution context to
+                call function on. Compared to contextId that may be reused across
+                processes, this is guaranteed to be system-unique, so it can be used to
+                prevent accidental function call in context different than intended
+                (e.g. as a result of navigation across process boundaries). This is
+                mutually exclusive with `executionContextId`. Experimental: this API may
+                change or be removed.
+            serialization_options: Specifies the result serialization. If provided,
+                overrides `generatePreview` and `returnByValue`. Experimental: this API
+                may change or be removed.
         """
-        params = CallFunctionOnParams(
-            function_declaration=function_declaration,
-            object_id=object_id,
-            arguments=arguments,
-            silent=silent,
-            return_by_value=return_by_value,
-            generate_preview=generate_preview,
-            user_gesture=user_gesture,
-            await_promise=await_promise,
-            execution_context_id=execution_context_id,
-            object_group=object_group,
-            throw_on_side_effect=throw_on_side_effect,
-            unique_context_id=unique_context_id,
-            serialization_options=serialization_options,
-        )
+        _params: dict[str, Any] = {}
+        _params["functionDeclaration"] = function_declaration
+        if object_id is not None:
+            _params["objectId"] = _encode_value(object_id)
+        if arguments is not None:
+            _params["arguments"] = _encode_value(arguments)
+        if silent is not None:
+            _params["silent"] = silent
+        if return_by_value is not None:
+            _params["returnByValue"] = return_by_value
+        if generate_preview is not None:
+            _params["generatePreview"] = generate_preview
+        if user_gesture is not None:
+            _params["userGesture"] = user_gesture
+        if await_promise is not None:
+            _params["awaitPromise"] = await_promise
+        if execution_context_id is not None:
+            _params["executionContextId"] = _encode_value(execution_context_id)
+        if object_group is not None:
+            _params["objectGroup"] = object_group
+        if throw_on_side_effect is not None:
+            _params["throwOnSideEffect"] = throw_on_side_effect
+        if unique_context_id is not None:
+            _params["uniqueContextId"] = unique_context_id
+        if serialization_options is not None:
+            _params["serializationOptions"] = _encode_value(serialization_options)
 
         result = await self._executor.execute(
             method=RuntimeCommand.CALL_FUNCTION_ON,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(CallFunctionOnResult, result)
 
@@ -126,17 +166,25 @@ class Runtime:
     ) -> CompileScriptResult:
         """
         Compiles expression.
+
+        Args:
+            expression: Expression to compile.
+            source_url: Source url to be set for the script.
+            persist_script: Specifies whether the compiled script should be persisted.
+            execution_context_id: Specifies in which execution context to perform script
+                run. If the parameter is omitted the evaluation will be performed in the
+                context of the inspected page.
         """
-        params = CompileScriptParams(
-            expression=expression,
-            source_url=source_url,
-            persist_script=persist_script,
-            execution_context_id=execution_context_id,
-        )
+        _params: dict[str, Any] = {}
+        _params["expression"] = expression
+        _params["sourceURL"] = source_url
+        _params["persistScript"] = persist_script
+        if execution_context_id is not None:
+            _params["executionContextId"] = _encode_value(execution_context_id)
 
         result = await self._executor.execute(
             method=RuntimeCommand.COMPILE_SCRIPT,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(CompileScriptResult, result)
 
@@ -197,29 +245,91 @@ class Runtime:
     ) -> EvaluateResult:
         """
         Evaluates expression on global object.
+
+        Args:
+            expression: Expression to evaluate.
+            object_group: Symbolic group name that can be used to release multiple
+                objects.
+            include_command_line_api: Determines whether Command Line API should be
+                available during the evaluation.
+            silent: In silent mode exceptions thrown during evaluation are not reported
+                and do not pause execution. Overrides `setPauseOnException` state.
+            context_id: Specifies in which execution context to perform evaluation. If
+                the parameter is omitted the evaluation will be performed in the context
+                of the inspected page. This is mutually exclusive with
+                `uniqueContextId`, which offers an alternative way to identify the
+                execution context that is more reliable in a multi-process environment.
+            return_by_value: Whether the result is expected to be a JSON object that
+                should be sent by value.
+            generate_preview: Whether preview should be generated for the result.
+                Experimental: this API may change or be removed.
+            user_gesture: Whether execution should be treated as initiated by user in
+                the UI.
+            await_promise: Whether execution should `await` for resulting value and
+                return once awaited promise is resolved.
+            throw_on_side_effect: Whether to throw an exception if side effect cannot be
+                ruled out during evaluation. This implies `disableBreaks` below.
+                Experimental: this API may change or be removed.
+            timeout: Terminate execution after timing out (number of milliseconds).
+                Experimental: this API may change or be removed.
+            disable_breaks: Disable breakpoints during execution. Experimental: this API
+                may change or be removed.
+            repl_mode: Setting this flag to true enables `let` re-declaration and
+                top-level `await`. Note that `let` variables can only be re-declared if
+                they originate from `replMode` themselves. Experimental: this API may
+                change or be removed.
+            allow_unsafe_eval_blocked_by_csp: The Content Security Policy (CSP) for the
+                target might block 'unsafe-eval' which includes eval(), Function(),
+                setTimeout() and setInterval() when called with non-callable arguments.
+                This flag bypasses CSP for this evaluation and allows unsafe-eval.
+                Defaults to true. Experimental: this API may change or be removed.
+            unique_context_id: An alternative way to specify the execution context to
+                evaluate in. Compared to contextId that may be reused across processes,
+                this is guaranteed to be system-unique, so it can be used to prevent
+                accidental evaluation of the expression in context different than
+                intended (e.g. as a result of navigation across process boundaries).
+                This is mutually exclusive with `contextId`. Experimental: this API may
+                change or be removed.
+            serialization_options: Specifies the result serialization. If provided,
+                overrides `generatePreview` and `returnByValue`. Experimental: this API
+                may change or be removed.
         """
-        params = EvaluateParams(
-            expression=expression,
-            object_group=object_group,
-            include_command_line_api=include_command_line_api,
-            silent=silent,
-            context_id=context_id,
-            return_by_value=return_by_value,
-            generate_preview=generate_preview,
-            user_gesture=user_gesture,
-            await_promise=await_promise,
-            throw_on_side_effect=throw_on_side_effect,
-            timeout=timeout,
-            disable_breaks=disable_breaks,
-            repl_mode=repl_mode,
-            allow_unsafe_eval_blocked_by_csp=allow_unsafe_eval_blocked_by_csp,
-            unique_context_id=unique_context_id,
-            serialization_options=serialization_options,
-        )
+        _params: dict[str, Any] = {}
+        _params["expression"] = expression
+        if object_group is not None:
+            _params["objectGroup"] = object_group
+        if include_command_line_api is not None:
+            _params["includeCommandLineAPI"] = include_command_line_api
+        if silent is not None:
+            _params["silent"] = silent
+        if context_id is not None:
+            _params["contextId"] = _encode_value(context_id)
+        if return_by_value is not None:
+            _params["returnByValue"] = return_by_value
+        if generate_preview is not None:
+            _params["generatePreview"] = generate_preview
+        if user_gesture is not None:
+            _params["userGesture"] = user_gesture
+        if await_promise is not None:
+            _params["awaitPromise"] = await_promise
+        if throw_on_side_effect is not None:
+            _params["throwOnSideEffect"] = throw_on_side_effect
+        if timeout is not None:
+            _params["timeout"] = _encode_value(timeout)
+        if disable_breaks is not None:
+            _params["disableBreaks"] = disable_breaks
+        if repl_mode is not None:
+            _params["replMode"] = repl_mode
+        if allow_unsafe_eval_blocked_by_csp is not None:
+            _params["allowUnsafeEvalBlockedByCSP"] = allow_unsafe_eval_blocked_by_csp
+        if unique_context_id is not None:
+            _params["uniqueContextId"] = unique_context_id
+        if serialization_options is not None:
+            _params["serializationOptions"] = _encode_value(serialization_options)
 
         result = await self._executor.execute(
             method=RuntimeCommand.EVALUATE,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(EvaluateResult, result)
 
@@ -227,7 +337,7 @@ class Runtime:
         self,
     ) -> GetIsolateIdResult:
         """
-        Returns the isolate id.
+        Returns the isolate id. Experimental: this API may change or be removed.
         """
         result = await self._executor.execute(
             method=RuntimeCommand.GET_ISOLATE_ID,
@@ -240,7 +350,8 @@ class Runtime:
     ) -> GetHeapUsageResult:
         """
         Returns the JavaScript heap usage. It is the total usage of the corresponding
-        isolate not scoped to a particular Runtime.
+        isolate not scoped to a particular Runtime. Experimental: this API may change or
+        be removed.
         """
         result = await self._executor.execute(
             method=RuntimeCommand.GET_HEAP_USAGE,
@@ -260,18 +371,33 @@ class Runtime:
         """
         Returns properties of a given object. Object group of the result is inherited
         from the target object.
+
+        Args:
+            object_id: Identifier of the object to return properties for.
+            own_properties: If true, returns properties belonging only to the element
+                itself, not to its prototype chain.
+            accessor_properties_only: If true, returns accessor properties (with
+                getter/setter) only; internal properties are not returned either.
+                Experimental: this API may change or be removed.
+            generate_preview: Whether preview should be generated for the results.
+                Experimental: this API may change or be removed.
+            non_indexed_properties_only: If true, returns non-indexed properties only.
+                Experimental: this API may change or be removed.
         """
-        params = GetPropertiesParams(
-            object_id=object_id,
-            own_properties=own_properties,
-            accessor_properties_only=accessor_properties_only,
-            generate_preview=generate_preview,
-            non_indexed_properties_only=non_indexed_properties_only,
-        )
+        _params: dict[str, Any] = {}
+        _params["objectId"] = _encode_value(object_id)
+        if own_properties is not None:
+            _params["ownProperties"] = own_properties
+        if accessor_properties_only is not None:
+            _params["accessorPropertiesOnly"] = accessor_properties_only
+        if generate_preview is not None:
+            _params["generatePreview"] = generate_preview
+        if non_indexed_properties_only is not None:
+            _params["nonIndexedPropertiesOnly"] = non_indexed_properties_only
 
         result = await self._executor.execute(
             method=RuntimeCommand.GET_PROPERTIES,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetPropertiesResult, result)
 
@@ -282,14 +408,18 @@ class Runtime:
     ) -> GlobalLexicalScopeNamesResult:
         """
         Returns all let, const and class variables from global scope.
+
+        Args:
+            execution_context_id: Specifies in which execution context to lookup global
+                scope variables.
         """
-        params = GlobalLexicalScopeNamesParams(
-            execution_context_id=execution_context_id
-        )
+        _params: dict[str, Any] = {}
+        if execution_context_id is not None:
+            _params["executionContextId"] = _encode_value(execution_context_id)
 
         result = await self._executor.execute(
             method=RuntimeCommand.GLOBAL_LEXICAL_SCOPE_NAMES,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GlobalLexicalScopeNamesResult, result)
 
@@ -299,13 +429,19 @@ class Runtime:
         prototype_object_id: RemoteObjectId,
         object_group: str | None = None,
     ) -> QueryObjectsResult:
-        params = QueryObjectsParams(
-            prototype_object_id=prototype_object_id, object_group=object_group
-        )
+        """
+        Args:
+            prototype_object_id: Identifier of the prototype to return objects for.
+            object_group: Symbolic group name that can be used to release the results.
+        """
+        _params: dict[str, Any] = {}
+        _params["prototypeObjectId"] = _encode_value(prototype_object_id)
+        if object_group is not None:
+            _params["objectGroup"] = object_group
 
         result = await self._executor.execute(
             method=RuntimeCommand.QUERY_OBJECTS,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(QueryObjectsResult, result)
 
@@ -316,12 +452,16 @@ class Runtime:
     ) -> None:
         """
         Releases remote object with given id.
+
+        Args:
+            object_id: Identifier of the object to release.
         """
-        params = ReleaseObjectParams(object_id=object_id)
+        _params: dict[str, Any] = {}
+        _params["objectId"] = _encode_value(object_id)
 
         await self._executor.execute(
             method=RuntimeCommand.RELEASE_OBJECT,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def release_object_group(
@@ -331,12 +471,16 @@ class Runtime:
     ) -> None:
         """
         Releases all remote objects that belong to a given group.
+
+        Args:
+            object_group: Symbolic object group name.
         """
-        params = ReleaseObjectGroupParams(object_group=object_group)
+        _params: dict[str, Any] = {}
+        _params["objectGroup"] = object_group
 
         await self._executor.execute(
             method=RuntimeCommand.RELEASE_OBJECT_GROUP,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def run_if_waiting_for_debugger(
@@ -364,21 +508,44 @@ class Runtime:
     ) -> RunScriptResult:
         """
         Runs script with given id in a given context.
+
+        Args:
+            script_id: Id of the script to run.
+            execution_context_id: Specifies in which execution context to perform script
+                run. If the parameter is omitted the evaluation will be performed in the
+                context of the inspected page.
+            object_group: Symbolic group name that can be used to release multiple
+                objects.
+            silent: In silent mode exceptions thrown during evaluation are not reported
+                and do not pause execution. Overrides `setPauseOnException` state.
+            include_command_line_api: Determines whether Command Line API should be
+                available during the evaluation.
+            return_by_value: Whether the result is expected to be a JSON object which
+                should be sent by value.
+            generate_preview: Whether preview should be generated for the result.
+            await_promise: Whether execution should `await` for resulting value and
+                return once awaited promise is resolved.
         """
-        params = RunScriptParams(
-            script_id=script_id,
-            execution_context_id=execution_context_id,
-            object_group=object_group,
-            silent=silent,
-            include_command_line_api=include_command_line_api,
-            return_by_value=return_by_value,
-            generate_preview=generate_preview,
-            await_promise=await_promise,
-        )
+        _params: dict[str, Any] = {}
+        _params["scriptId"] = _encode_value(script_id)
+        if execution_context_id is not None:
+            _params["executionContextId"] = _encode_value(execution_context_id)
+        if object_group is not None:
+            _params["objectGroup"] = object_group
+        if silent is not None:
+            _params["silent"] = silent
+        if include_command_line_api is not None:
+            _params["includeCommandLineAPI"] = include_command_line_api
+        if return_by_value is not None:
+            _params["returnByValue"] = return_by_value
+        if generate_preview is not None:
+            _params["generatePreview"] = generate_preview
+        if await_promise is not None:
+            _params["awaitPromise"] = await_promise
 
         result = await self._executor.execute(
             method=RuntimeCommand.RUN_SCRIPT,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(RunScriptResult, result)
 
@@ -389,12 +556,17 @@ class Runtime:
     ) -> None:
         """
         Enables or disables async call stacks tracking.
+
+        Args:
+            max_depth: Maximum depth of async call stacks. Setting to `0` will
+                effectively disable collecting async call stacks (default).
         """
-        params = SetAsyncCallStackDepthParams(max_depth=max_depth)
+        _params: dict[str, Any] = {}
+        _params["maxDepth"] = max_depth
 
         await self._executor.execute(
             method=RuntimeCommand.SET_ASYNC_CALL_STACK_DEPTH,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_custom_object_formatter_enabled(
@@ -402,11 +574,15 @@ class Runtime:
         *,
         enabled: bool,
     ) -> None:
-        params = SetCustomObjectFormatterEnabledParams(enabled=enabled)
+        """
+        Experimental: this API may change or be removed.
+        """
+        _params: dict[str, Any] = {}
+        _params["enabled"] = enabled
 
         await self._executor.execute(
             method=RuntimeCommand.SET_CUSTOM_OBJECT_FORMATTER_ENABLED,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_max_call_stack_size_to_capture(
@@ -414,11 +590,15 @@ class Runtime:
         *,
         size: int,
     ) -> None:
-        params = SetMaxCallStackSizeToCaptureParams(size=size)
+        """
+        Experimental: this API may change or be removed.
+        """
+        _params: dict[str, Any] = {}
+        _params["size"] = size
 
         await self._executor.execute(
             method=RuntimeCommand.SET_MAX_CALL_STACK_SIZE_TO_CAPTURE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def terminate_execution(
@@ -426,7 +606,8 @@ class Runtime:
     ) -> None:
         """
         Terminate current or next JavaScript execution. Will cancel the termination
-        when the outer-most script execution ends.
+        when the outer-most script execution ends. Experimental: this API may change or
+        be removed.
         """
         await self._executor.execute(
             method=RuntimeCommand.TERMINATE_EXECUTION,
@@ -446,16 +627,32 @@ class Runtime:
         survive reloads. Binding function takes exactly one argument, this argument
         should be string, in case of any other input, function throws an exception. Each
         binding function call produces Runtime.bindingCalled notification.
+
+        Args:
+            execution_context_id: If specified, the binding would only be exposed to the
+                specified execution context. If omitted and `executionContextName` is
+                not set, the binding is exposed to all execution contexts of the target.
+                This parameter is mutually exclusive with `executionContextName`.
+                Deprecated in favor of `executionContextName` due to an unclear use case
+                and bugs in implementation (crbug.com/1169639). `executionContextId`
+                will be removed in the future. Experimental: this API may change or be
+                removed. Deprecated in the Chrome DevTools Protocol.
+            execution_context_name: If specified, the binding is exposed to the
+                executionContext with matching name, even for contexts created after the
+                binding is added. See also `ExecutionContext.name` and `worldName`
+                parameter to `Page.addScriptToEvaluateOnNewDocument`. This parameter is
+                mutually exclusive with `executionContextId`.
         """
-        params = AddBindingParams(
-            name=name,
-            execution_context_id=execution_context_id,
-            execution_context_name=execution_context_name,
-        )
+        _params: dict[str, Any] = {}
+        _params["name"] = name
+        if execution_context_id is not None:
+            _params["executionContextId"] = _encode_value(execution_context_id)
+        if execution_context_name is not None:
+            _params["executionContextName"] = execution_context_name
 
         await self._executor.execute(
             method=RuntimeCommand.ADD_BINDING,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def remove_binding(
@@ -467,11 +664,12 @@ class Runtime:
         This method does not remove binding function from global object but
         unsubscribes current runtime agent from Runtime.bindingCalled notifications.
         """
-        params = RemoveBindingParams(name=name)
+        _params: dict[str, Any] = {}
+        _params["name"] = name
 
         await self._executor.execute(
             method=RuntimeCommand.REMOVE_BINDING,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def get_exception_details(
@@ -483,12 +681,17 @@ class Runtime:
         This method tries to lookup and populate exception details for a JavaScript
         Error object. Note that the stackTrace portion of the resulting exceptionDetails
         will only be populated if the Runtime domain was enabled at the time when the
-        Error was thrown.
+        Error was thrown. Experimental: this API may change or be removed.
+
+        Args:
+            error_object_id: The error object for which to resolve the exception
+                details.
         """
-        params = GetExceptionDetailsParams(error_object_id=error_object_id)
+        _params: dict[str, Any] = {}
+        _params["errorObjectId"] = _encode_value(error_object_id)
 
         result = await self._executor.execute(
             method=RuntimeCommand.GET_EXCEPTION_DETAILS,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetExceptionDetailsResult, result)

@@ -18,10 +18,19 @@ class StorageId:
     security_origin: str | None = field(
         default=None, metadata={"cdp_name": "securityOrigin"}
     )
+    """
+    Security origin for the storage.
+    """
     storage_key: SerializedStorageKey | None = field(
         default=None, metadata={"cdp_name": "storageKey"}
     )
+    """
+    Represents a key by which DOM Storage keys its CachedStorageAreas
+    """
     is_local_storage: bool = field(metadata={"cdp_name": "isLocalStorage"})
+    """
+    Whether the storage is local storage (not session storage).
+    """
 
 
 type Item = list[str]

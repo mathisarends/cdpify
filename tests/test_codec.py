@@ -3,6 +3,7 @@ from typing import Any
 
 import pytest
 
+from cdpify import UNSET, CDPDecodeError, UnsetType
 from cdpify import decode_cdp as public_decode_cdp
 from cdpify import encode_cdp as public_encode_cdp
 from cdpify.codec import _compile_model, decode_cdp, encode_cdp
@@ -54,10 +55,54 @@ def test_serializes_nested_models_with_their_own_aliases() -> None:
 
 
 def test_construct_handles_missing_required_fields_with_none(caplog) -> None:
-    model = decode_cdp(_Parent, {})
+    model = decode_cdp(_Parent, {}, strict=False)
 
     assert model.child is None
     assert "CDP spec mismatch for _Parent" in caplog.text
+
+
+def test_missing_required_fields_raise_structured_decode_error() -> None:
+    with pytest.raises(CDPDecodeError) as error:
+        decode_cdp(_Parent, {})
+    assert error.value.model_type is _Parent
+    assert error.value.missing_fields == ("child",)
+
+
+def test_strictness_propagates_to_nested_models_and_does_not_leak() -> None:
+    assert decode_cdp(_Parent, {"child": {}}, strict=False).child.child_value is None
+    with pytest.raises(CDPDecodeError) as error:
+        decode_cdp(_Parent, {"child": {}})
+    assert error.value.path == ("child",)
+    assert error.value.missing_fields == ("child_value",)
+
+
+def test_any_preserves_null_and_unset_omits_the_field() -> None:
+    from cdpify.domains.runtime import CallArgument
+
+    assert encode_cdp(CallArgument()) == {}
+    assert encode_cdp(CallArgument(value=None)) == {"value": None}
+    assert decode_cdp(CallArgument, {}).value is UNSET
+    assert decode_cdp(CallArgument, {"value": None}).value is None
+
+
+def test_required_any_accepts_explicit_null() -> None:
+    @dataclass
+    class Required:
+        value: Any
+
+    assert encode_cdp(Required(value=None)) == {"value": None}
+    assert decode_cdp(Required, {"value": None}).value is None
+    with pytest.raises(CDPDecodeError):
+        decode_cdp(Required, {})
+
+
+def test_unset_survives_copy_and_pickle() -> None:
+    import copy
+    import pickle
+
+    assert isinstance(UNSET, UnsetType)
+    assert copy.deepcopy(UNSET) is UNSET
+    assert pickle.loads(pickle.dumps(UNSET)) is UNSET
 
 
 def test_ignores_unknown_wire_fields() -> None:

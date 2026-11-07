@@ -4,25 +4,15 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
-from cdpify.codec import decode_cdp, encode_cdp
+from cdpify.codec import _encode_value, decode_cdp
 from cdpify.executor import CommandExecutor
 from cdpify.shared.decorators import deprecated
 
 from .commands import (
     DOMDebuggerCommand,
-    GetEventListenersParams,
     GetEventListenersResult,
-    RemoveDOMBreakpointParams,
-    RemoveEventListenerBreakpointParams,
-    RemoveInstrumentationBreakpointParams,
-    RemoveXHRBreakpointParams,
-    SetBreakOnCSPViolationParams,
-    SetDOMBreakpointParams,
-    SetEventListenerBreakpointParams,
-    SetInstrumentationBreakpointParams,
-    SetXHRBreakpointParams,
 )
 from .types import (
     CSPViolationType,
@@ -46,14 +36,26 @@ class DOMDebugger:
     ) -> GetEventListenersResult:
         """
         Returns event listeners of the given object.
+
+        Args:
+            object_id: Identifier of the object to return listeners for.
+            depth: The maximum depth at which Node children should be retrieved,
+                defaults to 1. Use -1 for the entire subtree or provide an integer
+                larger than 0.
+            pierce: Whether or not iframes and shadow roots should be traversed when
+                returning the subtree (default is false). Reports listeners for all
+                contexts if pierce is enabled.
         """
-        params = GetEventListenersParams(
-            object_id=object_id, depth=depth, pierce=pierce
-        )
+        _params: dict[str, Any] = {}
+        _params["objectId"] = _encode_value(object_id)
+        if depth is not None:
+            _params["depth"] = depth
+        if pierce is not None:
+            _params["pierce"] = pierce
 
         result = await self._executor.execute(
             method=DOMDebuggerCommand.GET_EVENT_LISTENERS,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetEventListenersResult, result)
 
@@ -65,12 +67,18 @@ class DOMDebugger:
     ) -> None:
         """
         Removes DOM breakpoint that was set using `setDOMBreakpoint`.
+
+        Args:
+            node_id: Identifier of the node to remove breakpoint from.
+            type: Type of the breakpoint to remove.
         """
-        params = RemoveDOMBreakpointParams(node_id=node_id, type=type)
+        _params: dict[str, Any] = {}
+        _params["nodeId"] = _encode_value(node_id)
+        _params["type"] = _encode_value(type)
 
         await self._executor.execute(
             method=DOMDebuggerCommand.REMOVE_DOM_BREAKPOINT,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def remove_event_listener_breakpoint(
@@ -81,14 +89,20 @@ class DOMDebugger:
     ) -> None:
         """
         Removes breakpoint on particular DOM event.
+
+        Args:
+            event_name: Event name.
+            target_name: EventTarget interface name. Experimental: this API may change
+                or be removed.
         """
-        params = RemoveEventListenerBreakpointParams(
-            event_name=event_name, target_name=target_name
-        )
+        _params: dict[str, Any] = {}
+        _params["eventName"] = event_name
+        if target_name is not None:
+            _params["targetName"] = target_name
 
         await self._executor.execute(
             method=DOMDebuggerCommand.REMOVE_EVENT_LISTENER_BREAKPOINT,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     @deprecated("DOMDebugger.removeInstrumentationBreakpoint is deprecated")
@@ -98,13 +112,18 @@ class DOMDebugger:
         event_name: str,
     ) -> None:
         """
-        Removes breakpoint on particular native event.
+        Removes breakpoint on particular native event. Experimental: this API may
+        change or be removed. Deprecated in the Chrome DevTools Protocol.
+
+        Args:
+            event_name: Instrumentation name to stop on.
         """
-        params = RemoveInstrumentationBreakpointParams(event_name=event_name)
+        _params: dict[str, Any] = {}
+        _params["eventName"] = event_name
 
         await self._executor.execute(
             method=DOMDebuggerCommand.REMOVE_INSTRUMENTATION_BREAKPOINT,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def remove_xhr_breakpoint(
@@ -114,12 +133,16 @@ class DOMDebugger:
     ) -> None:
         """
         Removes breakpoint from XMLHttpRequest.
+
+        Args:
+            url: Resource URL substring.
         """
-        params = RemoveXHRBreakpointParams(url=url)
+        _params: dict[str, Any] = {}
+        _params["url"] = url
 
         await self._executor.execute(
             method=DOMDebuggerCommand.REMOVE_XHR_BREAKPOINT,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_break_on_csp_violation(
@@ -128,13 +151,18 @@ class DOMDebugger:
         violation_types: list[CSPViolationType],
     ) -> None:
         """
-        Sets breakpoint on particular CSP violations.
+        Sets breakpoint on particular CSP violations. Experimental: this API may change
+        or be removed.
+
+        Args:
+            violation_types: CSP Violations to stop upon.
         """
-        params = SetBreakOnCSPViolationParams(violation_types=violation_types)
+        _params: dict[str, Any] = {}
+        _params["violationTypes"] = _encode_value(violation_types)
 
         await self._executor.execute(
             method=DOMDebuggerCommand.SET_BREAK_ON_CSP_VIOLATION,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_dom_breakpoint(
@@ -145,12 +173,18 @@ class DOMDebugger:
     ) -> None:
         """
         Sets breakpoint on particular operation with DOM.
+
+        Args:
+            node_id: Identifier of the node to set breakpoint on.
+            type: Type of the operation to stop upon.
         """
-        params = SetDOMBreakpointParams(node_id=node_id, type=type)
+        _params: dict[str, Any] = {}
+        _params["nodeId"] = _encode_value(node_id)
+        _params["type"] = _encode_value(type)
 
         await self._executor.execute(
             method=DOMDebuggerCommand.SET_DOM_BREAKPOINT,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_event_listener_breakpoint(
@@ -161,14 +195,21 @@ class DOMDebugger:
     ) -> None:
         """
         Sets breakpoint on particular DOM event.
+
+        Args:
+            event_name: DOM Event name to stop on (any DOM event will do).
+            target_name: EventTarget interface name to stop on. If equal to `"*"` or not
+                provided, will stop on any EventTarget. Experimental: this API may
+                change or be removed.
         """
-        params = SetEventListenerBreakpointParams(
-            event_name=event_name, target_name=target_name
-        )
+        _params: dict[str, Any] = {}
+        _params["eventName"] = event_name
+        if target_name is not None:
+            _params["targetName"] = target_name
 
         await self._executor.execute(
             method=DOMDebuggerCommand.SET_EVENT_LISTENER_BREAKPOINT,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     @deprecated("DOMDebugger.setInstrumentationBreakpoint is deprecated")
@@ -178,13 +219,18 @@ class DOMDebugger:
         event_name: str,
     ) -> None:
         """
-        Sets breakpoint on particular native event.
+        Sets breakpoint on particular native event. Experimental: this API may change
+        or be removed. Deprecated in the Chrome DevTools Protocol.
+
+        Args:
+            event_name: Instrumentation name to stop on.
         """
-        params = SetInstrumentationBreakpointParams(event_name=event_name)
+        _params: dict[str, Any] = {}
+        _params["eventName"] = event_name
 
         await self._executor.execute(
             method=DOMDebuggerCommand.SET_INSTRUMENTATION_BREAKPOINT,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_xhr_breakpoint(
@@ -194,10 +240,15 @@ class DOMDebugger:
     ) -> None:
         """
         Sets breakpoint on XMLHttpRequest.
+
+        Args:
+            url: Resource URL substring. All XHRs having this substring in the URL will
+                get stopped upon.
         """
-        params = SetXHRBreakpointParams(url=url)
+        _params: dict[str, Any] = {}
+        _params["url"] = url
 
         await self._executor.execute(
             method=DOMDebuggerCommand.SET_XHR_BREAKPOINT,
-            params=encode_cdp(params),
+            params=_params,
         )

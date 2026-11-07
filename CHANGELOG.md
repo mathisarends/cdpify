@@ -5,6 +5,63 @@ Breaking changes are listed first in each release.
 
 ## [Unreleased]
 
+### Breaking changes
+
+- Optional `any` fields now default to `UNSET`, distinguishing omission from
+  JSON `null`. For example, `CallArgument()` omits `value`, while
+  `CallArgument(value=None)` sends `{"value": null}`. Ordinary optional scalar
+  fields still use `None` to mean omitted. `UNSET` and `UnsetType` are public.
+- `decode_cdp` now raises `CDPDecodeError` for missing required fields, including
+  nested models. Unknown fields and future enum values remain supported. Use
+  `decode_cdp(Model, payload, strict=False)` for the previous tolerant behavior
+  that logs a warning and fills missing required fields with `None`.
+- Command timeouts now cover sending and receiving. `CdpClient.default_timeout`
+  is enforced for every transport and inherited by session views. Omit the raw
+  `execute(timeout=...)` argument to inherit the default; pass `None` to disable
+  it. Set `default_timeout=None` to disable the client default entirely.
+- `WebSocketTransport` no longer accepts `default_timeout`; configure it on
+  `CdpClient` instead. Standalone transport calls have no deadline unless
+  `execute(timeout=seconds)` is specified. Generated methods retain only CDP's
+  own parameters; use `asyncio.timeout(seconds)` for an individual caller budget.
+- WebSocket compression is disabled by default for lower local latency. Pass
+  `compression="deflate"` to `CdpClient` or `WebSocketTransport` to opt into
+  compression when bandwidth matters more.
+- Bounded event buffers now default to `overflow="error"`: overflow terminates
+  only the affected stream and raises `CDPEventOverflowError` on its next read.
+  Pass `overflow="drop_oldest"` on the client, transport or subscription to keep
+  the old lossy behavior. The default queue size remains unlimited (`0`).
+
+### Added
+
+- Generated method docstrings include parameter descriptions, units and defaults
+  from the spec. Model fields retain their attribute documentation. Experimental
+  and deprecated markers are preserved on types, events and fields as well as
+  commands.
+- `listen_raw(method=None)` on clients and sessions, and `listen_all_raw()` on
+  clients, return `TransportEvent` values with wire names, parameter dictionaries
+  and session IDs. None matches every method in the selected scope.
+- Per-subscription overflow overrides and structured `CDPEventOverflowError`
+  details (`max_queue_size`, `dropped_events`). Overflow never blocks responses
+  or other subscriptions; failed listeners unregister immediately.
+- `compression`, `open_timeout` and `close_timeout` options for URL-based clients
+  and the standalone WebSocket transport. Connection timeouts are in seconds.
+- Reproducible codec, dispatch and optional Chrome round-trip benchmarks in
+  `benchmarks/runtime.py`; offline regeneration and generated-code drift checks
+  in `scripts/check_generated.py`.
+- CI checks the library and public API with Pyright and runs isolated headless
+  Chrome tests. Run those locally with `pytest -m integration` and optionally
+  `CHROME_PATH`; they are excluded from the default unit-test run.
+
+### Performance
+
+- Generated command methods build wire dictionaries directly, avoiding an
+  intermediate Params dataclass and reflective field traversal. Public Params
+  models and keyword-only command signatures are retained. Nested models still
+  serialize through the shared codec.
+- The orjson transport sends UTF-8 bytes directly as text frames and receives
+  bytes without first decoding to a Python string. This removes redundant
+  UTF-8 conversions while preserving the CDP wire format.
+
 ## [0.4.0] - 2026-10-25
 
 ### Breaking changes

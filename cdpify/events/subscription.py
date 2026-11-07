@@ -1,14 +1,13 @@
 import weakref
 from collections.abc import Callable
 from types import TracebackType
-from typing import Final, Self
+from typing import Self
 
 from cdpify.event_queue import EventQueue
-from cdpify.exceptions import CDPStreamClosedError
+from cdpify.exceptions import CDPEventOverflowError, CDPStreamClosedError
+from cdpify.unset import UNSET, UnsetType
 
 from .dispatcher import RawCDPEvent
-
-_UNSET: Final = object()
 
 
 class EventSubscription[T]:
@@ -46,14 +45,14 @@ class EventSubscription[T]:
     @property
     def closed(self) -> bool:
         """Whether the stream has ended and no further events will be returned."""
-        return self._ended
+        return self._ended or self._buffer.failed
 
     @property
     def dropped_events(self) -> int:
-        """Number of oldest events discarded because this buffer was full."""
+        """Number of events discarded by the configured overflow policy."""
         return self._buffer.dropped_events
 
-    async def next(self, timeout: float | None | object = _UNSET) -> T:
+    async def next(self, timeout: float | None | UnsetType = UNSET) -> T:
         """Wait for the next event.
 
         ``timeout`` defaults to the timeout passed to ``listen()``; ``None`` waits
@@ -63,7 +62,7 @@ class EventSubscription[T]:
             TimeoutError: No event arrived within ``timeout`` seconds.
             CDPStreamClosedError: The stream ended before another event arrived.
         """
-        event = await self._receive(self._timeout if timeout is _UNSET else timeout)
+        event = await self._receive(self._timeout if timeout is UNSET else timeout)
         if event is None:
             raise CDPStreamClosedError("Event stream is closed")
         return self._convert(event)
@@ -99,7 +98,11 @@ class EventSubscription[T]:
     async def _receive(self, timeout: float | None) -> RawCDPEvent | None:
         if self._ended:
             return None
-        event = await self._buffer.get(timeout)
+        try:
+            event = await self._buffer.get(timeout)
+        except CDPEventOverflowError:
+            await self.aclose()
+            raise
         if event is None:
             self._ended = True
             self._unsubscribe()

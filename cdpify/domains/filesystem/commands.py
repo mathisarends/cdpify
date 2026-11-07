@@ -27,3 +27,6 @@ class GetDirectoryParams:
 @dataclass(kw_only=True, slots=True)
 class GetDirectoryResult:
     directory: Directory
+    """
+    Returns the directory object at the path.
+    """

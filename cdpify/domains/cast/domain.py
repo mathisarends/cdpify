@@ -4,16 +4,12 @@
 
 from __future__ import annotations
 
-from cdpify.codec import encode_cdp
+from typing import Any
+
 from cdpify.executor import CommandExecutor
 
 from .commands import (
     CastCommand,
-    EnableParams,
-    SetSinkToUseParams,
-    StartDesktopMirroringParams,
-    StartTabMirroringParams,
-    StopCastingParams,
 )
 
 
@@ -32,11 +28,13 @@ class Cast:
         |sinksUpdated| event is fired. Also starts observing for issue messages. When an
         issue is added or removed, an |issueUpdated| event is fired.
         """
-        params = EnableParams(presentation_url=presentation_url)
+        _params: dict[str, Any] = {}
+        if presentation_url is not None:
+            _params["presentationUrl"] = presentation_url
 
         await self._executor.execute(
             method=CastCommand.ENABLE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def disable(
@@ -59,11 +57,12 @@ class Cast:
         Sets a sink to be used when the web page requests the browser to choose a sink
         via Presentation API, Remote Playback API, or Cast SDK.
         """
-        params = SetSinkToUseParams(sink_name=sink_name)
+        _params: dict[str, Any] = {}
+        _params["sinkName"] = sink_name
 
         await self._executor.execute(
             method=CastCommand.SET_SINK_TO_USE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def start_desktop_mirroring(
@@ -74,11 +73,12 @@ class Cast:
         """
         Starts mirroring the desktop to the sink.
         """
-        params = StartDesktopMirroringParams(sink_name=sink_name)
+        _params: dict[str, Any] = {}
+        _params["sinkName"] = sink_name
 
         await self._executor.execute(
             method=CastCommand.START_DESKTOP_MIRRORING,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def start_tab_mirroring(
@@ -89,11 +89,12 @@ class Cast:
         """
         Starts mirroring the tab to the sink.
         """
-        params = StartTabMirroringParams(sink_name=sink_name)
+        _params: dict[str, Any] = {}
+        _params["sinkName"] = sink_name
 
         await self._executor.execute(
             method=CastCommand.START_TAB_MIRRORING,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def stop_casting(
@@ -104,9 +105,10 @@ class Cast:
         """
         Stops the active Cast session on the sink.
         """
-        params = StopCastingParams(sink_name=sink_name)
+        _params: dict[str, Any] = {}
+        _params["sinkName"] = sink_name
 
         await self._executor.execute(
             method=CastCommand.STOP_CASTING,
-            params=encode_cdp(params),
+            params=_params,
         )

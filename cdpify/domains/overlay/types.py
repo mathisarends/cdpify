@@ -18,7 +18,13 @@ class SourceOrderConfig:
     """
 
     parent_outline_color: dom.RGBA = field(metadata={"cdp_name": "parentOutlineColor"})
+    """
+    the color to outline the given element in.
+    """
     child_outline_color: dom.RGBA = field(metadata={"cdp_name": "childOutlineColor"})
+    """
+    the color to outline the child elements in.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -30,63 +36,126 @@ class GridHighlightConfig:
     show_grid_extension_lines: bool | None = field(
         default=None, metadata={"cdp_name": "showGridExtensionLines"}
     )
+    """
+    Whether the extension lines from grid cells to the rulers should be shown (default:
+    false).
+    """
     show_positive_line_numbers: bool | None = field(
         default=None, metadata={"cdp_name": "showPositiveLineNumbers"}
     )
+    """
+    Show Positive line number labels (default: false).
+    """
     show_negative_line_numbers: bool | None = field(
         default=None, metadata={"cdp_name": "showNegativeLineNumbers"}
     )
+    """
+    Show Negative line number labels (default: false).
+    """
     show_area_names: bool | None = field(
         default=None, metadata={"cdp_name": "showAreaNames"}
     )
+    """
+    Show area name labels (default: false).
+    """
     show_line_names: bool | None = field(
         default=None, metadata={"cdp_name": "showLineNames"}
     )
+    """
+    Show line name labels (default: false).
+    """
     show_track_sizes: bool | None = field(
         default=None, metadata={"cdp_name": "showTrackSizes"}
     )
+    """
+    Show track size labels (default: false).
+    """
     grid_border_color: dom.RGBA | None = field(
         default=None, metadata={"cdp_name": "gridBorderColor"}
     )
+    """
+    The grid container border highlight color (default: transparent).
+    """
     cell_border_color: dom.RGBA | None = field(
         default=None, metadata={"cdp_name": "cellBorderColor"}
     )
+    """
+    The cell border color (default: transparent). Deprecated, please use rowLineColor
+    and columnLineColor instead. Deprecated in the Chrome DevTools Protocol.
+    """
     row_line_color: dom.RGBA | None = field(
         default=None, metadata={"cdp_name": "rowLineColor"}
     )
+    """
+    The row line color (default: transparent).
+    """
     column_line_color: dom.RGBA | None = field(
         default=None, metadata={"cdp_name": "columnLineColor"}
     )
+    """
+    The column line color (default: transparent).
+    """
     grid_border_dash: bool | None = field(
         default=None, metadata={"cdp_name": "gridBorderDash"}
     )
+    """
+    Whether the grid border is dashed (default: false).
+    """
     cell_border_dash: bool | None = field(
         default=None, metadata={"cdp_name": "cellBorderDash"}
     )
+    """
+    Whether the cell border is dashed (default: false). Deprecated, please us
+    rowLineDash and columnLineDash instead. Deprecated in the Chrome DevTools Protocol.
+    """
     row_line_dash: bool | None = field(
         default=None, metadata={"cdp_name": "rowLineDash"}
     )
+    """
+    Whether row lines are dashed (default: false).
+    """
     column_line_dash: bool | None = field(
         default=None, metadata={"cdp_name": "columnLineDash"}
     )
+    """
+    Whether column lines are dashed (default: false).
+    """
     row_gap_color: dom.RGBA | None = field(
         default=None, metadata={"cdp_name": "rowGapColor"}
     )
+    """
+    The row gap highlight fill color (default: transparent).
+    """
     row_hatch_color: dom.RGBA | None = field(
         default=None, metadata={"cdp_name": "rowHatchColor"}
     )
+    """
+    The row gap hatching fill color (default: transparent).
+    """
     column_gap_color: dom.RGBA | None = field(
         default=None, metadata={"cdp_name": "columnGapColor"}
     )
+    """
+    The column gap highlight fill color (default: transparent).
+    """
     column_hatch_color: dom.RGBA | None = field(
         default=None, metadata={"cdp_name": "columnHatchColor"}
     )
+    """
+    The column gap hatching fill color (default: transparent).
+    """
     area_border_color: dom.RGBA | None = field(
         default=None, metadata={"cdp_name": "areaBorderColor"}
     )
+    """
+    The named grid areas border color (Default: transparent).
+    """
     grid_background_color: dom.RGBA | None = field(
         default=None, metadata={"cdp_name": "gridBackgroundColor"}
     )
+    """
+    The grid container background color (Default: transparent).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -98,27 +167,51 @@ class FlexContainerHighlightConfig:
     container_border: LineStyle | None = field(
         default=None, metadata={"cdp_name": "containerBorder"}
     )
+    """
+    The style of the container border
+    """
     line_separator: LineStyle | None = field(
         default=None, metadata={"cdp_name": "lineSeparator"}
     )
+    """
+    The style of the separator between lines
+    """
     item_separator: LineStyle | None = field(
         default=None, metadata={"cdp_name": "itemSeparator"}
     )
+    """
+    The style of the separator between items
+    """
     main_distributed_space: BoxStyle | None = field(
         default=None, metadata={"cdp_name": "mainDistributedSpace"}
     )
+    """
+    Style of content-distribution space on the main axis (justify-content).
+    """
     cross_distributed_space: BoxStyle | None = field(
         default=None, metadata={"cdp_name": "crossDistributedSpace"}
     )
+    """
+    Style of content-distribution space on the cross axis (align-content).
+    """
     row_gap_space: BoxStyle | None = field(
         default=None, metadata={"cdp_name": "rowGapSpace"}
     )
+    """
+    Style of empty space caused by row gaps (gap/row-gap).
+    """
     column_gap_space: BoxStyle | None = field(
         default=None, metadata={"cdp_name": "columnGapSpace"}
     )
+    """
+    Style of empty space caused by columns gaps (gap/column-gap).
+    """
     cross_alignment: LineStyle | None = field(
         default=None, metadata={"cdp_name": "crossAlignment"}
     )
+    """
+    Style of the self-alignment line (align-items).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -130,12 +223,21 @@ class FlexItemHighlightConfig:
     base_size_box: BoxStyle | None = field(
         default=None, metadata={"cdp_name": "baseSizeBox"}
     )
+    """
+    Style of the box representing the item's base size
+    """
     base_size_border: LineStyle | None = field(
         default=None, metadata={"cdp_name": "baseSizeBorder"}
     )
+    """
+    Style of the border around the box representing the item's base size
+    """
     flexibility_arrow: LineStyle | None = field(
         default=None, metadata={"cdp_name": "flexibilityArrow"}
     )
+    """
+    Style of the arrow representing if the item grew or shrank
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -145,7 +247,13 @@ class LineStyle:
     """
 
     color: dom.RGBA | None = None
+    """
+    The color of the line (default: transparent)
+    """
     pattern: Literal["dashed", "dotted"] | None = None
+    """
+    The line pattern (default: solid)
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -157,9 +265,15 @@ class BoxStyle:
     fill_color: dom.RGBA | None = field(
         default=None, metadata={"cdp_name": "fillColor"}
     )
+    """
+    The background color for the box (default: transparent)
+    """
     hatch_color: dom.RGBA | None = field(
         default=None, metadata={"cdp_name": "hatchColor"}
     )
+    """
+    The hatching color for the box (default: transparent)
+    """
 
 
 class ContrastAlgorithm(CDPStrEnum):
@@ -178,30 +292,60 @@ class ImcbHighlightConfig:
     imcb_border_color: dom.RGBA | None = field(
         default=None, metadata={"cdp_name": "imcbBorderColor"}
     )
+    """
+    Border color for the Inset-Modified Containing Block (default: transparent).
+    """
     imcb_background_color: dom.RGBA | None = field(
         default=None, metadata={"cdp_name": "imcbBackgroundColor"}
     )
+    """
+    Background fill color for the Inset-Modified Containing Block (default:
+    transparent).
+    """
     insets_background_color: dom.RGBA | None = field(
         default=None, metadata={"cdp_name": "insetsBackgroundColor"}
     )
+    """
+    Fill color for the inset modifiers area (difference between CB and IMCB).
+    """
     insets_hatch_color: dom.RGBA | None = field(
         default=None, metadata={"cdp_name": "insetsHatchColor"}
     )
+    """
+    Hatch color for the inset modifiers area.
+    """
     anchor_border_color: dom.RGBA | None = field(
         default=None, metadata={"cdp_name": "anchorBorderColor"}
     )
+    """
+    Border color for the referenced target anchor element(s) (when element is
+    anchor-positioned).
+    """
     anchor_background_color: dom.RGBA | None = field(
         default=None, metadata={"cdp_name": "anchorBackgroundColor"}
     )
+    """
+    Background fill color for the referenced target anchor element(s) (when element is
+    anchor-positioned).
+    """
     show_position_area_grid: bool | None = field(
         default=None, metadata={"cdp_name": "showPositionAreaGrid"}
     )
+    """
+    Whether to render the 3x3 position-area grid lines when position-area is used.
+    """
     position_area_grid_line_color: dom.RGBA | None = field(
         default=None, metadata={"cdp_name": "positionAreaGridLineColor"}
     )
+    """
+    Line color for the 3x3 position-area grid lines.
+    """
     position_area_active_region_color: dom.RGBA | None = field(
         default=None, metadata={"cdp_name": "positionAreaActiveRegionColor"}
     )
+    """
+    Fill color for the active region within the position-area grid.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -211,62 +355,123 @@ class HighlightConfig:
     """
 
     show_info: bool | None = field(default=None, metadata={"cdp_name": "showInfo"})
+    """
+    Whether the node info tooltip should be shown (default: false).
+    """
     show_styles: bool | None = field(default=None, metadata={"cdp_name": "showStyles"})
+    """
+    Whether the node styles in the tooltip (default: false).
+    """
     show_rulers: bool | None = field(default=None, metadata={"cdp_name": "showRulers"})
+    """
+    Whether the rulers should be shown (default: false).
+    """
     show_accessibility_info: bool | None = field(
         default=None, metadata={"cdp_name": "showAccessibilityInfo"}
     )
+    """
+    Whether the a11y info should be shown (default: true).
+    """
     show_extension_lines: bool | None = field(
         default=None, metadata={"cdp_name": "showExtensionLines"}
     )
+    """
+    Whether the extension lines from node to the rulers should be shown (default:
+    false).
+    """
     content_color: dom.RGBA | None = field(
         default=None, metadata={"cdp_name": "contentColor"}
     )
+    """
+    The content box highlight fill color (default: transparent).
+    """
     padding_color: dom.RGBA | None = field(
         default=None, metadata={"cdp_name": "paddingColor"}
     )
+    """
+    The padding highlight fill color (default: transparent).
+    """
     border_color: dom.RGBA | None = field(
         default=None, metadata={"cdp_name": "borderColor"}
     )
+    """
+    The border highlight fill color (default: transparent).
+    """
     margin_color: dom.RGBA | None = field(
         default=None, metadata={"cdp_name": "marginColor"}
     )
+    """
+    The margin highlight fill color (default: transparent).
+    """
     event_target_color: dom.RGBA | None = field(
         default=None, metadata={"cdp_name": "eventTargetColor"}
     )
+    """
+    The event target element highlight fill color (default: transparent).
+    """
     shape_color: dom.RGBA | None = field(
         default=None, metadata={"cdp_name": "shapeColor"}
     )
+    """
+    The shape outside fill color (default: transparent).
+    """
     shape_margin_color: dom.RGBA | None = field(
         default=None, metadata={"cdp_name": "shapeMarginColor"}
     )
+    """
+    The shape margin fill color (default: transparent).
+    """
     css_grid_color: dom.RGBA | None = field(
         default=None, metadata={"cdp_name": "cssGridColor"}
     )
+    """
+    The grid layout color (default: transparent).
+    """
     color_format: ColorFormat | None = field(
         default=None, metadata={"cdp_name": "colorFormat"}
     )
+    """
+    The color format used to format color styles (default: hex).
+    """
     grid_highlight_config: GridHighlightConfig | None = field(
         default=None, metadata={"cdp_name": "gridHighlightConfig"}
     )
+    """
+    The grid layout highlight configuration (default: all transparent).
+    """
     flex_container_highlight_config: FlexContainerHighlightConfig | None = field(
         default=None, metadata={"cdp_name": "flexContainerHighlightConfig"}
     )
+    """
+    The flex container highlight configuration (default: all transparent).
+    """
     flex_item_highlight_config: FlexItemHighlightConfig | None = field(
         default=None, metadata={"cdp_name": "flexItemHighlightConfig"}
     )
+    """
+    The flex item highlight configuration (default: all transparent).
+    """
     contrast_algorithm: ContrastAlgorithm | None = field(
         default=None, metadata={"cdp_name": "contrastAlgorithm"}
     )
+    """
+    The contrast algorithm to use for the contrast ratio (default: aa).
+    """
     container_query_container_highlight_config: (
         ContainerQueryContainerHighlightConfig | None
     ) = field(  # noqa: E501
         default=None,
         metadata={"cdp_name": "containerQueryContainerHighlightConfig"},
     )
+    """
+    The container query container highlight configuration (default: all transparent).
+    """
     imcb_highlight_config: ImcbHighlightConfig | None = field(
         default=None, metadata={"cdp_name": "imcbHighlightConfig"}
     )
+    """
+    The IMCB highlight configuration (default: all transparent).
+    """
 
 
 class ColorFormat(CDPStrEnum):
@@ -285,7 +490,13 @@ class GridNodeHighlightConfig:
     grid_highlight_config: GridHighlightConfig = field(
         metadata={"cdp_name": "gridHighlightConfig"}
     )
+    """
+    A descriptor for the highlight appearance.
+    """
     node_id: dom.NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    Identifier of the node to highlight.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -293,7 +504,13 @@ class FlexNodeHighlightConfig:
     flex_container_highlight_config: FlexContainerHighlightConfig = field(
         metadata={"cdp_name": "flexContainerHighlightConfig"}
     )
+    """
+    A descriptor for the highlight appearance of flex containers.
+    """
     node_id: dom.NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    Identifier of the node to highlight.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -301,15 +518,27 @@ class ScrollSnapContainerHighlightConfig:
     snapport_border: LineStyle | None = field(
         default=None, metadata={"cdp_name": "snapportBorder"}
     )
+    """
+    The style of the snapport border (default: transparent)
+    """
     snap_area_border: LineStyle | None = field(
         default=None, metadata={"cdp_name": "snapAreaBorder"}
     )
+    """
+    The style of the snap area border (default: transparent)
+    """
     scroll_margin_color: dom.RGBA | None = field(
         default=None, metadata={"cdp_name": "scrollMarginColor"}
     )
+    """
+    The margin highlight fill color (default: transparent).
+    """
     scroll_padding_color: dom.RGBA | None = field(
         default=None, metadata={"cdp_name": "scrollPaddingColor"}
     )
+    """
+    The padding highlight fill color (default: transparent).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -317,7 +546,13 @@ class ScrollSnapHighlightConfig:
     scroll_snap_container_highlight_config: ScrollSnapContainerHighlightConfig = field(
         metadata={"cdp_name": "scrollSnapContainerHighlightConfig"}
     )
+    """
+    A descriptor for the highlight appearance of scroll snap containers.
+    """
     node_id: dom.NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    Identifier of the node to highlight.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -327,12 +562,21 @@ class HingeConfig:
     """
 
     rect: dom.Rect
+    """
+    A rectangle represent hinge
+    """
     content_color: dom.RGBA | None = field(
         default=None, metadata={"cdp_name": "contentColor"}
     )
+    """
+    The content box highlight fill color (default: a dark color).
+    """
     outline_color: dom.RGBA | None = field(
         default=None, metadata={"cdp_name": "outlineColor"}
     )
+    """
+    The content box highlight outline color (default: transparent).
+    """
 
 
 class DisplayCutoutShape(CDPStrEnum):
@@ -353,18 +597,45 @@ class DisplayCutoutConfig:
     """
 
     rect: dom.Rect
+    """
+    A rectangle representing the cutout bounds.
+    """
     shape: DisplayCutoutShape
+    """
+    Shape used to draw the cutout.
+    """
     border_radius: int | None = field(
         default=None, metadata={"cdp_name": "borderRadius"}
     )
+    """
+    Border radius for rounded cutout shapes.
+    """
     upper_radius: int | None = field(default=None, metadata={"cdp_name": "upperRadius"})
+    """
+    Upper shoulder radius for notch cutout shapes.
+    """
     lower_radius: int | None = field(default=None, metadata={"cdp_name": "lowerRadius"})
+    """
+    Lower transition radius for notch cutout shapes.
+    """
     cx: int | None = None
+    """
+    Center x coordinate for circle cutout shapes.
+    """
     cy: int | None = None
+    """
+    Center y coordinate for circle cutout shapes.
+    """
     radius: int | None = None
+    """
+    Radius for circle cutout shapes.
+    """
     content_color: dom.RGBA | None = field(
         default=None, metadata={"cdp_name": "contentColor"}
     )
+    """
+    The cutout fill color (default: black).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -374,8 +645,18 @@ class WindowControlsOverlayConfig:
     """
 
     show_css: bool = field(metadata={"cdp_name": "showCSS"})
+    """
+    Whether the title bar CSS should be shown when emulating the Window Controls
+    Overlay.
+    """
     selected_platform: str = field(metadata={"cdp_name": "selectedPlatform"})
+    """
+    Selected platforms to show the overlay.
+    """
     theme_color: str = field(metadata={"cdp_name": "themeColor"})
+    """
+    The theme color defined in app manifest.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -383,7 +664,13 @@ class ContainerQueryHighlightConfig:
     container_query_container_highlight_config: ContainerQueryContainerHighlightConfig = field(  # noqa: E501
         metadata={"cdp_name": "containerQueryContainerHighlightConfig"},
     )
+    """
+    A descriptor for the highlight appearance of container query containers.
+    """
     node_id: dom.NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    Identifier of the container node to highlight.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -391,9 +678,15 @@ class ContainerQueryContainerHighlightConfig:
     container_border: LineStyle | None = field(
         default=None, metadata={"cdp_name": "containerBorder"}
     )
+    """
+    The style of the container border.
+    """
     descendant_border: LineStyle | None = field(
         default=None, metadata={"cdp_name": "descendantBorder"}
     )
+    """
+    The style of the descendants' borders.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -401,7 +694,13 @@ class IsolatedElementHighlightConfig:
     isolation_mode_highlight_config: IsolationModeHighlightConfig = field(
         metadata={"cdp_name": "isolationModeHighlightConfig"}
     )
+    """
+    A descriptor for the highlight appearance of an element in isolation mode.
+    """
     node_id: dom.NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    Identifier of the isolated element to highlight.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -409,12 +708,21 @@ class IsolationModeHighlightConfig:
     resizer_color: dom.RGBA | None = field(
         default=None, metadata={"cdp_name": "resizerColor"}
     )
+    """
+    The fill color of the resizers (default: transparent).
+    """
     resizer_handle_color: dom.RGBA | None = field(
         default=None, metadata={"cdp_name": "resizerHandleColor"}
     )
+    """
+    The fill color for resizer handles (default: transparent).
+    """
     mask_color: dom.RGBA | None = field(
         default=None, metadata={"cdp_name": "maskColor"}
     )
+    """
+    The fill color for the mask covering non-isolated elements (default: transparent).
+    """
 
 
 class InspectMode(CDPStrEnum):
@@ -427,6 +735,12 @@ class InspectMode(CDPStrEnum):
 @dataclass(kw_only=True, slots=True)
 class InspectedElementAnchorConfig:
     node_id: dom.NodeId | None = field(default=None, metadata={"cdp_name": "nodeId"})
+    """
+    Identifier of the node to highlight.
+    """
     backend_node_id: dom.BackendNodeId | None = field(
         default=None, metadata={"cdp_name": "backendNodeId"}
     )
+    """
+    Identifier of the backend node to highlight.
+    """

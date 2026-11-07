@@ -4,15 +4,13 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
-from cdpify.codec import encode_cdp
+from cdpify.codec import _encode_value
 from cdpify.executor import CommandExecutor
 
 from .commands import (
     AutofillCommand,
-    SetAddressesParams,
-    TriggerParams,
 )
 from .types import (
     Address,
@@ -39,14 +37,27 @@ class Autofill:
         Trigger autofill on a form identified by the fieldId. If the field and related
         form cannot be autofilled, returns an error. Returns once the values have been
         applied to the form fields.
+
+        Args:
+            field_id: Identifies a field that serves as an anchor for autofill.
+            frame_id: Identifies the frame that field belongs to.
+            card: Credit card information to fill out the form. Credit card data is not
+                saved.  Mutually exclusive with `address`.
+            address: Address to fill out the form. Address data is not saved. Mutually
+                exclusive with `card`.
         """
-        params = TriggerParams(
-            field_id=field_id, frame_id=frame_id, card=card, address=address
-        )
+        _params: dict[str, Any] = {}
+        _params["fieldId"] = _encode_value(field_id)
+        if frame_id is not None:
+            _params["frameId"] = _encode_value(frame_id)
+        if card is not None:
+            _params["card"] = _encode_value(card)
+        if address is not None:
+            _params["address"] = _encode_value(address)
 
         await self._executor.execute(
             method=AutofillCommand.TRIGGER,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_addresses(
@@ -57,11 +68,12 @@ class Autofill:
         """
         Set addresses so that developers can verify their forms implementation.
         """
-        params = SetAddressesParams(addresses=addresses)
+        _params: dict[str, Any] = {}
+        _params["addresses"] = _encode_value(addresses)
 
         await self._executor.execute(
             method=AutofillCommand.SET_ADDRESSES,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def disable(

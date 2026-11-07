@@ -9,6 +9,7 @@ from typing import Any
 
 from cdpify.domains import dom, page
 from cdpify.shared.enums import CDPStrEnum
+from cdpify.unset import UNSET, UnsetType
 
 type AXNodeId = str
 """
@@ -78,22 +79,49 @@ class AXValueSource:
     """
 
     type: AXValueSourceType
+    """
+    What type of source this is.
+    """
     value: AXValue | None = None
+    """
+    The value of this property source.
+    """
     attribute: str | None = None
+    """
+    The name of the relevant attribute, if any.
+    """
     attribute_value: AXValue | None = field(
         default=None, metadata={"cdp_name": "attributeValue"}
     )
+    """
+    The value of the relevant attribute, if any.
+    """
     superseded: bool | None = None
+    """
+    Whether this source is superseded by a higher priority source.
+    """
     native_source: AXValueNativeSourceType | None = field(
         default=None, metadata={"cdp_name": "nativeSource"}
     )
+    """
+    The native markup source for this value, e.g. a `<label>` element.
+    """
     native_source_value: AXValue | None = field(
         default=None, metadata={"cdp_name": "nativeSourceValue"}
     )
+    """
+    The value, such as a node or node list, of the native source.
+    """
     invalid: bool | None = None
+    """
+    Whether the value for this property is invalid.
+    """
     invalid_reason: str | None = field(
         default=None, metadata={"cdp_name": "invalidReason"}
     )
+    """
+    Reason for the value being invalid, if it is.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -101,14 +129,29 @@ class AXRelatedNode:
     backend_dom_node_id: dom.BackendNodeId | None = field(
         default=None, metadata={"cdp_name": "backendDOMNodeId"}
     )
+    """
+    The BackendNodeId of the related DOM node.
+    """
     idref: str | None = None
+    """
+    The IDRef value provided, if any.
+    """
     text: str | None = None
+    """
+    The text alternative of this node in the current context.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class AXProperty:
     name: AXPropertyName
+    """
+    The name of this property.
+    """
     value: AXValue
+    """
+    The value of this property.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -118,11 +161,23 @@ class AXValue:
     """
 
     type: AXValueType
-    value: Any | None = None
+    """
+    The type of this value.
+    """
+    value: Any | UnsetType = UNSET
+    """
+    The computed value of this property. Omit with UNSET; None encodes JSON null.
+    """
     related_nodes: list[AXRelatedNode] | None = field(
         default=None, metadata={"cdp_name": "relatedNodes"}
     )
+    """
+    One or more related nodes, if applicable.
+    """
     sources: list[AXValueSource] | None = None
+    """
+    The sources which contributed to the computation of this property.
+    """
 
 
 class AXPropertyName(CDPStrEnum):
@@ -203,25 +258,64 @@ class AXNode:
     """
 
     node_id: AXNodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    Unique identifier for this node.
+    """
     ignored: bool
+    """
+    Whether this node is ignored for accessibility
+    """
     ignored_reasons: list[AXProperty] | None = field(
         default=None, metadata={"cdp_name": "ignoredReasons"}
     )
+    """
+    Collection of reasons why this node is hidden.
+    """
     role: AXValue | None = None
+    """
+    This `Node`'s role, whether explicit or implicit.
+    """
     chrome_role: AXValue | None = field(
         default=None, metadata={"cdp_name": "chromeRole"}
     )
+    """
+    This `Node`'s Chrome raw role.
+    """
     name: AXValue | None = None
+    """
+    The accessible name for this `Node`.
+    """
     description: AXValue | None = None
+    """
+    The accessible description for this `Node`.
+    """
     value: AXValue | None = None
+    """
+    The value for this `Node`.
+    """
     properties: list[AXProperty] | None = None
+    """
+    All other properties
+    """
     parent_id: AXNodeId | None = field(default=None, metadata={"cdp_name": "parentId"})
+    """
+    ID for this node's parent.
+    """
     child_ids: list[AXNodeId] | None = field(
         default=None, metadata={"cdp_name": "childIds"}
     )
+    """
+    IDs for each of this node's child nodes.
+    """
     backend_dom_node_id: dom.BackendNodeId | None = field(
         default=None, metadata={"cdp_name": "backendDOMNodeId"}
     )
+    """
+    The backend ID for the associated DOM node, if any.
+    """
     frame_id: page.FrameId | None = field(
         default=None, metadata={"cdp_name": "frameId"}
     )
+    """
+    The frame ID for the frame associated with this nodes document.
+    """

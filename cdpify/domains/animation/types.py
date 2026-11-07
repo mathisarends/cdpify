@@ -17,18 +17,53 @@ class Animation:
     """
 
     id: str
+    """
+    `Animation`'s id.
+    """
     name: str
+    """
+    `Animation`'s name.
+    """
     paused_state: bool = field(metadata={"cdp_name": "pausedState"})
+    """
+    `Animation`'s internal paused state.
+    """
     play_state: str = field(metadata={"cdp_name": "playState"})
+    """
+    `Animation`'s play state.
+    """
     playback_rate: float = field(metadata={"cdp_name": "playbackRate"})
+    """
+    `Animation`'s playback rate.
+    """
     start_time: float = field(metadata={"cdp_name": "startTime"})
+    """
+    `Animation`'s start time. Milliseconds for time based animations and percentage [0
+    - 100] for scroll driven animations (i.e. when viewOrScrollTimeline exists).
+    """
     current_time: float = field(metadata={"cdp_name": "currentTime"})
+    """
+    `Animation`'s current time.
+    """
     type: Literal["CSSTransition", "CSSAnimation", "WebAnimation"]
+    """
+    Animation type of `Animation`.
+    """
     source: AnimationEffect | None = None
+    """
+    `Animation`'s source animation node.
+    """
     css_id: str | None = field(default=None, metadata={"cdp_name": "cssId"})
+    """
+    A unique ID for `Animation` representing the sources that triggered this CSS
+    animation/transition.
+    """
     view_or_scroll_timeline: ViewOrScrollTimeline | None = field(
         default=None, metadata={"cdp_name": "viewOrScrollTimeline"}
     )
+    """
+    View or scroll timeline
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -40,14 +75,32 @@ class ViewOrScrollTimeline:
     source_node_id: dom.BackendNodeId | None = field(
         default=None, metadata={"cdp_name": "sourceNodeId"}
     )
+    """
+    Scroll container node
+    """
     start_offset: float | None = field(
         default=None, metadata={"cdp_name": "startOffset"}
     )
+    """
+    Represents the starting scroll position of the timeline as a length offset in
+    pixels from scroll origin.
+    """
     end_offset: float | None = field(default=None, metadata={"cdp_name": "endOffset"})
+    """
+    Represents the ending scroll position of the timeline as a length offset in pixels
+    from scroll origin.
+    """
     subject_node_id: dom.BackendNodeId | None = field(
         default=None, metadata={"cdp_name": "subjectNodeId"}
     )
+    """
+    The element whose principal box's visibility in the scrollport defined the progress
+    of the timeline. Does not exist for animations with ScrollTimeline
+    """
     axis: dom.ScrollOrientation
+    """
+    Orientation of the scroll
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -57,19 +110,51 @@ class AnimationEffect:
     """
 
     delay: float
+    """
+    `AnimationEffect`'s delay.
+    """
     end_delay: float = field(metadata={"cdp_name": "endDelay"})
+    """
+    `AnimationEffect`'s end delay.
+    """
     iteration_start: float = field(metadata={"cdp_name": "iterationStart"})
+    """
+    `AnimationEffect`'s iteration start.
+    """
     iterations: float | None = None
+    """
+    `AnimationEffect`'s iterations. Omitted if the value is infinite.
+    """
     duration: float
+    """
+    `AnimationEffect`'s iteration duration. Milliseconds for time based animations and
+    percentage [0 - 100] for scroll driven animations (i.e. when viewOrScrollTimeline
+    exists).
+    """
     direction: str
+    """
+    `AnimationEffect`'s playback direction.
+    """
     fill: str
+    """
+    `AnimationEffect`'s fill mode.
+    """
     backend_node_id: dom.BackendNodeId | None = field(
         default=None, metadata={"cdp_name": "backendNodeId"}
     )
+    """
+    `AnimationEffect`'s target node.
+    """
     keyframes_rule: KeyframesRule | None = field(
         default=None, metadata={"cdp_name": "keyframesRule"}
     )
+    """
+    `AnimationEffect`'s keyframes.
+    """
     easing: str
+    """
+    `AnimationEffect`'s timing function.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -79,7 +164,13 @@ class KeyframesRule:
     """
 
     name: str | None = None
+    """
+    CSS keyframed animation's name.
+    """
     keyframes: list[KeyframeStyle]
+    """
+    List of animation keyframes.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -89,4 +180,10 @@ class KeyframeStyle:
     """
 
     offset: str
+    """
+    Keyframe's time offset.
+    """
     easing: str
+    """
+    `AnimationEffect`'s timing function.
+    """

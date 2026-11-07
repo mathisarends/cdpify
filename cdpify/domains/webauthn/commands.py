@@ -38,6 +38,12 @@ class EnableParams:
     """
 
     enable_ui: bool | None = field(default=None, metadata={"cdp_name": "enableUI"})
+    """
+    Whether to enable the WebAuthn user interface. Enabling the UI is recommended for
+    debugging and demo purposes, as it is closer to the real experience. Disabling the
+    UI is recommended for automated testing. Supported at the embedder's discretion if
+    UI is available. Defaults to false.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -65,8 +71,20 @@ class SetResponseOverrideBitsParams:
     is_bogus_signature: bool | None = field(
         default=None, metadata={"cdp_name": "isBogusSignature"}
     )
+    """
+    If isBogusSignature is set, overrides the signature in the authenticator response
+    to be zero. Defaults to false.
+    """
     is_bad_uv: bool | None = field(default=None, metadata={"cdp_name": "isBadUV"})
+    """
+    If isBadUV is set, overrides the UV bit in the flags in the authenticator response
+    to be zero. Defaults to false.
+    """
     is_bad_up: bool | None = field(default=None, metadata={"cdp_name": "isBadUP"})
+    """
+    If isBadUP is set, overrides the UP bit in the flags in the authenticator response
+    to be zero. Defaults to false.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -181,3 +199,8 @@ class SetCredentialPropertiesParams:
         default=None, metadata={"cdp_name": "generateCmtgKeyOnNextOperation"}
     )
     sign_count: float | None = field(default=None, metadata={"cdp_name": "signCount"})
+    """
+    Must be equal to or greater than -1. If -1, the signature counter is removed from
+    the credential, and every assertion operation will report a value of 0. See
+    https://w3c.github.io/webauthn/#signature-counter
+    """

@@ -2,6 +2,37 @@ from cdpify.generator.generators import types
 from cdpify.generator.schemas import Domain, Parameter, TypeDefinition
 
 
+def test_optional_any_uses_unset_and_retains_explicit_null() -> None:
+    from typing import Any
+
+    from cdpify import UNSET, decode_cdp, encode_cdp
+
+    domain = Domain(
+        domain="Sample",
+        types=[
+            TypeDefinition(
+                id="Argument",
+                type="object",
+                properties=[
+                    Parameter(name="value", type="any", optional=True),
+                    Parameter(name="extraValue", type="any", optional=True),
+                ],
+            )
+        ],
+    )
+    namespace = {}
+    exec(types.generate(domain), namespace)
+    model = namespace["Argument"]
+    # exec() has no importable module; its annotations are resolved explicitly.
+    model.__annotations__ = {"value": Any, "extra_value": Any}
+    assert model().value is UNSET
+    assert "value: Any | UnsetType = UNSET" in types.generate(domain)
+    assert "default=UNSET" in types.generate(domain)
+    assert decode_cdp(model, {}).value is UNSET
+    assert encode_cdp(model(value=None)) == {"value": None}
+    assert encode_cdp(model(extra_value=None)) == {"extraValue": None}
+
+
 def test_generates_header_and_dataclass_imports(simple_domain: Domain) -> None:
     output = types.generate(simple_domain)
 

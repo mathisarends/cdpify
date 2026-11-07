@@ -52,6 +52,9 @@ pip install "cdpify[websocket,orjson]"
 The transport automatically uses `orjson` when available and otherwise uses
 Python's standard `json` module. Outgoing WebSocket messages remain text frames.
 
+Generated methods expose only CDP parameters. Parameter docstrings preserve
+the spec's units, defaults and experimental/deprecated markers.
+
 Install the generator dependencies only when regenerating protocol modules:
 
 ```bash
@@ -231,11 +234,15 @@ subscription has read or discarded the incoming event.
 ### Limiting buffered events
 
 Set `max_queue_size` on `CdpClient` to limit each listener's buffer. The default,
-`0`, is unlimited. A full buffer discards its oldest event so slow consumers do
-not block command responses. Override the limit for an individual subscription:
+`0`, is unlimited. A bounded buffer defaults to `overflow="error"`: if it fills,
+that subscription ends and its next read raises `CDPEventOverflowError`. Other
+subscriptions and command responses continue normally. This makes event loss
+explicit for protocols such as `Fetch.requestPaused` that require a response.
+
+For a stream where loss is acceptable, select `overflow="drop_oldest"`:
 
 ```python
-client = CdpClient(ws_url, max_queue_size=256)
+client = CdpClient(ws_url, max_queue_size=256, overflow="drop_oldest")
 
 async with client:
     async with client.listen(RequestWillBeSentEvent, max_queue_size=32) as events:
@@ -243,10 +250,26 @@ async with client:
         print(events.dropped_events)
 ```
 
-The same options apply to `listen_all()` and `CdpSession.listen()`. Passing `0`
-to a listener disables its limit. `events.dropped_events` counts events evicted
-by that listener's buffer. Disconnecting drains the remaining buffered events;
-`aclose()` releases them immediately.
+The same options apply to `listen_all()`, `CdpSession.listen()` and raw streams.
+Each listener can override both the limit and overflow policy. Passing `0`
+disables its limit. `events.dropped_events` counts discarded events. Disconnect
+drains healthy buffers; explicit closure and overflow errors release them.
+
+### Raw events
+
+Use raw subscriptions for events outside the generated spec, or to inspect wire
+parameter dictionaries without constructing typed models:
+
+```python
+async with tab.listen_raw("Future.event") as events:
+    event = await events.next(timeout=5)
+    print(event.method, event.session_id, event.params)
+```
+
+`client.listen_raw()` covers the root, `tab.listen_raw()` one session, and
+`client.listen_all_raw()` every scope. Omitting the method matches every event
+in that scope. Subscriptions register immediately and share the same lifetime,
+buffering and read-only data rules as typed streams.
 
 ## Working with target sessions
 
@@ -305,8 +328,42 @@ client = CdpClient(
     max_frame_size=100 * 1024 * 1024,
     default_timeout=30.0,
     max_queue_size=256,
+    overflow="error",
+    compression=None,
+    open_timeout=10.0,
+    close_timeout=10.0,
 )
 ```
+
+WebSocket compression is off by default to reduce local CPU work and latency.
+Set `compression="deflate"` when saving network bandwidth is preferable.
+`additional_headers`, `max_frame_size`, `compression`, `open_timeout` and
+`close_timeout` configure the URL-based WebSocket transport. Supplied custom
+transports own their connection settings.
+
+### Timeouts
+
+`default_timeout` is a total command budget in seconds, including sending and
+waiting for the response. It applies to root commands and session commands,
+including custom transports. `None` disables the default.
+
+For one call, or a group of calls, use Python's normal timeout context:
+
+```python
+async with asyncio.timeout(2):
+    result = await client.runtime.evaluate(expression="1 + 1")
+```
+
+A client deadline raises `CDPTimeoutError`; a shorter outer `asyncio.timeout()`
+raises the built-in `TimeoutError`. Both release the pending local request.
+Cancelling the wait does not automatically cancel work in Chrome.
+
+CDP parameters retain the spec's units. For example, `Runtime.evaluate(timeout=...)`
+limits execution inside Chrome in **milliseconds**; it is not the client budget.
+The raw `execute()` escape hatch also accepts `timeout=seconds`: omit it to
+inherit the client default or pass `None` to disable the deadline for that call.
+
+### Custom transports
 
 For another transport protocol, implement the exported `Transport` protocol
 and inject it directly:
@@ -323,8 +380,11 @@ WebSocket transport uses this path to avoid an intermediate event queue.
 Transports that implement only `Transport.events()` continue to work.
 
 When using `WebSocketTransport.events()` directly, its `max_queue_size` option
-sets the same drop-oldest limit on its transport buffer; `dropped_events` counts
-those evictions. A client-supplied custom transport manages its own buffer limits.
+sets the limit on its transport buffer with the same overflow policies. A
+client-supplied custom transport manages its own transport buffer limits.
+`WebSocketTransport` has no default command timeout; standalone calls can pass
+`execute(timeout=seconds)`. In the `Transport` contract, `timeout=None` means no
+deadline and cancellation releases resources associated with that request.
 
 For methods not covered by the generated API, use the low-level escape hatch:
 
@@ -351,10 +411,29 @@ than `FrameId("F1")`, and `isinstance(frame_id, str)` for a runtime check.
 
 ### When Chrome deviates from the spec
 
-Chrome does not always send every field the protocol marks as required.
-Instead of failing, cdpify logs a warning on the `cdpify.codec` logger and
-sets the missing field to `None`, even if its type says otherwise. Unknown
-fields from newer Chrome versions are ignored.
+Missing required fields raise `CDPDecodeError` with `model_type`,
+`missing_fields` and the enclosing wire-field `path`. Unknown fields are ignored
+and future enum values remain supported. Decoding checks required field
+presence; it does not perform full schema validation of primitive values.
+
+For a deliberately tolerant decode, use `decode_cdp(Model, payload, strict=False)`.
+This fills missing required fields with `None` and logs a warning, including
+nested models. When necessary, fetch the raw result with `execute()` and decode
+it explicitly with this policy.
+
+### Omitted values and JSON null
+
+Optional scalar parameters still use `None` to mean omitted. Optional `Any`
+fields use `UNSET` because JSON null is itself a valid value:
+
+```python
+from cdpify import UNSET, encode_cdp
+from cdpify.domains.runtime import CallArgument
+
+assert encode_cdp(CallArgument()) == {}
+assert encode_cdp(CallArgument(value=None)) == {"value": None}
+assert CallArgument().value is UNSET
+```
 
 Deprecated CDP commands still work but emit a `DeprecationWarning`. Use
 Python's warning filters to silence them or turn them into errors:
@@ -376,11 +455,36 @@ Install the project and its development dependencies with
 uv sync --dev
 uv run pytest
 uv run ruff check . --exclude cdpify/domains
+uv run pyright
+uv run python scripts/check_generated.py
 ```
 
 Use `uv sync --dev --extra orjson` and `uv run --extra orjson pytest` to include
 the optional backend. CI installs this extra and tests both JSON backends on
 Ubuntu, Windows, and macOS with Python 3.12, 3.13, and 3.14.
+
+Run real Chrome coverage with `uv run --extra orjson pytest -m integration`.
+These tests launch an isolated headless browser. Set `CHROME_PATH` to select its
+executable. Integration tests are excluded from the default unit-test run.
+
+CI also checks the complete library and a public API sample with Pyright,
+verifies generated-code drift, and runs the integration suite against Chrome.
+Regenerate from the bundled specs with `uv run python scripts/check_generated.py --write`.
+
+Run reproducible microbenchmarks with:
+
+```bash
+uv run python benchmarks/runtime.py
+uv run --extra orjson python benchmarks/runtime.py --page-url ws://localhost:9222/devtools/page/...
+```
+
+Output is JSON with environment metadata and timings for encoding, decoding,
+typed calls and dispatch to several listener counts. An optional page endpoint
+adds real small-message and 1-MiB round trips, including p50 and p95 latency.
+The large case sends and receives a seeded Base64 payload. Add
+`--compression deflate` to compare compression on the same machine; installing
+or omitting the `orjson` extra selects the JSON backend. Timings are diagnostic
+and are not used as flaky CI pass/fail thresholds.
 
 To download the latest protocol definitions and regenerate all domain clients:
 

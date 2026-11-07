@@ -30,6 +30,9 @@ class InspectNodeRequestedEvent:
     __cdp_event__: ClassVar[OverlayEvent] = OverlayEvent.INSPECT_NODE_REQUESTED
 
     backend_node_id: dom.BackendNodeId = field(metadata={"cdp_name": "backendNodeId"})
+    """
+    Id of the node to inspect.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -53,6 +56,9 @@ class ScreenshotRequestedEvent:
     __cdp_event__: ClassVar[OverlayEvent] = OverlayEvent.SCREENSHOT_REQUESTED
 
     viewport: page.Viewport
+    """
+    Viewport to capture, in device independent pixels (dip).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -64,6 +70,9 @@ class InspectPanelShowRequestedEvent:
     __cdp_event__: ClassVar[OverlayEvent] = OverlayEvent.INSPECT_PANEL_SHOW_REQUESTED
 
     backend_node_id: dom.BackendNodeId = field(metadata={"cdp_name": "backendNodeId"})
+    """
+    Id of the node to show in the panel.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -77,6 +86,9 @@ class InspectedElementWindowRestoredEvent:
     )
 
     backend_node_id: dom.BackendNodeId = field(metadata={"cdp_name": "backendNodeId"})
+    """
+    Id of the node to restore the floating window for.
+    """
 
 
 @dataclass(kw_only=True, slots=True)

@@ -29,6 +29,9 @@ class EnableParams:
     time_domain: Literal["timeTicks", "threadTicks"] | None = field(
         default=None, metadata={"cdp_name": "timeDomain"}
     )
+    """
+    Time domain to use for collecting and reporting duration metrics.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -36,14 +39,21 @@ class SetTimeDomainParams:
     """
     Sets time domain to use for collecting and reporting duration metrics. Note that
     this must be called before enabling metrics collection. Calling this method while
-    metrics collection is enabled returns an error.
+    metrics collection is enabled returns an error. Experimental: this API may change or
+    be removed. Deprecated in the Chrome DevTools Protocol.
     """
 
     time_domain: Literal["timeTicks", "threadTicks"] = field(
         metadata={"cdp_name": "timeDomain"}
     )
+    """
+    Time domain
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetMetricsResult:
     metrics: list[Metric]
+    """
+    Current values for run-time metrics.
+    """

@@ -22,21 +22,28 @@ class AccessibilityEvent(StrEnum):
 class LoadCompleteEvent:
     """
     The loadComplete event mirrors the load complete event sent by the browser to
-    assistive technology when the web page has finished loading.
+    assistive technology when the web page has finished loading. Experimental: this API
+    may change or be removed.
     """
 
     __cdp_event__: ClassVar[AccessibilityEvent] = AccessibilityEvent.LOAD_COMPLETE
 
     root: AXNode
+    """
+    New document root node.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class NodesUpdatedEvent:
     """
     The nodesUpdated event is sent every time a previously requested node has changed
-    the in tree.
+    the in tree. Experimental: this API may change or be removed.
     """
 
     __cdp_event__: ClassVar[AccessibilityEvent] = AccessibilityEvent.NODES_UPDATED
 
     nodes: list[AXNode]
+    """
+    Updated node data.
+    """

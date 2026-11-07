@@ -38,6 +38,9 @@ class GetDOMCountersResult:
 @dataclass(kw_only=True, slots=True)
 class GetDOMCountersForLeakDetectionResult:
     counters: list[DOMCounter]
+    """
+    DOM object counters.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -47,6 +50,9 @@ class SetPressureNotificationsSuppressedParams:
     """
 
     suppressed: bool
+    """
+    If true, memory pressure notifications will be suppressed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -56,6 +62,9 @@ class SimulatePressureNotificationParams:
     """
 
     level: PressureLevel
+    """
+    Memory pressure level of the notification.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -67,9 +76,15 @@ class StartSamplingParams:
     sampling_interval: int | None = field(
         default=None, metadata={"cdp_name": "samplingInterval"}
     )
+    """
+    Average number of bytes between samples.
+    """
     suppress_randomness: bool | None = field(
         default=None, metadata={"cdp_name": "suppressRandomness"}
     )
+    """
+    Do not randomize intervals between samples.
+    """
 
 
 @dataclass(kw_only=True, slots=True)

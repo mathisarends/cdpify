@@ -4,14 +4,14 @@
 
 from __future__ import annotations
 
-from cdpify.codec import decode_cdp, encode_cdp
+from typing import Any
+
+from cdpify.codec import decode_cdp
 from cdpify.executor import CommandExecutor
 
 from .commands import (
     GetBestEffortCoverageResult,
     ProfilerCommand,
-    SetSamplingIntervalParams,
-    StartPreciseCoverageParams,
     StartPreciseCoverageResult,
     StopResult,
     TakePreciseCoverageResult,
@@ -59,12 +59,16 @@ class Profiler:
         """
         Changes CPU profiler sampling interval. Must be called before CPU profiles
         recording started.
+
+        Args:
+            interval: New sampling interval in microseconds.
         """
-        params = SetSamplingIntervalParams(interval=interval)
+        _params: dict[str, Any] = {}
+        _params["interval"] = interval
 
         await self._executor.execute(
             method=ProfilerCommand.SET_SAMPLING_INTERVAL,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def start(
@@ -86,16 +90,25 @@ class Profiler:
         Enable precise code coverage. Coverage data for JavaScript executed before
         enabling precise code coverage may be incomplete. Enabling prevents running
         optimized code and resets execution counters.
+
+        Args:
+            call_count: Collect accurate call counts beyond simple 'covered' or 'not
+                covered'.
+            detailed: Collect block-based coverage.
+            allow_triggered_updates: Allow the backend to send updates on its own
+                initiative
         """
-        params = StartPreciseCoverageParams(
-            call_count=call_count,
-            detailed=detailed,
-            allow_triggered_updates=allow_triggered_updates,
-        )
+        _params: dict[str, Any] = {}
+        if call_count is not None:
+            _params["callCount"] = call_count
+        if detailed is not None:
+            _params["detailed"] = detailed
+        if allow_triggered_updates is not None:
+            _params["allowTriggeredUpdates"] = allow_triggered_updates
 
         result = await self._executor.execute(
             method=ProfilerCommand.START_PRECISE_COVERAGE,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(StartPreciseCoverageResult, result)
 

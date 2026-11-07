@@ -4,60 +4,19 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Literal
+from typing import TYPE_CHECKING, Any, Literal
 
-from cdpify.codec import decode_cdp, encode_cdp
+from cdpify.codec import _encode_value, decode_cdp
 from cdpify.executor import CommandExecutor
 from cdpify.shared.decorators import deprecated
 
 from .commands import (
-    AddScreenParams,
     AddScreenResult,
     CanEmulateResult,
     EmulationCommand,
-    GetOverriddenSensorInformationParams,
     GetOverriddenSensorInformationResult,
     GetScreenInfosResult,
-    RemoveScreenParams,
-    SetAutoDarkModeOverrideParams,
-    SetAutomationOverrideParams,
-    SetCPUPerformanceOverrideParams,
-    SetCPUThrottlingRateParams,
-    SetDataSaverOverrideParams,
-    SetDefaultBackgroundColorOverrideParams,
-    SetDeviceMetricsOverrideParams,
-    SetDevicePostureOverrideParams,
-    SetDisabledImageTypesParams,
-    SetDisplayFeaturesOverrideParams,
-    SetDocumentCookieDisabledParams,
-    SetEmitTouchEventsForMouseParams,
-    SetEmulatedMediaParams,
-    SetEmulatedOSTextScaleParams,
-    SetEmulatedVisionDeficiencyParams,
-    SetFocusEmulationEnabledParams,
-    SetGeolocationOverrideParams,
-    SetHardwareConcurrencyOverrideParams,
-    SetIdleOverrideParams,
-    SetLocaleOverrideParams,
-    SetNavigatorOverridesParams,
-    SetPageScaleFactorParams,
-    SetPressureSourceOverrideEnabledParams,
-    SetPressureStateOverrideParams,
-    SetPrimaryScreenParams,
-    SetSafeAreaInsetsOverrideParams,
-    SetScriptExecutionDisabledParams,
-    SetScrollbarsHiddenParams,
-    SetSensorOverrideEnabledParams,
-    SetSensorOverrideReadingsParams,
-    SetSmallViewportHeightDifferenceOverrideParams,
-    SetTimezoneOverrideParams,
-    SetTouchEmulationEnabledParams,
-    SetUserAgentOverrideParams,
-    SetVirtualKeyboardGeometryOverrideParams,
-    SetVirtualTimePolicyParams,
     SetVirtualTimePolicyResult,
-    SetVisibleSizeParams,
-    UpdateScreenParams,
     UpdateScreenResult,
 )
 from .types import (
@@ -92,7 +51,8 @@ class Emulation:
         self,
     ) -> CanEmulateResult:
         """
-        Tells whether emulation is supported.
+        Tells whether emulation is supported. Deprecated in the Chrome DevTools
+        Protocol.
         """
         result = await self._executor.execute(
             method=EmulationCommand.CAN_EMULATE,
@@ -126,7 +86,8 @@ class Emulation:
         self,
     ) -> None:
         """
-        Requests that page scale factor is reset to initial values.
+        Requests that page scale factor is reset to initial values. Experimental: this
+        API may change or be removed.
         """
         await self._executor.execute(
             method=EmulationCommand.RESET_PAGE_SCALE_FACTOR,
@@ -139,13 +100,18 @@ class Emulation:
         enabled: bool,
     ) -> None:
         """
-        Enables or disables simulating a focused and active page.
+        Enables or disables simulating a focused and active page. Experimental: this
+        API may change or be removed.
+
+        Args:
+            enabled: Whether to enable to disable focus emulation.
         """
-        params = SetFocusEmulationEnabledParams(enabled=enabled)
+        _params: dict[str, Any] = {}
+        _params["enabled"] = enabled
 
         await self._executor.execute(
             method=EmulationCommand.SET_FOCUS_EMULATION_ENABLED,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_auto_dark_mode_override(
@@ -154,13 +120,20 @@ class Emulation:
         enabled: bool | None = None,
     ) -> None:
         """
-        Automatically render all web contents using a dark theme.
+        Automatically render all web contents using a dark theme. Experimental: this
+        API may change or be removed.
+
+        Args:
+            enabled: Whether to enable or disable automatic dark mode. If not specified,
+                any existing override will be cleared.
         """
-        params = SetAutoDarkModeOverrideParams(enabled=enabled)
+        _params: dict[str, Any] = {}
+        if enabled is not None:
+            _params["enabled"] = enabled
 
         await self._executor.execute(
             method=EmulationCommand.SET_AUTO_DARK_MODE_OVERRIDE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_cpu_throttling_rate(
@@ -170,12 +143,17 @@ class Emulation:
     ) -> None:
         """
         Enables CPU throttling to emulate slow CPUs.
+
+        Args:
+            rate: Throttling rate as a slowdown factor (1 is no throttle, 2 is 2x
+                slowdown, etc).
         """
-        params = SetCPUThrottlingRateParams(rate=rate)
+        _params: dict[str, Any] = {}
+        _params["rate"] = rate
 
         await self._executor.execute(
             method=EmulationCommand.SET_CPU_THROTTLING_RATE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_default_background_color_override(
@@ -186,12 +164,18 @@ class Emulation:
         """
         Sets or clears an override of the default background color of the frame. This
         override is used if the content does not specify one.
+
+        Args:
+            color: RGBA of the default background color. If not specified, any existing
+                override will be cleared.
         """
-        params = SetDefaultBackgroundColorOverrideParams(color=color)
+        _params: dict[str, Any] = {}
+        if color is not None:
+            _params["color"] = _encode_value(color)
 
         await self._executor.execute(
             method=EmulationCommand.SET_DEFAULT_BACKGROUND_COLOR_OVERRIDE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_safe_area_insets_override(
@@ -202,13 +186,14 @@ class Emulation:
         """
         Overrides the values for env(safe-area-inset-*) and env(safe-area-max-inset-*).
         Unset values will cause the respective variables to be undefined, even if
-        previously overridden.
+        previously overridden. Experimental: this API may change or be removed.
         """
-        params = SetSafeAreaInsetsOverrideParams(insets=insets)
+        _params: dict[str, Any] = {}
+        _params["insets"] = _encode_value(insets)
 
         await self._executor.execute(
             method=EmulationCommand.SET_SAFE_AREA_INSETS_OVERRIDE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_virtual_keyboard_geometry_override(
@@ -223,12 +208,15 @@ class Emulation:
         The override applies independently of navigator.virtualKeyboard.overlaysContent
         so clients can preview overlay geometry without mutating page state. Values are
         rounded to the nearest CSS pixel. Omitting the rect clears the override.
+        Experimental: this API may change or be removed.
         """
-        params = SetVirtualKeyboardGeometryOverrideParams(keyboard_rect=keyboard_rect)
+        _params: dict[str, Any] = {}
+        if keyboard_rect is not None:
+            _params["keyboardRect"] = _encode_value(keyboard_rect)
 
         await self._executor.execute(
             method=EmulationCommand.SET_VIRTUAL_KEYBOARD_GEOMETRY_OVERRIDE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_device_metrics_override(
@@ -257,31 +245,95 @@ class Emulation:
         Overrides the values of device screen dimensions (window.screen.width,
         window.screen.height, window.innerWidth, window.innerHeight, and
         "device-width"/"device-height"-related CSS media query results).
+
+        Args:
+            width: Overriding width value in pixels (minimum 0, maximum 10000000). 0
+                disables the override.
+            height: Overriding height value in pixels (minimum 0, maximum 10000000). 0
+                disables the override.
+            device_scale_factor: Overriding device scale factor value. 0 disables the
+                override.
+            mobile: Whether to emulate mobile device. This includes viewport meta tag,
+                overlay scrollbars, text autosizing and more.
+            scale: Scale to apply to resulting view image. Experimental: this API may
+                change or be removed.
+            screen_width: Overriding screen width value in pixels (minimum 0, maximum
+                10000000). Experimental: this API may change or be removed.
+            screen_height: Overriding screen height value in pixels (minimum 0, maximum
+                10000000). Experimental: this API may change or be removed.
+            position_x: Overriding view X position on screen in pixels (minimum 0,
+                maximum 10000000). Experimental: this API may change or be removed.
+            position_y: Overriding view Y position on screen in pixels (minimum 0,
+                maximum 10000000). Experimental: this API may change or be removed.
+            dont_set_visible_size: Do not set visible view size, rely upon explicit
+                setVisibleSize call. Experimental: this API may change or be removed.
+            screen_orientation: Screen orientation override.
+            viewport: If set, the visible area of the page will be overridden to this
+                viewport. This viewport change is not observed by the page, e.g.
+                viewport-relative elements do not change positions. Experimental: this
+                API may change or be removed.
+            display_feature: If set, the display feature of a multi-segment screen. If
+                not set, multi-segment support is turned-off. Deprecated, use
+                Emulation.setDisplayFeaturesOverride. Experimental: this API may change
+                or be removed. Deprecated in the Chrome DevTools Protocol.
+            device_posture: If set, the posture of a foldable device. If not set the
+                posture is set to continuous. Deprecated, use
+                Emulation.setDevicePostureOverride. Experimental: this API may change or
+                be removed. Deprecated in the Chrome DevTools Protocol.
+            scrollbar_type: Scrollbar type. Default: `default`. Experimental: this API
+                may change or be removed.
+            screen_orientation_lock_emulation: If set to true, enables screen
+                orientation lock emulation, which intercepts screen.orientation.lock()
+                calls from the page and reports orientation changes via
+                screenOrientationLockChanged events. This is useful for emulating mobile
+                device orientation lock behavior in responsive design mode.
+                Experimental: this API may change or be removed.
+            viewport_meta: Viewport meta tag behavior. Default: `default`. Note: if
+                `mobile` is `true`, the viewport meta tag is always enabled.
+                Experimental: this API may change or be removed.
+            text_layout_mode: Text layout mode. Default: `default`. Note: if `mobile` is
+                `true`, mobile text layout mode (text autosizing) is always enabled.
+                Experimental: this API may change or be removed.
         """
-        params = SetDeviceMetricsOverrideParams(
-            width=width,
-            height=height,
-            device_scale_factor=device_scale_factor,
-            mobile=mobile,
-            scale=scale,
-            screen_width=screen_width,
-            screen_height=screen_height,
-            position_x=position_x,
-            position_y=position_y,
-            dont_set_visible_size=dont_set_visible_size,
-            screen_orientation=screen_orientation,
-            viewport=viewport,
-            display_feature=display_feature,
-            device_posture=device_posture,
-            scrollbar_type=scrollbar_type,
-            screen_orientation_lock_emulation=screen_orientation_lock_emulation,
-            viewport_meta=viewport_meta,
-            text_layout_mode=text_layout_mode,
-        )
+        _params: dict[str, Any] = {}
+        _params["width"] = width
+        _params["height"] = height
+        _params["deviceScaleFactor"] = device_scale_factor
+        _params["mobile"] = mobile
+        if scale is not None:
+            _params["scale"] = scale
+        if screen_width is not None:
+            _params["screenWidth"] = screen_width
+        if screen_height is not None:
+            _params["screenHeight"] = screen_height
+        if position_x is not None:
+            _params["positionX"] = position_x
+        if position_y is not None:
+            _params["positionY"] = position_y
+        if dont_set_visible_size is not None:
+            _params["dontSetVisibleSize"] = dont_set_visible_size
+        if screen_orientation is not None:
+            _params["screenOrientation"] = _encode_value(screen_orientation)
+        if viewport is not None:
+            _params["viewport"] = _encode_value(viewport)
+        if display_feature is not None:
+            _params["displayFeature"] = _encode_value(display_feature)
+        if device_posture is not None:
+            _params["devicePosture"] = _encode_value(device_posture)
+        if scrollbar_type is not None:
+            _params["scrollbarType"] = scrollbar_type
+        if screen_orientation_lock_emulation is not None:
+            _params["screenOrientationLockEmulation"] = (
+                screen_orientation_lock_emulation
+            )
+        if viewport_meta is not None:
+            _params["viewportMeta"] = viewport_meta
+        if text_layout_mode is not None:
+            _params["textLayoutMode"] = text_layout_mode
 
         await self._executor.execute(
             method=EmulationCommand.SET_DEVICE_METRICS_OVERRIDE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_device_posture_override(
@@ -291,13 +343,15 @@ class Emulation:
     ) -> None:
         """
         Start reporting the given posture value to the Device Posture API. This
-        override can also be set in setDeviceMetricsOverride().
+        override can also be set in setDeviceMetricsOverride(). Experimental: this API
+        may change or be removed.
         """
-        params = SetDevicePostureOverrideParams(posture=posture)
+        _params: dict[str, Any] = {}
+        _params["posture"] = _encode_value(posture)
 
         await self._executor.execute(
             method=EmulationCommand.SET_DEVICE_POSTURE_OVERRIDE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def clear_device_posture_override(
@@ -306,7 +360,8 @@ class Emulation:
         """
         Clears a device posture override set with either setDeviceMetricsOverride() or
         setDevicePostureOverride() and starts using posture information from the
-        platform again. Does nothing if no override is set.
+        platform again. Does nothing if no override is set. Experimental: this API may
+        change or be removed.
         """
         await self._executor.execute(
             method=EmulationCommand.CLEAR_DEVICE_POSTURE_OVERRIDE,
@@ -320,13 +375,15 @@ class Emulation:
     ) -> None:
         """
         Start using the given display features to pupulate the Viewport Segments API.
-        This override can also be set in setDeviceMetricsOverride().
+        This override can also be set in setDeviceMetricsOverride(). Experimental: this
+        API may change or be removed.
         """
-        params = SetDisplayFeaturesOverrideParams(features=features)
+        _params: dict[str, Any] = {}
+        _params["features"] = _encode_value(features)
 
         await self._executor.execute(
             method=EmulationCommand.SET_DISPLAY_FEATURES_OVERRIDE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def clear_display_features_override(
@@ -335,7 +392,8 @@ class Emulation:
         """
         Clears the display features override set with either setDeviceMetricsOverride()
         or setDisplayFeaturesOverride() and starts using display features from the
-        platform again. Does nothing if no override is set.
+        platform again. Does nothing if no override is set. Experimental: this API may
+        change or be removed.
         """
         await self._executor.execute(
             method=EmulationCommand.CLEAR_DISPLAY_FEATURES_OVERRIDE,
@@ -347,11 +405,18 @@ class Emulation:
         *,
         hidden: bool,
     ) -> None:
-        params = SetScrollbarsHiddenParams(hidden=hidden)
+        """
+        Experimental: this API may change or be removed.
+
+        Args:
+            hidden: Whether scrollbars should be always hidden.
+        """
+        _params: dict[str, Any] = {}
+        _params["hidden"] = hidden
 
         await self._executor.execute(
             method=EmulationCommand.SET_SCROLLBARS_HIDDEN,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_document_cookie_disabled(
@@ -359,11 +424,18 @@ class Emulation:
         *,
         disabled: bool,
     ) -> None:
-        params = SetDocumentCookieDisabledParams(disabled=disabled)
+        """
+        Experimental: this API may change or be removed.
+
+        Args:
+            disabled: Whether document.coookie API should be disabled.
+        """
+        _params: dict[str, Any] = {}
+        _params["disabled"] = disabled
 
         await self._executor.execute(
             method=EmulationCommand.SET_DOCUMENT_COOKIE_DISABLED,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_emit_touch_events_for_mouse(
@@ -372,13 +444,22 @@ class Emulation:
         enabled: bool,
         configuration: Literal["mobile", "desktop"] | None = None,
     ) -> None:
-        params = SetEmitTouchEventsForMouseParams(
-            enabled=enabled, configuration=configuration
-        )
+        """
+        Experimental: this API may change or be removed.
+
+        Args:
+            enabled: Whether touch emulation based on mouse input should be enabled.
+            configuration: Touch/gesture events configuration. Default: current
+                platform.
+        """
+        _params: dict[str, Any] = {}
+        _params["enabled"] = enabled
+        if configuration is not None:
+            _params["configuration"] = configuration
 
         await self._executor.execute(
             method=EmulationCommand.SET_EMIT_TOUCH_EVENTS_FOR_MOUSE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_emulated_media(
@@ -389,12 +470,20 @@ class Emulation:
     ) -> None:
         """
         Emulates the given media type or media feature for CSS media queries.
+
+        Args:
+            media: Media type to emulate. Empty string disables the override.
+            features: Media features to emulate.
         """
-        params = SetEmulatedMediaParams(media=media, features=features)
+        _params: dict[str, Any] = {}
+        if media is not None:
+            _params["media"] = media
+        if features is not None:
+            _params["features"] = _encode_value(features)
 
         await self._executor.execute(
             method=EmulationCommand.SET_EMULATED_MEDIA,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_emulated_vision_deficiency(
@@ -412,12 +501,18 @@ class Emulation:
     ) -> None:
         """
         Emulates the given vision deficiency.
+
+        Args:
+            type: Vision deficiency to emulate. Order: best-effort emulations come
+                first, followed by any physiologically accurate emulations for medically
+                recognized color vision deficiencies.
         """
-        params = SetEmulatedVisionDeficiencyParams(type=type)
+        _params: dict[str, Any] = {}
+        _params["type"] = type
 
         await self._executor.execute(
             method=EmulationCommand.SET_EMULATED_VISION_DEFICIENCY,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_emulated_os_text_scale(
@@ -428,11 +523,13 @@ class Emulation:
         """
         Emulates the given OS text scale.
         """
-        params = SetEmulatedOSTextScaleParams(scale=scale)
+        _params: dict[str, Any] = {}
+        if scale is not None:
+            _params["scale"] = scale
 
         await self._executor.execute(
             method=EmulationCommand.SET_EMULATED_OS_TEXT_SCALE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_geolocation_override(
@@ -449,20 +546,35 @@ class Emulation:
         """
         Overrides the Geolocation Position or Error. Omitting latitude, longitude or
         accuracy emulates position unavailable.
+
+        Args:
+            latitude: Mock latitude
+            longitude: Mock longitude
+            accuracy: Mock accuracy
+            altitude: Mock altitude
+            altitude_accuracy: Mock altitudeAccuracy
+            heading: Mock heading
+            speed: Mock speed
         """
-        params = SetGeolocationOverrideParams(
-            latitude=latitude,
-            longitude=longitude,
-            accuracy=accuracy,
-            altitude=altitude,
-            altitude_accuracy=altitude_accuracy,
-            heading=heading,
-            speed=speed,
-        )
+        _params: dict[str, Any] = {}
+        if latitude is not None:
+            _params["latitude"] = latitude
+        if longitude is not None:
+            _params["longitude"] = longitude
+        if accuracy is not None:
+            _params["accuracy"] = accuracy
+        if altitude is not None:
+            _params["altitude"] = altitude
+        if altitude_accuracy is not None:
+            _params["altitudeAccuracy"] = altitude_accuracy
+        if heading is not None:
+            _params["heading"] = heading
+        if speed is not None:
+            _params["speed"] = speed
 
         await self._executor.execute(
             method=EmulationCommand.SET_GEOLOCATION_OVERRIDE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def get_overridden_sensor_information(
@@ -470,11 +582,15 @@ class Emulation:
         *,
         type: SensorType,
     ) -> GetOverriddenSensorInformationResult:
-        params = GetOverriddenSensorInformationParams(type=type)
+        """
+        Experimental: this API may change or be removed.
+        """
+        _params: dict[str, Any] = {}
+        _params["type"] = _encode_value(type)
 
         result = await self._executor.execute(
             method=EmulationCommand.GET_OVERRIDDEN_SENSOR_INFORMATION,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetOverriddenSensorInformationResult, result)
 
@@ -490,15 +606,17 @@ class Emulation:
         Sensor.start() will use a virtual sensor as backend rather than fetching data
         from a real hardware sensor. Otherwise, existing virtual sensor-backend Sensor
         objects will fire an error event and new calls to Sensor.start() will attempt to
-        use a real sensor instead.
+        use a real sensor instead. Experimental: this API may change or be removed.
         """
-        params = SetSensorOverrideEnabledParams(
-            enabled=enabled, type=type, metadata=metadata
-        )
+        _params: dict[str, Any] = {}
+        _params["enabled"] = enabled
+        _params["type"] = _encode_value(type)
+        if metadata is not None:
+            _params["metadata"] = _encode_value(metadata)
 
         await self._executor.execute(
             method=EmulationCommand.SET_SENSOR_OVERRIDE_ENABLED,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_sensor_override_readings(
@@ -509,13 +627,15 @@ class Emulation:
     ) -> None:
         """
         Updates the sensor readings reported by a sensor type previously overridden by
-        setSensorOverrideEnabled.
+        setSensorOverrideEnabled. Experimental: this API may change or be removed.
         """
-        params = SetSensorOverrideReadingsParams(type=type, reading=reading)
+        _params: dict[str, Any] = {}
+        _params["type"] = _encode_value(type)
+        _params["reading"] = _encode_value(reading)
 
         await self._executor.execute(
             method=EmulationCommand.SET_SENSOR_OVERRIDE_READINGS,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_pressure_source_override_enabled(
@@ -529,15 +649,17 @@ class Emulation:
         Overrides a pressure source of a given type, as used by the Compute Pressure
         API, so that updates to PressureObserver.observe() are provided via
         setPressureStateOverride instead of being retrieved from platform-provided
-        telemetry data.
+        telemetry data. Experimental: this API may change or be removed.
         """
-        params = SetPressureSourceOverrideEnabledParams(
-            enabled=enabled, source=source, metadata=metadata
-        )
+        _params: dict[str, Any] = {}
+        _params["enabled"] = enabled
+        _params["source"] = _encode_value(source)
+        if metadata is not None:
+            _params["metadata"] = _encode_value(metadata)
 
         await self._executor.execute(
             method=EmulationCommand.SET_PRESSURE_SOURCE_OVERRIDE_ENABLED,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_pressure_state_override(
@@ -549,13 +671,16 @@ class Emulation:
         """
         Provides a given pressure state that will be processed and eventually be
         delivered to PressureObserver users. |source| must have been previously
-        overridden by setPressureSourceOverrideEnabled.
+        overridden by setPressureSourceOverrideEnabled. Experimental: this API may
+        change or be removed.
         """
-        params = SetPressureStateOverrideParams(source=source, state=state)
+        _params: dict[str, Any] = {}
+        _params["source"] = _encode_value(source)
+        _params["state"] = _encode_value(state)
 
         await self._executor.execute(
             method=EmulationCommand.SET_PRESSURE_STATE_OVERRIDE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_idle_override(
@@ -566,14 +691,18 @@ class Emulation:
     ) -> None:
         """
         Overrides the Idle state.
+
+        Args:
+            is_user_active: Mock isUserActive
+            is_screen_unlocked: Mock isScreenUnlocked
         """
-        params = SetIdleOverrideParams(
-            is_user_active=is_user_active, is_screen_unlocked=is_screen_unlocked
-        )
+        _params: dict[str, Any] = {}
+        _params["isUserActive"] = is_user_active
+        _params["isScreenUnlocked"] = is_screen_unlocked
 
         await self._executor.execute(
             method=EmulationCommand.SET_IDLE_OVERRIDE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def clear_idle_override(
@@ -594,13 +723,18 @@ class Emulation:
         platform: str,
     ) -> None:
         """
-        Overrides value returned by the javascript navigator object.
+        Overrides value returned by the javascript navigator object. Experimental: this
+        API may change or be removed. Deprecated in the Chrome DevTools Protocol.
+
+        Args:
+            platform: The platform navigator.platform should return.
         """
-        params = SetNavigatorOverridesParams(platform=platform)
+        _params: dict[str, Any] = {}
+        _params["platform"] = platform
 
         await self._executor.execute(
             method=EmulationCommand.SET_NAVIGATOR_OVERRIDES,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_page_scale_factor(
@@ -609,13 +743,18 @@ class Emulation:
         page_scale_factor: float,
     ) -> None:
         """
-        Sets a specified page scale factor.
+        Sets a specified page scale factor. Experimental: this API may change or be
+        removed.
+
+        Args:
+            page_scale_factor: Page scale factor.
         """
-        params = SetPageScaleFactorParams(page_scale_factor=page_scale_factor)
+        _params: dict[str, Any] = {}
+        _params["pageScaleFactor"] = page_scale_factor
 
         await self._executor.execute(
             method=EmulationCommand.SET_PAGE_SCALE_FACTOR,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_script_execution_disabled(
@@ -625,12 +764,16 @@ class Emulation:
     ) -> None:
         """
         Switches script execution in the page.
+
+        Args:
+            value: Whether script execution should be disabled in the page.
         """
-        params = SetScriptExecutionDisabledParams(value=value)
+        _params: dict[str, Any] = {}
+        _params["value"] = value
 
         await self._executor.execute(
             method=EmulationCommand.SET_SCRIPT_EXECUTION_DISABLED,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_touch_emulation_enabled(
@@ -641,14 +784,19 @@ class Emulation:
     ) -> None:
         """
         Enables touch on platforms which do not support them.
+
+        Args:
+            enabled: Whether the touch event emulation should be enabled.
+            max_touch_points: Maximum touch points supported. Defaults to one.
         """
-        params = SetTouchEmulationEnabledParams(
-            enabled=enabled, max_touch_points=max_touch_points
-        )
+        _params: dict[str, Any] = {}
+        _params["enabled"] = enabled
+        if max_touch_points is not None:
+            _params["maxTouchPoints"] = max_touch_points
 
         await self._executor.execute(
             method=EmulationCommand.SET_TOUCH_EMULATION_ENABLED,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_virtual_time_policy(
@@ -662,18 +810,31 @@ class Emulation:
         """
         Turns on virtual time for all frames (replacing real-time with a synthetic time
         source) and sets the current virtual time policy. Note this supersedes any
-        previous time budget.
+        previous time budget. Experimental: this API may change or be removed.
+
+        Args:
+            budget: If set, after this many virtual milliseconds have elapsed virtual
+                time will be paused and a virtualTimeBudgetExpired event is sent.
+            max_virtual_time_task_starvation_count: If set this specifies the maximum
+                number of tasks that can be run before virtual is forced forwards to
+                prevent deadlock.
+            initial_virtual_time: If set, base::Time::Now will be overridden to
+                initially return this value.
         """
-        params = SetVirtualTimePolicyParams(
-            policy=policy,
-            budget=budget,
-            max_virtual_time_task_starvation_count=max_virtual_time_task_starvation_count,
-            initial_virtual_time=initial_virtual_time,
-        )
+        _params: dict[str, Any] = {}
+        _params["policy"] = _encode_value(policy)
+        if budget is not None:
+            _params["budget"] = budget
+        if max_virtual_time_task_starvation_count is not None:
+            _params["maxVirtualTimeTaskStarvationCount"] = (
+                max_virtual_time_task_starvation_count
+            )
+        if initial_virtual_time is not None:
+            _params["initialVirtualTime"] = _encode_value(initial_virtual_time)
 
         result = await self._executor.execute(
             method=EmulationCommand.SET_VIRTUAL_TIME_POLICY,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(SetVirtualTimePolicyResult, result)
 
@@ -683,13 +844,20 @@ class Emulation:
         locale: str | None = None,
     ) -> None:
         """
-        Overrides default host system locale with the specified one.
+        Overrides default host system locale with the specified one. Experimental: this
+        API may change or be removed.
+
+        Args:
+            locale: ICU style C locale (e.g. "en_US"). If not specified or empty,
+                disables the override and restores default host system locale.
         """
-        params = SetLocaleOverrideParams(locale=locale)
+        _params: dict[str, Any] = {}
+        if locale is not None:
+            _params["locale"] = locale
 
         await self._executor.execute(
             method=EmulationCommand.SET_LOCALE_OVERRIDE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_timezone_override(
@@ -699,12 +867,19 @@ class Emulation:
     ) -> None:
         """
         Overrides default host system timezone with the specified one.
+
+        Args:
+            timezone_id: The timezone identifier. List of supported timezones:
+                https://source.chromium.org/chromium/chromium/deps/icu.git/+/faee8bc70570192d82d2978a71e2a615788597d1:source/data/misc/metaZones.txt
+                If empty, disables the override and restores default host system
+                timezone.
         """
-        params = SetTimezoneOverrideParams(timezone_id=timezone_id)
+        _params: dict[str, Any] = {}
+        _params["timezoneId"] = timezone_id
 
         await self._executor.execute(
             method=EmulationCommand.SET_TIMEZONE_OVERRIDE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     @deprecated("Emulation.setVisibleSize is deprecated")
@@ -717,13 +892,20 @@ class Emulation:
         """
         Resizes the frame/viewport of the page. Note that this does not affect the
         frame's container (e.g. browser window). Can be used to produce screenshots of
-        the specified size. Not supported on Android.
+        the specified size. Not supported on Android. Experimental: this API may change
+        or be removed. Deprecated in the Chrome DevTools Protocol.
+
+        Args:
+            width: Frame width (DIP).
+            height: Frame height (DIP).
         """
-        params = SetVisibleSizeParams(width=width, height=height)
+        _params: dict[str, Any] = {}
+        _params["width"] = width
+        _params["height"] = height
 
         await self._executor.execute(
             method=EmulationCommand.SET_VISIBLE_SIZE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_disabled_image_types(
@@ -731,11 +913,18 @@ class Emulation:
         *,
         image_types: list[DisabledImageType],
     ) -> None:
-        params = SetDisabledImageTypesParams(image_types=image_types)
+        """
+        Experimental: this API may change or be removed.
+
+        Args:
+            image_types: Image types to disable.
+        """
+        _params: dict[str, Any] = {}
+        _params["imageTypes"] = _encode_value(image_types)
 
         await self._executor.execute(
             method=EmulationCommand.SET_DISABLED_IMAGE_TYPES,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_data_saver_override(
@@ -744,13 +933,20 @@ class Emulation:
         data_saver_enabled: bool | None = None,
     ) -> None:
         """
-        Override the value of navigator.connection.saveData
+        Override the value of navigator.connection.saveData Experimental: this API may
+        change or be removed.
+
+        Args:
+            data_saver_enabled: Override value. Omitting the parameter disables the
+                override.
         """
-        params = SetDataSaverOverrideParams(data_saver_enabled=data_saver_enabled)
+        _params: dict[str, Any] = {}
+        if data_saver_enabled is not None:
+            _params["dataSaverEnabled"] = data_saver_enabled
 
         await self._executor.execute(
             method=EmulationCommand.SET_DATA_SAVER_OVERRIDE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_hardware_concurrency_override(
@@ -758,13 +954,18 @@ class Emulation:
         *,
         hardware_concurrency: int,
     ) -> None:
-        params = SetHardwareConcurrencyOverrideParams(
-            hardware_concurrency=hardware_concurrency
-        )
+        """
+        Experimental: this API may change or be removed.
+
+        Args:
+            hardware_concurrency: Hardware concurrency to report
+        """
+        _params: dict[str, Any] = {}
+        _params["hardwareConcurrency"] = hardware_concurrency
 
         await self._executor.execute(
             method=EmulationCommand.SET_HARDWARE_CONCURRENCY_OVERRIDE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_cpu_performance_override(
@@ -774,13 +975,20 @@ class Emulation:
         | None = None,
     ) -> None:
         """
-        Overrides the value of navigator.cpuPerformance
+        Overrides the value of navigator.cpuPerformance Experimental: this API may
+        change or be removed.
+
+        Args:
+            performance_tier: Override value. Omitting the parameter disables the
+                override.
         """
-        params = SetCPUPerformanceOverrideParams(performance_tier=performance_tier)
+        _params: dict[str, Any] = {}
+        if performance_tier is not None:
+            _params["performanceTier"] = performance_tier
 
         await self._executor.execute(
             method=EmulationCommand.SET_CPU_PERFORMANCE_OVERRIDE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_user_agent_override(
@@ -794,17 +1002,26 @@ class Emulation:
         """
         Allows overriding user agent with the given string. `userAgentMetadata` must be
         set for Client Hint headers to be sent.
+
+        Args:
+            user_agent: User agent to use.
+            accept_language: Browser language to emulate.
+            platform: The platform navigator.platform should return.
+            user_agent_metadata: To be sent in Sec-CH-UA-* headers and returned in
+                navigator.userAgentData Experimental: this API may change or be removed.
         """
-        params = SetUserAgentOverrideParams(
-            user_agent=user_agent,
-            accept_language=accept_language,
-            platform=platform,
-            user_agent_metadata=user_agent_metadata,
-        )
+        _params: dict[str, Any] = {}
+        _params["userAgent"] = user_agent
+        if accept_language is not None:
+            _params["acceptLanguage"] = accept_language
+        if platform is not None:
+            _params["platform"] = platform
+        if user_agent_metadata is not None:
+            _params["userAgentMetadata"] = _encode_value(user_agent_metadata)
 
         await self._executor.execute(
             method=EmulationCommand.SET_USER_AGENT_OVERRIDE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_automation_override(
@@ -813,13 +1030,18 @@ class Emulation:
         enabled: bool,
     ) -> None:
         """
-        Allows overriding the automation flag.
+        Allows overriding the automation flag. Experimental: this API may change or be
+        removed.
+
+        Args:
+            enabled: Whether the override should be enabled.
         """
-        params = SetAutomationOverrideParams(enabled=enabled)
+        _params: dict[str, Any] = {}
+        _params["enabled"] = enabled
 
         await self._executor.execute(
             method=EmulationCommand.SET_AUTOMATION_OVERRIDE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_small_viewport_height_difference_override(
@@ -830,13 +1052,18 @@ class Emulation:
         """
         Allows overriding the difference between the small and large viewport sizes,
         which determine the value of the `svh` and `lvh` unit, respectively. Only
-        supported for top-level frames.
+        supported for top-level frames. Experimental: this API may change or be removed.
+
+        Args:
+            difference: This will cause an element of size 100svh to be `difference`
+                pixels smaller than an element of size 100lvh.
         """
-        params = SetSmallViewportHeightDifferenceOverrideParams(difference=difference)
+        _params: dict[str, Any] = {}
+        _params["difference"] = difference
 
         await self._executor.execute(
             method=EmulationCommand.SET_SMALL_VIEWPORT_HEIGHT_DIFFERENCE_OVERRIDE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def get_screen_infos(
@@ -845,7 +1072,8 @@ class Emulation:
         """
         Returns device's screen configuration. In headful mode, the physical screens
         configuration is returned, whereas in headless mode, a virtual headless screen
-        configuration is provided instead.
+        configuration is provided instead. Experimental: this API may change or be
+        removed.
         """
         result = await self._executor.execute(
             method=EmulationCommand.GET_SCREEN_INFOS,
@@ -868,24 +1096,45 @@ class Emulation:
         is_internal: bool | None = None,
     ) -> AddScreenResult:
         """
-        Add a new screen to the device. Only supported in headless mode.
+        Add a new screen to the device. Only supported in headless mode. Experimental:
+        this API may change or be removed.
+
+        Args:
+            left: Offset of the left edge of the screen in pixels.
+            top: Offset of the top edge of the screen in pixels.
+            width: The width of the screen in pixels.
+            height: The height of the screen in pixels.
+            work_area_insets: Specifies the screen's work area. Default is entire
+                screen.
+            device_pixel_ratio: Specifies the screen's device pixel ratio. Default is 1.
+            rotation: Specifies the screen's rotation angle. Available values are 0, 90,
+                180 and 270. Default is 0.
+            color_depth: Specifies the screen's color depth in bits. Default is 24.
+            label: Specifies the descriptive label for the screen. Default is none.
+            is_internal: Indicates whether the screen is internal to the device or
+                external, attached to the device. Default is false.
         """
-        params = AddScreenParams(
-            left=left,
-            top=top,
-            width=width,
-            height=height,
-            work_area_insets=work_area_insets,
-            device_pixel_ratio=device_pixel_ratio,
-            rotation=rotation,
-            color_depth=color_depth,
-            label=label,
-            is_internal=is_internal,
-        )
+        _params: dict[str, Any] = {}
+        _params["left"] = left
+        _params["top"] = top
+        _params["width"] = width
+        _params["height"] = height
+        if work_area_insets is not None:
+            _params["workAreaInsets"] = _encode_value(work_area_insets)
+        if device_pixel_ratio is not None:
+            _params["devicePixelRatio"] = device_pixel_ratio
+        if rotation is not None:
+            _params["rotation"] = rotation
+        if color_depth is not None:
+            _params["colorDepth"] = color_depth
+        if label is not None:
+            _params["label"] = label
+        if is_internal is not None:
+            _params["isInternal"] = is_internal
 
         result = await self._executor.execute(
             method=EmulationCommand.ADD_SCREEN,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(AddScreenResult, result)
 
@@ -906,24 +1155,49 @@ class Emulation:
     ) -> UpdateScreenResult:
         """
         Updates specified screen parameters. Only supported in headless mode.
+        Experimental: this API may change or be removed.
+
+        Args:
+            screen_id: Target screen identifier.
+            left: Offset of the left edge of the screen in pixels.
+            top: Offset of the top edge of the screen in pixels.
+            width: The width of the screen in pixels.
+            height: The height of the screen in pixels.
+            work_area_insets: Specifies the screen's work area.
+            device_pixel_ratio: Specifies the screen's device pixel ratio.
+            rotation: Specifies the screen's rotation angle. Available values are 0, 90,
+                180 and 270.
+            color_depth: Specifies the screen's color depth in bits.
+            label: Specifies the descriptive label for the screen.
+            is_internal: Indicates whether the screen is internal to the device or
+                external, attached to the device. Default is false.
         """
-        params = UpdateScreenParams(
-            screen_id=screen_id,
-            left=left,
-            top=top,
-            width=width,
-            height=height,
-            work_area_insets=work_area_insets,
-            device_pixel_ratio=device_pixel_ratio,
-            rotation=rotation,
-            color_depth=color_depth,
-            label=label,
-            is_internal=is_internal,
-        )
+        _params: dict[str, Any] = {}
+        _params["screenId"] = _encode_value(screen_id)
+        if left is not None:
+            _params["left"] = left
+        if top is not None:
+            _params["top"] = top
+        if width is not None:
+            _params["width"] = width
+        if height is not None:
+            _params["height"] = height
+        if work_area_insets is not None:
+            _params["workAreaInsets"] = _encode_value(work_area_insets)
+        if device_pixel_ratio is not None:
+            _params["devicePixelRatio"] = device_pixel_ratio
+        if rotation is not None:
+            _params["rotation"] = rotation
+        if color_depth is not None:
+            _params["colorDepth"] = color_depth
+        if label is not None:
+            _params["label"] = label
+        if is_internal is not None:
+            _params["isInternal"] = is_internal
 
         result = await self._executor.execute(
             method=EmulationCommand.UPDATE_SCREEN,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(UpdateScreenResult, result)
 
@@ -933,13 +1207,15 @@ class Emulation:
         screen_id: ScreenId,
     ) -> None:
         """
-        Remove screen from the device. Only supported in headless mode.
+        Remove screen from the device. Only supported in headless mode. Experimental:
+        this API may change or be removed.
         """
-        params = RemoveScreenParams(screen_id=screen_id)
+        _params: dict[str, Any] = {}
+        _params["screenId"] = _encode_value(screen_id)
 
         await self._executor.execute(
             method=EmulationCommand.REMOVE_SCREEN,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_primary_screen(
@@ -950,11 +1226,13 @@ class Emulation:
         """
         Set primary screen. Only supported in headless mode. Note that this changes the
         coordinate system origin to the top-left of the new primary screen, updating the
-        bounds and work areas of all existing screens accordingly.
+        bounds and work areas of all existing screens accordingly. Experimental: this
+        API may change or be removed.
         """
-        params = SetPrimaryScreenParams(screen_id=screen_id)
+        _params: dict[str, Any] = {}
+        _params["screenId"] = _encode_value(screen_id)
 
         await self._executor.execute(
             method=EmulationCommand.SET_PRIMARY_SCREEN,
-            params=encode_cdp(params),
+            params=_params,
         )

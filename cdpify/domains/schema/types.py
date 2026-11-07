@@ -14,4 +14,10 @@ class Domain:
     """
 
     name: str
+    """
+    Domain name.
+    """
     version: str
+    """
+    Domain version.
+    """

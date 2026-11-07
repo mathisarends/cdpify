@@ -12,3 +12,7 @@ class Sink:
     name: str
     id: str
     session: str | None = None
+    """
+    Text describing the current session. Present only if there is an active session on
+    the sink.
+    """

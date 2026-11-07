@@ -22,5 +22,14 @@ class SetDeviceOrientationOverrideParams:
     """
 
     alpha: float
+    """
+    Mock alpha
+    """
     beta: float
+    """
+    Mock beta
+    """
     gamma: float
+    """
+    Mock gamma
+    """

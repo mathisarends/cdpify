@@ -85,6 +85,9 @@ class PrefetchStatusUpdatedEvent:
     initiating_frame_id: page.FrameId = field(
         metadata={"cdp_name": "initiatingFrameId"}
     )
+    """
+    The frame id of the frame initiating prefetch.
+    """
     prefetch_url: str = field(metadata={"cdp_name": "prefetchUrl"})
     status: PreloadingStatus
     prefetch_status: PrefetchStatus = field(metadata={"cdp_name": "prefetchStatus"})
@@ -105,12 +108,20 @@ class PrerenderStatusUpdatedEvent:
     effective_action: SpeculationAction | None = field(
         default=None, metadata={"cdp_name": "effectiveAction"}
     )
+    """
+    The action currently performed by this attempt. This differs from `key.action`
+    after a prerender-until-script attempt is upgraded in place to a full prerender.
+    """
     prerender_status: PrerenderFinalStatus | None = field(
         default=None, metadata={"cdp_name": "prerenderStatus"}
     )
     disallowed_mojo_interface: str | None = field(
         default=None, metadata={"cdp_name": "disallowedMojoInterface"}
     )
+    """
+    This is used to give users more information about the name of Mojo interface that
+    is incompatible with prerender and has caused the cancellation of the attempt.
+    """
     mismatched_headers: list[PrerenderMismatchedHeaders] | None = field(
         default=None, metadata={"cdp_name": "mismatchedHeaders"}
     )

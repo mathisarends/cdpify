@@ -19,27 +19,59 @@ class BrowserEvent(StrEnum):
 @dataclass(kw_only=True, slots=True)
 class DownloadWillBeginEvent:
     """
-    Fired when page is about to start a download.
+    Fired when page is about to start a download. Experimental: this API may change or
+    be removed.
     """
 
     __cdp_event__: ClassVar[BrowserEvent] = BrowserEvent.DOWNLOAD_WILL_BEGIN
 
     frame_id: page.FrameId = field(metadata={"cdp_name": "frameId"})
+    """
+    Id of the frame that caused the download to begin.
+    """
     guid: str
+    """
+    Global unique identifier of the download.
+    """
     url: str
+    """
+    URL of the resource being downloaded.
+    """
     suggested_filename: str = field(metadata={"cdp_name": "suggestedFilename"})
+    """
+    Suggested file name of the resource (the actual name of the file saved on disk may
+    differ).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class DownloadProgressEvent:
     """
-    Fired when download makes progress. Last call has |done| == true.
+    Fired when download makes progress. Last call has |done| == true. Experimental:
+    this API may change or be removed.
     """
 
     __cdp_event__: ClassVar[BrowserEvent] = BrowserEvent.DOWNLOAD_PROGRESS
 
     guid: str
+    """
+    Global unique identifier of the download.
+    """
     total_bytes: float = field(metadata={"cdp_name": "totalBytes"})
+    """
+    Total expected bytes to download.
+    """
     received_bytes: float = field(metadata={"cdp_name": "receivedBytes"})
+    """
+    Total bytes received.
+    """
     state: Literal["inProgress", "completed", "canceled"]
+    """
+    Download status.
+    """
     file_path: str | None = field(default=None, metadata={"cdp_name": "filePath"})
+    """
+    If download is "completed", provides the path of the downloaded file. Depending on
+    the platform, it is not guaranteed to be set, nor the file is guaranteed to exist.
+    Experimental: this API may change or be removed.
+    """

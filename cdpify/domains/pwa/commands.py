@@ -32,6 +32,10 @@ class GetOsAppStateParams:
     """
 
     manifest_id: str = field(metadata={"cdp_name": "manifestId"})
+    """
+    The id from the webapp's manifest file, commonly it's the url of the site
+    installing the webapp. See https://web.dev/learn/pwa/web-app-manifest.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -62,6 +66,9 @@ class InstallParams:
     install_url_or_bundle_url: str | None = field(
         default=None, metadata={"cdp_name": "installUrlOrBundleUrl"}
     )
+    """
+    The location of the app or bundle overriding the one derived from the manifestId.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -88,6 +95,9 @@ class LaunchParams:
 @dataclass(kw_only=True, slots=True)
 class LaunchResult:
     target_id: target.TargetID = field(metadata={"cdp_name": "targetId"})
+    """
+    ID of the tab target created as a result.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -112,6 +122,9 @@ class LaunchFilesInAppParams:
 @dataclass(kw_only=True, slots=True)
 class LaunchFilesInAppResult:
     target_ids: list[target.TargetID] = field(metadata={"cdp_name": "targetIds"})
+    """
+    IDs of the tab targets created as the result.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -140,6 +153,14 @@ class ChangeAppUserSettingsParams:
     link_capturing: bool | None = field(
         default=None, metadata={"cdp_name": "linkCapturing"}
     )
+    """
+    If user allows the links clicked on by the user in the app's scope, or extended
+    scope if the manifest has scope extensions and the flags
+    `DesktopPWAsLinkCapturingWithScopeExtensions` and `WebAppEnableScopeExtensions` are
+    enabled. Note, the API does not support resetting the linkCapturing to the initial
+    value, uninstalling and installing the web app again will reset it.
+    TODO(crbug.com/339453269): Setting this value on ChromeOS is not supported yet.
+    """
     display_mode: DisplayMode | None = field(
         default=None, metadata={"cdp_name": "displayMode"}
     )

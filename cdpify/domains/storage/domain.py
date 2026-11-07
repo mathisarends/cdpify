@@ -4,46 +4,23 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
-from cdpify.codec import decode_cdp, encode_cdp
+from cdpify.codec import _encode_value, decode_cdp
 from cdpify.executor import CommandExecutor
 from cdpify.shared.decorators import deprecated
 
 from .commands import (
-    ClearCookiesParams,
-    ClearDataForOriginParams,
-    ClearDataForStorageKeyParams,
-    ClearPrivateVerificationTokensParams,
-    ClearTrustTokensParams,
     ClearTrustTokensResult,
-    DeletePrivateVerificationTokenParams,
-    DeleteStorageBucketParams,
-    GetCookiesParams,
     GetCookiesResult,
     GetPrivateVerificationTokensIssuerConfigsResult,
     GetPrivateVerificationTokensResult,
-    GetStorageKeyForFrameParams,
     GetStorageKeyForFrameResult,
-    GetStorageKeyParams,
     GetStorageKeyResult,
     GetTrustTokensResult,
-    GetUsageAndQuotaParams,
     GetUsageAndQuotaResult,
-    OverrideQuotaForOriginParams,
     RunBounceTrackingMitigationsResult,
-    SetCookiesParams,
-    SetPrivateVerificationTokensTrackingParams,
-    SetStorageBucketTrackingParams,
     StorageCommand,
-    TrackCacheStorageForOriginParams,
-    TrackCacheStorageForStorageKeyParams,
-    TrackIndexedDBForOriginParams,
-    TrackIndexedDBForStorageKeyParams,
-    UntrackCacheStorageForOriginParams,
-    UntrackCacheStorageForStorageKeyParams,
-    UntrackIndexedDBForOriginParams,
-    UntrackIndexedDBForStorageKeyParams,
 )
 from .types import (
     StorageBucket,
@@ -65,13 +42,14 @@ class Storage:
     ) -> GetStorageKeyForFrameResult:
         """
         Returns a storage key given a frame id. Deprecated. Please use
-        Storage.getStorageKey instead.
+        Storage.getStorageKey instead. Deprecated in the Chrome DevTools Protocol.
         """
-        params = GetStorageKeyForFrameParams(frame_id=frame_id)
+        _params: dict[str, Any] = {}
+        _params["frameId"] = _encode_value(frame_id)
 
         result = await self._executor.execute(
             method=StorageCommand.GET_STORAGE_KEY_FOR_FRAME,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetStorageKeyForFrameResult, result)
 
@@ -82,13 +60,16 @@ class Storage:
     ) -> GetStorageKeyResult:
         """
         Returns storage key for the given frame. If no frame ID is provided, the
-        storage key of the target executing this command is returned.
+        storage key of the target executing this command is returned. Experimental: this
+        API may change or be removed.
         """
-        params = GetStorageKeyParams(frame_id=frame_id)
+        _params: dict[str, Any] = {}
+        if frame_id is not None:
+            _params["frameId"] = _encode_value(frame_id)
 
         result = await self._executor.execute(
             method=StorageCommand.GET_STORAGE_KEY,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetStorageKeyResult, result)
 
@@ -100,12 +81,18 @@ class Storage:
     ) -> None:
         """
         Clears storage for origin.
+
+        Args:
+            origin: Security origin.
+            storage_types: Comma separated list of StorageType to clear.
         """
-        params = ClearDataForOriginParams(origin=origin, storage_types=storage_types)
+        _params: dict[str, Any] = {}
+        _params["origin"] = origin
+        _params["storageTypes"] = storage_types
 
         await self._executor.execute(
             method=StorageCommand.CLEAR_DATA_FOR_ORIGIN,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def clear_data_for_storage_key(
@@ -116,14 +103,18 @@ class Storage:
     ) -> None:
         """
         Clears storage for storage key.
+
+        Args:
+            storage_key: Storage key.
+            storage_types: Comma separated list of StorageType to clear.
         """
-        params = ClearDataForStorageKeyParams(
-            storage_key=storage_key, storage_types=storage_types
-        )
+        _params: dict[str, Any] = {}
+        _params["storageKey"] = storage_key
+        _params["storageTypes"] = storage_types
 
         await self._executor.execute(
             method=StorageCommand.CLEAR_DATA_FOR_STORAGE_KEY,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def get_cookies(
@@ -133,12 +124,18 @@ class Storage:
     ) -> GetCookiesResult:
         """
         Returns all browser cookies.
+
+        Args:
+            browser_context_id: Browser context to use when called on the browser
+                endpoint.
         """
-        params = GetCookiesParams(browser_context_id=browser_context_id)
+        _params: dict[str, Any] = {}
+        if browser_context_id is not None:
+            _params["browserContextId"] = _encode_value(browser_context_id)
 
         result = await self._executor.execute(
             method=StorageCommand.GET_COOKIES,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetCookiesResult, result)
 
@@ -150,14 +147,20 @@ class Storage:
     ) -> None:
         """
         Sets given cookies.
+
+        Args:
+            cookies: Cookies to be set.
+            browser_context_id: Browser context to use when called on the browser
+                endpoint.
         """
-        params = SetCookiesParams(
-            cookies=cookies, browser_context_id=browser_context_id
-        )
+        _params: dict[str, Any] = {}
+        _params["cookies"] = _encode_value(cookies)
+        if browser_context_id is not None:
+            _params["browserContextId"] = _encode_value(browser_context_id)
 
         await self._executor.execute(
             method=StorageCommand.SET_COOKIES,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def clear_cookies(
@@ -167,12 +170,18 @@ class Storage:
     ) -> None:
         """
         Clears cookies.
+
+        Args:
+            browser_context_id: Browser context to use when called on the browser
+                endpoint.
         """
-        params = ClearCookiesParams(browser_context_id=browser_context_id)
+        _params: dict[str, Any] = {}
+        if browser_context_id is not None:
+            _params["browserContextId"] = _encode_value(browser_context_id)
 
         await self._executor.execute(
             method=StorageCommand.CLEAR_COOKIES,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def get_usage_and_quota(
@@ -182,12 +191,16 @@ class Storage:
     ) -> GetUsageAndQuotaResult:
         """
         Returns usage and quota in bytes.
+
+        Args:
+            origin: Security origin.
         """
-        params = GetUsageAndQuotaParams(origin=origin)
+        _params: dict[str, Any] = {}
+        _params["origin"] = origin
 
         result = await self._executor.execute(
             method=StorageCommand.GET_USAGE_AND_QUOTA,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetUsageAndQuotaResult, result)
 
@@ -198,13 +211,27 @@ class Storage:
         quota_size: float | None = None,
     ) -> None:
         """
-        Override quota for the specified origin
+        Override quota for the specified origin Experimental: this API may change or be
+        removed.
+
+        Args:
+            origin: Security origin.
+            quota_size: The quota size (in bytes) to override the original quota with.
+                If this is called multiple times, the overridden quota will be equal to
+                the quotaSize provided in the final call. If this is called without
+                specifying a quotaSize, the quota will be reset to the default value for
+                the specified origin. If this is called multiple times with different
+                origins, the override will be maintained for each origin until it is
+                disabled (called without a quotaSize).
         """
-        params = OverrideQuotaForOriginParams(origin=origin, quota_size=quota_size)
+        _params: dict[str, Any] = {}
+        _params["origin"] = origin
+        if quota_size is not None:
+            _params["quotaSize"] = quota_size
 
         await self._executor.execute(
             method=StorageCommand.OVERRIDE_QUOTA_FOR_ORIGIN,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def track_cache_storage_for_origin(
@@ -215,12 +242,16 @@ class Storage:
         """
         Registers origin to be notified when an update occurs to its cache storage
         list.
+
+        Args:
+            origin: Security origin.
         """
-        params = TrackCacheStorageForOriginParams(origin=origin)
+        _params: dict[str, Any] = {}
+        _params["origin"] = origin
 
         await self._executor.execute(
             method=StorageCommand.TRACK_CACHE_STORAGE_FOR_ORIGIN,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def track_cache_storage_for_storage_key(
@@ -231,12 +262,16 @@ class Storage:
         """
         Registers storage key to be notified when an update occurs to its cache storage
         list.
+
+        Args:
+            storage_key: Storage key.
         """
-        params = TrackCacheStorageForStorageKeyParams(storage_key=storage_key)
+        _params: dict[str, Any] = {}
+        _params["storageKey"] = storage_key
 
         await self._executor.execute(
             method=StorageCommand.TRACK_CACHE_STORAGE_FOR_STORAGE_KEY,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def track_indexed_db_for_origin(
@@ -246,12 +281,16 @@ class Storage:
     ) -> None:
         """
         Registers origin to be notified when an update occurs to its IndexedDB.
+
+        Args:
+            origin: Security origin.
         """
-        params = TrackIndexedDBForOriginParams(origin=origin)
+        _params: dict[str, Any] = {}
+        _params["origin"] = origin
 
         await self._executor.execute(
             method=StorageCommand.TRACK_INDEXED_DB_FOR_ORIGIN,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def track_indexed_db_for_storage_key(
@@ -261,12 +300,16 @@ class Storage:
     ) -> None:
         """
         Registers storage key to be notified when an update occurs to its IndexedDB.
+
+        Args:
+            storage_key: Storage key.
         """
-        params = TrackIndexedDBForStorageKeyParams(storage_key=storage_key)
+        _params: dict[str, Any] = {}
+        _params["storageKey"] = storage_key
 
         await self._executor.execute(
             method=StorageCommand.TRACK_INDEXED_DB_FOR_STORAGE_KEY,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def untrack_cache_storage_for_origin(
@@ -276,12 +319,16 @@ class Storage:
     ) -> None:
         """
         Unregisters origin from receiving notifications for cache storage.
+
+        Args:
+            origin: Security origin.
         """
-        params = UntrackCacheStorageForOriginParams(origin=origin)
+        _params: dict[str, Any] = {}
+        _params["origin"] = origin
 
         await self._executor.execute(
             method=StorageCommand.UNTRACK_CACHE_STORAGE_FOR_ORIGIN,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def untrack_cache_storage_for_storage_key(
@@ -291,12 +338,16 @@ class Storage:
     ) -> None:
         """
         Unregisters storage key from receiving notifications for cache storage.
+
+        Args:
+            storage_key: Storage key.
         """
-        params = UntrackCacheStorageForStorageKeyParams(storage_key=storage_key)
+        _params: dict[str, Any] = {}
+        _params["storageKey"] = storage_key
 
         await self._executor.execute(
             method=StorageCommand.UNTRACK_CACHE_STORAGE_FOR_STORAGE_KEY,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def untrack_indexed_db_for_origin(
@@ -306,12 +357,16 @@ class Storage:
     ) -> None:
         """
         Unregisters origin from receiving notifications for IndexedDB.
+
+        Args:
+            origin: Security origin.
         """
-        params = UntrackIndexedDBForOriginParams(origin=origin)
+        _params: dict[str, Any] = {}
+        _params["origin"] = origin
 
         await self._executor.execute(
             method=StorageCommand.UNTRACK_INDEXED_DB_FOR_ORIGIN,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def untrack_indexed_db_for_storage_key(
@@ -321,12 +376,16 @@ class Storage:
     ) -> None:
         """
         Unregisters storage key from receiving notifications for IndexedDB.
+
+        Args:
+            storage_key: Storage key.
         """
-        params = UntrackIndexedDBForStorageKeyParams(storage_key=storage_key)
+        _params: dict[str, Any] = {}
+        _params["storageKey"] = storage_key
 
         await self._executor.execute(
             method=StorageCommand.UNTRACK_INDEXED_DB_FOR_STORAGE_KEY,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def get_trust_tokens(
@@ -334,7 +393,7 @@ class Storage:
     ) -> GetTrustTokensResult:
         """
         Returns the number of stored Trust Tokens per issuer for the current browsing
-        context.
+        context. Experimental: this API may change or be removed.
         """
         result = await self._executor.execute(
             method=StorageCommand.GET_TRUST_TOKENS,
@@ -349,13 +408,15 @@ class Storage:
     ) -> ClearTrustTokensResult:
         """
         Removes all Trust Tokens issued by the provided issuerOrigin. Leaves other
-        stored data, including the issuer's Redemption Records, intact.
+        stored data, including the issuer's Redemption Records, intact. Experimental:
+        this API may change or be removed.
         """
-        params = ClearTrustTokensParams(issuer_origin=issuer_origin)
+        _params: dict[str, Any] = {}
+        _params["issuerOrigin"] = issuer_origin
 
         result = await self._executor.execute(
             method=StorageCommand.CLEAR_TRUST_TOKENS,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(ClearTrustTokensResult, result)
 
@@ -364,7 +425,7 @@ class Storage:
     ) -> GetPrivateVerificationTokensResult:
         """
         Returns all stored Private Verification Tokens for the current browsing
-        context.
+        context. Experimental: this API may change or be removed.
         """
         result = await self._executor.execute(
             method=StorageCommand.GET_PRIVATE_VERIFICATION_TOKENS,
@@ -377,7 +438,7 @@ class Storage:
     ) -> GetPrivateVerificationTokensIssuerConfigsResult:
         """
         Returns the configured Private Verification Tokens issuers and their redeemer
-        origins.
+        origins. Experimental: this API may change or be removed.
         """
         result = await self._executor.execute(
             method=StorageCommand.GET_PRIVATE_VERIFICATION_TOKENS_ISSUER_CONFIGS,
@@ -392,12 +453,14 @@ class Storage:
     ) -> None:
         """
         Removes all Private Verification Tokens issued by the provided issuerOrigin.
+        Experimental: this API may change or be removed.
         """
-        params = ClearPrivateVerificationTokensParams(issuer_origin=issuer_origin)
+        _params: dict[str, Any] = {}
+        _params["issuerOrigin"] = issuer_origin
 
         await self._executor.execute(
             method=StorageCommand.CLEAR_PRIVATE_VERIFICATION_TOKENS,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def delete_private_verification_token(
@@ -406,13 +469,15 @@ class Storage:
         token_id: str,
     ) -> None:
         """
-        Removes a specific Private Verification Token by its ID.
+        Removes a specific Private Verification Token by its ID. Experimental: this API
+        may change or be removed.
         """
-        params = DeletePrivateVerificationTokenParams(token_id=token_id)
+        _params: dict[str, Any] = {}
+        _params["tokenId"] = token_id
 
         await self._executor.execute(
             method=StorageCommand.DELETE_PRIVATE_VERIFICATION_TOKEN,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_private_verification_tokens_tracking(
@@ -421,13 +486,15 @@ class Storage:
         enable: bool,
     ) -> None:
         """
-        Set tracking for Private Verification Tokens.
+        Set tracking for Private Verification Tokens. Experimental: this API may change
+        or be removed.
         """
-        params = SetPrivateVerificationTokensTrackingParams(enable=enable)
+        _params: dict[str, Any] = {}
+        _params["enable"] = enable
 
         await self._executor.execute(
             method=StorageCommand.SET_PRIVATE_VERIFICATION_TOKENS_TRACKING,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_storage_bucket_tracking(
@@ -437,13 +504,16 @@ class Storage:
         enable: bool,
     ) -> None:
         """
-        Set tracking for a storage key's buckets.
+        Set tracking for a storage key's buckets. Experimental: this API may change or
+        be removed.
         """
-        params = SetStorageBucketTrackingParams(storage_key=storage_key, enable=enable)
+        _params: dict[str, Any] = {}
+        _params["storageKey"] = storage_key
+        _params["enable"] = enable
 
         await self._executor.execute(
             method=StorageCommand.SET_STORAGE_BUCKET_TRACKING,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def delete_storage_bucket(
@@ -453,12 +523,14 @@ class Storage:
     ) -> None:
         """
         Deletes the Storage Bucket with the given storage key and bucket name.
+        Experimental: this API may change or be removed.
         """
-        params = DeleteStorageBucketParams(bucket=bucket)
+        _params: dict[str, Any] = {}
+        _params["bucket"] = _encode_value(bucket)
 
         await self._executor.execute(
             method=StorageCommand.DELETE_STORAGE_BUCKET,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def run_bounce_tracking_mitigations(
@@ -466,6 +538,7 @@ class Storage:
     ) -> RunBounceTrackingMitigationsResult:
         """
         Deletes state for sites identified as potential bounce trackers, immediately.
+        Experimental: this API may change or be removed.
         """
         result = await self._executor.execute(
             method=StorageCommand.RUN_BOUNCE_TRACKING_MITIGATIONS,

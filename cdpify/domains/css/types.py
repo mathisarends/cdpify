@@ -31,10 +31,19 @@ class PseudoElementMatches:
     """
 
     pseudo_type: dom.PseudoType = field(metadata={"cdp_name": "pseudoType"})
+    """
+    Pseudo element type.
+    """
     pseudo_identifier: str | None = field(
         default=None, metadata={"cdp_name": "pseudoIdentifier"}
     )
+    """
+    Pseudo element custom ident.
+    """
     matches: list[RuleMatch]
+    """
+    Matches of CSS rules applicable to the pseudo style.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -44,7 +53,13 @@ class CSSAnimationStyle:
     """
 
     name: str | None = None
+    """
+    The name of the animation.
+    """
     style: CSSStyle
+    """
+    The style coming from the animation.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -56,7 +71,13 @@ class InheritedStyleEntry:
     inline_style: CSSStyle | None = field(
         default=None, metadata={"cdp_name": "inlineStyle"}
     )
+    """
+    The ancestor node's inline style, if any, in the style inheritance chain.
+    """
     matched_css_rules: list[RuleMatch] = field(metadata={"cdp_name": "matchedCSSRules"})
+    """
+    Matches of CSS rules matching the ancestor node in the style inheritance chain.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -68,9 +89,17 @@ class InheritedAnimatedStyleEntry:
     animation_styles: list[CSSAnimationStyle] | None = field(
         default=None, metadata={"cdp_name": "animationStyles"}
     )
+    """
+    Styles coming from the animations of the ancestor, if any, in the style inheritance
+    chain.
+    """
     transitions_style: CSSStyle | None = field(
         default=None, metadata={"cdp_name": "transitionsStyle"}
     )
+    """
+    The style coming from the transitions of the ancestor, if any, in the style
+    inheritance chain.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -82,6 +111,9 @@ class InheritedPseudoElementMatches:
     pseudo_elements: list[PseudoElementMatches] = field(
         metadata={"cdp_name": "pseudoElements"}
     )
+    """
+    Matches of pseudo styles from the pseudos of an ancestor node.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -91,7 +123,13 @@ class RuleMatch:
     """
 
     rule: CSSRule
+    """
+    CSS rule in the match.
+    """
     matching_selectors: list[int] = field(metadata={"cdp_name": "matchingSelectors"})
+    """
+    Matching selector indices in the rule's selectorList selectors (0-based).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -101,32 +139,69 @@ class Value:
     """
 
     text: str
+    """
+    Value text.
+    """
     range: SourceRange | None = None
+    """
+    Value range in the underlying resource (if available).
+    """
     specificity: Specificity | None = None
+    """
+    Specificity of the selector. Experimental: this API may change or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SpecificityComponent:
     """
-    Contribution of an individual simple selector to specificity.
+    Contribution of an individual simple selector to specificity. Experimental: this
+    API may change or be removed.
     """
 
     text: str
+    """
+    The simple selector text that contributes to specificity.
+    """
     a: int
+    """
+    The a component contribution.
+    """
     b: int
+    """
+    The b component contribution.
+    """
     c: int
+    """
+    The c component contribution.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class Specificity:
     """
-    Specificity: https://drafts.csswg.org/selectors/#specificity-rules
+    Specificity: https://drafts.csswg.org/selectors/#specificity-rules Experimental:
+    this API may change or be removed.
     """
 
     a: int
+    """
+    The a component, which represents the number of ID selectors.
+    """
     b: int
+    """
+    The b component, which represents the number of class selectors, attributes
+    selectors, and pseudo-classes.
+    """
     c: int
+    """
+    The c component, which represents the number of type selectors and pseudo-elements.
+    """
     components: list[SpecificityComponent] | None = None
+    """
+    Per-simple-selector contributions used to explain this specificity. Experimental:
+    this API may change or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -136,7 +211,13 @@ class SelectorList:
     """
 
     selectors: list[Value]
+    """
+    Selectors in the list.
+    """
     text: str
+    """
+    Rule selector text.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -146,31 +227,93 @@ class CSSStyleSheetHeader:
     """
 
     style_sheet_id: dom.StyleSheetId = field(metadata={"cdp_name": "styleSheetId"})
+    """
+    The stylesheet identifier.
+    """
     frame_id: page.FrameId = field(metadata={"cdp_name": "frameId"})
+    """
+    Owner frame identifier.
+    """
     source_url: str = field(metadata={"cdp_name": "sourceURL"})
+    """
+    Stylesheet resource URL. Empty if this is a constructed stylesheet created using
+    new CSSStyleSheet() (but non-empty if this is a constructed stylesheet imported as a
+    CSS module script).
+    """
     source_map_url: str | None = field(
         default=None, metadata={"cdp_name": "sourceMapURL"}
     )
+    """
+    URL of source map associated with the stylesheet (if any).
+    """
     origin: StyleSheetOrigin
+    """
+    Stylesheet origin.
+    """
     title: str
+    """
+    Stylesheet title.
+    """
     owner_node: dom.BackendNodeId | None = field(
         default=None, metadata={"cdp_name": "ownerNode"}
     )
+    """
+    The backend id for the owner node of the stylesheet.
+    """
     disabled: bool
+    """
+    Denotes whether the stylesheet is disabled.
+    """
     has_source_url: bool | None = field(
         default=None, metadata={"cdp_name": "hasSourceURL"}
     )
+    """
+    Whether the sourceURL field value comes from the sourceURL comment.
+    """
     is_inline: bool = field(metadata={"cdp_name": "isInline"})
+    """
+    Whether this stylesheet is created for STYLE tag by parser. This flag is not set
+    for document.written STYLE tags.
+    """
     is_mutable: bool = field(metadata={"cdp_name": "isMutable"})
+    """
+    Whether this stylesheet is mutable. Inline stylesheets become mutable after they
+    have been modified via CSSOM API. `<link>` element's stylesheets become mutable only
+    if DevTools modifies them. Constructed stylesheets (new CSSStyleSheet()) are mutable
+    immediately after creation.
+    """
     is_constructed: bool = field(metadata={"cdp_name": "isConstructed"})
+    """
+    True if this stylesheet is created through new CSSStyleSheet() or imported as a CSS
+    module script.
+    """
     start_line: float = field(metadata={"cdp_name": "startLine"})
+    """
+    Line offset of the stylesheet within the resource (zero based).
+    """
     start_column: float = field(metadata={"cdp_name": "startColumn"})
+    """
+    Column offset of the stylesheet within the resource (zero based).
+    """
     length: float
+    """
+    Size of the content (in characters).
+    """
     end_line: float = field(metadata={"cdp_name": "endLine"})
+    """
+    Line offset of the end of the stylesheet within the resource (zero based).
+    """
     end_column: float = field(metadata={"cdp_name": "endColumn"})
+    """
+    Column offset of the end of the stylesheet within the resource (zero based).
+    """
     loading_failed: bool | None = field(
         default=None, metadata={"cdp_name": "loadingFailed"}
     )
+    """
+    If the style sheet was loaded from a network resource, this indicates when the
+    resource failed to load Experimental: this API may change or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -182,36 +325,93 @@ class CSSRule:
     style_sheet_id: dom.StyleSheetId | None = field(
         default=None, metadata={"cdp_name": "styleSheetId"}
     )
+    """
+    The css style sheet identifier (absent for user agent stylesheet and user-specified
+    stylesheet rules) this rule came from.
+    """
     selector_list: SelectorList = field(metadata={"cdp_name": "selectorList"})
+    """
+    Rule selector data.
+    """
     nesting_selectors: list[str] | None = field(
         default=None, metadata={"cdp_name": "nestingSelectors"}
     )
+    """
+    Array of selectors from ancestor style rules, sorted by distance from the current
+    rule. Experimental: this API may change or be removed.
+    """
     origin: StyleSheetOrigin
+    """
+    Parent stylesheet's origin.
+    """
     style: CSSStyle
+    """
+    Associated style declaration.
+    """
     origin_tree_scope_node_id: dom.BackendNodeId | None = field(
         default=None, metadata={"cdp_name": "originTreeScopeNodeId"}
     )
+    """
+    The BackendNodeId of the DOM node that constitutes the origin tree scope of this
+    rule. Experimental: this API may change or be removed.
+    """
     media: list[CSSMedia] | None = None
+    """
+    Media list array (for rules involving media queries). The array enumerates media
+    queries starting with the innermost one, going outwards.
+    """
     container_queries: list[CSSContainerQuery] | None = field(
         default=None, metadata={"cdp_name": "containerQueries"}
     )
+    """
+    Container query list array (for rules involving container queries). The array
+    enumerates container queries starting with the innermost one, going outwards.
+    Experimental: this API may change or be removed.
+    """
     supports: list[CSSSupports] | None = None
+    """
+    @supports CSS at-rule array. The array enumerates @supports at-rules starting with
+    the innermost one, going outwards. Experimental: this API may change or be removed.
+    """
     layers: list[CSSLayer] | None = None
+    """
+    Cascade layer array. Contains the layer hierarchy that this rule belongs to
+    starting with the innermost layer and going outwards. Experimental: this API may
+    change or be removed.
+    """
     scopes: list[CSSScope] | None = None
+    """
+    @scope CSS at-rule array. The array enumerates @scope at-rules starting with the
+    innermost one, going outwards. Experimental: this API may change or be removed.
+    """
     rule_types: list[CSSRuleType] | None = field(
         default=None, metadata={"cdp_name": "ruleTypes"}
     )
+    """
+    The array keeps the types of ancestor CSSRules from the innermost going outwards.
+    Experimental: this API may change or be removed.
+    """
     starting_styles: list[CSSStartingStyle] | None = field(
         default=None, metadata={"cdp_name": "startingStyles"}
     )
+    """
+    @starting-style CSS at-rule array. The array enumerates @starting-style at-rules
+    starting with the innermost one, going outwards. Experimental: this API may change
+    or be removed.
+    """
     navigations: list[CSSNavigation] | None = None
+    """
+    @navigation CSS at-rule array. The array enumerates @navigation at-rules starting
+    with the innermost one, going outwards. Experimental: this API may change or be
+    removed.
+    """
 
 
 class CSSRuleType(CDPStrEnum):
     """
     Enum indicating the type of a CSS rule, used to represent the order of a style
     rule's ancestors. This list only contains rule types that are collected during the
-    ancestor rule collection.
+    ancestor rule collection. Experimental: this API may change or be removed.
     """
 
     MEDIA_RULE = "MediaRule"
@@ -231,9 +431,23 @@ class RuleUsage:
     """
 
     style_sheet_id: dom.StyleSheetId = field(metadata={"cdp_name": "styleSheetId"})
+    """
+    The css style sheet identifier (absent for user agent stylesheet and user-specified
+    stylesheet rules) this rule came from.
+    """
     start_offset: float = field(metadata={"cdp_name": "startOffset"})
+    """
+    Offset of the start of the rule (including selector) from the beginning of the
+    stylesheet.
+    """
     end_offset: float = field(metadata={"cdp_name": "endOffset"})
+    """
+    Offset of the end of the rule body from the beginning of the stylesheet.
+    """
     used: bool
+    """
+    Indicates whether the rule was actually used by some element in the page.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -243,27 +457,63 @@ class SourceRange:
     """
 
     start_line: int = field(metadata={"cdp_name": "startLine"})
+    """
+    Start line of range.
+    """
     start_column: int = field(metadata={"cdp_name": "startColumn"})
+    """
+    Start column of range (inclusive).
+    """
     end_line: int = field(metadata={"cdp_name": "endLine"})
+    """
+    End line of range
+    """
     end_column: int = field(metadata={"cdp_name": "endColumn"})
+    """
+    End column of range (exclusive).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class ShorthandEntry:
     name: str
+    """
+    Shorthand name.
+    """
     value: str
+    """
+    Shorthand value.
+    """
     important: bool | None = None
+    """
+    Whether the property has "!important" annotation (implies `false` if absent).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class CSSComputedStyleProperty:
     name: str
+    """
+    Computed style property name.
+    """
     value: str
+    """
+    Computed style property value.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class ComputedStyleExtraFields:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     is_appearance_base: bool = field(metadata={"cdp_name": "isAppearanceBase"})
+    """
+    Returns whether or not this node is being rendered with base appearance, which
+    happens when it has its appearance property set to base/base-select or it is in the
+    subtree of an element being rendered with base appearance.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -275,12 +525,28 @@ class CSSStyle:
     style_sheet_id: dom.StyleSheetId | None = field(
         default=None, metadata={"cdp_name": "styleSheetId"}
     )
+    """
+    The css style sheet identifier (absent for user agent stylesheet and user-specified
+    stylesheet rules) this rule came from.
+    """
     css_properties: list[CSSProperty] = field(metadata={"cdp_name": "cssProperties"})
+    """
+    CSS properties in the style.
+    """
     shorthand_entries: list[ShorthandEntry] = field(
         metadata={"cdp_name": "shorthandEntries"}
     )
+    """
+    Computed values for all shorthands found in the style.
+    """
     css_text: str | None = field(default=None, metadata={"cdp_name": "cssText"})
+    """
+    Style declaration text (if available).
+    """
     range: SourceRange | None = None
+    """
+    Style declaration range in the enclosing stylesheet (if available).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -290,16 +556,46 @@ class CSSProperty:
     """
 
     name: str
+    """
+    The property name.
+    """
     value: str
+    """
+    The property value.
+    """
     important: bool | None = None
+    """
+    Whether the property has "!important" annotation (implies `false` if absent).
+    """
     implicit: bool | None = None
+    """
+    Whether the property is implicit (implies `false` if absent).
+    """
     text: str | None = None
+    """
+    The full property text as specified in the style.
+    """
     parsed_ok: bool | None = field(default=None, metadata={"cdp_name": "parsedOk"})
+    """
+    Whether the property is understood by the browser (implies `true` if absent).
+    """
     disabled: bool | None = None
+    """
+    Whether the property is disabled by the user (present for source-based properties
+    only).
+    """
     range: SourceRange | None = None
+    """
+    The entire property range in the enclosing style declaration (if available).
+    """
     longhand_properties: list[CSSProperty] | None = field(
         default=None, metadata={"cdp_name": "longhandProperties"}
     )
+    """
+    Parsed longhand components of this property if it is a shorthand. This field will
+    be empty if the given property is not a shorthand. Experimental: this API may change
+    or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -309,15 +605,37 @@ class CSSMedia:
     """
 
     text: str
+    """
+    Media query text.
+    """
     source: Literal["mediaRule", "importRule", "linkedSheet", "inlineSheet"]
+    """
+    Source of the media query: "mediaRule" if specified by a @media rule, "importRule"
+    if specified by an @import rule, "linkedSheet" if specified by a "media" attribute
+    in a linked stylesheet's LINK tag, "inlineSheet" if specified by a "media" attribute
+    in an inline stylesheet's STYLE tag.
+    """
     source_url: str | None = field(default=None, metadata={"cdp_name": "sourceURL"})
+    """
+    URL of the document containing the media query description.
+    """
     range: SourceRange | None = None
+    """
+    The associated rule (@media or @import) header range in the enclosing stylesheet
+    (if available).
+    """
     style_sheet_id: dom.StyleSheetId | None = field(
         default=None, metadata={"cdp_name": "styleSheetId"}
     )
+    """
+    Identifier of the stylesheet containing this object (if exists).
+    """
     media_list: list[MediaQuery] | None = field(
         default=None, metadata={"cdp_name": "mediaList"}
     )
+    """
+    Array of media queries.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -327,7 +645,13 @@ class MediaQuery:
     """
 
     expressions: list[MediaQueryExpression]
+    """
+    Array of media query expressions.
+    """
     active: bool
+    """
+    Whether the media query condition is satisfied.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -337,120 +661,224 @@ class MediaQueryExpression:
     """
 
     value: float
+    """
+    Media query expression value.
+    """
     unit: str
+    """
+    Media query expression units.
+    """
     feature: str
+    """
+    Media query expression feature.
+    """
     value_range: SourceRange | None = field(
         default=None, metadata={"cdp_name": "valueRange"}
     )
+    """
+    The associated range of the value text in the enclosing stylesheet (if available).
+    """
     computed_length: float | None = field(
         default=None, metadata={"cdp_name": "computedLength"}
     )
+    """
+    Computed length of media query expression (if applicable).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class CSSContainerQuery:
     """
-    CSS container query rule descriptor.
+    CSS container query rule descriptor. Experimental: this API may change or be
+    removed.
     """
 
     text: str
+    """
+    Container query text. Contains the query part without the container name for a
+    single query. Deprecated in favor of conditionText which contains the full prelude
+    after @container. Deprecated in the Chrome DevTools Protocol.
+    """
     range: SourceRange | None = None
+    """
+    The associated rule header range in the enclosing stylesheet (if available).
+    """
     style_sheet_id: dom.StyleSheetId | None = field(
         default=None, metadata={"cdp_name": "styleSheetId"}
     )
+    """
+    Identifier of the stylesheet containing this object (if exists).
+    """
     name: str | None = None
+    """
+    Optional name for the container.
+    """
     physical_axes: dom.PhysicalAxes | None = field(
         default=None, metadata={"cdp_name": "physicalAxes"}
     )
+    """
+    Optional physical axes queried for the container.
+    """
     logical_axes: dom.LogicalAxes | None = field(
         default=None, metadata={"cdp_name": "logicalAxes"}
     )
+    """
+    Optional logical axes queried for the container.
+    """
     queries_scroll_state: bool | None = field(
         default=None, metadata={"cdp_name": "queriesScrollState"}
     )
+    """
+    true if the query contains scroll-state() queries.
+    """
     queries_anchored: bool | None = field(
         default=None, metadata={"cdp_name": "queriesAnchored"}
     )
+    """
+    true if the query contains anchored() queries.
+    """
     condition_text: str = field(metadata={"cdp_name": "conditionText"})
+    """
+    CSSContainerRule.conditionText
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class CSSSupports:
     """
-    CSS Supports at-rule descriptor.
+    CSS Supports at-rule descriptor. Experimental: this API may change or be removed.
     """
 
     text: str
+    """
+    Supports rule text.
+    """
     active: bool
+    """
+    Whether the supports condition is satisfied.
+    """
     range: SourceRange | None = None
+    """
+    The associated rule header range in the enclosing stylesheet (if available).
+    """
     style_sheet_id: dom.StyleSheetId | None = field(
         default=None, metadata={"cdp_name": "styleSheetId"}
     )
+    """
+    Identifier of the stylesheet containing this object (if exists).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class CSSNavigation:
     """
-    CSS Navigation at-rule descriptor.
+    CSS Navigation at-rule descriptor. Experimental: this API may change or be removed.
     """
 
     text: str
+    """
+    Navigation rule text.
+    """
     active: bool | None = None
+    """
+    Whether the navigation condition is satisfied.
+    """
     range: SourceRange | None = None
+    """
+    The associated rule header range in the enclosing stylesheet (if available).
+    """
     style_sheet_id: dom.StyleSheetId | None = field(
         default=None, metadata={"cdp_name": "styleSheetId"}
     )
+    """
+    Identifier of the stylesheet containing this object (if exists).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class CSSScope:
     """
-    CSS Scope at-rule descriptor.
+    CSS Scope at-rule descriptor. Experimental: this API may change or be removed.
     """
 
     text: str
+    """
+    Scope rule text.
+    """
     range: SourceRange | None = None
+    """
+    The associated rule header range in the enclosing stylesheet (if available).
+    """
     style_sheet_id: dom.StyleSheetId | None = field(
         default=None, metadata={"cdp_name": "styleSheetId"}
     )
+    """
+    Identifier of the stylesheet containing this object (if exists).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class CSSLayer:
     """
-    CSS Layer at-rule descriptor.
+    CSS Layer at-rule descriptor. Experimental: this API may change or be removed.
     """
 
     text: str
+    """
+    Layer name.
+    """
     range: SourceRange | None = None
+    """
+    The associated rule header range in the enclosing stylesheet (if available).
+    """
     style_sheet_id: dom.StyleSheetId | None = field(
         default=None, metadata={"cdp_name": "styleSheetId"}
     )
+    """
+    Identifier of the stylesheet containing this object (if exists).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class CSSStartingStyle:
     """
-    CSS Starting Style at-rule descriptor.
+    CSS Starting Style at-rule descriptor. Experimental: this API may change or be
+    removed.
     """
 
     range: SourceRange | None = None
+    """
+    The associated rule header range in the enclosing stylesheet (if available).
+    """
     style_sheet_id: dom.StyleSheetId | None = field(
         default=None, metadata={"cdp_name": "styleSheetId"}
     )
+    """
+    Identifier of the stylesheet containing this object (if exists).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class CSSLayerData:
     """
-    CSS Layer data.
+    CSS Layer data. Experimental: this API may change or be removed.
     """
 
     name: str
+    """
+    Layer name.
+    """
     sub_layers: list[CSSLayerData] | None = field(
         default=None, metadata={"cdp_name": "subLayers"}
     )
+    """
+    Direct sub-layers
+    """
     order: float
+    """
+    Layer order. The order determines the order of the layer in the cascade order. A
+    higher number has higher priority in the cascade order.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -460,9 +888,21 @@ class PlatformFontUsage:
     """
 
     family_name: str = field(metadata={"cdp_name": "familyName"})
+    """
+    Font's family name reported by platform.
+    """
     post_script_name: str = field(metadata={"cdp_name": "postScriptName"})
+    """
+    Font's PostScript name reported by platform.
+    """
     is_custom_font: bool = field(metadata={"cdp_name": "isCustomFont"})
+    """
+    Indicates if the font was downloaded or resolved locally.
+    """
     glyph_count: float = field(metadata={"cdp_name": "glyphCount"})
+    """
+    Amount of glyphs that were rendered with this font.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -472,10 +912,25 @@ class FontVariationAxis:
     """
 
     tag: str
+    """
+    The font-variation-setting tag (a.k.a. "axis tag").
+    """
     name: str
+    """
+    Human-readable variation name in the default language (normally, "en").
+    """
     min_value: float = field(metadata={"cdp_name": "minValue"})
+    """
+    The minimum value (inclusive) the font supports for this tag.
+    """
     max_value: float = field(metadata={"cdp_name": "maxValue"})
+    """
+    The maximum value (inclusive) the font supports for this tag.
+    """
     default_value: float = field(metadata={"cdp_name": "defaultValue"})
+    """
+    The default value.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -487,17 +942,47 @@ class FontFace:
     """
 
     font_family: str = field(metadata={"cdp_name": "fontFamily"})
+    """
+    The font-family.
+    """
     font_style: str = field(metadata={"cdp_name": "fontStyle"})
+    """
+    The font-style.
+    """
     font_variant: str = field(metadata={"cdp_name": "fontVariant"})
+    """
+    The font-variant.
+    """
     font_weight: str = field(metadata={"cdp_name": "fontWeight"})
+    """
+    The font-weight.
+    """
     font_stretch: str = field(metadata={"cdp_name": "fontStretch"})
+    """
+    The font-stretch.
+    """
     font_display: str = field(metadata={"cdp_name": "fontDisplay"})
+    """
+    The font-display.
+    """
     unicode_range: str = field(metadata={"cdp_name": "unicodeRange"})
+    """
+    The unicode-range.
+    """
     src: str
+    """
+    The src.
+    """
     platform_font_family: str = field(metadata={"cdp_name": "platformFontFamily"})
+    """
+    The resolved platform font family
+    """
     font_variation_axes: list[FontVariationAxis] | None = field(
         default=None, metadata={"cdp_name": "fontVariationAxes"}
     )
+    """
+    Available variation settings (a.k.a. "axes").
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -509,8 +994,18 @@ class CSSTryRule:
     style_sheet_id: dom.StyleSheetId | None = field(
         default=None, metadata={"cdp_name": "styleSheetId"}
     )
+    """
+    The css style sheet identifier (absent for user agent stylesheet and user-specified
+    stylesheet rules) this rule came from.
+    """
     origin: StyleSheetOrigin
+    """
+    Parent stylesheet's origin.
+    """
     style: CSSStyle
+    """
+    Associated style declaration.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -520,11 +1015,24 @@ class CSSPositionTryRule:
     """
 
     name: Value
+    """
+    The prelude dashed-ident name
+    """
     style_sheet_id: dom.StyleSheetId | None = field(
         default=None, metadata={"cdp_name": "styleSheetId"}
     )
+    """
+    The css style sheet identifier (absent for user agent stylesheet and user-specified
+    stylesheet rules) this rule came from.
+    """
     origin: StyleSheetOrigin
+    """
+    Parent stylesheet's origin.
+    """
     style: CSSStyle
+    """
+    Associated style declaration.
+    """
     active: bool
 
 
@@ -535,7 +1043,13 @@ class CSSKeyframesRule:
     """
 
     animation_name: Value = field(metadata={"cdp_name": "animationName"})
+    """
+    Animation name.
+    """
     keyframes: list[CSSKeyframeRule]
+    """
+    List of keyframes.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -561,6 +1075,9 @@ class CSSAtRule:
     type: Literal[
         "font-face", "font-feature-values", "font-palette-values", "counter-style"
     ]
+    """
+    Type of at-rule.
+    """
     subsection: (
         Literal[
             "swash",
@@ -572,12 +1089,29 @@ class CSSAtRule:
         ]
         | None
     ) = None
+    """
+    Subsection of font-feature-values, if this is a subsection.
+    """
     name: Value | None = None
+    """
+    LINT.ThenChange(//third_party/blink/renderer/core/inspector/inspector_style_sheet.cc:FontVariantAlternatesFeatureType,//third_party/blink/renderer/core/inspector/inspector_css_agent.cc:FontVariantAlternatesFeatureType)
+    Associated name, if applicable.
+    """
     style_sheet_id: dom.StyleSheetId | None = field(
         default=None, metadata={"cdp_name": "styleSheetId"}
     )
+    """
+    The css style sheet identifier (absent for user agent stylesheet and user-specified
+    stylesheet rules) this rule came from.
+    """
     origin: StyleSheetOrigin
+    """
+    Parent stylesheet's origin.
+    """
     style: CSSStyle
+    """
+    Associated style declaration.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -589,9 +1123,22 @@ class CSSPropertyRule:
     style_sheet_id: dom.StyleSheetId | None = field(
         default=None, metadata={"cdp_name": "styleSheetId"}
     )
+    """
+    The css style sheet identifier (absent for user agent stylesheet and user-specified
+    stylesheet rules) this rule came from.
+    """
     origin: StyleSheetOrigin
+    """
+    Parent stylesheet's origin.
+    """
     property_name: Value = field(metadata={"cdp_name": "propertyName"})
+    """
+    Associated property name.
+    """
     style: CSSStyle
+    """
+    Associated style declaration.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -601,7 +1148,13 @@ class CSSFunctionParameter:
     """
 
     name: str
+    """
+    The parameter name.
+    """
     type: str
+    """
+    The parameter type.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -611,13 +1164,32 @@ class CSSFunctionConditionNode:
     """
 
     media: CSSMedia | None = None
+    """
+    Media query for this conditional block. Only one type of condition should be set.
+    """
     container_queries: CSSContainerQuery | None = field(
         default=None, metadata={"cdp_name": "containerQueries"}
     )
+    """
+    Container query for this conditional block. Only one type of condition should be
+    set.
+    """
     supports: CSSSupports | None = None
+    """
+    @supports CSS at-rule condition. Only one type of condition should be set.
+    """
     navigation: CSSNavigation | None = None
+    """
+    @navigation condition. Only one type of condition should be set.
+    """
     children: list[CSSFunctionNode]
+    """
+    Block body.
+    """
     condition_text: str = field(metadata={"cdp_name": "conditionText"})
+    """
+    The condition text.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -627,7 +1199,13 @@ class CSSFunctionNode:
     """
 
     condition: CSSFunctionConditionNode | None = None
+    """
+    A conditional block. If set, style should not be set.
+    """
     style: CSSStyle | None = None
+    """
+    Values set by this node. If set, condition should not be set.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -637,15 +1215,35 @@ class CSSFunctionRule:
     """
 
     name: Value
+    """
+    Name of the function.
+    """
     style_sheet_id: dom.StyleSheetId | None = field(
         default=None, metadata={"cdp_name": "styleSheetId"}
     )
+    """
+    The css style sheet identifier (absent for user agent stylesheet and user-specified
+    stylesheet rules) this rule came from.
+    """
     origin: StyleSheetOrigin
+    """
+    Parent stylesheet's origin.
+    """
     parameters: list[CSSFunctionParameter]
+    """
+    List of parameters.
+    """
     children: list[CSSFunctionNode]
+    """
+    Function body.
+    """
     origin_tree_scope_node_id: dom.BackendNodeId | None = field(
         default=None, metadata={"cdp_name": "originTreeScopeNodeId"}
     )
+    """
+    The BackendNodeId of the DOM node that constitutes the origin tree scope of this
+    rule. Experimental: this API may change or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -657,9 +1255,22 @@ class CSSKeyframeRule:
     style_sheet_id: dom.StyleSheetId | None = field(
         default=None, metadata={"cdp_name": "styleSheetId"}
     )
+    """
+    The css style sheet identifier (absent for user agent stylesheet and user-specified
+    stylesheet rules) this rule came from.
+    """
     origin: StyleSheetOrigin
+    """
+    Parent stylesheet's origin.
+    """
     key_text: Value = field(metadata={"cdp_name": "keyText"})
+    """
+    Associated key text.
+    """
     style: CSSStyle
+    """
+    Associated style declaration.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -669,5 +1280,14 @@ class StyleDeclarationEdit:
     """
 
     style_sheet_id: dom.StyleSheetId = field(metadata={"cdp_name": "styleSheetId"})
+    """
+    The css style sheet identifier.
+    """
     range: SourceRange
+    """
+    The range of the style text in the enclosing stylesheet.
+    """
     text: str
+    """
+    New style text.
+    """

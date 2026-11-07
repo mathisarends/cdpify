@@ -4,38 +4,22 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Literal
+from typing import TYPE_CHECKING, Any, Literal
 
-from cdpify.codec import decode_cdp, encode_cdp
+from cdpify.codec import _encode_value, decode_cdp
 from cdpify.executor import CommandExecutor
 from cdpify.shared.decorators import deprecated
 
 from .commands import (
-    AddMockCameraParams,
-    AddPrivacySandboxEnrollmentOverrideParams,
     BrowserCommand,
-    CancelDownloadParams,
-    ExecuteBrowserCommandParams,
     GetBrowserCommandLineResult,
     GetGlobalPrivacyControlResult,
-    GetHistogramParams,
     GetHistogramResult,
-    GetHistogramsParams,
     GetHistogramsResult,
     GetVersionResult,
-    GetWindowBoundsParams,
     GetWindowBoundsResult,
-    GetWindowForTargetParams,
     GetWindowForTargetResult,
-    GrantPermissionsParams,
-    ResetPermissionsParams,
-    SetContentsSizeParams,
-    SetDockTileParams,
-    SetDownloadBehaviorParams,
-    SetGlobalPrivacyControlParams,
     SetGlobalPrivacyControlResult,
-    SetPermissionParams,
-    SetWindowBoundsParams,
 )
 from .types import (
     Bounds,
@@ -65,19 +49,34 @@ class Browser:
         browser_context_id: BrowserContextID | None = None,
     ) -> None:
         """
-        Set permission settings for given embedding and embedded origins.
+        Set permission settings for given embedding and embedded origins. Experimental:
+        this API may change or be removed.
+
+        Args:
+            permission: Descriptor of permission to override.
+            setting: Setting of the permission.
+            origin: Embedding origin the permission applies to, all origins if not
+                specified.
+            embedded_origin: Embedded origin the permission applies to. It is ignored
+                unless the embedding origin is present and valid. If the embedding
+                origin is provided but the embedded origin isn't, the embedding origin
+                is used as the embedded origin.
+            browser_context_id: Context to override. When omitted, default browser
+                context is used.
         """
-        params = SetPermissionParams(
-            permission=permission,
-            setting=setting,
-            origin=origin,
-            embedded_origin=embedded_origin,
-            browser_context_id=browser_context_id,
-        )
+        _params: dict[str, Any] = {}
+        _params["permission"] = _encode_value(permission)
+        _params["setting"] = _encode_value(setting)
+        if origin is not None:
+            _params["origin"] = origin
+        if embedded_origin is not None:
+            _params["embeddedOrigin"] = embedded_origin
+        if browser_context_id is not None:
+            _params["browserContextId"] = _encode_value(browser_context_id)
 
         await self._executor.execute(
             method=BrowserCommand.SET_PERMISSION,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     @deprecated("Browser.grantPermissions is deprecated")
@@ -90,17 +89,24 @@ class Browser:
     ) -> None:
         """
         Grant specific permissions to the given origin and reject all others.
-        Deprecated. Use setPermission instead.
+        Deprecated. Use setPermission instead. Experimental: this API may change or be
+        removed. Deprecated in the Chrome DevTools Protocol.
+
+        Args:
+            origin: Origin the permission applies to, all origins if not specified.
+            browser_context_id: BrowserContext to override permissions. When omitted,
+                default browser context is used.
         """
-        params = GrantPermissionsParams(
-            permissions=permissions,
-            origin=origin,
-            browser_context_id=browser_context_id,
-        )
+        _params: dict[str, Any] = {}
+        _params["permissions"] = _encode_value(permissions)
+        if origin is not None:
+            _params["origin"] = origin
+        if browser_context_id is not None:
+            _params["browserContextId"] = _encode_value(browser_context_id)
 
         await self._executor.execute(
             method=BrowserCommand.GRANT_PERMISSIONS,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def reset_permissions(
@@ -110,12 +116,18 @@ class Browser:
     ) -> None:
         """
         Reset all permission management for all origins.
+
+        Args:
+            browser_context_id: BrowserContext to reset permissions. When omitted,
+                default browser context is used.
         """
-        params = ResetPermissionsParams(browser_context_id=browser_context_id)
+        _params: dict[str, Any] = {}
+        if browser_context_id is not None:
+            _params["browserContextId"] = _encode_value(browser_context_id)
 
         await self._executor.execute(
             method=BrowserCommand.RESET_PERMISSIONS,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_download_behavior(
@@ -127,18 +139,31 @@ class Browser:
         events_enabled: bool | None = None,
     ) -> None:
         """
-        Set the behavior when downloading a file.
+        Set the behavior when downloading a file. Experimental: this API may change or
+        be removed.
+
+        Args:
+            behavior: Whether to allow all or deny all download requests, or use default
+                Chrome behavior if available (otherwise deny). |allowAndName| allows
+                download and names files according to their download guids.
+            browser_context_id: BrowserContext to set download behavior. When omitted,
+                default browser context is used.
+            download_path: The default path to save downloaded files to. This is
+                required if behavior is set to 'allow' or 'allowAndName'.
+            events_enabled: Whether to emit download events (defaults to false).
         """
-        params = SetDownloadBehaviorParams(
-            behavior=behavior,
-            browser_context_id=browser_context_id,
-            download_path=download_path,
-            events_enabled=events_enabled,
-        )
+        _params: dict[str, Any] = {}
+        _params["behavior"] = behavior
+        if browser_context_id is not None:
+            _params["browserContextId"] = _encode_value(browser_context_id)
+        if download_path is not None:
+            _params["downloadPath"] = download_path
+        if events_enabled is not None:
+            _params["eventsEnabled"] = events_enabled
 
         await self._executor.execute(
             method=BrowserCommand.SET_DOWNLOAD_BEHAVIOR,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def cancel_download(
@@ -148,13 +173,22 @@ class Browser:
         browser_context_id: BrowserContextID | None = None,
     ) -> None:
         """
-        Cancel a download if in progress
+        Cancel a download if in progress Experimental: this API may change or be
+        removed.
+
+        Args:
+            guid: Global unique identifier of the download.
+            browser_context_id: BrowserContext to perform the action in. When omitted,
+                default browser context is used.
         """
-        params = CancelDownloadParams(guid=guid, browser_context_id=browser_context_id)
+        _params: dict[str, Any] = {}
+        _params["guid"] = guid
+        if browser_context_id is not None:
+            _params["browserContextId"] = _encode_value(browser_context_id)
 
         await self._executor.execute(
             method=BrowserCommand.CANCEL_DOWNLOAD,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def close(
@@ -172,7 +206,8 @@ class Browser:
         self,
     ) -> None:
         """
-        Crashes browser on the main thread.
+        Crashes browser on the main thread. Experimental: this API may change or be
+        removed.
         """
         await self._executor.execute(
             method=BrowserCommand.CRASH,
@@ -183,7 +218,7 @@ class Browser:
         self,
     ) -> None:
         """
-        Crashes GPU process.
+        Crashes GPU process. Experimental: this API may change or be removed.
         """
         await self._executor.execute(
             method=BrowserCommand.CRASH_GPU_PROCESS,
@@ -207,7 +242,8 @@ class Browser:
     ) -> GetBrowserCommandLineResult:
         """
         Returns the command line switches for the browser process if, and only if
-        --enable-automation is on the commandline.
+        --enable-automation is on the commandline. Experimental: this API may change or
+        be removed.
         """
         result = await self._executor.execute(
             method=BrowserCommand.GET_BROWSER_COMMAND_LINE,
@@ -223,13 +259,21 @@ class Browser:
         """
         Adds or updates a mock camera in the shared video capture device list for test
         automation. The mock camera is not scoped to a particular page or frame and is
-        removed when the DevTools session that created it disconnects.
+        removed when the DevTools session that created it disconnects. Experimental:
+        this API may change or be removed.
+
+        Args:
+            device_id: Required non-empty identifier for the mock camera within the
+                current DevTools session. Different sessions can use the same identifier
+                without replacing each other's cameras. This is not the
+                MediaDeviceInfo.deviceId exposed to the page.
         """
-        params = AddMockCameraParams(device_id=device_id)
+        _params: dict[str, Any] = {}
+        _params["deviceId"] = device_id
 
         await self._executor.execute(
             method=BrowserCommand.ADD_MOCK_CAMERA,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def get_histograms(
@@ -239,13 +283,23 @@ class Browser:
         delta: bool | None = None,
     ) -> GetHistogramsResult:
         """
-        Get Chrome histograms.
+        Get Chrome histograms. Experimental: this API may change or be removed.
+
+        Args:
+            query: Requested substring in name. Only histograms which have query as a
+                substring in their name are extracted. An empty or absent query returns
+                all histograms.
+            delta: If true, retrieve delta since last delta call.
         """
-        params = GetHistogramsParams(query=query, delta=delta)
+        _params: dict[str, Any] = {}
+        if query is not None:
+            _params["query"] = query
+        if delta is not None:
+            _params["delta"] = delta
 
         result = await self._executor.execute(
             method=BrowserCommand.GET_HISTOGRAMS,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetHistogramsResult, result)
 
@@ -256,13 +310,21 @@ class Browser:
         delta: bool | None = None,
     ) -> GetHistogramResult:
         """
-        Get a Chrome histogram by name.
+        Get a Chrome histogram by name. Experimental: this API may change or be
+        removed.
+
+        Args:
+            name: Requested histogram name.
+            delta: If true, retrieve delta since last delta call.
         """
-        params = GetHistogramParams(name=name, delta=delta)
+        _params: dict[str, Any] = {}
+        _params["name"] = name
+        if delta is not None:
+            _params["delta"] = delta
 
         result = await self._executor.execute(
             method=BrowserCommand.GET_HISTOGRAM,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetHistogramResult, result)
 
@@ -272,13 +334,18 @@ class Browser:
         window_id: WindowID,
     ) -> GetWindowBoundsResult:
         """
-        Get position and size of the browser window.
+        Get position and size of the browser window. Experimental: this API may change
+        or be removed.
+
+        Args:
+            window_id: Browser window id.
         """
-        params = GetWindowBoundsParams(window_id=window_id)
+        _params: dict[str, Any] = {}
+        _params["windowId"] = _encode_value(window_id)
 
         result = await self._executor.execute(
             method=BrowserCommand.GET_WINDOW_BOUNDS,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetWindowBoundsResult, result)
 
@@ -288,13 +355,20 @@ class Browser:
         target_id: target.TargetID | None = None,
     ) -> GetWindowForTargetResult:
         """
-        Get the browser window that contains the devtools target.
+        Get the browser window that contains the devtools target. Experimental: this
+        API may change or be removed.
+
+        Args:
+            target_id: Devtools agent host id. If called as a part of the session,
+                associated targetId is used.
         """
-        params = GetWindowForTargetParams(target_id=target_id)
+        _params: dict[str, Any] = {}
+        if target_id is not None:
+            _params["targetId"] = _encode_value(target_id)
 
         result = await self._executor.execute(
             method=BrowserCommand.GET_WINDOW_FOR_TARGET,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetWindowForTargetResult, result)
 
@@ -305,13 +379,22 @@ class Browser:
         bounds: Bounds,
     ) -> None:
         """
-        Set position and/or size of the browser window.
+        Set position and/or size of the browser window. Experimental: this API may
+        change or be removed.
+
+        Args:
+            window_id: Browser window id.
+            bounds: New window bounds. The 'minimized', 'maximized' and 'fullscreen'
+                states cannot be combined with 'left', 'top', 'width' or 'height'.
+                Leaves unspecified fields unchanged.
         """
-        params = SetWindowBoundsParams(window_id=window_id, bounds=bounds)
+        _params: dict[str, Any] = {}
+        _params["windowId"] = _encode_value(window_id)
+        _params["bounds"] = _encode_value(bounds)
 
         await self._executor.execute(
             method=BrowserCommand.SET_WINDOW_BOUNDS,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_contents_size(
@@ -323,12 +406,25 @@ class Browser:
     ) -> None:
         """
         Set size of the browser contents resizing browser window as necessary.
+        Experimental: this API may change or be removed.
+
+        Args:
+            window_id: Browser window id.
+            width: The window contents width in DIP. Assumes current width if omitted.
+                Must be specified if 'height' is omitted.
+            height: The window contents height in DIP. Assumes current height if
+                omitted. Must be specified if 'width' is omitted.
         """
-        params = SetContentsSizeParams(window_id=window_id, width=width, height=height)
+        _params: dict[str, Any] = {}
+        _params["windowId"] = _encode_value(window_id)
+        if width is not None:
+            _params["width"] = width
+        if height is not None:
+            _params["height"] = height
 
         await self._executor.execute(
             method=BrowserCommand.SET_CONTENTS_SIZE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def set_dock_tile(
@@ -338,13 +434,21 @@ class Browser:
         image: str | None = None,
     ) -> None:
         """
-        Set dock tile details, platform-specific.
+        Set dock tile details, platform-specific. Experimental: this API may change or
+        be removed.
+
+        Args:
+            image: Png encoded image. (Encoded as a base64 string when passed over JSON)
         """
-        params = SetDockTileParams(badge_label=badge_label, image=image)
+        _params: dict[str, Any] = {}
+        if badge_label is not None:
+            _params["badgeLabel"] = badge_label
+        if image is not None:
+            _params["image"] = image
 
         await self._executor.execute(
             method=BrowserCommand.SET_DOCK_TILE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def execute_browser_command(
@@ -353,13 +457,15 @@ class Browser:
         command_id: BrowserCommandId,
     ) -> None:
         """
-        Invoke custom browser commands used by telemetry.
+        Invoke custom browser commands used by telemetry. Experimental: this API may
+        change or be removed.
         """
-        params = ExecuteBrowserCommandParams(command_id=command_id)
+        _params: dict[str, Any] = {}
+        _params["commandId"] = _encode_value(command_id)
 
         await self._executor.execute(
             method=BrowserCommand.EXECUTE_BROWSER_COMMAND,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def add_privacy_sandbox_enrollment_override(
@@ -371,11 +477,12 @@ class Browser:
         Allows a site to use privacy sandbox features that require enrollment without
         the site actually being enrolled. Only supported on page targets.
         """
-        params = AddPrivacySandboxEnrollmentOverrideParams(url=url)
+        _params: dict[str, Any] = {}
+        _params["url"] = url
 
         await self._executor.execute(
             method=BrowserCommand.ADD_PRIVACY_SANDBOX_ENROLLMENT_OVERRIDE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def get_global_privacy_control(
@@ -383,7 +490,8 @@ class Browser:
     ) -> GetGlobalPrivacyControlResult:
         """
         Gets the current globally-applied privacy control status See
-        https://www.w3.org/TR/gpc/#get-global-privacy-control
+        https://www.w3.org/TR/gpc/#get-global-privacy-control Experimental: this API may
+        change or be removed.
         """
         result = await self._executor.execute(
             method=BrowserCommand.GET_GLOBAL_PRIVACY_CONTROL,
@@ -398,12 +506,14 @@ class Browser:
     ) -> SetGlobalPrivacyControlResult:
         """
         Sets and then gets the current globally-applied privacy control status See
-        https://www.w3.org/TR/gpc/#set-global-privacy-control
+        https://www.w3.org/TR/gpc/#set-global-privacy-control Experimental: this API may
+        change or be removed.
         """
-        params = SetGlobalPrivacyControlParams(gpc=gpc)
+        _params: dict[str, Any] = {}
+        _params["gpc"] = gpc
 
         result = await self._executor.execute(
             method=BrowserCommand.SET_GLOBAL_PRIVACY_CONTROL,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(SetGlobalPrivacyControlResult, result)

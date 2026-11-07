@@ -22,9 +22,24 @@ class SystemInfoCommand(StrEnum):
 @dataclass(kw_only=True, slots=True)
 class GetInfoResult:
     gpu: GPUInfo
+    """
+    Information about the GPUs on the system.
+    """
     model_name: str = field(metadata={"cdp_name": "modelName"})
+    """
+    A platform-dependent description of the model of the machine. On Mac OS, this is,
+    for example, 'MacBookPro'. Will be the empty string if not supported.
+    """
     model_version: str = field(metadata={"cdp_name": "modelVersion"})
+    """
+    A platform-dependent description of the version of the machine. On Mac OS, this is,
+    for example, '10.1'. Will be the empty string if not supported.
+    """
     command_line: str = field(metadata={"cdp_name": "commandLine"})
+    """
+    The command line string used to launch the browser. Will be the empty string if not
+    supported.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -44,3 +59,6 @@ class GetFeatureStateResult:
 @dataclass(kw_only=True, slots=True)
 class GetProcessInfoResult:
     process_info: list[ProcessInfo] = field(metadata={"cdp_name": "processInfo"})
+    """
+    An array of process info blocks.
+    """

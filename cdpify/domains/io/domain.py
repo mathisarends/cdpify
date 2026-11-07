@@ -4,18 +4,15 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
-from cdpify.codec import decode_cdp, encode_cdp
+from cdpify.codec import _encode_value, decode_cdp
 from cdpify.executor import CommandExecutor
 from cdpify.shared.decorators import deprecated
 
 from .commands import (
-    CloseParams,
     IOCommand,
-    ReadParams,
     ReadResult,
-    ResolveBlobParams,
     ResolveBlobResult,
 )
 from .types import (
@@ -37,12 +34,16 @@ class IO:
     ) -> None:
         """
         Close the stream, discard any temporary backing storage.
+
+        Args:
+            handle: Handle of the stream to close.
         """
-        params = CloseParams(handle=handle)
+        _params: dict[str, Any] = {}
+        _params["handle"] = _encode_value(handle)
 
         await self._executor.execute(
             method=IOCommand.CLOSE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def read(
@@ -54,12 +55,25 @@ class IO:
     ) -> ReadResult:
         """
         Read a chunk of the stream
+
+        Args:
+            handle: Handle of the stream to read.
+            offset: Seek to the specified offset before reading (if not specified,
+                proceed with offset following the last read). Some types of streams may
+                only support sequential reads.
+            size: Maximum number of bytes to read (left upon the agent discretion if not
+                specified).
         """
-        params = ReadParams(handle=handle, offset=offset, size=size)
+        _params: dict[str, Any] = {}
+        _params["handle"] = _encode_value(handle)
+        if offset is not None:
+            _params["offset"] = offset
+        if size is not None:
+            _params["size"] = size
 
         result = await self._executor.execute(
             method=IOCommand.READ,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(ReadResult, result)
 
@@ -70,12 +84,17 @@ class IO:
         object_id: runtime.RemoteObjectId,
     ) -> ResolveBlobResult:
         """
-        Return UUID of Blob object specified by a remote object id.
+        Return UUID of Blob object specified by a remote object id. Deprecated in the
+        Chrome DevTools Protocol.
+
+        Args:
+            object_id: Object id of a Blob object wrapper.
         """
-        params = ResolveBlobParams(object_id=object_id)
+        _params: dict[str, Any] = {}
+        _params["objectId"] = _encode_value(object_id)
 
         result = await self._executor.execute(
             method=IOCommand.RESOLVE_BLOB,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(ResolveBlobResult, result)

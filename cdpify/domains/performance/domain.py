@@ -4,17 +4,15 @@
 
 from __future__ import annotations
 
-from typing import Literal
+from typing import Any, Literal
 
-from cdpify.codec import decode_cdp, encode_cdp
+from cdpify.codec import decode_cdp
 from cdpify.executor import CommandExecutor
 from cdpify.shared.decorators import deprecated
 
 from .commands import (
-    EnableParams,
     GetMetricsResult,
     PerformanceCommand,
-    SetTimeDomainParams,
 )
 
 
@@ -40,12 +38,18 @@ class Performance:
     ) -> None:
         """
         Enable collecting and reporting metrics.
+
+        Args:
+            time_domain: Time domain to use for collecting and reporting duration
+                metrics.
         """
-        params = EnableParams(time_domain=time_domain)
+        _params: dict[str, Any] = {}
+        if time_domain is not None:
+            _params["timeDomain"] = time_domain
 
         await self._executor.execute(
             method=PerformanceCommand.ENABLE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     @deprecated("Performance.setTimeDomain is deprecated")
@@ -57,13 +61,18 @@ class Performance:
         """
         Sets time domain to use for collecting and reporting duration metrics. Note
         that this must be called before enabling metrics collection. Calling this method
-        while metrics collection is enabled returns an error.
+        while metrics collection is enabled returns an error. Experimental: this API may
+        change or be removed. Deprecated in the Chrome DevTools Protocol.
+
+        Args:
+            time_domain: Time domain
         """
-        params = SetTimeDomainParams(time_domain=time_domain)
+        _params: dict[str, Any] = {}
+        _params["timeDomain"] = time_domain
 
         await self._executor.execute(
             method=PerformanceCommand.SET_TIME_DOMAIN,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def get_metrics(

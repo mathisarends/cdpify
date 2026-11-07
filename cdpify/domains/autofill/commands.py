@@ -31,11 +31,25 @@ class TriggerParams:
     """
 
     field_id: dom.BackendNodeId = field(metadata={"cdp_name": "fieldId"})
+    """
+    Identifies a field that serves as an anchor for autofill.
+    """
     frame_id: page.FrameId | None = field(
         default=None, metadata={"cdp_name": "frameId"}
     )
+    """
+    Identifies the frame that field belongs to.
+    """
     card: CreditCard | None = None
+    """
+    Credit card information to fill out the form. Credit card data is not saved.
+    Mutually exclusive with `address`.
+    """
     address: Address | None = None
+    """
+    Address to fill out the form. Address data is not saved. Mutually exclusive with
+    `card`.
+    """
 
 
 @dataclass(kw_only=True, slots=True)

@@ -42,66 +42,151 @@ class SecurityState(CDPStrEnum):
 @dataclass(kw_only=True, slots=True)
 class CertificateSecurityState:
     """
-    Details about the security state of the page certificate.
+    Details about the security state of the page certificate. Experimental: this API
+    may change or be removed.
     """
 
     protocol: str
+    """
+    Protocol name (e.g. "TLS 1.2" or "QUIC").
+    """
     key_exchange: str = field(metadata={"cdp_name": "keyExchange"})
+    """
+    Key Exchange used by the connection, or the empty string if not applicable.
+    """
     key_exchange_group: str | None = field(
         default=None, metadata={"cdp_name": "keyExchangeGroup"}
     )
+    """
+    (EC)DH group used by the connection, if applicable.
+    """
     cipher: str
+    """
+    Cipher name.
+    """
     mac: str | None = None
+    """
+    TLS MAC. Note that AEAD ciphers do not have separate MACs.
+    """
     certificate: list[str]
+    """
+    Page certificate.
+    """
     subject_name: str = field(metadata={"cdp_name": "subjectName"})
+    """
+    Certificate subject name.
+    """
     issuer: str
+    """
+    Name of the issuing CA.
+    """
     valid_from: network.TimeSinceEpoch = field(metadata={"cdp_name": "validFrom"})
+    """
+    Certificate valid from date.
+    """
     valid_to: network.TimeSinceEpoch = field(metadata={"cdp_name": "validTo"})
+    """
+    Certificate valid to (expiration) date
+    """
     certificate_network_error: str | None = field(
         default=None, metadata={"cdp_name": "certificateNetworkError"}
     )
+    """
+    The highest priority network error code, if the certificate has an error.
+    """
     certificate_has_weak_signature: bool = field(
         metadata={"cdp_name": "certificateHasWeakSignature"}
     )
+    """
+    True if the certificate uses a weak signature algorithm.
+    """
     certificate_has_sha1_signature: bool = field(
         metadata={"cdp_name": "certificateHasSha1Signature"}
     )
+    """
+    True if the certificate has a SHA1 signature in the chain.
+    """
     modern_ssl: bool = field(metadata={"cdp_name": "modernSSL"})
+    """
+    True if modern SSL
+    """
     obsolete_ssl_protocol: bool = field(metadata={"cdp_name": "obsoleteSslProtocol"})
+    """
+    True if the connection is using an obsolete SSL protocol.
+    """
     obsolete_ssl_key_exchange: bool = field(
         metadata={"cdp_name": "obsoleteSslKeyExchange"}
     )
+    """
+    True if the connection is using an obsolete SSL key exchange.
+    """
     obsolete_ssl_cipher: bool = field(metadata={"cdp_name": "obsoleteSslCipher"})
+    """
+    True if the connection is using an obsolete SSL cipher.
+    """
     obsolete_ssl_signature: bool = field(metadata={"cdp_name": "obsoleteSslSignature"})
+    """
+    True if the connection is using an obsolete SSL signature.
+    """
 
 
 class SafetyTipStatus(CDPStrEnum):
+    """
+    Experimental: this API may change or be removed.
+    """
+
     BAD_REPUTATION = "badReputation"
     LOOKALIKE = "lookalike"
 
 
 @dataclass(kw_only=True, slots=True)
 class SafetyTipInfo:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     safety_tip_status: SafetyTipStatus = field(metadata={"cdp_name": "safetyTipStatus"})
+    """
+    Describes whether the page triggers any safety tips or reputation warnings. Default
+    is unknown.
+    """
     safe_url: str | None = field(default=None, metadata={"cdp_name": "safeUrl"})
+    """
+    The URL the safety tip suggested ("Did you mean?"). Only filled in for lookalike
+    matches.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class VisibleSecurityState:
     """
-    Security state information about the page.
+    Security state information about the page. Experimental: this API may change or be
+    removed.
     """
 
     security_state: SecurityState = field(metadata={"cdp_name": "securityState"})
+    """
+    The security level of the page.
+    """
     certificate_security_state: CertificateSecurityState | None = field(
         default=None, metadata={"cdp_name": "certificateSecurityState"}
     )
+    """
+    Security state details about the page certificate.
+    """
     safety_tip_info: SafetyTipInfo | None = field(
         default=None, metadata={"cdp_name": "safetyTipInfo"}
     )
+    """
+    The type of Safety Tip triggered on the page. Note that this field will be set even
+    if the Safety Tip UI was not actually shown.
+    """
     security_state_issue_ids: list[str] = field(
         metadata={"cdp_name": "securityStateIssueIds"}
     )
+    """
+    Array of security state issues ids.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -111,39 +196,82 @@ class SecurityStateExplanation:
     """
 
     security_state: SecurityState = field(metadata={"cdp_name": "securityState"})
+    """
+    Security state representing the severity of the factor being explained.
+    """
     title: str
+    """
+    Title describing the type of factor.
+    """
     summary: str
+    """
+    Short phrase describing the type of factor.
+    """
     description: str
+    """
+    Full text explanation of the factor.
+    """
     mixed_content_type: MixedContentType = field(
         metadata={"cdp_name": "mixedContentType"}
     )
+    """
+    The type of mixed content described by the explanation.
+    """
     certificate: list[str]
+    """
+    Page certificate.
+    """
     recommendations: list[str] | None = None
+    """
+    Recommendations to fix any issues.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class InsecureContentStatus:
     """
-    Information about insecure content on the page.
+    Information about insecure content on the page. Deprecated in the Chrome DevTools
+    Protocol.
     """
 
     ran_mixed_content: bool = field(metadata={"cdp_name": "ranMixedContent"})
+    """
+    Always false.
+    """
     displayed_mixed_content: bool = field(
         metadata={"cdp_name": "displayedMixedContent"}
     )
+    """
+    Always false.
+    """
     contained_mixed_form: bool = field(metadata={"cdp_name": "containedMixedForm"})
+    """
+    Always false.
+    """
     ran_content_with_cert_errors: bool = field(
         metadata={"cdp_name": "ranContentWithCertErrors"}
     )
+    """
+    Always false.
+    """
     displayed_content_with_cert_errors: bool = field(
         metadata={"cdp_name": "displayedContentWithCertErrors"}
     )
+    """
+    Always false.
+    """
     ran_insecure_content_style: SecurityState = field(
         metadata={"cdp_name": "ranInsecureContentStyle"}
     )
+    """
+    Always set to unknown.
+    """
     displayed_insecure_content_style: SecurityState = field(
         metadata={"cdp_name": "displayedInsecureContentStyle"}
     )
+    """
+    Always set to unknown.
+    """
 
 
 class CertificateErrorAction(CDPStrEnum):

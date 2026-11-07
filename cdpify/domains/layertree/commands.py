@@ -37,14 +37,23 @@ class CompositingReasonsParams:
     """
 
     layer_id: LayerId = field(metadata={"cdp_name": "layerId"})
+    """
+    The id of the layer for which we want to get the reasons it was composited.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class CompositingReasonsResult:
     compositing_reasons: list[str] = field(metadata={"cdp_name": "compositingReasons"})
+    """
+    A list of strings specifying reasons for the given layer to become composited.
+    """
     compositing_reason_ids: list[str] = field(
         metadata={"cdp_name": "compositingReasonIds"}
     )
+    """
+    A list of strings specifying reason IDs for the given layer to become composited.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -54,11 +63,17 @@ class LoadSnapshotParams:
     """
 
     tiles: list[PictureTile]
+    """
+    An array of tiles composing the snapshot.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class LoadSnapshotResult:
     snapshot_id: SnapshotId = field(metadata={"cdp_name": "snapshotId"})
+    """
+    The id of the snapshot.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -68,28 +83,49 @@ class MakeSnapshotParams:
     """
 
     layer_id: LayerId = field(metadata={"cdp_name": "layerId"})
+    """
+    The id of the layer.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class MakeSnapshotResult:
     snapshot_id: SnapshotId = field(metadata={"cdp_name": "snapshotId"})
+    """
+    The id of the layer snapshot.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class ProfileSnapshotParams:
     snapshot_id: SnapshotId = field(metadata={"cdp_name": "snapshotId"})
+    """
+    The id of the layer snapshot.
+    """
     min_repeat_count: int | None = field(
         default=None, metadata={"cdp_name": "minRepeatCount"}
     )
+    """
+    The maximum number of times to replay the snapshot (1, if not specified).
+    """
     min_duration: float | None = field(
         default=None, metadata={"cdp_name": "minDuration"}
     )
+    """
+    The minimum duration (in seconds) to replay the snapshot.
+    """
     clip_rect: dom.Rect | None = field(default=None, metadata={"cdp_name": "clipRect"})
+    """
+    The clip rectangle to apply when replaying the snapshot.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class ProfileSnapshotResult:
     timings: list[PaintProfile]
+    """
+    The array of paint profiles, one per run.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -99,6 +135,9 @@ class ReleaseSnapshotParams:
     """
 
     snapshot_id: SnapshotId = field(metadata={"cdp_name": "snapshotId"})
+    """
+    The id of the layer snapshot.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -108,14 +147,29 @@ class ReplaySnapshotParams:
     """
 
     snapshot_id: SnapshotId = field(metadata={"cdp_name": "snapshotId"})
+    """
+    The id of the layer snapshot.
+    """
     from_step: int | None = field(default=None, metadata={"cdp_name": "fromStep"})
+    """
+    The first step to replay from (replay from the very start if not specified).
+    """
     to_step: int | None = field(default=None, metadata={"cdp_name": "toStep"})
+    """
+    The last step to replay to (replay till the end if not specified).
+    """
     scale: float | None = None
+    """
+    The scale to apply while replaying (defaults to 1).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class ReplaySnapshotResult:
     data_url: str = field(metadata={"cdp_name": "dataURL"})
+    """
+    A data: URL for resulting image.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -125,8 +179,14 @@ class SnapshotCommandLogParams:
     """
 
     snapshot_id: SnapshotId = field(metadata={"cdp_name": "snapshotId"})
+    """
+    The id of the layer snapshot.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SnapshotCommandLogResult:
     command_log: list[dict[str, Any]] = field(metadata={"cdp_name": "commandLog"})
+    """
+    The array of canvas function calls.
+    """

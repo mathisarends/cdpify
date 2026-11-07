@@ -21,11 +21,13 @@ from cdpify.transports.websocket import (
 
 class _FakeWebSocket:
     def __init__(self) -> None:
-        self.sent_messages: list[str] = []
+        self.sent_messages: list[str | bytes] = []
+        self.sent_text: list[bool | None] = []
         self.closed = False
 
-    async def send(self, payload: str) -> None:
+    async def send(self, payload: str | bytes, *, text: bool | None = None) -> None:
         self.sent_messages.append(payload)
+        self.sent_text.append(text)
 
     async def close(self) -> None:
         self.closed = True
@@ -55,7 +57,7 @@ async def test_await_response_returns_result() -> None:
     future = _create_pending_request(transport._pending_requests, 1)
 
     transport._handle_response({"id": 1, "result": {"ok": True}})
-    result = await transport._await_response(1, "Page.enable", future, timeout=1.0)
+    result = await transport._await_response(1, "Page.enable", future)
 
     assert result == {"ok": True}
 
@@ -68,7 +70,7 @@ async def test_await_response_raises_command_error_with_method() -> None:
     transport._handle_response({"id": 2, "error": {"code": 9, "message": "failed"}})
 
     with pytest.raises(CDPCommandError) as error_info:
-        await transport._await_response(2, "Page.enable", future, timeout=1.0)
+        await transport._await_response(2, "Page.enable", future)
 
     assert error_info.value.method == "Page.enable"
     assert error_info.value.code == 9
@@ -107,22 +109,27 @@ async def test_send_serializes_payload_as_json() -> None:
     )
 
     payload = transport._ws.sent_messages[0]  # type: ignore[union-attr]
-    assert isinstance(payload, str)
+    assert transport._ws.sent_text == [True]
     assert json.loads(payload) == {"id": 3, "method": "Page.enable", "params": {}}
 
 
 @pytest.mark.asyncio
-async def test_await_response_raises_timeout() -> None:
+async def test_execute_timeout_includes_sending_and_cleans_pending_requests() -> None:
     transport = WebSocketTransport("ws://example")
-    unresolved: asyncio.Future[dict[str, object]] = asyncio.Future()
+    transport._ws = _FakeWebSocket()  # type: ignore[assignment]
+    cancelled = asyncio.Event()
 
+    async def blocked_send(*args) -> None:
+        try:
+            await asyncio.Event().wait()
+        finally:
+            cancelled.set()
+
+    transport._send = blocked_send  # type: ignore[method-assign]
     with pytest.raises(CDPTimeoutError):
-        await transport._await_response(
-            1,
-            "Page.enable",
-            unresolved,  # type: ignore[arg-type]
-            timeout=0.001,
-        )
+        await transport.execute("Runtime.enable", timeout=0.01)
+    assert cancelled.is_set()
+    assert transport._pending_requests == {}
 
 
 @pytest.mark.asyncio
@@ -181,9 +188,32 @@ class _ScriptedWebSocket(_FakeWebSocket):
         super().__init__()
         self._messages = messages
 
-    async def __aiter__(self):
-        for message in self._messages:
-            yield message
+    async def recv(self, decode=None):
+        assert decode is False
+        if not self._messages:
+            raise ConnectionClosedOK(None, None)
+        return self._messages.pop(0).encode()
+
+
+@pytest.mark.asyncio
+async def test_client_forwards_explicit_connection_options(monkeypatch) -> None:
+    from cdpify import CdpClient
+
+    dial = AsyncMock(return_value=_ScriptedWebSocket([]))
+    monkeypatch.setattr(websocket_module, "connect", dial)
+    client = CdpClient(
+        "ws://example", compression="deflate", open_timeout=4, close_timeout=3
+    )
+    await client.connect()
+    dial.assert_awaited_once_with(
+        "ws://example",
+        max_size=100 * 1024 * 1024,
+        additional_headers=None,
+        compression="deflate",
+        open_timeout=4,
+        close_timeout=3,
+    )
+    await client.disconnect()
 
 
 @pytest.mark.asyncio
@@ -233,7 +263,9 @@ async def test_event_without_params_has_empty_params() -> None:
 
 @pytest.mark.asyncio
 async def test_bounded_transport_drains_latest_events_on_disconnect() -> None:
-    transport = WebSocketTransport("ws://example", max_queue_size=2)
+    transport = WebSocketTransport(
+        "ws://example", max_queue_size=2, overflow="drop_oldest"
+    )
     for value in range(5):
         await transport._process_message(
             json.dumps({"method": "Test.event", "params": {"value": value}})
@@ -273,13 +305,12 @@ async def test_json_backends_send_text_and_decode_events_and_responses(
     payload = {"id": 1, "method": "Test.command", "params": {"text": "Grüße 🌍"}}
 
     await transport._send(1, "Test.command", payload)
-    assert isinstance(socket.sent_messages[0], str)
+    assert isinstance(socket.sent_messages[0], bytes if backend == "orjson" else str)
+    assert socket.sent_text == [True]
     assert json.loads(socket.sent_messages[0]) == payload
     pending = _create_pending_request(transport._pending_requests, 1)
     await transport._process_message(b'{"id":1,"result":{"ok":true}}')
-    assert await transport._await_response(1, "Test.command", pending, 1.0) == {
-        "ok": True
-    }
+    assert await transport._await_response(1, "Test.command", pending) == {"ok": True}
     await transport._process_message(
         json.dumps({"method": "Test.event", "params": {"text": "Grüße 🌍"}}).encode()
     )
@@ -327,7 +358,9 @@ async def test_reconnect_resets_buffer_without_migrating_old_readers(
         "connect",
         AsyncMock(side_effect=[messages([1, 2, 3]), messages([4])]),
     )
-    transport = WebSocketTransport("ws://example", max_queue_size=2)
+    transport = WebSocketTransport(
+        "ws://example", max_queue_size=2, overflow="drop_oldest"
+    )
     await transport.connect()
     old_events = transport.events()
     assert (await anext(old_events)).params == {"value": 2}
@@ -349,7 +382,7 @@ async def test_disconnect_during_send_handles_error_without_future_leak() -> Non
             self.sending = asyncio.Event()
             self.finished = asyncio.Event()
 
-        async def send(self, payload: str) -> None:
+        async def send(self, payload: str | bytes, *, text=None) -> None:
             self.sending.set()
             await self.finished.wait()
             raise ConnectionClosedOK(None, None)

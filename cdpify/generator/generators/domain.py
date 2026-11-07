@@ -1,7 +1,7 @@
 from cdpify.generator.generators.constants import FUTURE_ANNOTATIONS, HEADER
 from cdpify.generator.generators.context import GenerationContext
 from cdpify.generator.generators.utils import (
-    format_docstring,
+    method_docstring,
     resolve_type,
     to_enum_name,
     to_identifier,
@@ -21,12 +21,15 @@ def generate(domain: Domain) -> str:
 
     if ctx.cross_domain_modules:
         ctx.use_typing("TYPE_CHECKING")
+    if any(method.parameters for method in methods):
+        ctx.use_typing("Any")
 
     return render_template(
         "domain.py.jinja2",
         header=HEADER,
         future_annotations=FUTURE_ANNOTATIONS,
         typing_names=ctx.sorted_typing_names,
+        uses_unset=any(p.uses_unset for m in methods for p in m.parameters),
         has_deprecated=any(command.deprecated for command in domain.commands),
         command_imports=_command_imports(domain),
         local_type_names=tuple(name for name, _ in ctx.sorted_local_types()),
@@ -41,15 +44,10 @@ def _command_imports(domain: Domain) -> tuple[str, ...]:
         return ()
 
     model_names = {
-        f"{to_pascal_case(command.name)}Params"
-        for command in domain.commands
-        if command.parameters
-    }
-    model_names.update(
         f"{to_pascal_case(command.name)}Result"
         for command in domain.commands
         if command.returns
-    )
+    }
     return (f"{domain.domain}Command", *sorted(model_names))
 
 
@@ -69,28 +67,19 @@ def _build_method(
         result_model = None
 
     params_model = f"{pascal_name}Params" if command.parameters else None
-    constructor_args = ", ".join(
-        f"{to_identifier(parameter.name)}={to_identifier(parameter.name)}"
-        for parameter in command.parameters
-    )
 
     return MethodView(
         name=to_snake_case(command.name),
         parameters=parameters,
         return_type=return_type,
         command_member=to_enum_name(command.name),
-        docstring=(
-            format_docstring(command.description, indent=8)
-            if command.description
-            else None
-        ),
+        docstring=method_docstring(command) or None,
         deprecation=(
             f"{domain_name}.{command.name} is deprecated"
             if command.deprecated
             else None
         ),
         params_model=params_model,
-        constructor_args=constructor_args,
         result_model=result_model,
     )
 
@@ -103,4 +92,7 @@ def _build_parameter_view(parameter: Parameter, ctx: GenerationContext) -> Field
         name=to_identifier(parameter.name),
         annotation=annotation,
         optional=parameter.optional,
+        cdp_name=parameter.name,
+        encode_value=bool(parameter.ref)
+        or parameter.type in ("array", "object", "any"),
     )

@@ -36,6 +36,11 @@ class HeapStatsUpdateEvent:
     __cdp_event__: ClassVar[HeapProfilerEvent] = HeapProfilerEvent.HEAP_STATS_UPDATE
 
     stats_update: list[int] = field(metadata={"cdp_name": "statsUpdate"})
+    """
+    An array of triplets. Each triplet describes a fragment. The first integer is the
+    fragment index, the second integer is a total count of objects for the fragment, the
+    third integer is a total size of the objects for the fragment.
+    """
 
 
 @dataclass(kw_only=True, slots=True)

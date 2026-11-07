@@ -4,23 +4,16 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
-from cdpify.codec import decode_cdp, encode_cdp
+from cdpify.codec import _encode_value, decode_cdp
 from cdpify.executor import CommandExecutor
 
 from .commands import (
-    ClearObjectStoreParams,
-    DeleteDatabaseParams,
-    DeleteObjectStoreEntriesParams,
-    GetMetadataParams,
     GetMetadataResult,
     IndexedDBCommand,
-    RequestDatabaseNamesParams,
     RequestDatabaseNamesResult,
-    RequestDatabaseParams,
     RequestDatabaseResult,
-    RequestDataParams,
     RequestDataResult,
 )
 from .types import (
@@ -46,18 +39,29 @@ class IndexedDB:
     ) -> None:
         """
         Clears all entries from an object store.
+
+        Args:
+            security_origin: At least and at most one of securityOrigin, storageKey, or
+                storageBucket must be specified. Security origin.
+            storage_key: Storage key.
+            storage_bucket: Storage bucket. If not specified, it uses the default
+                bucket.
+            database_name: Database name.
+            object_store_name: Object store name.
         """
-        params = ClearObjectStoreParams(
-            security_origin=security_origin,
-            storage_key=storage_key,
-            storage_bucket=storage_bucket,
-            database_name=database_name,
-            object_store_name=object_store_name,
-        )
+        _params: dict[str, Any] = {}
+        if security_origin is not None:
+            _params["securityOrigin"] = security_origin
+        if storage_key is not None:
+            _params["storageKey"] = storage_key
+        if storage_bucket is not None:
+            _params["storageBucket"] = _encode_value(storage_bucket)
+        _params["databaseName"] = database_name
+        _params["objectStoreName"] = object_store_name
 
         await self._executor.execute(
             method=IndexedDBCommand.CLEAR_OBJECT_STORE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def delete_database(
@@ -70,17 +74,27 @@ class IndexedDB:
     ) -> None:
         """
         Deletes a database.
+
+        Args:
+            security_origin: At least and at most one of securityOrigin, storageKey, or
+                storageBucket must be specified. Security origin.
+            storage_key: Storage key.
+            storage_bucket: Storage bucket. If not specified, it uses the default
+                bucket.
+            database_name: Database name.
         """
-        params = DeleteDatabaseParams(
-            security_origin=security_origin,
-            storage_key=storage_key,
-            storage_bucket=storage_bucket,
-            database_name=database_name,
-        )
+        _params: dict[str, Any] = {}
+        if security_origin is not None:
+            _params["securityOrigin"] = security_origin
+        if storage_key is not None:
+            _params["storageKey"] = storage_key
+        if storage_bucket is not None:
+            _params["storageBucket"] = _encode_value(storage_bucket)
+        _params["databaseName"] = database_name
 
         await self._executor.execute(
             method=IndexedDBCommand.DELETE_DATABASE,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def delete_object_store_entries(
@@ -95,19 +109,29 @@ class IndexedDB:
     ) -> None:
         """
         Delete a range of entries from an object store
+
+        Args:
+            security_origin: At least and at most one of securityOrigin, storageKey, or
+                storageBucket must be specified. Security origin.
+            storage_key: Storage key.
+            storage_bucket: Storage bucket. If not specified, it uses the default
+                bucket.
+            key_range: Range of entry keys to delete
         """
-        params = DeleteObjectStoreEntriesParams(
-            security_origin=security_origin,
-            storage_key=storage_key,
-            storage_bucket=storage_bucket,
-            database_name=database_name,
-            object_store_name=object_store_name,
-            key_range=key_range,
-        )
+        _params: dict[str, Any] = {}
+        if security_origin is not None:
+            _params["securityOrigin"] = security_origin
+        if storage_key is not None:
+            _params["storageKey"] = storage_key
+        if storage_bucket is not None:
+            _params["storageBucket"] = _encode_value(storage_bucket)
+        _params["databaseName"] = database_name
+        _params["objectStoreName"] = object_store_name
+        _params["keyRange"] = _encode_value(key_range)
 
         await self._executor.execute(
             method=IndexedDBCommand.DELETE_OBJECT_STORE_ENTRIES,
-            params=encode_cdp(params),
+            params=_params,
         )
 
     async def disable(
@@ -147,22 +171,40 @@ class IndexedDB:
     ) -> RequestDataResult:
         """
         Requests data from object store or index.
+
+        Args:
+            security_origin: At least and at most one of securityOrigin, storageKey, or
+                storageBucket must be specified. Security origin.
+            storage_key: Storage key.
+            storage_bucket: Storage bucket. If not specified, it uses the default
+                bucket.
+            database_name: Database name.
+            object_store_name: Object store name.
+            index_name: Index name. If not specified, it performs an object store data
+                request.
+            skip_count: Number of records to skip.
+            page_size: Number of records to fetch.
+            key_range: Key range.
         """
-        params = RequestDataParams(
-            security_origin=security_origin,
-            storage_key=storage_key,
-            storage_bucket=storage_bucket,
-            database_name=database_name,
-            object_store_name=object_store_name,
-            index_name=index_name,
-            skip_count=skip_count,
-            page_size=page_size,
-            key_range=key_range,
-        )
+        _params: dict[str, Any] = {}
+        if security_origin is not None:
+            _params["securityOrigin"] = security_origin
+        if storage_key is not None:
+            _params["storageKey"] = storage_key
+        if storage_bucket is not None:
+            _params["storageBucket"] = _encode_value(storage_bucket)
+        _params["databaseName"] = database_name
+        _params["objectStoreName"] = object_store_name
+        if index_name is not None:
+            _params["indexName"] = index_name
+        _params["skipCount"] = skip_count
+        _params["pageSize"] = page_size
+        if key_range is not None:
+            _params["keyRange"] = _encode_value(key_range)
 
         result = await self._executor.execute(
             method=IndexedDBCommand.REQUEST_DATA,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(RequestDataResult, result)
 
@@ -177,18 +219,29 @@ class IndexedDB:
     ) -> GetMetadataResult:
         """
         Gets metadata of an object store.
+
+        Args:
+            security_origin: At least and at most one of securityOrigin, storageKey, or
+                storageBucket must be specified. Security origin.
+            storage_key: Storage key.
+            storage_bucket: Storage bucket. If not specified, it uses the default
+                bucket.
+            database_name: Database name.
+            object_store_name: Object store name.
         """
-        params = GetMetadataParams(
-            security_origin=security_origin,
-            storage_key=storage_key,
-            storage_bucket=storage_bucket,
-            database_name=database_name,
-            object_store_name=object_store_name,
-        )
+        _params: dict[str, Any] = {}
+        if security_origin is not None:
+            _params["securityOrigin"] = security_origin
+        if storage_key is not None:
+            _params["storageKey"] = storage_key
+        if storage_bucket is not None:
+            _params["storageBucket"] = _encode_value(storage_bucket)
+        _params["databaseName"] = database_name
+        _params["objectStoreName"] = object_store_name
 
         result = await self._executor.execute(
             method=IndexedDBCommand.GET_METADATA,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(GetMetadataResult, result)
 
@@ -202,17 +255,27 @@ class IndexedDB:
     ) -> RequestDatabaseResult:
         """
         Requests database with given name in given frame.
+
+        Args:
+            security_origin: At least and at most one of securityOrigin, storageKey, or
+                storageBucket must be specified. Security origin.
+            storage_key: Storage key.
+            storage_bucket: Storage bucket. If not specified, it uses the default
+                bucket.
+            database_name: Database name.
         """
-        params = RequestDatabaseParams(
-            security_origin=security_origin,
-            storage_key=storage_key,
-            storage_bucket=storage_bucket,
-            database_name=database_name,
-        )
+        _params: dict[str, Any] = {}
+        if security_origin is not None:
+            _params["securityOrigin"] = security_origin
+        if storage_key is not None:
+            _params["storageKey"] = storage_key
+        if storage_bucket is not None:
+            _params["storageBucket"] = _encode_value(storage_bucket)
+        _params["databaseName"] = database_name
 
         result = await self._executor.execute(
             method=IndexedDBCommand.REQUEST_DATABASE,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(RequestDatabaseResult, result)
 
@@ -225,15 +288,24 @@ class IndexedDB:
     ) -> RequestDatabaseNamesResult:
         """
         Requests database names for given security origin.
+
+        Args:
+            security_origin: At least and at most one of securityOrigin, storageKey, or
+                storageBucket must be specified. Security origin.
+            storage_key: Storage key.
+            storage_bucket: Storage bucket. If not specified, it uses the default
+                bucket.
         """
-        params = RequestDatabaseNamesParams(
-            security_origin=security_origin,
-            storage_key=storage_key,
-            storage_bucket=storage_bucket,
-        )
+        _params: dict[str, Any] = {}
+        if security_origin is not None:
+            _params["securityOrigin"] = security_origin
+        if storage_key is not None:
+            _params["storageKey"] = storage_key
+        if storage_bucket is not None:
+            _params["storageBucket"] = _encode_value(storage_bucket)
 
         result = await self._executor.execute(
             method=IndexedDBCommand.REQUEST_DATABASE_NAMES,
-            params=encode_cdp(params),
+            params=_params,
         )
         return decode_cdp(RequestDatabaseNamesResult, result)

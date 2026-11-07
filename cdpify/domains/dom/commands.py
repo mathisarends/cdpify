@@ -88,33 +88,53 @@ class DOMCommand(StrEnum):
 class CollectClassNamesFromSubtreeParams:
     """
     Collects class names for the node with given id and all of it's child nodes.
+    Experimental: this API may change or be removed.
     """
 
     node_id: NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    Id of the node to collect class names.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class CollectClassNamesFromSubtreeResult:
     class_names: list[str] = field(metadata={"cdp_name": "classNames"})
+    """
+    Class name list.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class CopyToParams:
     """
     Creates a deep copy of the specified node and places it into the target container
-    before the given anchor.
+    before the given anchor. Experimental: this API may change or be removed.
     """
 
     node_id: NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    Id of the node to copy.
+    """
     target_node_id: NodeId = field(metadata={"cdp_name": "targetNodeId"})
+    """
+    Id of the element to drop the copy into.
+    """
     insert_before_node_id: NodeId | None = field(
         default=None, metadata={"cdp_name": "insertBeforeNodeId"}
     )
+    """
+    Drop the copy before this node (if absent, the copy becomes the last child of
+    `targetNodeId`).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class CopyToResult:
     node_id: NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    Id of the node clone.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -125,19 +145,39 @@ class DescribeNodeParams:
     """
 
     node_id: NodeId | None = field(default=None, metadata={"cdp_name": "nodeId"})
+    """
+    Identifier of the node.
+    """
     backend_node_id: BackendNodeId | None = field(
         default=None, metadata={"cdp_name": "backendNodeId"}
     )
+    """
+    Identifier of the backend node.
+    """
     object_id: runtime.RemoteObjectId | None = field(
         default=None, metadata={"cdp_name": "objectId"}
     )
+    """
+    JavaScript object id of the node wrapper.
+    """
     depth: int | None = None
+    """
+    The maximum depth at which children should be retrieved, defaults to 1. Use -1 for
+    the entire subtree or provide an integer larger than 0.
+    """
     pierce: bool | None = None
+    """
+    Whether or not iframes and shadow roots should be traversed when returning the
+    subtree (default is false).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class DescribeNodeResult:
     node: Node
+    """
+    Node description.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -149,23 +189,41 @@ class ScrollIntoViewIfNeededParams:
     """
 
     node_id: NodeId | None = field(default=None, metadata={"cdp_name": "nodeId"})
+    """
+    Identifier of the node.
+    """
     backend_node_id: BackendNodeId | None = field(
         default=None, metadata={"cdp_name": "backendNodeId"}
     )
+    """
+    Identifier of the backend node.
+    """
     object_id: runtime.RemoteObjectId | None = field(
         default=None, metadata={"cdp_name": "objectId"}
     )
+    """
+    JavaScript object id of the node wrapper.
+    """
     rect: Rect | None = None
+    """
+    The rect to be scrolled into view, relative to the node's border box, in CSS
+    pixels. When omitted, center of the node will be used, similar to
+    Element.scrollIntoView.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class DiscardSearchResultsParams:
     """
     Discards search results from the session with the given id. `getSearchResults`
-    should no longer be called for that search.
+    should no longer be called for that search. Experimental: this API may change or be
+    removed.
     """
 
     search_id: str = field(metadata={"cdp_name": "searchId"})
+    """
+    Unique search session identifier.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -177,6 +235,10 @@ class EnableParams:
     include_whitespace: Literal["none", "all"] | None = field(
         default=None, metadata={"cdp_name": "includeWhitespace"}
     )
+    """
+    Whether to include whitespaces in the children array of returned Nodes.
+    Experimental: this API may change or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -186,12 +248,21 @@ class FocusParams:
     """
 
     node_id: NodeId | None = field(default=None, metadata={"cdp_name": "nodeId"})
+    """
+    Identifier of the node.
+    """
     backend_node_id: BackendNodeId | None = field(
         default=None, metadata={"cdp_name": "backendNodeId"}
     )
+    """
+    Identifier of the backend node.
+    """
     object_id: runtime.RemoteObjectId | None = field(
         default=None, metadata={"cdp_name": "objectId"}
     )
+    """
+    JavaScript object id of the node wrapper.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -201,11 +272,17 @@ class GetAttributesParams:
     """
 
     node_id: NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    Id of the node to retrieve attributes for.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetAttributesResult:
     attributes: list[str]
+    """
+    An interleaved array of node attribute names and values.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -215,38 +292,62 @@ class GetBoxModelParams:
     """
 
     node_id: NodeId | None = field(default=None, metadata={"cdp_name": "nodeId"})
+    """
+    Identifier of the node.
+    """
     backend_node_id: BackendNodeId | None = field(
         default=None, metadata={"cdp_name": "backendNodeId"}
     )
+    """
+    Identifier of the backend node.
+    """
     object_id: runtime.RemoteObjectId | None = field(
         default=None, metadata={"cdp_name": "objectId"}
     )
+    """
+    JavaScript object id of the node wrapper.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetBoxModelResult:
     model: BoxModel
+    """
+    Box model for the node.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetContentQuadsParams:
     """
     Returns quads that describe node position on the page. This method might return
-    multiple quads for inline nodes.
+    multiple quads for inline nodes. Experimental: this API may change or be removed.
     """
 
     node_id: NodeId | None = field(default=None, metadata={"cdp_name": "nodeId"})
+    """
+    Identifier of the node.
+    """
     backend_node_id: BackendNodeId | None = field(
         default=None, metadata={"cdp_name": "backendNodeId"}
     )
+    """
+    Identifier of the backend node.
+    """
     object_id: runtime.RemoteObjectId | None = field(
         default=None, metadata={"cdp_name": "objectId"}
     )
+    """
+    JavaScript object id of the node wrapper.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetContentQuadsResult:
     quads: list[Quad]
+    """
+    Quads that describe node layout relative to viewport.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -257,12 +358,23 @@ class GetDocumentParams:
     """
 
     depth: int | None = None
+    """
+    The maximum depth at which children should be retrieved, defaults to 1. Use -1 for
+    the entire subtree or provide an integer larger than 0.
+    """
     pierce: bool | None = None
+    """
+    Whether or not iframes and shadow roots should be traversed when returning the
+    subtree (default is false).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetDocumentResult:
     root: Node
+    """
+    Resulting node.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -270,34 +382,59 @@ class GetFlattenedDocumentParams:
     """
     Returns the root DOM node (and optionally the subtree) to the caller. Deprecated,
     as it is not designed to work well with the rest of the DOM agent. Use
-    DOMSnapshot.captureSnapshot instead.
+    DOMSnapshot.captureSnapshot instead. Deprecated in the Chrome DevTools Protocol.
     """
 
     depth: int | None = None
+    """
+    The maximum depth at which children should be retrieved, defaults to 1. Use -1 for
+    the entire subtree or provide an integer larger than 0.
+    """
     pierce: bool | None = None
+    """
+    Whether or not iframes and shadow roots should be traversed when returning the
+    subtree (default is false).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetFlattenedDocumentResult:
     nodes: list[Node]
+    """
+    Resulting node.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetNodesForSubtreeByStyleParams:
     """
-    Finds nodes with a given computed style in a subtree.
+    Finds nodes with a given computed style in a subtree. Experimental: this API may
+    change or be removed.
     """
 
     node_id: NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    Node ID pointing to the root of a subtree.
+    """
     computed_styles: list[CSSComputedStyleProperty] = field(
         metadata={"cdp_name": "computedStyles"}
     )
+    """
+    The style to filter nodes by (includes nodes if any of properties matches).
+    """
     pierce: bool | None = None
+    """
+    Whether or not iframes and shadow roots in the same target should be traversed when
+    returning the results (default is false).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetNodesForSubtreeByStyleResult:
     node_ids: list[NodeId] = field(metadata={"cdp_name": "nodeIds"})
+    """
+    Resulting nodes.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -308,20 +445,41 @@ class GetNodeForLocationParams:
     """
 
     x: int
+    """
+    X coordinate.
+    """
     y: int
+    """
+    Y coordinate.
+    """
     include_user_agent_shadow_dom: bool | None = field(
         default=None, metadata={"cdp_name": "includeUserAgentShadowDOM"}
     )
+    """
+    False to skip to the nearest non-UA shadow root ancestor (default: false).
+    """
     ignore_pointer_events_none: bool | None = field(
         default=None, metadata={"cdp_name": "ignorePointerEventsNone"}
     )
+    """
+    Whether to ignore pointer-events: none on elements and hit test them.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetNodeForLocationResult:
     backend_node_id: BackendNodeId = field(metadata={"cdp_name": "backendNodeId"})
+    """
+    Resulting node.
+    """
     frame_id: page.FrameId = field(metadata={"cdp_name": "frameId"})
+    """
+    Frame this node belongs to.
+    """
     node_id: NodeId | None = field(default=None, metadata={"cdp_name": "nodeId"})
+    """
+    Id of the node at given coordinates, only when enabled and requested document.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -331,51 +489,86 @@ class GetOuterHTMLParams:
     """
 
     node_id: NodeId | None = field(default=None, metadata={"cdp_name": "nodeId"})
+    """
+    Identifier of the node.
+    """
     backend_node_id: BackendNodeId | None = field(
         default=None, metadata={"cdp_name": "backendNodeId"}
     )
+    """
+    Identifier of the backend node.
+    """
     object_id: runtime.RemoteObjectId | None = field(
         default=None, metadata={"cdp_name": "objectId"}
     )
+    """
+    JavaScript object id of the node wrapper.
+    """
     include_shadow_dom: bool | None = field(
         default=None, metadata={"cdp_name": "includeShadowDOM"}
     )
+    """
+    Include all shadow roots. Equals to false if not specified. Experimental: this API
+    may change or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetOuterHTMLResult:
     outer_html: str = field(metadata={"cdp_name": "outerHTML"})
+    """
+    Outer HTML markup.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetRelayoutBoundaryParams:
     """
-    Returns the id of the nearest ancestor that is a relayout boundary.
+    Returns the id of the nearest ancestor that is a relayout boundary. Experimental:
+    this API may change or be removed.
     """
 
     node_id: NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    Id of the node.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetRelayoutBoundaryResult:
     node_id: NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    Relayout boundary node id for the given node.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetSearchResultsParams:
     """
     Returns search results from given `fromIndex` to given `toIndex` from the search
-    with the given identifier.
+    with the given identifier. Experimental: this API may change or be removed.
     """
 
     search_id: str = field(metadata={"cdp_name": "searchId"})
+    """
+    Unique search session identifier.
+    """
     from_index: int = field(metadata={"cdp_name": "fromIndex"})
+    """
+    Start index of the search result to be returned.
+    """
     to_index: int = field(metadata={"cdp_name": "toIndex"})
+    """
+    End index of the search result to be returned.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetSearchResultsResult:
     node_ids: list[NodeId] = field(metadata={"cdp_name": "nodeIds"})
+    """
+    Ids of the search result nodes.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -385,64 +578,105 @@ class MoveToParams:
     """
 
     node_id: NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    Id of the node to move.
+    """
     target_node_id: NodeId = field(metadata={"cdp_name": "targetNodeId"})
+    """
+    Id of the element to drop the moved node into.
+    """
     insert_before_node_id: NodeId | None = field(
         default=None, metadata={"cdp_name": "insertBeforeNodeId"}
     )
+    """
+    Drop node before this one (if absent, the moved node becomes the last child of
+    `targetNodeId`).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class MoveToResult:
     node_id: NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    New id of the moved node.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class PerformSearchParams:
     """
     Searches for a given string in the DOM tree. Use `getSearchResults` to access
-    search results or `cancelSearch` to end this search session.
+    search results or `cancelSearch` to end this search session. Experimental: this API
+    may change or be removed.
     """
 
     query: str
+    """
+    Plain text or query selector or XPath search query.
+    """
     include_user_agent_shadow_dom: bool | None = field(
         default=None, metadata={"cdp_name": "includeUserAgentShadowDOM"}
     )
+    """
+    True to search in user agent shadow DOM.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class PerformSearchResult:
     search_id: str = field(metadata={"cdp_name": "searchId"})
+    """
+    Unique search session identifier.
+    """
     result_count: int = field(metadata={"cdp_name": "resultCount"})
+    """
+    Number of search results.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class PushNodeByPathToFrontendParams:
     """
     Requests that the node is sent to the caller given its path. // FIXME, use XPath
+    Experimental: this API may change or be removed.
     """
 
     path: str
+    """
+    Path to node in the proprietary format.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class PushNodeByPathToFrontendResult:
     node_id: NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    Id of the node for given path.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class PushNodesByBackendIdsToFrontendParams:
     """
     Requests that a batch of nodes is sent to the caller given their backend node ids.
+    Experimental: this API may change or be removed.
     """
 
     backend_node_ids: list[BackendNodeId] = field(
         metadata={"cdp_name": "backendNodeIds"}
     )
+    """
+    The array of backend node ids.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class PushNodesByBackendIdsToFrontendResult:
     node_ids: list[NodeId] = field(metadata={"cdp_name": "nodeIds"})
+    """
+    The array of ids of pushed nodes that correspond to the backend ids specified in
+    backendNodeIds.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -452,12 +686,21 @@ class QuerySelectorParams:
     """
 
     node_id: NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    Id of the node to query upon.
+    """
     selector: str
+    """
+    Selector string.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class QuerySelectorResult:
     node_id: NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    Query selector result.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -467,32 +710,54 @@ class QuerySelectorAllParams:
     """
 
     node_id: NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    Id of the node to query upon.
+    """
     selector: str
+    """
+    Selector string.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class QuerySelectorAllResult:
     node_ids: list[NodeId] = field(metadata={"cdp_name": "nodeIds"})
+    """
+    Query selector result.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetTopLayerElementsResult:
     node_ids: list[NodeId] = field(metadata={"cdp_name": "nodeIds"})
+    """
+    NodeIds of top layer elements
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetElementByRelationParams:
     """
     Returns the NodeId of the matched element according to certain relations.
+    Experimental: this API may change or be removed.
     """
 
     node_id: NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    Id of the node from which to query the relation.
+    """
     relation: Literal["PopoverTarget", "InterestTarget", "CommandFor"]
+    """
+    Type of relation to get.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetElementByRelationResult:
     node_id: NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    NodeId of the element matching the queried relation.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -502,7 +767,13 @@ class RemoveAttributeParams:
     """
 
     node_id: NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    Id of the element to remove attribute from.
+    """
     name: str
+    """
+    Name of the attribute to remove.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -512,6 +783,9 @@ class RemoveNodeParams:
     """
 
     node_id: NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    Id of the node to remove.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -523,8 +797,19 @@ class RequestChildNodesParams:
     """
 
     node_id: NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    Id of the node to get children for.
+    """
     depth: int | None = None
+    """
+    The maximum depth at which children should be retrieved, defaults to 1. Use -1 for
+    the entire subtree or provide an integer larger than 0.
+    """
     pierce: bool | None = None
+    """
+    Whether or not iframes and shadow roots should be traversed when returning the
+    sub-tree (default is false).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -536,11 +821,17 @@ class RequestNodeParams:
     """
 
     object_id: runtime.RemoteObjectId = field(metadata={"cdp_name": "objectId"})
+    """
+    JavaScript object id to convert into node.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class RequestNodeResult:
     node_id: NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    Node id for given object.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -550,18 +841,33 @@ class ResolveNodeParams:
     """
 
     node_id: NodeId | None = field(default=None, metadata={"cdp_name": "nodeId"})
+    """
+    Id of the node to resolve.
+    """
     backend_node_id: dom.BackendNodeId | None = field(
         default=None, metadata={"cdp_name": "backendNodeId"}
     )
+    """
+    Backend identifier of the node to resolve.
+    """
     object_group: str | None = field(default=None, metadata={"cdp_name": "objectGroup"})
+    """
+    Symbolic group name that can be used to release multiple objects.
+    """
     execution_context_id: runtime.ExecutionContextId | None = field(
         default=None, metadata={"cdp_name": "executionContextId"}
     )
+    """
+    Execution context in which to resolve the node.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class ResolveNodeResult:
     object: runtime.RemoteObject
+    """
+    JavaScript object wrapper for given node.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -571,8 +877,17 @@ class SetAttributeValueParams:
     """
 
     node_id: NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    Id of the element to set attribute for.
+    """
     name: str
+    """
+    Attribute name.
+    """
     value: str
+    """
+    Attribute value.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -583,8 +898,18 @@ class SetAttributesAsTextParams:
     """
 
     node_id: NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    Id of the element to set attributes for.
+    """
     text: str
+    """
+    Text with a number of attributes. Will parse this text using HTML parser.
+    """
     name: str | None = None
+    """
+    Attribute name to replace with new attributes derived from text in case text parsed
+    successfully.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -594,47 +919,72 @@ class SetFileInputFilesParams:
     """
 
     files: list[str]
+    """
+    Array of file paths to set.
+    """
     node_id: NodeId | None = field(default=None, metadata={"cdp_name": "nodeId"})
+    """
+    Identifier of the node.
+    """
     backend_node_id: BackendNodeId | None = field(
         default=None, metadata={"cdp_name": "backendNodeId"}
     )
+    """
+    Identifier of the backend node.
+    """
     object_id: runtime.RemoteObjectId | None = field(
         default=None, metadata={"cdp_name": "objectId"}
     )
+    """
+    JavaScript object id of the node wrapper.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SetNodeStackTracesEnabledParams:
     """
     Sets if stack traces should be captured for Nodes. See `Node.getNodeStackTraces`.
-    Default is disabled.
+    Default is disabled. Experimental: this API may change or be removed.
     """
 
     enable: bool
+    """
+    Enable or disable.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetNodeStackTracesParams:
     """
     Gets stack traces associated with a Node. As of now, only provides stack trace for
-    Node creation.
+    Node creation. Experimental: this API may change or be removed.
     """
 
     node_id: NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    Id of the node to get stack traces for.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetNodeStackTracesResult:
     creation: runtime.StackTrace | None = None
+    """
+    Creation stack trace, if available.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetFileInfoParams:
     """
-    Returns file information for the given File wrapper.
+    Returns file information for the given File wrapper. Experimental: this API may
+    change or be removed.
     """
 
     object_id: runtime.RemoteObjectId = field(metadata={"cdp_name": "objectId"})
+    """
+    JavaScript object id of the node wrapper.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -647,16 +997,22 @@ class GetDetachedDomNodesResult:
     detached_nodes: list[DetachedElementInfo] = field(
         metadata={"cdp_name": "detachedNodes"}
     )
+    """
+    The list of detached nodes
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SetInspectedNodeParams:
     """
     Enables console to refer to the node with given id via $x (see Command Line API for
-    more details $x functions).
+    more details $x functions). Experimental: this API may change or be removed.
     """
 
     node_id: NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    DOM node id to be accessible by means of $x command line API.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -666,12 +1022,21 @@ class SetNodeNameParams:
     """
 
     node_id: NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    Id of the node to set name for.
+    """
     name: str
+    """
+    New node's name.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SetNodeNameResult:
     node_id: NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    New node's id.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -681,7 +1046,13 @@ class SetNodeValueParams:
     """
 
     node_id: NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    Id of the node to set value for.
+    """
     value: str
+    """
+    New node's value.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -691,13 +1062,20 @@ class SetOuterHTMLParams:
     """
 
     node_id: NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    Id of the node to set markup for.
+    """
     outer_html: str = field(metadata={"cdp_name": "outerHTML"})
+    """
+    Outer HTML markup to set.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetFrameOwnerParams:
     """
-    Returns iframe node that owns iframe with the given domain.
+    Returns iframe node that owns iframe with the given domain. Experimental: this API
+    may change or be removed.
     """
 
     frame_id: page.FrameId = field(metadata={"cdp_name": "frameId"})
@@ -706,7 +1084,13 @@ class GetFrameOwnerParams:
 @dataclass(kw_only=True, slots=True)
 class GetFrameOwnerResult:
     backend_node_id: BackendNodeId = field(metadata={"cdp_name": "backendNodeId"})
+    """
+    Resulting node.
+    """
     node_id: NodeId | None = field(default=None, metadata={"cdp_name": "nodeId"})
+    """
+    Id of the node at given coordinates, only when enabled and requested document.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -716,7 +1100,7 @@ class GetContainerForNodeParams:
     containerName, physical and logical axes, and whether it queries scroll-state or
     anchored elements. If no axes are provided and queriesScrollState is false, the
     style container is returned, which is the direct parent or the closest element with
-    a matching container-name.
+    a matching container-name. Experimental: this API may change or be removed.
     """
 
     node_id: NodeId = field(metadata={"cdp_name": "nodeId"})
@@ -740,67 +1124,108 @@ class GetContainerForNodeParams:
 @dataclass(kw_only=True, slots=True)
 class GetContainerForNodeResult:
     node_id: NodeId | None = field(default=None, metadata={"cdp_name": "nodeId"})
+    """
+    The container node for the given node, or null if not found.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetQueryingDescendantsForContainerParams:
     """
     Returns the descendants of a container query container that have container queries
-    against this container.
+    against this container. Experimental: this API may change or be removed.
     """
 
     node_id: NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    Id of the container node to find querying descendants from.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetQueryingDescendantsForContainerResult:
     node_ids: list[NodeId] = field(metadata={"cdp_name": "nodeIds"})
+    """
+    Descendant nodes with container queries against the given container.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetAnchorElementParams:
     """
     Returns the target anchor element of the given anchor query according to
-    https://www.w3.org/TR/css-anchor-position-1/#target.
+    https://www.w3.org/TR/css-anchor-position-1/#target. Experimental: this API may
+    change or be removed.
     """
 
     node_id: NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    Id of the positioned element from which to find the anchor.
+    """
     anchor_specifier: str | None = field(
         default=None, metadata={"cdp_name": "anchorSpecifier"}
     )
+    """
+    An optional anchor specifier, as defined in
+    https://www.w3.org/TR/css-anchor-position-1/#anchor-specifier. If not provided, it
+    will return the implicit anchor element for the given positioned element.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetAnchorElementResult:
     node_id: NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    The anchor element of the given anchor query.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class ForceShowPopoverParams:
     """
     When enabling, this API force-opens the popover identified by nodeId and keeps it
-    open until disabled.
+    open until disabled. Experimental: this API may change or be removed.
     """
 
     node_id: NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    Id of the popover HTMLElement
+    """
     enable: bool
+    """
+    If true, opens the popover and keeps it open. If false, closes the popover if it
+    was previously force-opened.
+    """
     invoker_node_id: BackendNodeId | None = field(
         default=None, metadata={"cdp_name": "invokerNodeId"}
     )
+    """
+    Optional ID of the element invoking this popover, used to establish the implicit
+    anchor. If not provided, it will fall back to the first invoker in the document,
+    preferring elements with a popovertarget attribute over those with a commandfor
+    attribute. Note that if there are multiple invokers, this is just an estimate.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class ForceShowPopoverResult:
     node_ids: list[NodeId] = field(metadata={"cdp_name": "nodeIds"})
+    """
+    List of popovers that were closed in order to respect popover stacking order.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetImplicitAnchorCandidatesParams:
     """
     Returns candidate nodes that are configured as triggers for the given popover.
+    Experimental: this API may change or be removed.
     """
 
     node_id: NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    Id of the popover HTMLElement.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -808,17 +1233,26 @@ class GetImplicitAnchorCandidatesResult:
     backend_node_ids: list[BackendNodeId] = field(
         metadata={"cdp_name": "backendNodeIds"}
     )
+    """
+    Candidate elements that can invoke this popover.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class ForceShowInterestParams:
     """
     When enabling, this API forces an element to gain interest in its target, keeping
-    interest active until disabled.
+    interest active until disabled. Experimental: this API may change or be removed.
     """
 
     node_id: NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    Id of the interest invoker HTMLElement.
+    """
     enable: bool
+    """
+    If true, opens and holds interest. If false, releases forced interest.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -827,16 +1261,37 @@ class SetTextMarkerParams:
     Sets a spelling or grammar error marker on the given range of text. See
     https://github.com/Igalia/explainers/blob/main/force-spelling-grammar-markers/README.md
     Note: exactly one between nodeId, backendNodeId and objectId should be passed to
-    identify the node.
+    identify the node. Experimental: this API may change or be removed.
     """
 
     node_id: NodeId | None = field(default=None, metadata={"cdp_name": "nodeId"})
+    """
+    Identifier of the node.
+    """
     backend_node_id: BackendNodeId | None = field(
         default=None, metadata={"cdp_name": "backendNodeId"}
     )
+    """
+    Identifier of the backend node.
+    """
     object_id: runtime.RemoteObjectId | None = field(
         default=None, metadata={"cdp_name": "objectId"}
     )
+    """
+    JavaScript object id of the node wrapper.
+    """
     type: Literal["spelling", "grammar"]
+    """
+    The type of marker to set on the given range of text.
+    """
     start: int
+    """
+    Start offset into the element's rendered text in UTF-16 code units. For a text
+    control, an offset into the control's value. Offsets count text in DOM order and do
+    not enter shadow trees. To mark text inside a shadow tree, pass the element inside
+    the shadow tree.
+    """
     end: int
+    """
+    End offset (exclusive) in the same units and space as start.
+    """

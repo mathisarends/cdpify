@@ -17,6 +17,9 @@ class AffectedCookie:
     """
 
     name: str
+    """
+    The following three properties uniquely identify a cookie
+    """
     path: str
     domain: str
 
@@ -30,6 +33,9 @@ class AffectedRequest:
     request_id: network.RequestId | None = field(
         default=None, metadata={"cdp_name": "requestId"}
     )
+    """
+    The unique request id.
+    """
     url: str
 
 
@@ -105,6 +111,9 @@ class CookieIssueInsight:
     table_entry_url: str | None = field(
         default=None, metadata={"cdp_name": "tableEntryUrl"}
     )
+    """
+    Link to table entry in third-party cookie migration readiness list.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -116,6 +125,11 @@ class CookieIssueDetails:
     """
 
     cookie: AffectedCookie | None = None
+    """
+    If AffectedCookie is not set then rawCookieLine contains the raw Set-Cookie header
+    string. This hints at a problem where the cookie line is syntactically or
+    semantically malformed in a way that no valid cookie could be created.
+    """
     raw_cookie_line: str | None = field(
         default=None, metadata={"cdp_name": "rawCookieLine"}
     )
@@ -126,12 +140,19 @@ class CookieIssueDetails:
         metadata={"cdp_name": "cookieExclusionReasons"}
     )
     operation: CookieOperation
+    """
+    Optionally identifies the site-for-cookies and the cookie url, which may be used by
+    the front-end as additional context.
+    """
     site_for_cookies: str | None = field(
         default=None, metadata={"cdp_name": "siteForCookies"}
     )
     cookie_url: str | None = field(default=None, metadata={"cdp_name": "cookieUrl"})
     request: AffectedRequest | None = None
     insight: CookieIssueInsight | None = None
+    """
+    The recommended solution to the issue.
+    """
 
 
 class PerformanceIssueType(CDPStrEnum):
@@ -194,13 +215,34 @@ class MixedContentIssueDetails:
     resource_type: MixedContentResourceType | None = field(
         default=None, metadata={"cdp_name": "resourceType"}
     )
+    """
+    The type of resource causing the mixed content issue (css, js, iframe, form,...).
+    Marked as optional because it is mapped to from blink::mojom::RequestContextType,
+    which will be replaced by network::mojom::RequestDestination
+    """
     resolution_status: MixedContentResolutionStatus = field(
         metadata={"cdp_name": "resolutionStatus"}
     )
+    """
+    The way the mixed content issue is being resolved.
+    """
     insecure_url: str = field(metadata={"cdp_name": "insecureURL"})
+    """
+    The unsafe http url causing the mixed content issue.
+    """
     main_resource_url: str = field(metadata={"cdp_name": "mainResourceURL"})
+    """
+    The url responsible for the call to an unsafe url.
+    """
     request: AffectedRequest | None = None
+    """
+    The mixed content request. Does not always exist (e.g. for unsafe form submission
+    urls).
+    """
     frame: AffectedFrame | None = None
+    """
+    Optional because not every mixed content issue is necessarily linked to a frame.
+    """
 
 
 class BlockedByResponseReason(CDPStrEnum):
@@ -259,8 +301,17 @@ class HeavyAdReason(CDPStrEnum):
 @dataclass(kw_only=True, slots=True)
 class HeavyAdIssueDetails:
     resolution: HeavyAdResolutionStatus
+    """
+    The resolution status, either blocking the content or warning.
+    """
     reason: HeavyAdReason
+    """
+    The reason the ad was blocked, total network or cpu or peak cpu.
+    """
     frame: AffectedFrame
+    """
+    The frame that was blocked.
+    """
 
 
 class ContentSecurityPolicyViolationType(CDPStrEnum):
@@ -286,7 +337,13 @@ class SourceCodeLocation:
 @dataclass(kw_only=True, slots=True)
 class ContentSecurityPolicyIssueDetails:
     blocked_url: str | None = field(default=None, metadata={"cdp_name": "blockedURL"})
+    """
+    The url not included in allowed sources.
+    """
     violated_directive: str = field(metadata={"cdp_name": "violatedDirective"})
+    """
+    Specific directive that is violated, causing the CSP issue.
+    """
     is_report_only: bool = field(metadata={"cdp_name": "isReportOnly"})
     content_security_policy_violation_type: ContentSecurityPolicyViolationType = field(
         metadata={"cdp_name": "contentSecurityPolicyViolationType"}
@@ -449,6 +506,9 @@ class QuirksModeIssueDetails:
     """
 
     is_limited_quirks_mode: bool = field(metadata={"cdp_name": "isLimitedQuirksMode"})
+    """
+    If false, it means the document's mode is "quirks" instead of "limited-quirks".
+    """
     document_node_id: dom.BackendNodeId = field(metadata={"cdp_name": "documentNodeId"})
     url: str
     frame_id: page.FrameId = field(metadata={"cdp_name": "frameId"})
@@ -457,6 +517,10 @@ class QuirksModeIssueDetails:
 
 @dataclass(kw_only=True, slots=True)
 class NavigatorUserAgentIssueDetails:
+    """
+    Deprecated in the Chrome DevTools Protocol.
+    """
+
     url: str
     location: SourceCodeLocation | None = None
 
@@ -543,6 +607,9 @@ class GenericIssueDetails:
     """
 
     error_type: GenericIssueErrorType = field(metadata={"cdp_name": "errorType"})
+    """
+    Issues with the same errorType are aggregated in the frontend.
+    """
     frame_id: page.FrameId | None = field(
         default=None, metadata={"cdp_name": "frameId"}
     )
@@ -569,6 +636,10 @@ class DeprecationIssueDetails:
         metadata={"cdp_name": "sourceCodeLocation"}
     )
     type: str
+    """
+    One of the deprecation names from
+    third_party/blink/renderer/core/frame/deprecation/deprecation.json5
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -804,7 +875,13 @@ class ClientHintIssueDetails:
 @dataclass(kw_only=True, slots=True)
 class FailedRequestInfo:
     url: str
+    """
+    The URL that failed to load.
+    """
     failure_message: str = field(metadata={"cdp_name": "failureMessage"})
+    """
+    The failure message for the failed request.
+    """
     request_id: network.RequestId | None = field(
         default=None, metadata={"cdp_name": "requestId"}
     )
@@ -818,9 +895,15 @@ class PartitioningBlobURLInfo(CDPStrEnum):
 @dataclass(kw_only=True, slots=True)
 class PartitioningBlobURLIssueDetails:
     url: str
+    """
+    The BlobURL that failed to load.
+    """
     partitioning_blob_url_info: PartitioningBlobURLInfo = field(
         metadata={"cdp_name": "partitioningBlobURLInfo"}
     )
+    """
+    Additional information about the Partitioning Blob URL issue.
+    """
 
 
 class ElementAccessibilityIssueReason(CDPStrEnum):
@@ -861,12 +944,21 @@ class StylesheetLoadingIssueDetails:
     source_code_location: SourceCodeLocation = field(
         metadata={"cdp_name": "sourceCodeLocation"}
     )
+    """
+    Source code position that referenced the failing stylesheet.
+    """
     style_sheet_loading_issue_reason: StyleSheetLoadingIssueReason = field(
         metadata={"cdp_name": "styleSheetLoadingIssueReason"}
     )
+    """
+    Reason why the stylesheet couldn't be loaded.
+    """
     failed_request_info: FailedRequestInfo | None = field(
         default=None, metadata={"cdp_name": "failedRequestInfo"}
     )
+    """
+    Contains additional info when the failure was due to a request.
+    """
 
 
 class PropertyRuleIssueReason(CDPStrEnum):
@@ -886,12 +978,21 @@ class PropertyRuleIssueDetails:
     source_code_location: SourceCodeLocation = field(
         metadata={"cdp_name": "sourceCodeLocation"}
     )
+    """
+    Source code position of the property rule.
+    """
     property_rule_issue_reason: PropertyRuleIssueReason = field(
         metadata={"cdp_name": "propertyRuleIssueReason"}
     )
+    """
+    Reason why the property rule was discarded.
+    """
     property_value: str | None = field(
         default=None, metadata={"cdp_name": "propertyValue"}
     )
+    """
+    The value of the property rule property that failed to parse
+    """
 
 
 class UserReidentificationIssueType(CDPStrEnum):
@@ -909,9 +1010,15 @@ class UserReidentificationIssueDetails:
 
     type: UserReidentificationIssueType
     request: AffectedRequest | None = None
+    """
+    Applies to BlockedFrameNavigation and BlockedSubresource issue types.
+    """
     source_code_location: SourceCodeLocation | None = field(
         default=None, metadata={"cdp_name": "sourceCodeLocation"}
     )
+    """
+    Applies to NoisedCanvasReadback issue type.
+    """
 
 
 class PermissionElementIssueType(CDPStrEnum):
@@ -948,22 +1055,44 @@ class PermissionElementIssueDetails:
 
     issue_type: PermissionElementIssueType = field(metadata={"cdp_name": "issueType"})
     type: str | None = None
+    """
+    The value of the type attribute.
+    """
     node_id: dom.BackendNodeId | None = field(
         default=None, metadata={"cdp_name": "nodeId"}
     )
+    """
+    The node ID of the <permission> element.
+    """
     is_warning: bool | None = field(default=None, metadata={"cdp_name": "isWarning"})
+    """
+    True if the issue is a warning, false if it is an error.
+    """
     permission_name: str | None = field(
         default=None, metadata={"cdp_name": "permissionName"}
     )
+    """
+    Fields for message construction: Used for messages that reference a specific
+    permission name
+    """
     occluder_node_info: str | None = field(
         default=None, metadata={"cdp_name": "occluderNodeInfo"}
     )
+    """
+    Used for messages about occlusion
+    """
     occluder_parent_node_info: str | None = field(
         default=None, metadata={"cdp_name": "occluderParentNodeInfo"}
     )
+    """
+    Used for messages about occluder's parent
+    """
     disable_reason: str | None = field(
         default=None, metadata={"cdp_name": "disableReason"}
     )
+    """
+    Used for messages about activation disabled reason
+    """
 
 
 class WebInstallIssueReason(CDPStrEnum):
@@ -993,10 +1122,19 @@ class SelectivePermissionsInterventionIssueDetails:
     """
 
     api_name: str = field(metadata={"cdp_name": "apiName"})
+    """
+    Which API was intervened on.
+    """
     ad_ancestry: network.AdAncestry = field(metadata={"cdp_name": "adAncestry"})
+    """
+    Why the ad script using the API is considered an ad.
+    """
     stack_trace: runtime.StackTrace | None = field(
         default=None, metadata={"cdp_name": "stackTrace"}
     )
+    """
+    The stack trace at the time of the intervention.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -1006,8 +1144,17 @@ class LazyLoadImageIssueDetails:
     """
 
     node_id: dom.BackendNodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    DOM node of the problematic HTMLImageElement.
+    """
     url: str
+    """
+    URL or src attribute of the image.
+    """
     frame_id: page.FrameId = field(metadata={"cdp_name": "frameId"})
+    """
+    Frame containing the image.
+    """
 
 
 class InspectorIssueCode(CDPStrEnum):
@@ -1091,6 +1238,9 @@ class InspectorIssueDetails:
     navigator_user_agent_issue_details: NavigatorUserAgentIssueDetails | None = field(
         default=None, metadata={"cdp_name": "navigatorUserAgentIssueDetails"}
     )
+    """
+    Deprecated in the Chrome DevTools Protocol.
+    """
     generic_issue_details: GenericIssueDetails | None = field(
         default=None, metadata={"cdp_name": "genericIssueDetails"}
     )
@@ -1193,3 +1343,7 @@ class InspectorIssue:
     code: InspectorIssueCode
     details: InspectorIssueDetails
     issue_id: IssueId | None = field(default=None, metadata={"cdp_name": "issueId"})
+    """
+    A unique id for this issue. May be omitted if no other entity (e.g. exception, CDP
+    message, etc.) is referencing this issue.
+    """

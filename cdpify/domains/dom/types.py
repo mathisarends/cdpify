@@ -34,7 +34,13 @@ class BackendNode:
     """
 
     node_type: int = field(metadata={"cdp_name": "nodeType"})
+    """
+    `Node`'s nodeType.
+    """
     node_name: str = field(metadata={"cdp_name": "nodeName"})
+    """
+    `Node`'s nodeName.
+    """
     backend_node_id: BackendNodeId = field(metadata={"cdp_name": "backendNodeId"})
 
 
@@ -146,58 +152,151 @@ class Node:
     """
 
     node_id: NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    Node identifier that is passed into the rest of the DOM messages as the `nodeId`.
+    Backend will only push node with given `id` once. It is aware of all requested nodes
+    and will only fire DOM events for nodes known to the client.
+    """
     parent_id: NodeId | None = field(default=None, metadata={"cdp_name": "parentId"})
+    """
+    The id of the parent node if any.
+    """
     backend_node_id: BackendNodeId = field(metadata={"cdp_name": "backendNodeId"})
+    """
+    The BackendNodeId for this node.
+    """
     node_type: int = field(metadata={"cdp_name": "nodeType"})
+    """
+    `Node`'s nodeType.
+    """
     node_name: str = field(metadata={"cdp_name": "nodeName"})
+    """
+    `Node`'s nodeName.
+    """
     local_name: str = field(metadata={"cdp_name": "localName"})
+    """
+    `Node`'s localName.
+    """
     node_value: str = field(metadata={"cdp_name": "nodeValue"})
+    """
+    `Node`'s nodeValue.
+    """
     child_node_count: int | None = field(
         default=None, metadata={"cdp_name": "childNodeCount"}
     )
+    """
+    Child count for `Container` nodes.
+    """
     children: list[Node] | None = None
+    """
+    Child nodes of this node when requested with children.
+    """
     attributes: list[str] | None = None
+    """
+    Attributes of the `Element` node in the form of flat array `[name1, value1, name2,
+    value2]`.
+    """
     document_url: str | None = field(default=None, metadata={"cdp_name": "documentURL"})
+    """
+    Document URL that `Document` or `FrameOwner` node points to.
+    """
     base_url: str | None = field(default=None, metadata={"cdp_name": "baseURL"})
+    """
+    Base URL that `Document` or `FrameOwner` node uses for URL completion.
+    """
     public_id: str | None = field(default=None, metadata={"cdp_name": "publicId"})
+    """
+    `DocumentType`'s publicId.
+    """
     system_id: str | None = field(default=None, metadata={"cdp_name": "systemId"})
+    """
+    `DocumentType`'s systemId.
+    """
     internal_subset: str | None = field(
         default=None, metadata={"cdp_name": "internalSubset"}
     )
+    """
+    `DocumentType`'s internalSubset.
+    """
     xml_version: str | None = field(default=None, metadata={"cdp_name": "xmlVersion"})
+    """
+    `Document`'s XML version in case of XML documents.
+    """
     name: str | None = None
+    """
+    `Attr`'s name.
+    """
     value: str | None = None
+    """
+    `Attr`'s value.
+    """
     pseudo_type: PseudoType | None = field(
         default=None, metadata={"cdp_name": "pseudoType"}
     )
+    """
+    Pseudo element type for this node.
+    """
     pseudo_identifier: str | None = field(
         default=None, metadata={"cdp_name": "pseudoIdentifier"}
     )
+    """
+    Pseudo element identifier for this node. Only present if there is a valid
+    pseudoType.
+    """
     shadow_root_type: ShadowRootType | None = field(
         default=None, metadata={"cdp_name": "shadowRootType"}
     )
+    """
+    Shadow root type.
+    """
     frame_id: page.FrameId | None = field(
         default=None, metadata={"cdp_name": "frameId"}
     )
+    """
+    Frame ID for frame owner elements.
+    """
     content_document: Node | None = field(
         default=None, metadata={"cdp_name": "contentDocument"}
     )
+    """
+    Content document for frame owner elements.
+    """
     shadow_roots: list[Node] | None = field(
         default=None, metadata={"cdp_name": "shadowRoots"}
     )
+    """
+    Shadow root list for given element host.
+    """
     template_content: Node | None = field(
         default=None, metadata={"cdp_name": "templateContent"}
     )
+    """
+    Content document fragment for template elements.
+    """
     pseudo_elements: list[Node] | None = field(
         default=None, metadata={"cdp_name": "pseudoElements"}
     )
+    """
+    Pseudo elements associated with this node.
+    """
     imported_document: Node | None = field(
         default=None, metadata={"cdp_name": "importedDocument"}
     )
+    """
+    Deprecated, as the HTML Imports API has been removed (crbug.com/937746). This
+    property used to return the imported document for the HTMLImport links. The property
+    is always undefined now. Deprecated in the Chrome DevTools Protocol.
+    """
     distributed_nodes: list[BackendNode] | None = field(
         default=None, metadata={"cdp_name": "distributedNodes"}
     )
+    """
+    Distributed nodes for given insertion point.
+    """
     is_svg: bool | None = field(default=None, metadata={"cdp_name": "isSVG"})
+    """
+    Whether the node is SVG.
+    """
     compatibility_mode: CompatibilityMode | None = field(
         default=None, metadata={"cdp_name": "compatibilityMode"}
     )
@@ -207,15 +306,27 @@ class Node:
     is_scrollable: bool | None = field(
         default=None, metadata={"cdp_name": "isScrollable"}
     )
+    """
+    Experimental: this API may change or be removed.
+    """
     affected_by_starting_styles: bool | None = field(
         default=None, metadata={"cdp_name": "affectedByStartingStyles"}
     )
+    """
+    Experimental: this API may change or be removed.
+    """
     adopted_style_sheets: list[StyleSheetId] | None = field(
         default=None, metadata={"cdp_name": "adoptedStyleSheets"}
     )
+    """
+    Experimental: this API may change or be removed.
+    """
     ad_provenance: network.AdProvenance | None = field(
         default=None, metadata={"cdp_name": "adProvenance"}
     )
+    """
+    Experimental: this API may change or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -236,9 +347,21 @@ class RGBA:
     """
 
     r: int
+    """
+    The red component, in the [0-255] range.
+    """
     g: int
+    """
+    The green component, in the [0-255] range.
+    """
     b: int
+    """
+    The blue component, in the [0-255] range.
+    """
     a: float | None = None
+    """
+    The alpha component, in the [0-1] range (default: 1).
+    """
 
 
 type Quad = list[float]
@@ -255,14 +378,35 @@ class BoxModel:
     """
 
     content: Quad
+    """
+    Content box
+    """
     padding: Quad
+    """
+    Padding box
+    """
     border: Quad
+    """
+    Border box
+    """
     margin: Quad
+    """
+    Margin box
+    """
     width: int
+    """
+    Node width
+    """
     height: int
+    """
+    Node height
+    """
     shape_outside: ShapeOutsideInfo | None = field(
         default=None, metadata={"cdp_name": "shapeOutside"}
     )
+    """
+    Shape outside coordinates
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -272,8 +416,17 @@ class ShapeOutsideInfo:
     """
 
     bounds: Quad
+    """
+    Shape bounds
+    """
     shape: list[Any]
+    """
+    Shape coordinate details
+    """
     margin_shape: list[Any] = field(metadata={"cdp_name": "marginShape"})
+    """
+    Margin shape bounds
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -283,12 +436,30 @@ class Rect:
     """
 
     x: float
+    """
+    X coordinate
+    """
     y: float
+    """
+    Y coordinate
+    """
     width: float
+    """
+    Rectangle width
+    """
     height: float
+    """
+    Rectangle height
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class CSSComputedStyleProperty:
     name: str
+    """
+    Computed style property name.
+    """
     value: str
+    """
+    Computed style property value.
+    """

@@ -26,4 +26,10 @@ class MetricsEvent:
     __cdp_event__: ClassVar[PerformanceEvent] = PerformanceEvent.METRICS
 
     metrics: list[Metric]
+    """
+    Current values of the metrics.
+    """
     title: str
+    """
+    Timestamp title.
+    """
