@@ -28,20 +28,31 @@ class CertificateErrorEvent:
     There is a certificate error. If overriding certificate errors is enabled, then it
     should be handled with the `handleCertificateError` command. Note: this event does
     not fire if the certificate error has been allowed internally. Only one client per
-    target should override certificate errors at the same time.
+    target should override certificate errors at the same time. Deprecated in the Chrome
+    DevTools Protocol.
     """
 
     __cdp_event__: ClassVar[SecurityEvent] = SecurityEvent.CERTIFICATE_ERROR
 
     event_id: int = field(metadata={"cdp_name": "eventId"})
+    """
+    The ID of the event.
+    """
     error_type: str = field(metadata={"cdp_name": "errorType"})
+    """
+    The type of the error.
+    """
     request_url: str = field(metadata={"cdp_name": "requestURL"})
+    """
+    The url that was requested.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class VisibleSecurityStateChangedEvent:
     """
-    The security state of the page changed.
+    The security state of the page changed. Experimental: this API may change or be
+    removed.
     """
 
     __cdp_event__: ClassVar[SecurityEvent] = (
@@ -51,22 +62,45 @@ class VisibleSecurityStateChangedEvent:
     visible_security_state: VisibleSecurityState = field(
         metadata={"cdp_name": "visibleSecurityState"}
     )
+    """
+    Security state information about the page.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SecurityStateChangedEvent:
     """
-    The security state of the page changed. No longer being sent.
+    The security state of the page changed. No longer being sent. Deprecated in the
+    Chrome DevTools Protocol.
     """
 
     __cdp_event__: ClassVar[SecurityEvent] = SecurityEvent.SECURITY_STATE_CHANGED
 
     security_state: SecurityState = field(metadata={"cdp_name": "securityState"})
+    """
+    Security state.
+    """
     scheme_is_cryptographic: bool = field(
         metadata={"cdp_name": "schemeIsCryptographic"}
     )
+    """
+    True if the page was loaded over cryptographic transport such as HTTPS. Deprecated
+    in the Chrome DevTools Protocol.
+    """
     explanations: list[SecurityStateExplanation]
+    """
+    Previously a list of explanations for the security state. Now always empty.
+    Deprecated in the Chrome DevTools Protocol.
+    """
     insecure_content_status: InsecureContentStatus = field(
         metadata={"cdp_name": "insecureContentStatus"}
     )
+    """
+    Information about insecure content on the page. Deprecated in the Chrome DevTools
+    Protocol.
+    """
     summary: str | None = None
+    """
+    Overrides user-visible description of the state. Always omitted. Deprecated in the
+    Chrome DevTools Protocol.
+    """

@@ -110,7 +110,8 @@ class PageCommand(StrEnum):
 @dataclass(kw_only=True, slots=True)
 class AddScriptToEvaluateOnLoadParams:
     """
-    Deprecated, please use addScriptToEvaluateOnNewDocument instead.
+    Deprecated, please use addScriptToEvaluateOnNewDocument instead. Experimental: this
+    API may change or be removed. Deprecated in the Chrome DevTools Protocol.
     """
 
     script_source: str = field(metadata={"cdp_name": "scriptSource"})
@@ -119,6 +120,9 @@ class AddScriptToEvaluateOnLoadParams:
 @dataclass(kw_only=True, slots=True)
 class AddScriptToEvaluateOnLoadResult:
     identifier: ScriptIdentifier
+    """
+    Identifier of the added script.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -130,17 +134,34 @@ class AddScriptToEvaluateOnNewDocumentParams:
 
     source: str
     world_name: str | None = field(default=None, metadata={"cdp_name": "worldName"})
+    """
+    If specified, creates an isolated world with the given name and evaluates given
+    script in it. This world name will be used as the ExecutionContextDescription::name
+    when the corresponding event is emitted. Experimental: this API may change or be
+    removed.
+    """
     include_command_line_api: bool | None = field(
         default=None, metadata={"cdp_name": "includeCommandLineAPI"}
     )
+    """
+    Specifies whether command line API should be available to the script, defaults to
+    false. Experimental: this API may change or be removed.
+    """
     run_immediately: bool | None = field(
         default=None, metadata={"cdp_name": "runImmediately"}
     )
+    """
+    If true, runs the script immediately on existing execution contexts or worlds.
+    Default: false. Experimental: this API may change or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class AddScriptToEvaluateOnNewDocumentResult:
     identifier: ScriptIdentifier
+    """
+    Identifier of the added script.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -150,22 +171,46 @@ class CaptureScreenshotParams:
     """
 
     format: Literal["jpeg", "png", "webp"] | None = None
+    """
+    Image compression format (defaults to png).
+    """
     quality: int | None = None
+    """
+    Compression quality from range [0..100] (jpeg only).
+    """
     clip: Viewport | None = None
+    """
+    Capture the screenshot of a given region only.
+    """
     from_surface: bool | None = field(
         default=None, metadata={"cdp_name": "fromSurface"}
     )
+    """
+    Capture the screenshot from the surface, rather than the view. Defaults to true.
+    Experimental: this API may change or be removed.
+    """
     capture_beyond_viewport: bool | None = field(
         default=None, metadata={"cdp_name": "captureBeyondViewport"}
     )
+    """
+    Capture the screenshot beyond the viewport. Defaults to false. Experimental: this
+    API may change or be removed.
+    """
     optimize_for_speed: bool | None = field(
         default=None, metadata={"cdp_name": "optimizeForSpeed"}
     )
+    """
+    Optimize image encoding for speed, not for resulting size (defaults to false)
+    Experimental: this API may change or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class CaptureScreenshotResult:
     data: str
+    """
+    Base64-encoded image data. (Encoded as a base64 string when passed over JSON)
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -173,14 +218,21 @@ class CaptureSnapshotParams:
     """
     Returns a snapshot of the page as a string. For MHTML format, the serialization
     includes iframes, shadow DOM, external resources, and element-inline styles.
+    Experimental: this API may change or be removed.
     """
 
     format: Literal["mhtml"] | None = None
+    """
+    Format (defaults to mhtml).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class CaptureSnapshotResult:
     data: str
+    """
+    Serialized page data.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -190,13 +242,30 @@ class CreateIsolatedWorldParams:
     """
 
     frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
+    """
+    Id of the frame in which the isolated world should be created.
+    """
     world_name: str | None = field(default=None, metadata={"cdp_name": "worldName"})
+    """
+    An optional name which is reported in the Execution Context.
+    """
     grant_univeral_access: bool | None = field(
         default=None, metadata={"cdp_name": "grantUniveralAccess"}
     )
+    """
+    Whether or not universal access should be granted to the isolated world. This is a
+    powerful option, use with caution.
+    """
     content_security_policy: str | None = field(
         default=None, metadata={"cdp_name": "contentSecurityPolicy"}
     )
+    """
+    An optional content security policy to set for the isolated world. If omitted, any
+    existing CSP for the world will be cleared. Note that clearing or updating the CSP
+    does not immediately affect the active context in the same document because
+    LocalDOMWindow caches the ContentSecurityPolicy object. The change takes effect on
+    subsequent navigations when a new window context is created.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -204,16 +273,26 @@ class CreateIsolatedWorldResult:
     execution_context_id: runtime.ExecutionContextId = field(
         metadata={"cdp_name": "executionContextId"}
     )
+    """
+    Execution context of the isolated world.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class DeleteCookieParams:
     """
-    Deletes browser cookie with given name, domain and path.
+    Deletes browser cookie with given name, domain and path. Experimental: this API may
+    change or be removed. Deprecated in the Chrome DevTools Protocol.
     """
 
     cookie_name: str = field(metadata={"cdp_name": "cookieName"})
+    """
+    Name of the cookie to remove.
+    """
     url: str
+    """
+    URL to match cooke domain and path.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -225,6 +304,11 @@ class EnableParams:
     enable_file_chooser_opened_event: bool | None = field(
         default=None, metadata={"cdp_name": "enableFileChooserOpenedEvent"}
     )
+    """
+    If true, the `Page.fileChooserOpened` event will be emitted regardless of the state
+    set by `Page.setInterceptFileChooserDialog` command (default: false). Experimental:
+    this API may change or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -242,10 +326,23 @@ class GetAppManifestParams:
 @dataclass(kw_only=True, slots=True)
 class GetAppManifestResult:
     url: str
+    """
+    Manifest location.
+    """
     errors: list[AppManifestError]
     data: str | None = None
+    """
+    Manifest content.
+    """
     parsed: AppManifestParsedProperties | None = None
+    """
+    Parsed manifest properties. Deprecated, use manifest instead. Experimental: this
+    API may change or be removed. Deprecated in the Chrome DevTools Protocol.
+    """
     manifest: WebAppManifest
+    """
+    Experimental: this API may change or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -263,13 +360,26 @@ class GetManifestIconsResult:
 @dataclass(kw_only=True, slots=True)
 class GetAppIdResult:
     app_id: str | None = field(default=None, metadata={"cdp_name": "appId"})
+    """
+    App id, either from manifest's id attribute or computed from start_url
+    """
     recommended_id: str | None = field(
         default=None, metadata={"cdp_name": "recommendedId"}
     )
+    """
+    Recommendation for manifest's id attribute to match current id computed from
+    start_url
+    """
     bundle_id: str | None = field(default=None, metadata={"cdp_name": "bundleId"})
+    """
+    The bundle ID for an Isolated Web App (IWA)
+    """
     parent_app_name: str | None = field(
         default=None, metadata={"cdp_name": "parentAppName"}
     )
+    """
+    The name of the parent app if this app is a Sub-App
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -284,6 +394,10 @@ class GetSiblingSubAppsResult:
 
 @dataclass(kw_only=True, slots=True)
 class GetAdScriptAncestryParams:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
 
 
@@ -292,6 +406,13 @@ class GetAdScriptAncestryResult:
     ad_script_ancestry: network.AdAncestry | None = field(
         default=None, metadata={"cdp_name": "adScriptAncestry"}
     )
+    """
+    The ancestry chain of ad script identifiers leading to this frame's creation, along
+    with the root script's filterlist rule. The ancestry chain is ordered from the most
+    immediate script (in the frame creation stack) to more distant ancestors (that
+    created the immediately preceding script). Only sent if frame is labelled as an ad
+    and ids are available.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -300,6 +421,7 @@ class GetSpellCheckCustomDictionaryParams:
     Returns the words that the frame's document added to its spell check custom
     dictionary with `document.spellCheckCustomDictionary.addWords()`, sorted. Page
     script cannot read the dictionary back; this lets developers inspect it.
+    Experimental: this API may change or be removed.
     """
 
     frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
@@ -313,47 +435,93 @@ class GetSpellCheckCustomDictionaryResult:
 @dataclass(kw_only=True, slots=True)
 class GetFrameTreeResult:
     frame_tree: FrameTree = field(metadata={"cdp_name": "frameTree"})
+    """
+    Present frame tree structure.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetLayoutMetricsResult:
     layout_viewport: LayoutViewport = field(metadata={"cdp_name": "layoutViewport"})
+    """
+    Deprecated metrics relating to the layout viewport. Is in device pixels. Use
+    `cssLayoutViewport` instead. Deprecated in the Chrome DevTools Protocol.
+    """
     visual_viewport: VisualViewport = field(metadata={"cdp_name": "visualViewport"})
+    """
+    Deprecated metrics relating to the visual viewport. Is in device pixels. Use
+    `cssVisualViewport` instead. Deprecated in the Chrome DevTools Protocol.
+    """
     content_size: dom.Rect = field(metadata={"cdp_name": "contentSize"})
+    """
+    Deprecated size of scrollable area. Is in DP. Use `cssContentSize` instead.
+    Deprecated in the Chrome DevTools Protocol.
+    """
     css_layout_viewport: LayoutViewport = field(
         metadata={"cdp_name": "cssLayoutViewport"}
     )
+    """
+    Metrics relating to the layout viewport in CSS pixels.
+    """
     css_visual_viewport: VisualViewport = field(
         metadata={"cdp_name": "cssVisualViewport"}
     )
+    """
+    Metrics relating to the visual viewport in CSS pixels.
+    """
     css_content_size: dom.Rect = field(metadata={"cdp_name": "cssContentSize"})
+    """
+    Size of scrollable area in CSS pixels.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetNavigationHistoryResult:
     current_index: int = field(metadata={"cdp_name": "currentIndex"})
+    """
+    Index of the current navigation history entry.
+    """
     entries: list[NavigationEntry]
+    """
+    Array of navigation history entries.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetResourceContentParams:
     """
-    Returns content of the given resource.
+    Returns content of the given resource. Experimental: this API may change or be
+    removed.
     """
 
     frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
+    """
+    Frame id to get resource for.
+    """
     url: str
+    """
+    URL of the resource to get content for.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetResourceContentResult:
     content: str
+    """
+    Resource content.
+    """
     base64_encoded: bool = field(metadata={"cdp_name": "base64Encoded"})
+    """
+    True, if content was served as base64.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetResourceTreeResult:
     frame_tree: FrameResourceTree = field(metadata={"cdp_name": "frameTree"})
+    """
+    Present frame / resource tree structure.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -364,7 +532,14 @@ class HandleJavaScriptDialogParams:
     """
 
     accept: bool
+    """
+    Whether to accept or dismiss the dialog.
+    """
     prompt_text: str | None = field(default=None, metadata={"cdp_name": "promptText"})
+    """
+    The text to enter into the dialog prompt before accepting. Used only if this is a
+    prompt dialog.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -374,24 +549,54 @@ class NavigateParams:
     """
 
     url: str
+    """
+    URL to navigate the page to.
+    """
     referrer: str | None = None
+    """
+    Referrer URL.
+    """
     transition_type: TransitionType | None = field(
         default=None, metadata={"cdp_name": "transitionType"}
     )
+    """
+    Intended transition type.
+    """
     frame_id: FrameId | None = field(default=None, metadata={"cdp_name": "frameId"})
+    """
+    Frame id to navigate, if not specified navigates the top frame.
+    """
     referrer_policy: ReferrerPolicy | None = field(
         default=None, metadata={"cdp_name": "referrerPolicy"}
     )
+    """
+    Referrer-policy used for the navigation. Experimental: this API may change or be
+    removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class NavigateResult:
     frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
+    """
+    Frame id that has navigated (or failed to navigate)
+    """
     loader_id: network.LoaderId | None = field(
         default=None, metadata={"cdp_name": "loaderId"}
     )
+    """
+    Loader identifier. This is omitted in case of same-document navigation, as the
+    previously committed loaderId would not change.
+    """
     error_text: str | None = field(default=None, metadata={"cdp_name": "errorText"})
+    """
+    User friendly error message, present if and only if navigation has failed.
+    """
     is_download: bool | None = field(default=None, metadata={"cdp_name": "isDownload"})
+    """
+    Whether the navigation resulted in a download. Experimental: this API may change or
+    be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -401,6 +606,9 @@ class NavigateToHistoryEntryParams:
     """
 
     entry_id: int = field(metadata={"cdp_name": "entryId"})
+    """
+    Unique id of the entry to navigate to.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -410,50 +618,122 @@ class PrintToPDFParams:
     """
 
     landscape: bool | None = None
+    """
+    Paper orientation. Defaults to false.
+    """
     display_header_footer: bool | None = field(
         default=None, metadata={"cdp_name": "displayHeaderFooter"}
     )
+    """
+    Display header and footer. Defaults to false.
+    """
     print_background: bool | None = field(
         default=None, metadata={"cdp_name": "printBackground"}
     )
+    """
+    Print background graphics. Defaults to false.
+    """
     scale: float | None = None
+    """
+    Scale of the webpage rendering. Defaults to 1.
+    """
     paper_width: float | None = field(default=None, metadata={"cdp_name": "paperWidth"})
+    """
+    Paper width in inches. Defaults to 8.5 inches.
+    """
     paper_height: float | None = field(
         default=None, metadata={"cdp_name": "paperHeight"}
     )
+    """
+    Paper height in inches. Defaults to 11 inches.
+    """
     margin_top: float | None = field(default=None, metadata={"cdp_name": "marginTop"})
+    """
+    Top margin in inches. Defaults to 1cm (~0.4 inches).
+    """
     margin_bottom: float | None = field(
         default=None, metadata={"cdp_name": "marginBottom"}
     )
+    """
+    Bottom margin in inches. Defaults to 1cm (~0.4 inches).
+    """
     margin_left: float | None = field(default=None, metadata={"cdp_name": "marginLeft"})
+    """
+    Left margin in inches. Defaults to 1cm (~0.4 inches).
+    """
     margin_right: float | None = field(
         default=None, metadata={"cdp_name": "marginRight"}
     )
+    """
+    Right margin in inches. Defaults to 1cm (~0.4 inches).
+    """
     page_ranges: str | None = field(default=None, metadata={"cdp_name": "pageRanges"})
+    """
+    Paper ranges to print, one based, e.g., '1-5, 8, 11-13'. Pages are printed in the
+    document order, not in the order specified, and no more than once. Defaults to empty
+    string, which implies the entire document is printed. The page numbers are quietly
+    capped to actual page count of the document, and ranges beyond the end of the
+    document are ignored. If this results in no pages to print, an error is reported. It
+    is an error to specify a range with start greater than end.
+    """
     header_template: str | None = field(
         default=None, metadata={"cdp_name": "headerTemplate"}
     )
+    """
+    HTML template for the print header. Should be valid HTML markup with following
+    classes used to inject printing values into them: - `date`: formatted print date -
+    `title`: document title - `url`: document location - `pageNumber`: current page
+    number - `totalPages`: total pages in the document For example, `<span
+    class=title></span>` would generate span containing the title.
+    """
     footer_template: str | None = field(
         default=None, metadata={"cdp_name": "footerTemplate"}
     )
+    """
+    HTML template for the print footer. Should use the same format as the
+    `headerTemplate`.
+    """
     prefer_css_page_size: bool | None = field(
         default=None, metadata={"cdp_name": "preferCSSPageSize"}
     )
+    """
+    Whether or not to prefer page size as defined by css. Defaults to false, in which
+    case the content will be scaled to fit the paper size.
+    """
     transfer_mode: Literal["ReturnAsBase64", "ReturnAsStream"] | None = field(
         default=None, metadata={"cdp_name": "transferMode"}
     )
+    """
+    return as stream Experimental: this API may change or be removed.
+    """
     generate_tagged_pdf: bool | None = field(
         default=None, metadata={"cdp_name": "generateTaggedPDF"}
     )
+    """
+    Whether or not to generate tagged (accessible) PDF. Defaults to embedder choice.
+    Experimental: this API may change or be removed.
+    """
     generate_document_outline: bool | None = field(
         default=None, metadata={"cdp_name": "generateDocumentOutline"}
     )
+    """
+    Whether or not to embed the document outline into the PDF. Experimental: this API
+    may change or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class PrintToPDFResult:
     data: str
+    """
+    Base64-encoded pdf data. Empty if |returnAsStream| is specified. (Encoded as a
+    base64 string when passed over JSON)
+    """
     stream: io.StreamHandle | None = None
+    """
+    A handle of the stream that holds resulting PDF data. Experimental: this API may
+    change or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -465,18 +745,32 @@ class ReloadParams:
     ignore_cache: bool | None = field(
         default=None, metadata={"cdp_name": "ignoreCache"}
     )
+    """
+    If true, browser cache is ignored (as if the user pressed Shift+refresh).
+    """
     script_to_evaluate_on_load: str | None = field(
         default=None, metadata={"cdp_name": "scriptToEvaluateOnLoad"}
     )
+    """
+    If set, the script will be injected into all frames of the inspected page after
+    reload. Argument will be ignored if reloading dataURL origin.
+    """
     loader_id: network.LoaderId | None = field(
         default=None, metadata={"cdp_name": "loaderId"}
     )
+    """
+    If set, an error will be thrown if the target page's main frame's loader id does
+    not match the provided id. This prevents accidentally reloading an unintended target
+    in case there's a racing navigation. Experimental: this API may change or be
+    removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class RemoveScriptToEvaluateOnLoadParams:
     """
-    Deprecated, please use removeScriptToEvaluateOnNewDocument instead.
+    Deprecated, please use removeScriptToEvaluateOnNewDocument instead. Experimental:
+    this API may change or be removed. Deprecated in the Chrome DevTools Protocol.
     """
 
     identifier: ScriptIdentifier
@@ -495,38 +789,65 @@ class RemoveScriptToEvaluateOnNewDocumentParams:
 class ScreencastFrameAckParams:
     """
     Acknowledges that a screencast frame has been received by the frontend.
+    Experimental: this API may change or be removed.
     """
 
     session_id: int = field(metadata={"cdp_name": "sessionId"})
+    """
+    Frame number.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SearchInResourceParams:
     """
-    Searches for given string in resource content.
+    Searches for given string in resource content. Experimental: this API may change or
+    be removed.
     """
 
     frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
+    """
+    Frame id for resource to search in.
+    """
     url: str
+    """
+    URL of the resource to search in.
+    """
     query: str
+    """
+    String to search for.
+    """
     case_sensitive: bool | None = field(
         default=None, metadata={"cdp_name": "caseSensitive"}
     )
+    """
+    If true, search is case sensitive.
+    """
     is_regex: bool | None = field(default=None, metadata={"cdp_name": "isRegex"})
+    """
+    If true, treats string parameter as regex.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SearchInResourceResult:
     result: list[debugger.SearchMatch]
+    """
+    List of search matches.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SetAdBlockingEnabledParams:
     """
-    Enable Chrome's experimental ad filter on all sites.
+    Enable Chrome's experimental ad filter on all sites. Experimental: this API may
+    change or be removed.
     """
 
     enabled: bool
+    """
+    Whether to block ads.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -536,12 +857,16 @@ class SetBypassCSPParams:
     """
 
     enabled: bool
+    """
+    Whether to bypass page CSP.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetPermissionsPolicyStateParams:
     """
-    Get Permissions Policy state on given frame.
+    Get Permissions Policy state on given frame. Experimental: this API may change or
+    be removed.
     """
 
     frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
@@ -555,7 +880,7 @@ class GetPermissionsPolicyStateResult:
 @dataclass(kw_only=True, slots=True)
 class GetOriginTrialsParams:
     """
-    Get Origin Trials on given frame.
+    Get Origin Trials on given frame. Experimental: this API may change or be removed.
     """
 
     frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
@@ -571,59 +896,119 @@ class SetDeviceMetricsOverrideParams:
     """
     Overrides the values of device screen dimensions (window.screen.width,
     window.screen.height, window.innerWidth, window.innerHeight, and
-    "device-width"/"device-height"-related CSS media query results).
+    "device-width"/"device-height"-related CSS media query results). Experimental: this
+    API may change or be removed. Deprecated in the Chrome DevTools Protocol.
     """
 
     width: int
+    """
+    Overriding width value in pixels (minimum 0, maximum 10000000). 0 disables the
+    override.
+    """
     height: int
+    """
+    Overriding height value in pixels (minimum 0, maximum 10000000). 0 disables the
+    override.
+    """
     device_scale_factor: float = field(metadata={"cdp_name": "deviceScaleFactor"})
+    """
+    Overriding device scale factor value. 0 disables the override.
+    """
     mobile: bool
+    """
+    Whether to emulate mobile device. This includes viewport meta tag, overlay
+    scrollbars, text autosizing and more.
+    """
     scale: float | None = None
+    """
+    Scale to apply to resulting view image.
+    """
     screen_width: int | None = field(default=None, metadata={"cdp_name": "screenWidth"})
+    """
+    Overriding screen width value in pixels (minimum 0, maximum 10000000).
+    """
     screen_height: int | None = field(
         default=None, metadata={"cdp_name": "screenHeight"}
     )
+    """
+    Overriding screen height value in pixels (minimum 0, maximum 10000000).
+    """
     position_x: int | None = field(default=None, metadata={"cdp_name": "positionX"})
+    """
+    Overriding view X position on screen in pixels (minimum 0, maximum 10000000).
+    """
     position_y: int | None = field(default=None, metadata={"cdp_name": "positionY"})
+    """
+    Overriding view Y position on screen in pixels (minimum 0, maximum 10000000).
+    """
     dont_set_visible_size: bool | None = field(
         default=None, metadata={"cdp_name": "dontSetVisibleSize"}
     )
+    """
+    Do not set visible view size, rely upon explicit setVisibleSize call.
+    """
     screen_orientation: emulation.ScreenOrientation | None = field(
         default=None, metadata={"cdp_name": "screenOrientation"}
     )
+    """
+    Screen orientation override.
+    """
     viewport: Viewport | None = None
+    """
+    The viewport dimensions and scale. If not set, the override is cleared.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SetDeviceOrientationOverrideParams:
     """
-    Overrides the Device Orientation.
+    Overrides the Device Orientation. Experimental: this API may change or be removed.
+    Deprecated in the Chrome DevTools Protocol.
     """
 
     alpha: float
+    """
+    Mock alpha
+    """
     beta: float
+    """
+    Mock beta
+    """
     gamma: float
+    """
+    Mock gamma
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SetFontFamiliesParams:
     """
-    Set generic font families.
+    Set generic font families. Experimental: this API may change or be removed.
     """
 
     font_families: FontFamilies = field(metadata={"cdp_name": "fontFamilies"})
+    """
+    Specifies font families to set. If a font family is not specified, it won't be
+    changed.
+    """
     for_scripts: list[ScriptFontFamilies] | None = field(
         default=None, metadata={"cdp_name": "forScripts"}
     )
+    """
+    Specifies font families to set for individual scripts.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SetFontSizesParams:
     """
-    Set default font sizes.
+    Set default font sizes. Experimental: this API may change or be removed.
     """
 
     font_sizes: FontSizes = field(metadata={"cdp_name": "fontSizes"})
+    """
+    Specifies font sizes to set. If a font size is not specified, it won't be changed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -633,31 +1018,55 @@ class SetDocumentContentParams:
     """
 
     frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
+    """
+    Frame id to set HTML for.
+    """
     html: str
+    """
+    HTML content to set.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SetDownloadBehaviorParams:
     """
-    Set the behavior when downloading a file.
+    Set the behavior when downloading a file. Experimental: this API may change or be
+    removed. Deprecated in the Chrome DevTools Protocol.
     """
 
     behavior: Literal["deny", "allow", "default"]
+    """
+    Whether to allow all or deny all download requests, or use default Chrome behavior
+    if available (otherwise deny).
+    """
     download_path: str | None = field(
         default=None, metadata={"cdp_name": "downloadPath"}
     )
+    """
+    The default path to save downloaded files to. This is required if behavior is set
+    to 'allow'
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SetGeolocationOverrideParams:
     """
     Overrides the Geolocation Position or Error. Omitting any of the parameters
-    emulates position unavailable.
+    emulates position unavailable. Deprecated in the Chrome DevTools Protocol.
     """
 
     latitude: float | None = None
+    """
+    Mock latitude
+    """
     longitude: float | None = None
+    """
+    Mock longitude
+    """
     accuracy: float | None = None
+    """
+    Mock accuracy
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -667,69 +1076,126 @@ class SetLifecycleEventsEnabledParams:
     """
 
     enabled: bool
+    """
+    If true, starts emitting lifecycle events.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SetTouchEmulationEnabledParams:
     """
-    Toggles mouse event-based touch event emulation.
+    Toggles mouse event-based touch event emulation. Experimental: this API may change
+    or be removed. Deprecated in the Chrome DevTools Protocol.
     """
 
     enabled: bool
+    """
+    Whether the touch event emulation should be enabled.
+    """
     configuration: Literal["mobile", "desktop"] | None = None
+    """
+    Touch/gesture events configuration. Default: current platform.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class StartScreencastParams:
     """
-    Starts sending each frame using the `screencastFrame` event.
+    Starts sending each frame using the `screencastFrame` event. Experimental: this API
+    may change or be removed.
     """
 
     format: Literal["jpeg", "png"] | None = None
+    """
+    Image compression format.
+    """
     quality: int | None = None
+    """
+    Compression quality from range [0..100].
+    """
     max_width: int | None = field(default=None, metadata={"cdp_name": "maxWidth"})
+    """
+    Maximum screenshot width.
+    """
     max_height: int | None = field(default=None, metadata={"cdp_name": "maxHeight"})
+    """
+    Maximum screenshot height.
+    """
     every_nth_frame: int | None = field(
         default=None, metadata={"cdp_name": "everyNthFrame"}
     )
+    """
+    Send every n-th frame. Must be a positive integer.
+    """
     max_frames_in_flight: int | None = field(
         default=None, metadata={"cdp_name": "maxFramesInFlight"}
     )
+    """
+    Maximum number of frames sent until screencastFrameAck is required. Defaults to 3.
+    Must be a positive integer.
+    """
     send_last_frame: bool | None = field(
         default=None, metadata={"cdp_name": "sendLastFrame"}
     )
+    """
+    By default, after screencastFrameAck arrives, the next produced frame is sent.
+    Passing this flag enables storing the last produced frame in memory, which is
+    immediately sent upon screencastFrameAck. This way, overall performance is traded
+    for a better latency.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class StartScreenRecordingParams:
     """
-    Starts screencast video recording.
+    Starts screencast video recording. Experimental: this API may change or be removed.
     """
 
     audio: bool | None = None
     max_width: int | None = field(default=None, metadata={"cdp_name": "maxWidth"})
+    """
+    Maximum frame width in pixels.
+    """
     max_height: int | None = field(default=None, metadata={"cdp_name": "maxHeight"})
+    """
+    Maximum frame height in pixels.
+    """
     frame_rate: int | None = field(default=None, metadata={"cdp_name": "frameRate"})
+    """
+    Maximum frame rate in frames per second.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class StartScreenRecordingResult:
     stream: io.StreamHandle
+    """
+    A handle of the stream that holds resulting screencast data. Experimental: this API
+    may change or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class StopScreenRecordingResult:
     stream: io.StreamHandle
+    """
+    A handle of the stream that holds resulting screencast data. Experimental: this API
+    may change or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SetWebLifecycleStateParams:
     """
     Tries to update the web lifecycle state of the page. It will transition the page to
-    the given state according to: https://github.com/WICG/web-lifecycle/
+    the given state according to: https://github.com/WICG/web-lifecycle/ Experimental:
+    this API may change or be removed.
     """
 
     state: Literal["frozen", "active"]
+    """
+    Target lifecycle state
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -739,7 +1205,8 @@ class ProduceCompilationCacheParams:
     are appended to the list of scripts for which the cache would be produced. The list
     may be reset during page navigation. When script with a matching URL is encountered,
     the cache is optionally produced upon backend discretion, based on internal
-    heuristics. See also: `Page.compilationCacheProduced`.
+    heuristics. See also: `Page.compilationCacheProduced`. Experimental: this API may
+    change or be removed.
     """
 
     scripts: list[CompilationCacheParams]
@@ -749,11 +1216,14 @@ class ProduceCompilationCacheParams:
 class AddCompilationCacheParams:
     """
     Seeds compilation cache for given url. Compilation cache does not survive
-    cross-process navigation.
+    cross-process navigation. Experimental: this API may change or be removed.
     """
 
     url: str
     data: str
+    """
+    Base64-encoded data (Encoded as a base64 string when passed over JSON)
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -761,6 +1231,7 @@ class SetSPCTransactionModeParams:
     """
     Sets the Secure Payment Confirmation transaction mode.
     https://w3c.github.io/secure-payment-confirmation/#sctn-automation-set-spc-transaction-mode
+    Experimental: this API may change or be removed.
     """
 
     mode: Literal[
@@ -773,6 +1244,7 @@ class SetRPHRegistrationModeParams:
     """
     Extensions for Custom Handlers API:
     https://html.spec.whatwg.org/multipage/system-state.html#rph-automation
+    Experimental: this API may change or be removed.
     """
 
     mode: Literal["none", "autoAccept", "autoReject"]
@@ -781,11 +1253,17 @@ class SetRPHRegistrationModeParams:
 @dataclass(kw_only=True, slots=True)
 class GenerateTestReportParams:
     """
-    Generates a report for testing.
+    Generates a report for testing. Experimental: this API may change or be removed.
     """
 
     message: str
+    """
+    Message to be displayed in the report.
+    """
     group: str | None = None
+    """
+    Specifies the endpoint group to deliver the report to.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -798,6 +1276,11 @@ class SetInterceptFileChooserDialogParams:
 
     enabled: bool
     cancel: bool | None = None
+    """
+    If true, cancels the dialog by emitting relevant events (if any) in addition to not
+    showing it if the interception is enabled (default: false). Experimental: this API
+    may change or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -807,7 +1290,7 @@ class SetPrerenderingAllowedParams:
     https://crbug.com/1440085. See
     https://docs.google.com/document/d/12HVmFxYj5Jc-eJr5OmWsa2bqTJsbgGLKI6ZIyx0_wpA for
     more details. TODO(https://crbug.com/1440085): Remove this once Puppeteer supports
-    tab targets.
+    tab targets. Experimental: this API may change or be removed.
     """
 
     is_allowed: bool = field(metadata={"cdp_name": "isAllowed"})
@@ -817,23 +1300,36 @@ class SetPrerenderingAllowedParams:
 class GetAnnotatedPageContentParams:
     """
     Get the annotated page content for the main frame. This is an experimental command
-    that is subject to change.
+    that is subject to change. Experimental: this API may change or be removed.
     """
 
     include_actionable_information: bool | None = field(
         default=None, metadata={"cdp_name": "includeActionableInformation"}
     )
+    """
+    Whether to include actionable information. Defaults to true.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetAnnotatedPageContentResult:
     content: str
+    """
+    The annotated page content as a base64 encoded protobuf. The format is defined by
+    the `AnnotatedPageContent` message in
+    components/optimization_guide/proto/features/common_quality_data.proto (Encoded as a
+    base64 string when passed over JSON)
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SetInputVisualizationParams:
     """
-    Configures input visualization on the page.
+    Configures input visualization on the page. Experimental: this API may change or be
+    removed.
     """
 
     clicks: bool | None = None
+    """
+    Whether to enable click visualization.
+    """

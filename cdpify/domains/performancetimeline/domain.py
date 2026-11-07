@@ -26,6 +26,13 @@ class PerformanceTimeline:
         """
         Previously buffered events would be reported before method returns. See also:
         timelineEventAdded
+
+        Args:
+            event_types: The types of event to report, as specified in
+                https://w3c.github.io/performance-timeline/#dom-performanceentry-entrytype
+                The specified filter overrides any previous filters, passing empty
+                filter disables recording. Note that not all types exposed to the web
+                platform are currently supported.
         """
         _params: dict[str, Any] = {}
         _params["eventTypes"] = _encode_value(event_types)

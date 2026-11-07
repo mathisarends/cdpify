@@ -27,6 +27,13 @@ class FedCm:
         *,
         disable_rejection_delay: bool | None = None,
     ) -> None:
+        """
+        Args:
+            disable_rejection_delay: Allows callers to disable the promise rejection
+                delay that would normally happen, if this is unimportant to what's being
+                tested. (step 4 of
+                https://fedidcg.github.io/FedCM/#browser-api-rp-sign-in)
+        """
         _params: dict[str, Any] = {}
         if disable_rejection_delay is not None:
             _params["disableRejectionDelay"] = disable_rejection_delay

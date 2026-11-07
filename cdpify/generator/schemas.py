@@ -13,11 +13,13 @@ class Parameter(BaseModel):
 
     name: str
     type: str | None = None
-    ref: str | None = Field(None, alias="$ref")
+    ref: str | None = Field(default=None, alias="$ref")
     optional: bool = False
     description: str | None = None
     enum: list[str] | None = None
     items: dict[str, Any] | None = None
+    experimental: bool = False
+    deprecated: bool = False
 
 
 class Command(BaseModel):
@@ -44,6 +46,8 @@ class TypeDefinition(BaseModel):
     enum: list[str] | None = None
     properties: list[Parameter] = Field(default_factory=list)
     items: dict[str, Any] | None = None
+    experimental: bool = False
+    deprecated: bool = False
 
 
 class Domain(BaseModel):

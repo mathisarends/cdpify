@@ -32,9 +32,21 @@ class CacheStorageContentUpdatedEvent:
     __cdp_event__: ClassVar[StorageEvent] = StorageEvent.CACHE_STORAGE_CONTENT_UPDATED
 
     origin: str
+    """
+    Origin to update.
+    """
     storage_key: str = field(metadata={"cdp_name": "storageKey"})
+    """
+    Storage key to update.
+    """
     bucket_id: str = field(metadata={"cdp_name": "bucketId"})
+    """
+    Storage bucket to update.
+    """
     cache_name: str = field(metadata={"cdp_name": "cacheName"})
+    """
+    Name of cache in origin.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -46,8 +58,17 @@ class CacheStorageListUpdatedEvent:
     __cdp_event__: ClassVar[StorageEvent] = StorageEvent.CACHE_STORAGE_LIST_UPDATED
 
     origin: str
+    """
+    Origin to update.
+    """
     storage_key: str = field(metadata={"cdp_name": "storageKey"})
+    """
+    Storage key to update.
+    """
     bucket_id: str = field(metadata={"cdp_name": "bucketId"})
+    """
+    Storage bucket to update.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -59,10 +80,25 @@ class IndexedDBContentUpdatedEvent:
     __cdp_event__: ClassVar[StorageEvent] = StorageEvent.INDEXED_DB_CONTENT_UPDATED
 
     origin: str
+    """
+    Origin to update.
+    """
     storage_key: str = field(metadata={"cdp_name": "storageKey"})
+    """
+    Storage key to update.
+    """
     bucket_id: str = field(metadata={"cdp_name": "bucketId"})
+    """
+    Storage bucket to update.
+    """
     database_name: str = field(metadata={"cdp_name": "databaseName"})
+    """
+    Database to update.
+    """
     object_store_name: str = field(metadata={"cdp_name": "objectStoreName"})
+    """
+    ObjectStore to update.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -74,8 +110,17 @@ class IndexedDBListUpdatedEvent:
     __cdp_event__: ClassVar[StorageEvent] = StorageEvent.INDEXED_DB_LIST_UPDATED
 
     origin: str
+    """
+    Origin to update.
+    """
     storage_key: str = field(metadata={"cdp_name": "storageKey"})
+    """
+    Storage key to update.
+    """
     bucket_id: str = field(metadata={"cdp_name": "bucketId"})
+    """
+    Storage bucket to update.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -97,7 +142,8 @@ class StorageBucketDeletedEvent:
 @dataclass(kw_only=True, slots=True)
 class PrivateVerificationTokensUpdatedEvent:
     """
-    Private Verification Tokens have been stored or deleted.
+    Private Verification Tokens have been stored or deleted. Experimental: this API may
+    change or be removed.
     """
 
     __cdp_event__: ClassVar[StorageEvent] = (

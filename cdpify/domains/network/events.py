@@ -113,10 +113,26 @@ class DataReceivedEvent:
     __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.DATA_RECEIVED
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
+    """
+    Request identifier.
+    """
     timestamp: MonotonicTime
+    """
+    Timestamp.
+    """
     data_length: int = field(metadata={"cdp_name": "dataLength"})
+    """
+    Data chunk length.
+    """
     encoded_data_length: int = field(metadata={"cdp_name": "encodedDataLength"})
+    """
+    Actual bytes received (might be less than dataLength for compressed encodings).
+    """
     data: str | None = None
+    """
+    Data that was received. (Encoded as a base64 string when passed over JSON)
+    Experimental: this API may change or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -128,10 +144,25 @@ class EventSourceMessageReceivedEvent:
     __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.EVENT_SOURCE_MESSAGE_RECEIVED
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
+    """
+    Request identifier.
+    """
     timestamp: MonotonicTime
+    """
+    Timestamp.
+    """
     event_name: str = field(metadata={"cdp_name": "eventName"})
+    """
+    Message type.
+    """
     event_id: str = field(metadata={"cdp_name": "eventId"})
+    """
+    Message identifier.
+    """
     data: str
+    """
+    Message content.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -143,16 +174,38 @@ class LoadingFailedEvent:
     __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.LOADING_FAILED
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
+    """
+    Request identifier.
+    """
     timestamp: MonotonicTime
+    """
+    Timestamp.
+    """
     type: ResourceType
+    """
+    Resource type.
+    """
     error_text: str = field(metadata={"cdp_name": "errorText"})
+    """
+    Error message. List of network errors:
+    https://cs.chromium.org/chromium/src/net/base/net_error_list.h
+    """
     canceled: bool | None = None
+    """
+    True if loading was canceled.
+    """
     blocked_reason: BlockedReason | None = field(
         default=None, metadata={"cdp_name": "blockedReason"}
     )
+    """
+    The reason why loading was blocked, if any.
+    """
     cors_error_status: CorsErrorStatus | None = field(
         default=None, metadata={"cdp_name": "corsErrorStatus"}
     )
+    """
+    The reason why loading was blocked by CORS, if any.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -164,11 +217,25 @@ class LoadingFinishedEvent:
     __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.LOADING_FINISHED
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
+    """
+    Request identifier.
+    """
     timestamp: MonotonicTime
+    """
+    Timestamp.
+    """
     encoded_data_length: float = field(metadata={"cdp_name": "encodedDataLength"})
+    """
+    Total number of bytes received for this request.
+    """
     encoded_body_length: float | None = field(
         default=None, metadata={"cdp_name": "encodedBodyLength"}
     )
+    """
+    Size of the response body before removing content encodings. Includes cached
+    bodies, but excludes headers and transfer framing. Experimental: this API may change
+    or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -180,6 +247,9 @@ class RequestServedFromCacheEvent:
     __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.REQUEST_SERVED_FROM_CACHE
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
+    """
+    Request identifier.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -191,51 +261,111 @@ class RequestWillBeSentEvent:
     __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.REQUEST_WILL_BE_SENT
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
+    """
+    Request identifier.
+    """
     loader_id: LoaderId = field(metadata={"cdp_name": "loaderId"})
+    """
+    Loader identifier. Empty string if the request is fetched from worker.
+    """
     document_url: str | None = field(default=None, metadata={"cdp_name": "documentURL"})
+    """
+    URL of the document this request is loaded for.
+    """
     request: Request
+    """
+    Request data.
+    """
     timestamp: MonotonicTime
+    """
+    Timestamp.
+    """
     wall_time: TimeSinceEpoch = field(metadata={"cdp_name": "wallTime"})
+    """
+    Timestamp.
+    """
     initiator: Initiator
+    """
+    Request initiator.
+    """
     redirect_has_extra_info: bool = field(metadata={"cdp_name": "redirectHasExtraInfo"})
+    """
+    In the case that redirectResponse is populated, this flag indicates whether
+    requestWillBeSentExtraInfo and responseReceivedExtraInfo events will be or were
+    emitted for the request which was just redirected. Experimental: this API may change
+    or be removed.
+    """
     redirect_response: Response | None = field(
         default=None, metadata={"cdp_name": "redirectResponse"}
     )
+    """
+    Redirect response data.
+    """
     type: ResourceType | None = None
+    """
+    Type of this resource.
+    """
     frame_id: page.FrameId | None = field(
         default=None, metadata={"cdp_name": "frameId"}
     )
+    """
+    Frame identifier.
+    """
     has_user_gesture: bool | None = field(
         default=None, metadata={"cdp_name": "hasUserGesture"}
     )
+    """
+    Whether the request is initiated by a user gesture. Defaults to false.
+    """
     render_blocking_behavior: RenderBlockingBehavior | None = field(
         default=None, metadata={"cdp_name": "renderBlockingBehavior"}
     )
+    """
+    The render-blocking behavior of the request. Experimental: this API may change or
+    be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class ResourceChangedPriorityEvent:
     """
-    Fired when resource loading priority is changed
+    Fired when resource loading priority is changed Experimental: this API may change
+    or be removed.
     """
 
     __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.RESOURCE_CHANGED_PRIORITY
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
+    """
+    Request identifier.
+    """
     new_priority: ResourcePriority = field(metadata={"cdp_name": "newPriority"})
+    """
+    New priority
+    """
     timestamp: MonotonicTime
+    """
+    Timestamp.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SignedExchangeReceivedEvent:
     """
-    Fired when a signed exchange was received over the network
+    Fired when a signed exchange was received over the network Experimental: this API
+    may change or be removed.
     """
 
     __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.SIGNED_EXCHANGE_RECEIVED
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
+    """
+    Request identifier.
+    """
     info: SignedExchangeInfo
+    """
+    Information about the signed exchange response.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -247,14 +377,37 @@ class ResponseReceivedEvent:
     __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.RESPONSE_RECEIVED
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
+    """
+    Request identifier.
+    """
     loader_id: LoaderId = field(metadata={"cdp_name": "loaderId"})
+    """
+    Loader identifier. Empty string if the request is fetched from worker.
+    """
     timestamp: MonotonicTime
+    """
+    Timestamp.
+    """
     type: ResourceType
+    """
+    Resource type.
+    """
     response: Response
+    """
+    Response data.
+    """
     has_extra_info: bool = field(metadata={"cdp_name": "hasExtraInfo"})
+    """
+    Indicates whether requestWillBeSentExtraInfo and responseReceivedExtraInfo events
+    will be or were emitted for this request. Experimental: this API may change or be
+    removed.
+    """
     frame_id: page.FrameId | None = field(
         default=None, metadata={"cdp_name": "frameId"}
     )
+    """
+    Frame identifier.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -266,7 +419,13 @@ class WebSocketClosedEvent:
     __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.WEB_SOCKET_CLOSED
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
+    """
+    Request identifier.
+    """
     timestamp: MonotonicTime
+    """
+    Timestamp.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -278,8 +437,17 @@ class WebSocketCreatedEvent:
     __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.WEB_SOCKET_CREATED
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
+    """
+    Request identifier.
+    """
     url: str
+    """
+    WebSocket request URL.
+    """
     initiator: Initiator | None = None
+    """
+    Request initiator.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -291,8 +459,17 @@ class WebSocketFrameErrorEvent:
     __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.WEB_SOCKET_FRAME_ERROR
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
+    """
+    Request identifier.
+    """
     timestamp: MonotonicTime
+    """
+    Timestamp.
+    """
     error_message: str = field(metadata={"cdp_name": "errorMessage"})
+    """
+    WebSocket error message.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -304,8 +481,17 @@ class WebSocketFrameReceivedEvent:
     __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.WEB_SOCKET_FRAME_RECEIVED
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
+    """
+    Request identifier.
+    """
     timestamp: MonotonicTime
+    """
+    Timestamp.
+    """
     response: WebSocketFrame
+    """
+    WebSocket response data.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -317,8 +503,17 @@ class WebSocketFrameSentEvent:
     __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.WEB_SOCKET_FRAME_SENT
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
+    """
+    Request identifier.
+    """
     timestamp: MonotonicTime
+    """
+    Timestamp.
+    """
     response: WebSocketFrame
+    """
+    WebSocket response data.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -332,8 +527,17 @@ class WebSocketHandshakeResponseReceivedEvent:
     )
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
+    """
+    Request identifier.
+    """
     timestamp: MonotonicTime
+    """
+    Timestamp.
+    """
     response: WebSocketResponse
+    """
+    WebSocket response data.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -347,9 +551,21 @@ class WebSocketWillSendHandshakeRequestEvent:
     )
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
+    """
+    Request identifier.
+    """
     timestamp: MonotonicTime
+    """
+    Timestamp.
+    """
     wall_time: TimeSinceEpoch = field(metadata={"cdp_name": "wallTime"})
+    """
+    UTC Timestamp.
+    """
     request: WebSocketRequest
+    """
+    WebSocket request data.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -361,9 +577,21 @@ class WebTransportCreatedEvent:
     __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.WEB_TRANSPORT_CREATED
 
     transport_id: RequestId = field(metadata={"cdp_name": "transportId"})
+    """
+    WebTransport identifier.
+    """
     url: str
+    """
+    WebTransport request URL.
+    """
     timestamp: MonotonicTime
+    """
+    Timestamp.
+    """
     initiator: Initiator | None = None
+    """
+    Request initiator.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -377,7 +605,13 @@ class WebTransportConnectionEstablishedEvent:
     )
 
     transport_id: RequestId = field(metadata={"cdp_name": "transportId"})
+    """
+    WebTransport identifier.
+    """
     timestamp: MonotonicTime
+    """
+    Timestamp.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -389,13 +623,20 @@ class WebTransportClosedEvent:
     __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.WEB_TRANSPORT_CLOSED
 
     transport_id: RequestId = field(metadata={"cdp_name": "transportId"})
+    """
+    WebTransport identifier.
+    """
     timestamp: MonotonicTime
+    """
+    Timestamp.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class DirectTCPSocketCreatedEvent:
     """
-    Fired upon direct_socket.TCPSocket creation.
+    Fired upon direct_socket.TCPSocket creation. Experimental: this API may change or
+    be removed.
     """
 
     __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.DIRECT_TCP_SOCKET_CREATED
@@ -403,6 +644,9 @@ class DirectTCPSocketCreatedEvent:
     identifier: RequestId
     remote_addr: str = field(metadata={"cdp_name": "remoteAddr"})
     remote_port: int = field(metadata={"cdp_name": "remotePort"})
+    """
+    Unsigned int 16.
+    """
     options: DirectTCPSocketOptions
     timestamp: MonotonicTime
     initiator: Initiator | None = None
@@ -411,7 +655,8 @@ class DirectTCPSocketCreatedEvent:
 @dataclass(kw_only=True, slots=True)
 class DirectTCPSocketOpenedEvent:
     """
-    Fired when direct_socket.TCPSocket connection is opened.
+    Fired when direct_socket.TCPSocket connection is opened. Experimental: this API may
+    change or be removed.
     """
 
     __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.DIRECT_TCP_SOCKET_OPENED
@@ -419,15 +664,22 @@ class DirectTCPSocketOpenedEvent:
     identifier: RequestId
     remote_addr: str = field(metadata={"cdp_name": "remoteAddr"})
     remote_port: int = field(metadata={"cdp_name": "remotePort"})
+    """
+    Expected to be unsigned integer.
+    """
     timestamp: MonotonicTime
     local_addr: str | None = field(default=None, metadata={"cdp_name": "localAddr"})
     local_port: int | None = field(default=None, metadata={"cdp_name": "localPort"})
+    """
+    Expected to be unsigned integer.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class DirectTCPSocketAbortedEvent:
     """
-    Fired when direct_socket.TCPSocket is aborted.
+    Fired when direct_socket.TCPSocket is aborted. Experimental: this API may change or
+    be removed.
     """
 
     __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.DIRECT_TCP_SOCKET_ABORTED
@@ -440,7 +692,8 @@ class DirectTCPSocketAbortedEvent:
 @dataclass(kw_only=True, slots=True)
 class DirectTCPSocketClosedEvent:
     """
-    Fired when direct_socket.TCPSocket is closed.
+    Fired when direct_socket.TCPSocket is closed. Experimental: this API may change or
+    be removed.
     """
 
     __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.DIRECT_TCP_SOCKET_CLOSED
@@ -452,7 +705,8 @@ class DirectTCPSocketClosedEvent:
 @dataclass(kw_only=True, slots=True)
 class DirectTCPSocketChunkSentEvent:
     """
-    Fired when data is sent to tcp direct socket stream.
+    Fired when data is sent to tcp direct socket stream. Experimental: this API may
+    change or be removed.
     """
 
     __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.DIRECT_TCP_SOCKET_CHUNK_SENT
@@ -465,7 +719,8 @@ class DirectTCPSocketChunkSentEvent:
 @dataclass(kw_only=True, slots=True)
 class DirectTCPSocketChunkReceivedEvent:
     """
-    Fired when data is received from tcp direct socket stream.
+    Fired when data is received from tcp direct socket stream. Experimental: this API
+    may change or be removed.
     """
 
     __cdp_event__: ClassVar[NetworkEvent] = (
@@ -479,34 +734,57 @@ class DirectTCPSocketChunkReceivedEvent:
 
 @dataclass(kw_only=True, slots=True)
 class DirectUDPSocketJoinedMulticastGroupEvent:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     __cdp_event__: ClassVar[NetworkEvent] = (
         NetworkEvent.DIRECT_UDP_SOCKET_JOINED_MULTICAST_GROUP
     )
 
     identifier: RequestId
     ip_address: str = field(metadata={"cdp_name": "IPAddress"})
+    """
+    Multicast group address.
+    """
     source_address: str | None = field(
         default=None, metadata={"cdp_name": "sourceAddress"}
     )
+    """
+    Source address of a source-specific multicast (SSM) membership. Absent for
+    any-source multicast (ASM) memberships.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class DirectUDPSocketLeftMulticastGroupEvent:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     __cdp_event__: ClassVar[NetworkEvent] = (
         NetworkEvent.DIRECT_UDP_SOCKET_LEFT_MULTICAST_GROUP
     )
 
     identifier: RequestId
     ip_address: str = field(metadata={"cdp_name": "IPAddress"})
+    """
+    Multicast group address.
+    """
     source_address: str | None = field(
         default=None, metadata={"cdp_name": "sourceAddress"}
     )
+    """
+    Source address of a source-specific multicast (SSM) membership. Absent for
+    any-source multicast (ASM) memberships.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class DirectUDPSocketCreatedEvent:
     """
-    Fired upon direct_socket.UDPSocket creation.
+    Fired upon direct_socket.UDPSocket creation. Experimental: this API may change or
+    be removed.
     """
 
     __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.DIRECT_UDP_SOCKET_CREATED
@@ -520,7 +798,8 @@ class DirectUDPSocketCreatedEvent:
 @dataclass(kw_only=True, slots=True)
 class DirectUDPSocketOpenedEvent:
     """
-    Fired when direct_socket.UDPSocket connection is opened.
+    Fired when direct_socket.UDPSocket connection is opened. Experimental: this API may
+    change or be removed.
     """
 
     __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.DIRECT_UDP_SOCKET_OPENED
@@ -528,15 +807,22 @@ class DirectUDPSocketOpenedEvent:
     identifier: RequestId
     local_addr: str = field(metadata={"cdp_name": "localAddr"})
     local_port: int = field(metadata={"cdp_name": "localPort"})
+    """
+    Expected to be unsigned integer.
+    """
     timestamp: MonotonicTime
     remote_addr: str | None = field(default=None, metadata={"cdp_name": "remoteAddr"})
     remote_port: int | None = field(default=None, metadata={"cdp_name": "remotePort"})
+    """
+    Expected to be unsigned integer.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class DirectUDPSocketAbortedEvent:
     """
-    Fired when direct_socket.UDPSocket is aborted.
+    Fired when direct_socket.UDPSocket is aborted. Experimental: this API may change or
+    be removed.
     """
 
     __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.DIRECT_UDP_SOCKET_ABORTED
@@ -549,7 +835,8 @@ class DirectUDPSocketAbortedEvent:
 @dataclass(kw_only=True, slots=True)
 class DirectUDPSocketClosedEvent:
     """
-    Fired when direct_socket.UDPSocket is closed.
+    Fired when direct_socket.UDPSocket is closed. Experimental: this API may change or
+    be removed.
     """
 
     __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.DIRECT_UDP_SOCKET_CLOSED
@@ -561,7 +848,8 @@ class DirectUDPSocketClosedEvent:
 @dataclass(kw_only=True, slots=True)
 class DirectUDPSocketChunkSentEvent:
     """
-    Fired when message is sent to udp direct socket stream.
+    Fired when message is sent to udp direct socket stream. Experimental: this API may
+    change or be removed.
     """
 
     __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.DIRECT_UDP_SOCKET_CHUNK_SENT
@@ -574,7 +862,8 @@ class DirectUDPSocketChunkSentEvent:
 @dataclass(kw_only=True, slots=True)
 class DirectUDPSocketChunkReceivedEvent:
     """
-    Fired when message is received from udp direct socket stream.
+    Fired when message is received from udp direct socket stream. Experimental: this
+    API may change or be removed.
     """
 
     __cdp_event__: ClassVar[NetworkEvent] = (
@@ -593,29 +882,59 @@ class RequestWillBeSentExtraInfoEvent:
     the network stack. Not every requestWillBeSent event will have an additional
     requestWillBeSentExtraInfo fired for it, and there is no guarantee whether
     requestWillBeSent or requestWillBeSentExtraInfo will be fired first for the same
-    request.
+    request. Experimental: this API may change or be removed.
     """
 
     __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.REQUEST_WILL_BE_SENT_EXTRA_INFO
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
+    """
+    Request identifier. Used to match this information to an existing requestWillBeSent
+    event.
+    """
     associated_cookies: list[AssociatedCookie] = field(
         metadata={"cdp_name": "associatedCookies"}
     )
+    """
+    A list of cookies potentially associated to the requested URL. This includes both
+    cookies sent with the request and the ones not sent; the latter are distinguished by
+    having blockedReasons field set.
+    """
     headers: Headers
+    """
+    Raw request headers as they will be sent over the wire.
+    """
     connect_timing: ConnectTiming = field(metadata={"cdp_name": "connectTiming"})
+    """
+    Connection timing information for the request. Experimental: this API may change or
+    be removed.
+    """
     device_bound_session_usages: list[DeviceBoundSessionWithUsage] | None = field(
         default=None, metadata={"cdp_name": "deviceBoundSessionUsages"}
     )
+    """
+    How the request site's device bound sessions were used during this request.
+    """
     client_security_state: ClientSecurityState | None = field(
         default=None, metadata={"cdp_name": "clientSecurityState"}
     )
+    """
+    The client security state set for the request.
+    """
     site_has_cookie_in_other_partition: bool | None = field(
         default=None, metadata={"cdp_name": "siteHasCookieInOtherPartition"}
     )
+    """
+    Whether the site has partitioned cookies stored in a partition different than the
+    current one.
+    """
     applied_network_conditions_id: str | None = field(
         default=None, metadata={"cdp_name": "appliedNetworkConditionsId"}
     )
+    """
+    The network conditions id if this request was affected by network conditions
+    configured via emulateNetworkConditionsByRule.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -624,30 +943,73 @@ class ResponseReceivedExtraInfoEvent:
     Fired when additional information about a responseReceived event is available from
     the network stack. Not every responseReceived event will have an additional
     responseReceivedExtraInfo for it, and responseReceivedExtraInfo may be fired before
-    or after responseReceived.
+    or after responseReceived. Experimental: this API may change or be removed.
     """
 
     __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.RESPONSE_RECEIVED_EXTRA_INFO
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
+    """
+    Request identifier. Used to match this information to another responseReceived
+    event.
+    """
     blocked_cookies: list[BlockedSetCookieWithReason] = field(
         metadata={"cdp_name": "blockedCookies"}
     )
+    """
+    A list of cookies which were not stored from the response along with the
+    corresponding reasons for blocking. The cookies here may not be valid due to syntax
+    errors, which are represented by the invalid cookie line string instead of a proper
+    cookie.
+    """
     headers: Headers
+    """
+    Raw response headers as they were received over the wire. Duplicate headers in the
+    response are represented as a single key with their values concatentated using `\\n`
+    as the separator. See also `headersText` that contains verbatim text for HTTP/1.*.
+    """
     resource_ip_address_space: IPAddressSpace = field(
         metadata={"cdp_name": "resourceIPAddressSpace"}
     )
+    """
+    The IP address space of the resource. The address space can only be determined once
+    the transport established the connection, so we can't send it in
+    `requestWillBeSentExtraInfo`.
+    """
     status_code: int = field(metadata={"cdp_name": "statusCode"})
+    """
+    The status code of the response. This is useful in cases the request failed and no
+    responseReceived event is triggered, which is the case for, e.g., CORS errors. This
+    is also the correct status code for cached requests, where the status in
+    responseReceived is a 200 and this will be 304.
+    """
     headers_text: str | None = field(default=None, metadata={"cdp_name": "headersText"})
+    """
+    Raw response header text as it was received over the wire. The raw text may not
+    always be available, such as in the case of HTTP/2 or QUIC.
+    """
     cookie_partition_key: CookiePartitionKey | None = field(
         default=None, metadata={"cdp_name": "cookiePartitionKey"}
     )
+    """
+    The cookie partition key that will be used to store partitioned cookies set in this
+    response. Only sent when partitioned cookies are enabled. Experimental: this API may
+    change or be removed.
+    """
     cookie_partition_key_opaque: bool | None = field(
         default=None, metadata={"cdp_name": "cookiePartitionKeyOpaque"}
     )
+    """
+    True if partitioned cookies are enabled, but the partition key is not serializable
+    to string.
+    """
     exempted_cookies: list[ExemptedSetCookieWithReason] | None = field(
         default=None, metadata={"cdp_name": "exemptedCookies"}
     )
+    """
+    A list of cookies which should have been blocked by 3PCD but are exempted and
+    stored from the response with the corresponding reason.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -656,12 +1018,22 @@ class ResponseReceivedEarlyHintsEvent:
     Fired when 103 Early Hints headers is received in addition to the common response.
     Not every responseReceived event will have an responseReceivedEarlyHints fired. Only
     one responseReceivedEarlyHints may be fired for eached responseReceived event.
+    Experimental: this API may change or be removed.
     """
 
     __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.RESPONSE_RECEIVED_EARLY_HINTS
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
+    """
+    Request identifier. Used to match this information to another responseReceived
+    event.
+    """
     headers: Headers
+    """
+    Raw response headers as they were received over the wire. Duplicate headers in the
+    response are represented as a single key with their values concatentated using `\\n`
+    as the separator. See also `headersText` that contains verbatim text for HTTP/1.*.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -669,7 +1041,8 @@ class TrustTokenOperationDoneEvent:
     """
     Fired exactly once for each Trust Token operation. Depending on the type of the
     operation and whether the operation succeeded or failed, the event is fired before
-    the corresponding request was sent or after the response was received.
+    the corresponding request was sent or after the response was received. Experimental:
+    this API may change or be removed.
     """
 
     __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.TRUST_TOKEN_OPERATION_DONE
@@ -689,23 +1062,38 @@ class TrustTokenOperationDoneEvent:
         "FulfilledLocally",
         "SiteIssuerLimit",
     ]
+    """
+    Detailed success or error status of the operation. 'AlreadyExists' also signifies a
+    successful operation, as the result of the operation already exists und thus, the
+    operation was abort preemptively (e.g. a cache hit).
+    """
     type: TrustTokenOperationType
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
     top_level_origin: str | None = field(
         default=None, metadata={"cdp_name": "topLevelOrigin"}
     )
+    """
+    Top level origin. The context in which the operation was attempted.
+    """
     issuer_origin: str | None = field(
         default=None, metadata={"cdp_name": "issuerOrigin"}
     )
+    """
+    Origin of the issuer in case of a "Issuance" or "Redemption" operation.
+    """
     issued_token_count: int | None = field(
         default=None, metadata={"cdp_name": "issuedTokenCount"}
     )
+    """
+    The number of obtained Trust Tokens on a successful "Issuance" operation.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class PolicyUpdatedEvent:
     """
-    Fired once security policy has been updated.
+    Fired once security policy has been updated. Experimental: this API may change or
+    be removed.
     """
 
     __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.POLICY_UPDATED
@@ -715,7 +1103,7 @@ class PolicyUpdatedEvent:
 class ReportingApiReportAddedEvent:
     """
     Is sent whenever a new report is added. And after 'enableReportingApi' for all
-    existing reports.
+    existing reports. Experimental: this API may change or be removed.
     """
 
     __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.REPORTING_API_REPORT_ADDED
@@ -725,6 +1113,10 @@ class ReportingApiReportAddedEvent:
 
 @dataclass(kw_only=True, slots=True)
 class ReportingApiReportUpdatedEvent:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.REPORTING_API_REPORT_UPDATED
 
     report: ReportingApiReport
@@ -732,29 +1124,41 @@ class ReportingApiReportUpdatedEvent:
 
 @dataclass(kw_only=True, slots=True)
 class ReportingApiEndpointsChangedForOriginEvent:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     __cdp_event__: ClassVar[NetworkEvent] = (
         NetworkEvent.REPORTING_API_ENDPOINTS_CHANGED_FOR_ORIGIN
     )
 
     origin: str
+    """
+    Origin of the document(s) which configured the endpoints.
+    """
     endpoints: list[ReportingApiEndpoint]
 
 
 @dataclass(kw_only=True, slots=True)
 class DeviceBoundSessionsAddedEvent:
     """
-    Triggered when the initial set of device bound sessions is added.
+    Triggered when the initial set of device bound sessions is added. Experimental:
+    this API may change or be removed.
     """
 
     __cdp_event__: ClassVar[NetworkEvent] = NetworkEvent.DEVICE_BOUND_SESSIONS_ADDED
 
     sessions: list[DeviceBoundSession]
+    """
+    The device bound sessions.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class DeviceBoundSessionEventOccurredEvent:
     """
-    Triggered when a device bound session event occurs.
+    Triggered when a device bound session event occurs. Experimental: this API may
+    change or be removed.
     """
 
     __cdp_event__: ClassVar[NetworkEvent] = (
@@ -762,12 +1166,28 @@ class DeviceBoundSessionEventOccurredEvent:
     )
 
     event_id: DeviceBoundSessionEventId = field(metadata={"cdp_name": "eventId"})
+    """
+    A unique identifier for this session event.
+    """
     site: str
+    """
+    The site this session event is associated with.
+    """
     succeeded: bool
+    """
+    Whether this event was considered successful.
+    """
     session_id: str | None = field(default=None, metadata={"cdp_name": "sessionId"})
+    """
+    The session ID this event is associated with. May not be populated for failed
+    events.
+    """
     creation_event_details: CreationEventDetails | None = field(
         default=None, metadata={"cdp_name": "creationEventDetails"}
     )
+    """
+    The below are the different session event type details. Exactly one is populated.
+    """
     refresh_event_details: RefreshEventDetails | None = field(
         default=None, metadata={"cdp_name": "refreshEventDetails"}
     )

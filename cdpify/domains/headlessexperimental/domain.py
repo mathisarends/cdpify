@@ -37,6 +37,21 @@ class HeadlessExperimental:
         target was created with enabled BeginFrameControl. Designed for use with
         --run-all-compositor-stages-before-draw, see also
         https://goo.gle/chrome-headless-rendering for more background.
+
+        Args:
+            frame_time_ticks: Timestamp of this BeginFrame in Renderer TimeTicks
+                (milliseconds of uptime). If not set, the current time will be used.
+            interval: The interval between BeginFrames that is reported to the
+                compositor, in milliseconds. Defaults to a 60 frames/second interval,
+                i.e. about 16.666 milliseconds.
+            no_display_updates: Whether updates should not be committed and drawn onto
+                the display. False by default. If true, only side effects of the
+                BeginFrame will be run, such as layout and animations, but any visual
+                updates may not be visible on the display or in screenshots.
+            screenshot: If set, a screenshot of the frame will be captured and returned
+                in the response. Otherwise, no screenshot will be captured. Note that
+                capturing a screenshot can fail, for example, during renderer
+                initialization. In such a case, no screenshot data will be returned.
         """
         _params: dict[str, Any] = {}
         if frame_time_ticks is not None:
@@ -59,7 +74,8 @@ class HeadlessExperimental:
         self,
     ) -> None:
         """
-        Disables headless events for the target.
+        Disables headless events for the target. Deprecated in the Chrome DevTools
+        Protocol.
         """
         await self._executor.execute(
             method=HeadlessExperimentalCommand.DISABLE,
@@ -71,7 +87,8 @@ class HeadlessExperimental:
         self,
     ) -> None:
         """
-        Enables headless events for the target.
+        Enables headless events for the target. Deprecated in the Chrome DevTools
+        Protocol.
         """
         await self._executor.execute(
             method=HeadlessExperimentalCommand.ENABLE,

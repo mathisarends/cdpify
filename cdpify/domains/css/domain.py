@@ -68,6 +68,18 @@ class CSS:
         """
         Inserts a new rule with the given `ruleText` in a stylesheet with given
         `styleSheetId`, at the position specified by `location`.
+
+        Args:
+            style_sheet_id: The css style sheet identifier where a new rule should be
+                inserted.
+            rule_text: The text of a new rule.
+            location: Text position of a new rule in the target style sheet.
+            node_for_property_syntax_validation: NodeId for the DOM node in whose
+                context custom property declarations for registered properties should be
+                validated. If omitted, declarations in the new rule text can only be
+                validated statically, which may produce incorrect results if the
+                declaration contains a var() for example. Experimental: this API may
+                change or be removed.
         """
         _params: dict[str, Any] = {}
         _params["styleSheetId"] = _encode_value(style_sheet_id)
@@ -110,6 +122,13 @@ class CSS:
         """
         Creates a new special "via-inspector" stylesheet in the frame with given
         `frameId`.
+
+        Args:
+            frame_id: Identifier of the frame where "via-inspector" stylesheet should be
+                created.
+            force: If true, creates a new stylesheet for every call. If false, returns a
+                stylesheet previously created by a call with force=false for the frame's
+                document if it exists or creates a new stylesheet (default: false).
         """
         _params: dict[str, Any] = {}
         _params["frameId"] = _encode_value(frame_id)
@@ -154,6 +173,11 @@ class CSS:
         """
         Ensures that the given node will have specified pseudo-classes whenever its
         style is computed by the browser.
+
+        Args:
+            node_id: The element id for which to force the pseudo state.
+            forced_pseudo_classes: Element pseudo classes to force when computing the
+                element's style.
         """
         _params: dict[str, Any] = {}
         _params["nodeId"] = _encode_value(node_id)
@@ -172,6 +196,10 @@ class CSS:
     ) -> None:
         """
         Ensures that the given node is in its starting-style state.
+
+        Args:
+            node_id: The element id for which to force the starting-style state.
+            forced: Boolean indicating if this is on or off.
         """
         _params: dict[str, Any] = {}
         _params["nodeId"] = _encode_value(node_id)
@@ -190,6 +218,11 @@ class CSS:
     ) -> None:
         """
         Forces a position-try option for the given node.
+
+        Args:
+            node_id: The element id for which to force the position-try option.
+            index: The 1-based index of the position-try fallback option, 0 for base
+                position (no fallback), or omitted to clear the forced state.
         """
         _params: dict[str, Any] = {}
         _params["nodeId"] = _encode_value(node_id)
@@ -206,6 +239,10 @@ class CSS:
         *,
         node_id: dom.NodeId,
     ) -> GetBackgroundColorsResult:
+        """
+        Args:
+            node_id: Id of the node to get background colors for.
+        """
         _params: dict[str, Any] = {}
         _params["nodeId"] = _encode_value(node_id)
 
@@ -251,6 +288,15 @@ class CSS:
         `propertyName` was provided. If the value cannot be resolved even then, return
         the provided value without any changes. Note: this function currently does not
         resolve CSS random() function, it returns unmodified random() function parts.`
+        Experimental: this API may change or be removed.
+
+        Args:
+            values: Cascade-dependent keywords (revert/revert-layer) do not work.
+            node_id: Id of the node in whose context the expression is evaluated
+            property_name: Only longhands and custom property names are accepted.
+            pseudo_type: Pseudo element type, only works for pseudo elements that
+                generate elements in the tree, such as ::before and ::after.
+            pseudo_identifier: Pseudo element custom ident.
         """
         _params: dict[str, Any] = {}
         _params["values"] = _encode_value(values)
@@ -274,6 +320,9 @@ class CSS:
         shorthand_name: str,
         value: str,
     ) -> GetLonghandPropertiesResult:
+        """
+        Experimental: this API may change or be removed.
+        """
         _params: dict[str, Any] = {}
         _params["shorthandName"] = shorthand_name
         _params["value"] = value
@@ -309,7 +358,8 @@ class CSS:
     ) -> GetAnimatedStylesForNodeResult:
         """
         Returns the styles coming from animations & transitions including the animation
-        & transition styles coming from inheritance chain.
+        & transition styles coming from inheritance chain. Experimental: this API may
+        change or be removed.
         """
         _params: dict[str, Any] = {}
         _params["nodeId"] = _encode_value(node_id)
@@ -342,7 +392,7 @@ class CSS:
     ) -> GetEnvironmentVariablesResult:
         """
         Returns the values of the default UA-defined environment variables used in
-        env()
+        env() Experimental: this API may change or be removed.
         """
         result = await self._executor.execute(
             method=CSSCommand.GET_ENVIRONMENT_VARIABLES,
@@ -406,7 +456,8 @@ class CSS:
         Returns all layers parsed by the rendering engine for the tree scope of a node.
         Given a DOM element identified by nodeId, getLayersForNode returns the root
         layer for the nearest ancestor document or shadow root. The layer root contains
-        the full layer tree for the tree scope and their ordering.
+        the full layer tree for the tree scope and their ordering. Experimental: this
+        API may change or be removed.
         """
         _params: dict[str, Any] = {}
         _params["nodeId"] = _encode_value(node_id)
@@ -425,7 +476,8 @@ class CSS:
     ) -> GetLocationForSelectorResult:
         """
         Given a CSS selector text and a style sheet ID, getLocationForSelector returns
-        an array of locations of the CSS selector in the style sheet.
+        an array of locations of the CSS selector in the style sheet. Experimental: this
+        API may change or be removed.
         """
         _params: dict[str, Any] = {}
         _params["styleSheetId"] = _encode_value(style_sheet_id)
@@ -447,7 +499,7 @@ class CSS:
         computed style is updated for node, it queues a `computedStyleUpdated` event
         with throttling. There can only be 1 node tracked for computed style updates so
         passing a new node id removes tracking from the previous node. Pass `undefined`
-        to disable tracking.
+        to disable tracking. Experimental: this API may change or be removed.
         """
         _params: dict[str, Any] = {}
         if node_id is not None:
@@ -470,7 +522,7 @@ class CSS:
         properties modified. The changes to computed style properties are only tracked
         for nodes pushed to the front-end by the DOM agent. If no changes to the tracked
         properties occur after the node has been pushed to the front-end, no updates
-        will be issued for the node.
+        will be issued for the node. Experimental: this API may change or be removed.
         """
         _params: dict[str, Any] = {}
         _params["propertiesToTrack"] = _encode_value(properties_to_track)
@@ -484,7 +536,8 @@ class CSS:
         self,
     ) -> TakeComputedStyleUpdatesResult:
         """
-        Polls the next batch of computed style updates.
+        Polls the next batch of computed style updates. Experimental: this API may
+        change or be removed.
         """
         result = await self._executor.execute(
             method=CSSCommand.TAKE_COMPUTED_STYLE_UPDATES,
@@ -502,6 +555,9 @@ class CSS:
         """
         Find a rule with the given active property for the given node and set the new
         value for this property
+
+        Args:
+            node_id: The element id for which to set property.
         """
         _params: dict[str, Any] = {}
         _params["nodeId"] = _encode_value(node_id)
@@ -586,7 +642,8 @@ class CSS:
     ) -> SetContainerQueryTextResult:
         """
         Modifies the expression of a container query. Deprecated. Use
-        setContainerQueryConditionText instead.
+        setContainerQueryConditionText instead. Experimental: this API may change or be
+        removed. Deprecated in the Chrome DevTools Protocol.
         """
         _params: dict[str, Any] = {}
         _params["styleSheetId"] = _encode_value(style_sheet_id)
@@ -606,6 +663,9 @@ class CSS:
         range: SourceRange,
         text: str,
     ) -> SetContainerQueryConditionTextResult:
+        """
+        Experimental: this API may change or be removed.
+        """
         _params: dict[str, Any] = {}
         _params["styleSheetId"] = _encode_value(style_sheet_id)
         _params["range"] = _encode_value(range)
@@ -625,7 +685,8 @@ class CSS:
         text: str,
     ) -> SetSupportsTextResult:
         """
-        Modifies the expression of a supports at-rule.
+        Modifies the expression of a supports at-rule. Experimental: this API may
+        change or be removed.
         """
         _params: dict[str, Any] = {}
         _params["styleSheetId"] = _encode_value(style_sheet_id)
@@ -646,7 +707,8 @@ class CSS:
         text: str,
     ) -> SetNavigationTextResult:
         """
-        Modifies the expression of a navigation at-rule.
+        Modifies the expression of a navigation at-rule. Experimental: this API may
+        change or be removed.
         """
         _params: dict[str, Any] = {}
         _params["styleSheetId"] = _encode_value(style_sheet_id)
@@ -667,7 +729,8 @@ class CSS:
         text: str,
     ) -> SetScopeTextResult:
         """
-        Modifies the expression of a scope at-rule.
+        Modifies the expression of a scope at-rule. Experimental: this API may change
+        or be removed.
         """
         _params: dict[str, Any] = {}
         _params["styleSheetId"] = _encode_value(style_sheet_id)
@@ -728,6 +791,14 @@ class CSS:
     ) -> SetStyleTextsResult:
         """
         Applies specified style edits one after another in the given order.
+
+        Args:
+            node_for_property_syntax_validation: NodeId for the DOM node in whose
+                context custom property declarations for registered properties should be
+                validated. If omitted, declarations in the new rule text can only be
+                validated statically, which may produce incorrect results if the
+                declaration contains a var() for example. Experimental: this API may
+                change or be removed.
         """
         _params: dict[str, Any] = {}
         _params["edits"] = _encode_value(edits)
@@ -786,6 +857,10 @@ class CSS:
     ) -> None:
         """
         Enables/disables rendering of local CSS fonts (enabled by default).
+        Experimental: this API may change or be removed.
+
+        Args:
+            enabled: Whether rendering of local fonts is enabled.
         """
         _params: dict[str, Any] = {}
         _params["enabled"] = enabled

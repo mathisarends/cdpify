@@ -27,8 +27,22 @@ class SetVirtualWalletBehaviorParams:
     """
 
     action: VirtualWalletAction
+    """
+    The action of the virtual wallet.
+    """
     protocol: str | None = None
+    """
+    The protocol identifier (e.g. "openid4vp"). Required when |action| is "respond",
+    forbidden otherwise.
+    """
     response: dict[str, Any] | None = None
+    """
+    The response data object returned by the wallet. Required when |action| is
+    "respond", forbidden otherwise.
+    """
     frame_id: page.FrameId | None = field(
         default=None, metadata={"cdp_name": "frameId"}
     )
+    """
+    The frame to scope the virtual wallet behavior to.
+    """

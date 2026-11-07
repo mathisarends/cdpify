@@ -52,6 +52,9 @@ class Debugger:
     ) -> None:
         """
         Continues execution until specific location is reached.
+
+        Args:
+            location: Location to continue to.
         """
         _params: dict[str, Any] = {}
         _params["location"] = _encode_value(location)
@@ -82,6 +85,12 @@ class Debugger:
         """
         Enables debugger for the given page. Clients should not assume that the
         debugging has been enabled until the result for this command is received.
+
+        Args:
+            max_scripts_cache_size: The maximum size in bytes of collected scripts (not
+                referenced by other heap objects) the debugger can hold. Puts no limit
+                if parameter is omitted. Experimental: this API may change or be
+                removed.
         """
         _params: dict[str, Any] = {}
         if max_scripts_cache_size is not None:
@@ -109,6 +118,27 @@ class Debugger:
     ) -> EvaluateOnCallFrameResult:
         """
         Evaluates expression on a given call frame.
+
+        Args:
+            call_frame_id: Call frame identifier to evaluate on.
+            expression: Expression to evaluate.
+            object_group: String object group name to put result into (allows rapid
+                releasing resulting object handles using `releaseObjectGroup`).
+            include_command_line_api: Specifies whether command line API should be
+                available to the evaluated expression, defaults to false.
+            silent: In silent mode exceptions thrown during evaluation are not reported
+                and do not pause execution. Overrides `setPauseOnException` state.
+            return_by_value: Whether the result is expected to be a JSON object that
+                should be sent by value.
+            generate_preview: Whether preview should be generated for the result.
+                Experimental: this API may change or be removed.
+            throw_on_side_effect: Whether to throw an exception if side effect cannot be
+                ruled out during evaluation.
+            timeout: Terminate execution after timing out (number of milliseconds).
+                Experimental: this API may change or be removed.
+            scope_number: Specifies the scope number to evaluate the expression in
+                (default: 0, innermost scope). Experimental: this API may change or be
+                removed.
         """
         _params: dict[str, Any] = {}
         _params["callFrameId"] = _encode_value(call_frame_id)
@@ -146,6 +176,13 @@ class Debugger:
         """
         Returns possible locations for breakpoint. scriptId in start and end range
         locations should be the same.
+
+        Args:
+            start: Start of range to search possible breakpoint locations in.
+            end: End of range to search possible breakpoint locations in (excluding).
+                When not specified, end of scripts is used as end of range.
+            restrict_to_function: Only consider locations which are in the same
+                (non-nested) function as start.
         """
         _params: dict[str, Any] = {}
         _params["start"] = _encode_value(start)
@@ -167,6 +204,9 @@ class Debugger:
     ) -> GetScriptSourceResult:
         """
         Returns source for the script with given id.
+
+        Args:
+            script_id: Id of the script to get source for.
         """
         _params: dict[str, Any] = {}
         _params["scriptId"] = _encode_value(script_id)
@@ -182,6 +222,12 @@ class Debugger:
         *,
         script_id: runtime.ScriptId,
     ) -> DisassembleWasmModuleResult:
+        """
+        Experimental: this API may change or be removed.
+
+        Args:
+            script_id: Id of the script to disassemble
+        """
         _params: dict[str, Any] = {}
         _params["scriptId"] = _encode_value(script_id)
 
@@ -200,6 +246,7 @@ class Debugger:
         Disassemble the next chunk of lines for the module corresponding to the stream.
         If disassembly is complete, this API will invalidate the streamId and return an
         empty chunk. Any subsequent calls for the now invalid stream will return errors.
+        Experimental: this API may change or be removed.
         """
         _params: dict[str, Any] = {}
         _params["streamId"] = stream_id
@@ -217,7 +264,11 @@ class Debugger:
         script_id: runtime.ScriptId,
     ) -> GetWasmBytecodeResult:
         """
-        This command is deprecated. Use getScriptSource instead.
+        This command is deprecated. Use getScriptSource instead. Deprecated in the
+        Chrome DevTools Protocol.
+
+        Args:
+            script_id: Id of the Wasm script to get source for.
         """
         _params: dict[str, Any] = {}
         _params["scriptId"] = _encode_value(script_id)
@@ -234,7 +285,8 @@ class Debugger:
         stack_trace_id: runtime.StackTraceId,
     ) -> GetStackTraceResult:
         """
-        Returns stack trace with given `stackTraceId`.
+        Returns stack trace with given `stackTraceId`. Experimental: this API may
+        change or be removed.
         """
         _params: dict[str, Any] = {}
         _params["stackTraceId"] = _encode_value(stack_trace_id)
@@ -262,6 +314,14 @@ class Debugger:
         *,
         parent_stack_trace_id: runtime.StackTraceId,
     ) -> None:
+        """
+        Experimental: this API may change or be removed. Deprecated in the Chrome
+        DevTools Protocol.
+
+        Args:
+            parent_stack_trace_id: Debugger will pause when async call with given stack
+                trace is started.
+        """
         _params: dict[str, Any] = {}
         _params["parentStackTraceId"] = _encode_value(parent_stack_trace_id)
 
@@ -303,6 +363,12 @@ class Debugger:
         `callFrames` is always empty. Use the call frames from the `Debugger#paused`
         events instead, that fires once V8 pauses at the beginning of the restarted
         function.
+
+        Args:
+            call_frame_id: Call frame identifier to evaluate on.
+            mode: The `mode` parameter must be present and set to 'StepInto', otherwise
+                `restartFrame` will error out. Experimental: this API may change or be
+                removed.
         """
         _params: dict[str, Any] = {}
         _params["callFrameId"] = _encode_value(call_frame_id)
@@ -322,6 +388,14 @@ class Debugger:
     ) -> None:
         """
         Resumes JavaScript execution.
+
+        Args:
+            terminate_on_resume: Set to true to terminate execution upon resuming
+                execution. In contrast to Runtime.terminateExecution, this will allows
+                to execute further JavaScript (i.e. via evaluation) until execution of
+                the paused code is actually resumed, at which point termination is
+                triggered. If execution is currently not paused, this parameter has no
+                effect.
         """
         _params: dict[str, Any] = {}
         if terminate_on_resume is not None:
@@ -342,6 +416,12 @@ class Debugger:
     ) -> SearchInContentResult:
         """
         Searches for given string in script content.
+
+        Args:
+            script_id: Id of the script to search in.
+            query: String to search for.
+            case_sensitive: If true, search is case sensitive.
+            is_regex: If true, treats string parameter as regex.
         """
         _params: dict[str, Any] = {}
         _params["scriptId"] = _encode_value(script_id)
@@ -364,6 +444,10 @@ class Debugger:
     ) -> None:
         """
         Enables or disables async call stacks tracking.
+
+        Args:
+            max_depth: Maximum depth of async call stacks. Setting to `0` will
+                effectively disable collecting async call stacks (default).
         """
         _params: dict[str, Any] = {}
         _params["maxDepth"] = max_depth
@@ -382,7 +466,11 @@ class Debugger:
         Replace previous blackbox execution contexts with passed ones. Forces backend
         to skip stepping/pausing in scripts in these execution contexts. VM will try to
         leave blackboxed script by performing 'step in' several times, finally resorting
-        to 'step out' if unsuccessful.
+        to 'step out' if unsuccessful. Experimental: this API may change or be removed.
+
+        Args:
+            unique_ids: Array of execution context unique ids for the debugger to
+                ignore.
         """
         _params: dict[str, Any] = {}
         _params["uniqueIds"] = _encode_value(unique_ids)
@@ -402,7 +490,13 @@ class Debugger:
         Replace previous blackbox patterns with passed ones. Forces backend to skip
         stepping/pausing in scripts with url matching one of the patterns. VM will try
         to leave blackboxed script by performing 'step in' several times, finally
-        resorting to 'step out' if unsuccessful.
+        resorting to 'step out' if unsuccessful. Experimental: this API may change or be
+        removed.
+
+        Args:
+            patterns: Array of regexps that will be used to check script url for
+                blackbox state.
+            skip_anonymous: If true, also ignore scripts with no source url.
         """
         _params: dict[str, Any] = {}
         _params["patterns"] = _encode_value(patterns)
@@ -425,6 +519,10 @@ class Debugger:
         blacklisted scripts by performing 'step in' several times, finally resorting to
         'step out' if unsuccessful. Positions array contains positions where blackbox
         state is changed. First interval isn't blackboxed. Array should be sorted.
+        Experimental: this API may change or be removed.
+
+        Args:
+            script_id: Id of the script.
         """
         _params: dict[str, Any] = {}
         _params["scriptId"] = _encode_value(script_id)
@@ -443,6 +541,12 @@ class Debugger:
     ) -> SetBreakpointResult:
         """
         Sets JavaScript breakpoint at a given location.
+
+        Args:
+            location: Location to set breakpoint in.
+            condition: Expression to use as a breakpoint condition. When specified,
+                debugger will only stop on the breakpoint if this expression evaluates
+                to true.
         """
         _params: dict[str, Any] = {}
         _params["location"] = _encode_value(location)
@@ -464,6 +568,9 @@ class Debugger:
     ) -> SetInstrumentationBreakpointResult:
         """
         Sets instrumentation breakpoint.
+
+        Args:
+            instrumentation: Instrumentation name.
         """
         _params: dict[str, Any] = {}
         _params["instrumentation"] = instrumentation
@@ -490,6 +597,17 @@ class Debugger:
         breakpoints resolved and returned in `locations` property. Further matching
         script parsing will result in subsequent `breakpointResolved` events issued.
         This logical breakpoint will survive page reloads.
+
+        Args:
+            line_number: Line number to set breakpoint at.
+            url: URL of the resources to set breakpoint on.
+            url_regex: Regex pattern for the URLs of the resources to set breakpoints
+                on. Either `url` or `urlRegex` must be specified.
+            script_hash: Script hash of the resources to set breakpoint on.
+            column_number: Offset in the line to set breakpoint at.
+            condition: Expression to use as a breakpoint condition. When specified,
+                debugger will only stop on the breakpoint if this expression evaluates
+                to true.
         """
         _params: dict[str, Any] = {}
         _params["lineNumber"] = line_number
@@ -519,7 +637,13 @@ class Debugger:
         """
         Sets JavaScript breakpoint before each call to the given function. If another
         function was created from the same source as a given one, calling it will also
-        trigger the breakpoint.
+        trigger the breakpoint. Experimental: this API may change or be removed.
+
+        Args:
+            object_id: Function object id.
+            condition: Expression to use as a breakpoint condition. When specified,
+                debugger will stop on the breakpoint if this expression evaluates to
+                true.
         """
         _params: dict[str, Any] = {}
         _params["objectId"] = _encode_value(object_id)
@@ -539,6 +663,9 @@ class Debugger:
     ) -> None:
         """
         Activates / deactivates all breakpoints on the page.
+
+        Args:
+            active: New value for breakpoints active state.
         """
         _params: dict[str, Any] = {}
         _params["active"] = active
@@ -557,6 +684,9 @@ class Debugger:
         Defines pause on exceptions state. Can be set to stop on all exceptions,
         uncaught exceptions, or caught exceptions, no exceptions. Initial pause on
         exceptions state is `none`.
+
+        Args:
+            state: Pause on exceptions mode.
         """
         _params: dict[str, Any] = {}
         _params["state"] = state
@@ -573,6 +703,10 @@ class Debugger:
     ) -> None:
         """
         Changes return value in top frame. Available only at return break position.
+        Experimental: this API may change or be removed.
+
+        Args:
+            new_value: New return value.
         """
         _params: dict[str, Any] = {}
         _params["newValue"] = _encode_value(new_value)
@@ -593,7 +727,17 @@ class Debugger:
     ) -> SetScriptSourceResult:
         """
         Live edit is no longer supported and this command always fails with a "no
-        longer available" error.
+        longer available" error. Deprecated in the Chrome DevTools Protocol.
+
+        Args:
+            script_id: Id of the script to edit.
+            script_source: New content of the script.
+            dry_run: If true the change will not actually be applied. Dry run may be
+                used to get result description without actually modifying the code.
+            allow_top_frame_editing: If true, then `scriptSource` is allowed to change
+                the function on top of the stack as long as the top-most stack frame is
+                the only activation of that function. Experimental: this API may change
+                or be removed.
         """
         _params: dict[str, Any] = {}
         _params["scriptId"] = _encode_value(script_id)
@@ -617,6 +761,9 @@ class Debugger:
         """
         Makes page not interrupt on any pauses (breakpoint, exception, dom exception
         etc).
+
+        Args:
+            skip: New value for skip pauses state.
         """
         _params: dict[str, Any] = {}
         _params["skip"] = skip
@@ -637,6 +784,14 @@ class Debugger:
         """
         Changes value of variable in a callframe. Object-based scopes are not supported
         and must be mutated manually.
+
+        Args:
+            scope_number: 0-based number of scope as was listed in scope chain. Only
+                'local', 'closure' and 'catch' scope types are allowed. Other scopes
+                could be manipulated manually.
+            variable_name: Variable name.
+            new_value: New variable value.
+            call_frame_id: Id of callframe that holds variable.
         """
         _params: dict[str, Any] = {}
         _params["scopeNumber"] = scope_number
@@ -657,6 +812,13 @@ class Debugger:
     ) -> None:
         """
         Steps into the function call.
+
+        Args:
+            break_on_async_call: Debugger will pause on the execution of the first async
+                task which was scheduled before next pause. Experimental: this API may
+                change or be removed.
+            skip_list: The skipList specifies location ranges that should be skipped on
+                step into. Experimental: this API may change or be removed.
         """
         _params: dict[str, Any] = {}
         if break_on_async_call is not None:
@@ -688,6 +850,14 @@ class Debugger:
     ) -> None:
         """
         Steps over the statement.
+
+        Args:
+            skip_list: The skipList specifies location ranges that should be skipped on
+                step over. Experimental: this API may change or be removed.
+            enter_ranges: Functions whose source range lies within one of the
+                enterRanges are entered as if by stepInto, even when they are called
+                (directly or indirectly) from a call that is stepped over. Experimental:
+                this API may change or be removed.
         """
         _params: dict[str, Any] = {}
         if skip_list is not None:

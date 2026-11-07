@@ -58,16 +58,27 @@ class AttachToTargetParams:
 
     target_id: TargetID = field(metadata={"cdp_name": "targetId"})
     flatten: bool | None = None
+    """
+    Enables "flat" access to the session via specifying sessionId attribute in the
+    commands. We plan to make this the default, deprecate non-flattened mode, and
+    eventually retire it. See crbug.com/991325.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class AttachToTargetResult:
     session_id: SessionID = field(metadata={"cdp_name": "sessionId"})
+    """
+    Id assigned to the session.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class AttachToBrowserTargetResult:
     session_id: SessionID = field(metadata={"cdp_name": "sessionId"})
+    """
+    Id assigned to the session.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -82,6 +93,10 @@ class CloseTargetParams:
 @dataclass(kw_only=True, slots=True)
 class CloseTargetResult:
     success: bool
+    """
+    Always set to true. If an error occurs, the response indicates protocol error.
+    Deprecated in the Chrome DevTools Protocol.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -92,14 +107,20 @@ class ExposeDevToolsProtocolParams:
     object has the following API: - `binding.send(json)` - a method to send messages
     over the remote debugging protocol - `binding.onmessage = json =>
     handleMessage(json)` - a callback that will be called for the protocol notifications
-    and command responses.
+    and command responses. Experimental: this API may change or be removed.
     """
 
     target_id: TargetID = field(metadata={"cdp_name": "targetId"})
     binding_name: str | None = field(default=None, metadata={"cdp_name": "bindingName"})
+    """
+    Binding name, 'cdp' if not specified.
+    """
     inherit_permissions: bool | None = field(
         default=None, metadata={"cdp_name": "inheritPermissions"}
     )
+    """
+    If true, inherits the current root session's permissions (default: false).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -112,13 +133,30 @@ class CreateBrowserContextParams:
     dispose_on_detach: bool | None = field(
         default=None, metadata={"cdp_name": "disposeOnDetach"}
     )
+    """
+    If specified, disposes this context when debugging session disconnects.
+    Experimental: this API may change or be removed.
+    """
     proxy_server: str | None = field(default=None, metadata={"cdp_name": "proxyServer"})
+    """
+    Proxy server, similar to the one passed to --proxy-server Experimental: this API
+    may change or be removed.
+    """
     proxy_bypass_list: str | None = field(
         default=None, metadata={"cdp_name": "proxyBypassList"}
     )
+    """
+    Proxy bypass list, similar to the one passed to --proxy-bypass-list Experimental:
+    this API may change or be removed.
+    """
     origins_with_universal_network_access: list[str] | None = field(
         default=None, metadata={"cdp_name": "originsWithUniversalNetworkAccess"}
     )
+    """
+    An optional list of origins to grant unlimited cross-origin access to. Parts of the
+    URL other than those constituting origin are ignored. Experimental: this API may
+    change or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -126,6 +164,9 @@ class CreateBrowserContextResult:
     browser_context_id: browser.BrowserContextID = field(
         metadata={"cdp_name": "browserContextId"}
     )
+    """
+    The id of the context created.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -133,9 +174,16 @@ class GetBrowserContextsResult:
     browser_context_ids: list[browser.BrowserContextID] = field(
         metadata={"cdp_name": "browserContextIds"}
     )
+    """
+    An array of browser context ids.
+    """
     default_browser_context_id: browser.BrowserContextID | None = field(
         default=None, metadata={"cdp_name": "defaultBrowserContextId"}
     )
+    """
+    The id of the default browser context if available. Experimental: this API may
+    change or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -145,29 +193,91 @@ class CreateTargetParams:
     """
 
     url: str
+    """
+    The initial URL the page will be navigated to. An empty string indicates
+    about:blank.
+    """
     left: int | None = None
+    """
+    Frame left origin in DIP (requires newWindow to be true or headless shell).
+    Experimental: this API may change or be removed.
+    """
     top: int | None = None
+    """
+    Frame top origin in DIP (requires newWindow to be true or headless shell).
+    Experimental: this API may change or be removed.
+    """
     width: int | None = None
+    """
+    Frame width in DIP (requires newWindow to be true or headless shell).
+    """
     height: int | None = None
+    """
+    Frame height in DIP (requires newWindow to be true or headless shell).
+    """
     window_state: WindowState | None = field(
         default=None, metadata={"cdp_name": "windowState"}
     )
+    """
+    Frame window state (requires newWindow to be true or headless shell). Default is
+    normal.
+    """
     browser_context_id: browser.BrowserContextID | None = field(
         default=None, metadata={"cdp_name": "browserContextId"}
     )
+    """
+    The browser context to create the page in. Experimental: this API may change or be
+    removed.
+    """
     enable_begin_frame_control: bool | None = field(
         default=None, metadata={"cdp_name": "enableBeginFrameControl"}
     )
+    """
+    Whether BeginFrames for this target will be controlled via DevTools (headless shell
+    only, not supported on MacOS yet, false by default). Experimental: this API may
+    change or be removed.
+    """
     new_window: bool | None = field(default=None, metadata={"cdp_name": "newWindow"})
+    """
+    Whether to create a new Window or Tab (false by default, not supported by headless
+    shell).
+    """
     background: bool | None = None
+    """
+    Whether to create the target in background or foreground (false by default, not
+    supported by headless shell).
+    """
     for_tab: bool | None = field(default=None, metadata={"cdp_name": "forTab"})
+    """
+    Whether to create the target of type "tab". Experimental: this API may change or be
+    removed.
+    """
     hidden: bool | None = None
+    """
+    Whether to create a hidden target. The hidden target is observable via protocol,
+    but not present in the tab UI strip. Cannot be created with `forTab: true`,
+    `newWindow: true` or `background: false`. The life-time of the tab is limited to the
+    life-time of the session. Experimental: this API may change or be removed.
+    """
     focus: bool | None = None
+    """
+    If specified, determines whether the new target should be focused. By default, the
+    focus behavior depends on the `background` parameter: - If `background` is false
+    (default) and `focus` is omitted, the new target is focused and the browser window
+    is brought to the foreground. - If `background` is false and `focus` is false, the
+    target is opened but the browser window's focus remains unchanged (e.g., if the
+    window was in the background, it stays there). - If `background` is true, setting
+    `focus` to true is not supported and will result in an error. Experimental: this API
+    may change or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class CreateTargetResult:
     target_id: TargetID = field(metadata={"cdp_name": "targetId"})
+    """
+    The id of the page opened.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -179,7 +289,13 @@ class DetachFromTargetParams:
     session_id: SessionID | None = field(
         default=None, metadata={"cdp_name": "sessionId"}
     )
+    """
+    Session to detach.
+    """
     target_id: TargetID | None = field(default=None, metadata={"cdp_name": "targetId"})
+    """
+    Deprecated. Deprecated in the Chrome DevTools Protocol.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -197,7 +313,8 @@ class DisposeBrowserContextParams:
 @dataclass(kw_only=True, slots=True)
 class GetTargetInfoParams:
     """
-    Returns information about a target.
+    Returns information about a target. Experimental: this API may change or be
+    removed.
     """
 
     target_id: TargetID | None = field(default=None, metadata={"cdp_name": "targetId"})
@@ -215,11 +332,19 @@ class GetTargetsParams:
     """
 
     filter: TargetFilter | None = None
+    """
+    Only targets matching filter will be reported. If filter is not specified and
+    target discovery is currently enabled, a filter used for target discovery is used
+    for consistency. Experimental: this API may change or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetTargetsResult:
     target_infos: list[TargetInfo] = field(metadata={"cdp_name": "targetInfos"})
+    """
+    The list of targets.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -227,13 +352,20 @@ class SendMessageToTargetParams:
     """
     Sends protocol message over session with given id. Consider using flat mode
     instead; see commands attachToTarget, setAutoAttach, and crbug.com/991325.
+    Deprecated in the Chrome DevTools Protocol.
     """
 
     message: str
     session_id: SessionID | None = field(
         default=None, metadata={"cdp_name": "sessionId"}
     )
+    """
+    Identifier of the session.
+    """
     target_id: TargetID | None = field(default=None, metadata={"cdp_name": "targetId"})
+    """
+    Deprecated. Deprecated in the Chrome DevTools Protocol.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -249,11 +381,28 @@ class SetAutoAttachParams:
     """
 
     auto_attach: bool = field(metadata={"cdp_name": "autoAttach"})
+    """
+    Whether to auto-attach to related targets.
+    """
     wait_for_debugger_on_start: bool = field(
         metadata={"cdp_name": "waitForDebuggerOnStart"}
     )
+    """
+    Whether to pause new targets when attaching to them. Use
+    `Runtime.runIfWaitingForDebugger` to run paused targets.
+    """
     flatten: bool | None = None
+    """
+    Enables "flat" access to the session via specifying sessionId attribute in the
+    commands. We plan to make this the default, deprecate non-flattened mode, and
+    eventually retire it. See crbug.com/991325. Experimental: this API may change or be
+    removed.
+    """
     filter: TargetFilter | None = None
+    """
+    Only targets matching filter will be attached. Experimental: this API may change or
+    be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -264,13 +413,22 @@ class AutoAttachRelatedParams:
     service worker) and reported through `attachedToTarget`. The specified target is
     also auto-attached. This cancels the effect of any previous `setAutoAttach` and is
     also cancelled by subsequent `setAutoAttach`. Only available at the Browser target.
+    Experimental: this API may change or be removed.
     """
 
     target_id: TargetID = field(metadata={"cdp_name": "targetId"})
     wait_for_debugger_on_start: bool = field(
         metadata={"cdp_name": "waitForDebuggerOnStart"}
     )
+    """
+    Whether to pause new targets when attaching to them. Use
+    `Runtime.runIfWaitingForDebugger` to run paused targets.
+    """
     filter: TargetFilter | None = None
+    """
+    Only targets matching filter will be attached. Experimental: this API may change or
+    be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -281,43 +439,72 @@ class SetDiscoverTargetsParams:
     """
 
     discover: bool
+    """
+    Whether to discover available targets.
+    """
     filter: TargetFilter | None = None
+    """
+    Only targets matching filter will be attached. If `discover` is false, `filter`
+    must be omitted or empty. Experimental: this API may change or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SetRemoteLocationsParams:
     """
     Enables target discovery for the specified locations, when `setDiscoverTargets` was
-    set to `true`.
+    set to `true`. Experimental: this API may change or be removed.
     """
 
     locations: list[RemoteLocation]
+    """
+    List of remote locations.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetDevToolsTargetParams:
     """
     Gets the targetId of the DevTools page target opened for the given target (if any).
+    Experimental: this API may change or be removed.
     """
 
     target_id: TargetID = field(metadata={"cdp_name": "targetId"})
+    """
+    Page or tab target ID.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetDevToolsTargetResult:
     target_id: TargetID | None = field(default=None, metadata={"cdp_name": "targetId"})
+    """
+    The targetId of DevTools page target if exists.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class OpenDevToolsParams:
     """
-    Opens a DevTools window for the target.
+    Opens a DevTools window for the target. Experimental: this API may change or be
+    removed.
     """
 
     target_id: TargetID = field(metadata={"cdp_name": "targetId"})
+    """
+    This can be the page or tab target ID.
+    """
     panel_id: str | None = field(default=None, metadata={"cdp_name": "panelId"})
+    """
+    The id of the panel we want DevTools to open initially. Currently supported panels
+    are elements, console, network, sources, resources, timeline, chrome-recorder,
+    heap-profiler, lighthouse, and security.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class OpenDevToolsResult:
     target_id: TargetID = field(metadata={"cdp_name": "targetId"})
+    """
+    The targetId of DevTools page target.
+    """

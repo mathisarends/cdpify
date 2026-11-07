@@ -57,7 +57,8 @@ class Network:
         self,
     ) -> CanClearBrowserCacheResult:
         """
-        Tells whether clearing browser cache is supported.
+        Tells whether clearing browser cache is supported. Deprecated in the Chrome
+        DevTools Protocol.
         """
         result = await self._executor.execute(
             method=NetworkCommand.CAN_CLEAR_BROWSER_CACHE,
@@ -70,7 +71,8 @@ class Network:
         self,
     ) -> CanClearBrowserCookiesResult:
         """
-        Tells whether clearing browser cookies is supported.
+        Tells whether clearing browser cookies is supported. Deprecated in the Chrome
+        DevTools Protocol.
         """
         result = await self._executor.execute(
             method=NetworkCommand.CAN_CLEAR_BROWSER_COOKIES,
@@ -83,7 +85,8 @@ class Network:
         self,
     ) -> CanEmulateNetworkConditionsResult:
         """
-        Tells whether emulation of network conditions is supported.
+        Tells whether emulation of network conditions is supported. Deprecated in the
+        Chrome DevTools Protocol.
         """
         result = await self._executor.execute(
             method=NetworkCommand.CAN_EMULATE_NETWORK_CONDITIONS,
@@ -125,6 +128,17 @@ class Network:
         """
         Deletes browser cookies with matching name and url or domain/path/partitionKey
         pair.
+
+        Args:
+            name: Name of the cookies to remove.
+            url: If specified, deletes all the cookies with the given name where domain
+                and path match provided URL.
+            domain: If specified, deletes only cookies with the exact domain.
+            path: If specified, deletes only cookies with the exact path.
+            partition_key: If specified, deletes only cookies with the the given name
+                and partitionKey where all partition key attributes match the cookie
+                partition key attribute. Experimental: this API may change or be
+                removed.
         """
         _params: dict[str, Any] = {}
         _params["name"] = name
@@ -170,7 +184,26 @@ class Network:
         """
         Activates emulation of network conditions. This command is deprecated in favor
         of the emulateNetworkConditionsByRule and overrideNetworkState commands, which
-        can be used together to the same effect.
+        can be used together to the same effect. Deprecated in the Chrome DevTools
+        Protocol.
+
+        Args:
+            offline: True to emulate internet disconnection.
+            latency: Minimum latency from request sent to response headers received
+                (ms).
+            download_throughput: Maximal aggregated download throughput (bytes/sec). -1
+                disables download throttling.
+            upload_throughput: Maximal aggregated upload throughput (bytes/sec).  -1
+                disables upload throttling.
+            connection_type: Connection type if known.
+            packet_loss: WebRTC packet loss (percent, 0-100). 0 disables packet loss
+                emulation, 100 drops all the packets. Experimental: this API may change
+                or be removed.
+            packet_queue_length: WebRTC packet queue length (packet). 0 removes any
+                queue length limitations. Experimental: this API may change or be
+                removed.
+            packet_reordering: WebRTC packetReordering feature. Experimental: this API
+                may change or be removed.
         """
         _params: dict[str, Any] = {}
         _params["offline"] = offline
@@ -202,7 +235,19 @@ class Network:
         Activates emulation of network conditions for individual requests using URL
         match patterns. Unlike the deprecated Network.emulateNetworkConditions this
         method does not affect `navigator` state. Use Network.overrideNetworkState to
-        explicitly modify `navigator` behavior.
+        explicitly modify `navigator` behavior. Experimental: this API may change or be
+        removed.
+
+        Args:
+            offline: True to emulate internet disconnection. Deprecated, use the offline
+                property in matchedNetworkConditions or emulateOfflineServiceWorker
+                instead. Deprecated in the Chrome DevTools Protocol.
+            emulate_offline_service_worker: True to emulate offline service worker.
+            matched_network_conditions: Configure conditions for matching requests. If
+                multiple entries match a request, the first entry wins.  Global
+                conditions can be configured by leaving the urlPattern for the
+                conditions empty. These global conditions are also applied for
+                throttling of p2p connections.
         """
         _params: dict[str, Any] = {}
         if offline is not None:
@@ -227,7 +272,18 @@ class Network:
         connection_type: ConnectionType | None = None,
     ) -> None:
         """
-        Override the state of navigator.onLine and navigator.connection.
+        Override the state of navigator.onLine and navigator.connection. Experimental:
+        this API may change or be removed.
+
+        Args:
+            offline: True to emulate internet disconnection.
+            latency: Minimum latency from request sent to response headers received
+                (ms).
+            download_throughput: Maximal aggregated download throughput (bytes/sec). -1
+                disables download throttling.
+            upload_throughput: Maximal aggregated upload throughput (bytes/sec).  -1
+                disables upload throttling.
+            connection_type: Connection type if known.
         """
         _params: dict[str, Any] = {}
         _params["offline"] = offline
@@ -253,6 +309,26 @@ class Network:
     ) -> None:
         """
         Enables network tracking, network events will now be delivered to the client.
+
+        Args:
+            max_total_buffer_size: Buffer size in bytes to use when preserving network
+                payloads (XHRs, etc). This is the maximum number of bytes that will be
+                collected by this DevTools session. Experimental: this API may change or
+                be removed.
+            max_resource_buffer_size: Per-resource buffer size in bytes to use when
+                preserving network payloads (XHRs, etc). Experimental: this API may
+                change or be removed.
+            max_post_data_size: Longest post body size (in bytes) that would be included
+                in requestWillBeSent notification
+            report_direct_socket_traffic: Whether DirectSocket chunk send/receive events
+                should be reported. Experimental: this API may change or be removed.
+            enable_durable_messages: Enable storing response bodies outside of renderer,
+                so that these survive a cross-process navigation. Requires
+                maxTotalBufferSize to be set. Currently defaults to false. This field is
+                being deprecated in favor of the dedicated configureDurableMessages
+                command, due to the possibility of deadlocks when awaiting
+                Network.enable before issuing Runtime.runIfWaitingForDebugger.
+                Experimental: this API may change or be removed.
         """
         _params: dict[str, Any] = {}
         if max_total_buffer_size is not None:
@@ -280,7 +356,13 @@ class Network:
         """
         Configures storing response bodies outside of renderer, so that these survive a
         cross-process navigation. If maxTotalBufferSize is not set, durable messages are
-        disabled.
+        disabled. Experimental: this API may change or be removed.
+
+        Args:
+            max_total_buffer_size: Buffer size in bytes to use when preserving network
+                payloads (XHRs, etc).
+            max_resource_buffer_size: Per-resource buffer size in bytes to use when
+                preserving network payloads (XHRs, etc).
         """
         _params: dict[str, Any] = {}
         if max_total_buffer_size is not None:
@@ -300,7 +382,7 @@ class Network:
         """
         Returns all browser cookies. Depending on the backend support, will return
         detailed cookie information in the `cookies` field. Deprecated. Use
-        Storage.getCookies instead.
+        Storage.getCookies instead. Deprecated in the Chrome DevTools Protocol.
         """
         result = await self._executor.execute(
             method=NetworkCommand.GET_ALL_COOKIES,
@@ -314,7 +396,11 @@ class Network:
         origin: str,
     ) -> GetCertificateResult:
         """
-        Returns the DER-encoded certificate.
+        Returns the DER-encoded certificate. Experimental: this API may change or be
+        removed.
+
+        Args:
+            origin: Origin to get certificate for.
         """
         _params: dict[str, Any] = {}
         _params["origin"] = origin
@@ -333,6 +419,11 @@ class Network:
         """
         Returns all browser cookies for the current URL. Depending on the backend
         support, will return detailed cookie information in the `cookies` field.
+
+        Args:
+            urls: The list of URLs for which applicable cookies will be fetched. If not
+                specified, it's assumed to be set to the list containing the URLs of the
+                page and all of its subframes.
         """
         _params: dict[str, Any] = {}
         if urls is not None:
@@ -351,6 +442,9 @@ class Network:
     ) -> GetResponseBodyResult:
         """
         Returns content served for the given request.
+
+        Args:
+            request_id: Identifier of the network request to get content for.
         """
         _params: dict[str, Any] = {}
         _params["requestId"] = _encode_value(request_id)
@@ -369,6 +463,9 @@ class Network:
         """
         Returns post data sent with the request. Returns an error when no data was sent
         with the request.
+
+        Args:
+            request_id: Identifier of the network request to get content for.
         """
         _params: dict[str, Any] = {}
         _params["requestId"] = _encode_value(request_id)
@@ -387,7 +484,11 @@ class Network:
         """
         This method sends a new XMLHttpRequest which is identical to the original one.
         The following parameters should be identical: method, url, async, request body,
-        extra headers, withCredentials attribute, user, password.
+        extra headers, withCredentials attribute, user, password. Experimental: this API
+        may change or be removed.
+
+        Args:
+            request_id: Identifier of XHR to replay.
         """
         _params: dict[str, Any] = {}
         _params["requestId"] = _encode_value(request_id)
@@ -406,7 +507,14 @@ class Network:
         is_regex: bool | None = None,
     ) -> SearchInResponseBodyResult:
         """
-        Searches for given string in response content.
+        Searches for given string in response content. Experimental: this API may
+        change or be removed.
+
+        Args:
+            request_id: Identifier of the network response to search.
+            query: String to search for.
+            case_sensitive: If true, search is case sensitive.
+            is_regex: If true, treats string parameter as regex.
         """
         _params: dict[str, Any] = {}
         _params["requestId"] = _encode_value(request_id)
@@ -429,7 +537,14 @@ class Network:
         urls: list[str] | None = None,
     ) -> None:
         """
-        Blocks URLs from loading.
+        Blocks URLs from loading. Experimental: this API may change or be removed.
+
+        Args:
+            url_patterns: Patterns to match in the order in which they are given. These
+                patterns also take precedence over any wildcard patterns defined in
+                `urls`.
+            urls: URL patterns to block. Wildcards ('*') are allowed. Deprecated in the
+                Chrome DevTools Protocol.
         """
         _params: dict[str, Any] = {}
         if url_patterns is not None:
@@ -449,6 +564,9 @@ class Network:
     ) -> None:
         """
         Toggles ignoring of service worker for each request.
+
+        Args:
+            bypass: Bypass service worker and load from network.
         """
         _params: dict[str, Any] = {}
         _params["bypass"] = bypass
@@ -465,6 +583,9 @@ class Network:
     ) -> None:
         """
         Toggles ignoring cache for each request. If `true`, cache will not be used.
+
+        Args:
+            cache_disabled: Cache disabled state.
         """
         _params: dict[str, Any] = {}
         _params["cacheDisabled"] = cache_disabled
@@ -494,6 +615,30 @@ class Network:
         """
         Sets a cookie with the given cookie data; may overwrite equivalent cookies if
         they exist.
+
+        Args:
+            name: Cookie name.
+            value: Cookie value.
+            url: The request-URI to associate with the setting of the cookie. This value
+                can affect the default domain, path, source port, and source scheme
+                values of the created cookie.
+            domain: Cookie domain.
+            path: Cookie path.
+            secure: True if cookie is secure.
+            http_only: True if cookie is http-only.
+            same_site: Cookie SameSite type.
+            expires: Cookie expiration date, session cookie if not set
+            priority: Cookie Priority type. Experimental: this API may change or be
+                removed.
+            source_scheme: Cookie source scheme type. Experimental: this API may change
+                or be removed.
+            source_port: Cookie source port. Valid values are {-1, [1, 65535]}, -1
+                indicates an unspecified port. An unspecified port value allows protocol
+                clients to emulate legacy cookie scope for the port. This is a temporary
+                ability and it will be removed in the future. Experimental: this API may
+                change or be removed.
+            partition_key: Cookie partition key. If not set, the cookie will be set as
+                not partitioned. Experimental: this API may change or be removed.
         """
         _params: dict[str, Any] = {}
         _params["name"] = name
@@ -534,6 +679,9 @@ class Network:
     ) -> None:
         """
         Sets given cookies.
+
+        Args:
+            cookies: Cookies to be set.
         """
         _params: dict[str, Any] = {}
         _params["cookies"] = _encode_value(cookies)
@@ -551,6 +699,9 @@ class Network:
         """
         Specifies whether to always send extra HTTP headers with the requests from this
         page.
+
+        Args:
+            headers: Map with extra HTTP headers.
         """
         _params: dict[str, Any] = {}
         _params["headers"] = _encode_value(headers)
@@ -566,7 +717,11 @@ class Network:
         enabled: bool,
     ) -> None:
         """
-        Specifies whether to attach a page script stack id in requests
+        Specifies whether to attach a page script stack id in requests Experimental:
+        this API may change or be removed.
+
+        Args:
+            enabled: Whether to attach a page script stack for debugging purpose.
         """
         _params: dict[str, Any] = {}
         _params["enabled"] = enabled
@@ -586,6 +741,13 @@ class Network:
     ) -> None:
         """
         Allows overriding user agent with the given string.
+
+        Args:
+            user_agent: User agent to use.
+            accept_language: Browser language to emulate.
+            platform: The platform navigator.platform should return.
+            user_agent_metadata: To be sent in Sec-CH-UA-* headers and returned in
+                navigator.userAgentData Experimental: this API may change or be removed.
         """
         _params: dict[str, Any] = {}
         _params["userAgent"] = user_agent
@@ -609,6 +771,10 @@ class Network:
         """
         Enables streaming of the response for the given requestId. If enabled, the
         dataReceived event contains the data that was received during streaming.
+        Experimental: this API may change or be removed.
+
+        Args:
+            request_id: Identifier of the request to stream.
         """
         _params: dict[str, Any] = {}
         _params["requestId"] = _encode_value(request_id)
@@ -625,7 +791,11 @@ class Network:
         frame_id: page.FrameId | None = None,
     ) -> GetSecurityIsolationStatusResult:
         """
-        Returns information about the COEP/COOP isolation status.
+        Returns information about the COEP/COOP isolation status. Experimental: this
+        API may change or be removed.
+
+        Args:
+            frame_id: If no frameId is provided, the status of the target is provided.
         """
         _params: dict[str, Any] = {}
         if frame_id is not None:
@@ -645,7 +815,10 @@ class Network:
         """
         Enables tracking for the Reporting API, events generated by the Reporting API
         will now be delivered to the client. Enabling triggers 'reportingApiReportAdded'
-        for all existing reports.
+        for all existing reports. Experimental: this API may change or be removed.
+
+        Args:
+            enable: Whether to enable or disable events for the Reporting API
         """
         _params: dict[str, Any] = {}
         _params["enable"] = enable
@@ -662,6 +835,10 @@ class Network:
     ) -> None:
         """
         Sets up tracking device bound sessions and fetching of initial set of sessions.
+        Experimental: this API may change or be removed.
+
+        Args:
+            enable: Whether to enable or disable events.
         """
         _params: dict[str, Any] = {}
         _params["enable"] = enable
@@ -677,7 +854,8 @@ class Network:
         key: DeviceBoundSessionKey,
     ) -> None:
         """
-        Deletes a device bound session.
+        Deletes a device bound session. Experimental: this API may change or be
+        removed.
         """
         _params: dict[str, Any] = {}
         _params["key"] = _encode_value(key)
@@ -693,7 +871,11 @@ class Network:
         origin: str,
     ) -> FetchSchemefulSiteResult:
         """
-        Fetches the schemeful site for a specific origin.
+        Fetches the schemeful site for a specific origin. Experimental: this API may
+        change or be removed.
+
+        Args:
+            origin: The URL origin.
         """
         _params: dict[str, Any] = {}
         _params["origin"] = origin
@@ -712,7 +894,14 @@ class Network:
         options: LoadNetworkResourceOptions,
     ) -> LoadNetworkResourceResult:
         """
-        Fetches the resource and returns the content.
+        Fetches the resource and returns the content. Experimental: this API may change
+        or be removed.
+
+        Args:
+            frame_id: Frame id to get the resource for. Mandatory for frame targets, and
+                should be omitted for worker targets.
+            url: URL of the resource to get content for.
+            options: Options for the request.
         """
         _params: dict[str, Any] = {}
         if frame_id is not None:
@@ -733,7 +922,11 @@ class Network:
     ) -> None:
         """
         Sets Controls for third-party cookie access Page reload is required before the
-        new cookie behavior will be observed
+        new cookie behavior will be observed Experimental: this API may change or be
+        removed.
+
+        Args:
+            enable_third_party_cookie_restriction: Whether 3pc restriction is enabled.
         """
         _params: dict[str, Any] = {}
         _params["enableThirdPartyCookieRestriction"] = (

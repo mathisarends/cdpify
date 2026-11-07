@@ -16,13 +16,32 @@ class ProfileNode:
     """
 
     id: int
+    """
+    Unique id of the node.
+    """
     call_frame: runtime.CallFrame = field(metadata={"cdp_name": "callFrame"})
+    """
+    Function location.
+    """
     hit_count: int | None = field(default=None, metadata={"cdp_name": "hitCount"})
+    """
+    Number of samples where this node was on top of the call stack.
+    """
     children: list[int] | None = None
+    """
+    Child node ids.
+    """
     deopt_reason: str | None = field(default=None, metadata={"cdp_name": "deoptReason"})
+    """
+    The reason of being not optimized. The function may be deoptimized or marked as
+    don't optimize.
+    """
     position_ticks: list[PositionTickInfo] | None = field(
         default=None, metadata={"cdp_name": "positionTicks"}
     )
+    """
+    An array of source position ticks.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -32,12 +51,28 @@ class Profile:
     """
 
     nodes: list[ProfileNode]
+    """
+    The list of profile nodes. First item is the root node.
+    """
     start_time: float = field(metadata={"cdp_name": "startTime"})
+    """
+    Profiling start timestamp in microseconds.
+    """
     end_time: float = field(metadata={"cdp_name": "endTime"})
+    """
+    Profiling end timestamp in microseconds.
+    """
     samples: list[int] | None = None
+    """
+    Ids of samples top nodes.
+    """
     time_deltas: list[int] | None = field(
         default=None, metadata={"cdp_name": "timeDeltas"}
     )
+    """
+    Time intervals between adjacent samples in microseconds. The first delta is
+    relative to the profile startTime.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -47,7 +82,13 @@ class PositionTickInfo:
     """
 
     line: int
+    """
+    Source line number (1-based).
+    """
     ticks: int
+    """
+    Number of samples attributed to the source line.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -57,8 +98,17 @@ class CoverageRange:
     """
 
     start_offset: int = field(metadata={"cdp_name": "startOffset"})
+    """
+    JavaScript script source offset for the range start.
+    """
     end_offset: int = field(metadata={"cdp_name": "endOffset"})
+    """
+    JavaScript script source offset for the range end.
+    """
     count: int
+    """
+    Collected execution count of the source range.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -68,8 +118,17 @@ class FunctionCoverage:
     """
 
     function_name: str = field(metadata={"cdp_name": "functionName"})
+    """
+    JavaScript function name.
+    """
     ranges: list[CoverageRange]
+    """
+    Source ranges inside the function with coverage data.
+    """
     is_block_coverage: bool = field(metadata={"cdp_name": "isBlockCoverage"})
+    """
+    Whether coverage data for this function has block granularity.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -79,5 +138,14 @@ class ScriptCoverage:
     """
 
     script_id: runtime.ScriptId = field(metadata={"cdp_name": "scriptId"})
+    """
+    JavaScript script id.
+    """
     url: str
+    """
+    JavaScript script name or url.
+    """
     functions: list[FunctionCoverage]
+    """
+    Functions contained in the script that has coverage data.
+    """

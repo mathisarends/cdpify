@@ -20,6 +20,9 @@ class BindParams:
     """
 
     port: int
+    """
+    Port number to bind.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -29,3 +32,6 @@ class UnbindParams:
     """
 
     port: int
+    """
+    Port number to unbind.
+    """

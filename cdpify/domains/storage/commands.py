@@ -57,7 +57,7 @@ class StorageCommand(StrEnum):
 class GetStorageKeyForFrameParams:
     """
     Returns a storage key given a frame id. Deprecated. Please use
-    Storage.getStorageKey instead.
+    Storage.getStorageKey instead. Deprecated in the Chrome DevTools Protocol.
     """
 
     frame_id: page.FrameId = field(metadata={"cdp_name": "frameId"})
@@ -72,7 +72,8 @@ class GetStorageKeyForFrameResult:
 class GetStorageKeyParams:
     """
     Returns storage key for the given frame. If no frame ID is provided, the storage
-    key of the target executing this command is returned.
+    key of the target executing this command is returned. Experimental: this API may
+    change or be removed.
     """
 
     frame_id: page.FrameId | None = field(
@@ -92,7 +93,13 @@ class ClearDataForOriginParams:
     """
 
     origin: str
+    """
+    Security origin.
+    """
     storage_types: str = field(metadata={"cdp_name": "storageTypes"})
+    """
+    Comma separated list of StorageType to clear.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -102,7 +109,13 @@ class ClearDataForStorageKeyParams:
     """
 
     storage_key: str = field(metadata={"cdp_name": "storageKey"})
+    """
+    Storage key.
+    """
     storage_types: str = field(metadata={"cdp_name": "storageTypes"})
+    """
+    Comma separated list of StorageType to clear.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -114,11 +127,17 @@ class GetCookiesParams:
     browser_context_id: browser.BrowserContextID | None = field(
         default=None, metadata={"cdp_name": "browserContextId"}
     )
+    """
+    Browser context to use when called on the browser endpoint.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetCookiesResult:
     cookies: list[network.Cookie]
+    """
+    Array of cookie objects.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -128,9 +147,15 @@ class SetCookiesParams:
     """
 
     cookies: list[network.CookieParam]
+    """
+    Cookies to be set.
+    """
     browser_context_id: browser.BrowserContextID | None = field(
         default=None, metadata={"cdp_name": "browserContextId"}
     )
+    """
+    Browser context to use when called on the browser endpoint.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -142,6 +167,9 @@ class ClearCookiesParams:
     browser_context_id: browser.BrowserContextID | None = field(
         default=None, metadata={"cdp_name": "browserContextId"}
     )
+    """
+    Browser context to use when called on the browser endpoint.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -151,24 +179,51 @@ class GetUsageAndQuotaParams:
     """
 
     origin: str
+    """
+    Security origin.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetUsageAndQuotaResult:
     usage: float
+    """
+    Storage usage (bytes).
+    """
     quota: float
+    """
+    Storage quota (bytes).
+    """
     override_active: bool = field(metadata={"cdp_name": "overrideActive"})
+    """
+    Whether or not the origin has an active storage quota override
+    """
     usage_breakdown: list[UsageForType] = field(metadata={"cdp_name": "usageBreakdown"})
+    """
+    Storage usage per type (bytes).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class OverrideQuotaForOriginParams:
     """
-    Override quota for the specified origin
+    Override quota for the specified origin Experimental: this API may change or be
+    removed.
     """
 
     origin: str
+    """
+    Security origin.
+    """
     quota_size: float | None = field(default=None, metadata={"cdp_name": "quotaSize"})
+    """
+    The quota size (in bytes) to override the original quota with. If this is called
+    multiple times, the overridden quota will be equal to the quotaSize provided in the
+    final call. If this is called without specifying a quotaSize, the quota will be
+    reset to the default value for the specified origin. If this is called multiple
+    times with different origins, the override will be maintained for each origin until
+    it is disabled (called without a quotaSize).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -178,6 +233,9 @@ class TrackCacheStorageForOriginParams:
     """
 
     origin: str
+    """
+    Security origin.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -188,6 +246,9 @@ class TrackCacheStorageForStorageKeyParams:
     """
 
     storage_key: str = field(metadata={"cdp_name": "storageKey"})
+    """
+    Storage key.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -197,6 +258,9 @@ class TrackIndexedDBForOriginParams:
     """
 
     origin: str
+    """
+    Security origin.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -206,6 +270,9 @@ class TrackIndexedDBForStorageKeyParams:
     """
 
     storage_key: str = field(metadata={"cdp_name": "storageKey"})
+    """
+    Storage key.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -215,6 +282,9 @@ class UntrackCacheStorageForOriginParams:
     """
 
     origin: str
+    """
+    Security origin.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -224,6 +294,9 @@ class UntrackCacheStorageForStorageKeyParams:
     """
 
     storage_key: str = field(metadata={"cdp_name": "storageKey"})
+    """
+    Storage key.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -233,6 +306,9 @@ class UntrackIndexedDBForOriginParams:
     """
 
     origin: str
+    """
+    Security origin.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -242,6 +318,9 @@ class UntrackIndexedDBForStorageKeyParams:
     """
 
     storage_key: str = field(metadata={"cdp_name": "storageKey"})
+    """
+    Storage key.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -253,7 +332,8 @@ class GetTrustTokensResult:
 class ClearTrustTokensParams:
     """
     Removes all Trust Tokens issued by the provided issuerOrigin. Leaves other stored
-    data, including the issuer's Redemption Records, intact.
+    data, including the issuer's Redemption Records, intact. Experimental: this API may
+    change or be removed.
     """
 
     issuer_origin: str = field(metadata={"cdp_name": "issuerOrigin"})
@@ -262,6 +342,9 @@ class ClearTrustTokensParams:
 @dataclass(kw_only=True, slots=True)
 class ClearTrustTokensResult:
     did_delete_tokens: bool = field(metadata={"cdp_name": "didDeleteTokens"})
+    """
+    True if any tokens were deleted, false otherwise.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -278,6 +361,7 @@ class GetPrivateVerificationTokensIssuerConfigsResult:
 class ClearPrivateVerificationTokensParams:
     """
     Removes all Private Verification Tokens issued by the provided issuerOrigin.
+    Experimental: this API may change or be removed.
     """
 
     issuer_origin: str = field(metadata={"cdp_name": "issuerOrigin"})
@@ -286,7 +370,8 @@ class ClearPrivateVerificationTokensParams:
 @dataclass(kw_only=True, slots=True)
 class DeletePrivateVerificationTokenParams:
     """
-    Removes a specific Private Verification Token by its ID.
+    Removes a specific Private Verification Token by its ID. Experimental: this API may
+    change or be removed.
     """
 
     token_id: str = field(metadata={"cdp_name": "tokenId"})
@@ -295,7 +380,8 @@ class DeletePrivateVerificationTokenParams:
 @dataclass(kw_only=True, slots=True)
 class SetPrivateVerificationTokensTrackingParams:
     """
-    Set tracking for Private Verification Tokens.
+    Set tracking for Private Verification Tokens. Experimental: this API may change or
+    be removed.
     """
 
     enable: bool
@@ -304,7 +390,8 @@ class SetPrivateVerificationTokensTrackingParams:
 @dataclass(kw_only=True, slots=True)
 class SetStorageBucketTrackingParams:
     """
-    Set tracking for a storage key's buckets.
+    Set tracking for a storage key's buckets. Experimental: this API may change or be
+    removed.
     """
 
     storage_key: str = field(metadata={"cdp_name": "storageKey"})
@@ -315,6 +402,7 @@ class SetStorageBucketTrackingParams:
 class DeleteStorageBucketParams:
     """
     Deletes the Storage Bucket with the given storage key and bucket name.
+    Experimental: this API may change or be removed.
     """
 
     bucket: StorageBucket

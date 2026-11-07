@@ -33,6 +33,11 @@ Breaking changes are listed first in each release.
 
 ### Added
 
+- Generated method docstrings include parameter descriptions, units and defaults
+  from the spec. Model fields retain their attribute documentation. Experimental
+  and deprecated markers are preserved on types, events and fields as well as
+  commands.
+
 - `listen_raw(method=None)` on clients and sessions, and `listen_all_raw()` on
   clients, return `TransportEvent` values with wire names, parameter dictionaries
   and session IDs. None matches every method in the selected scope.

@@ -63,6 +63,9 @@ class Log:
     ) -> None:
         """
         start violation reporting.
+
+        Args:
+            config: Configuration for violations.
         """
         _params: dict[str, Any] = {}
         _params["config"] = _encode_value(config)

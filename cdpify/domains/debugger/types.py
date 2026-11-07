@@ -28,16 +28,25 @@ class Location:
     """
 
     script_id: runtime.ScriptId = field(metadata={"cdp_name": "scriptId"})
+    """
+    Script identifier as reported in the `Debugger.scriptParsed`.
+    """
     line_number: int = field(metadata={"cdp_name": "lineNumber"})
+    """
+    Line number in the script (0-based).
+    """
     column_number: int | None = field(
         default=None, metadata={"cdp_name": "columnNumber"}
     )
+    """
+    Column number in the script (0-based).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class ScriptPosition:
     """
-    Location in the source code.
+    Location in the source code. Experimental: this API may change or be removed.
     """
 
     line_number: int = field(metadata={"cdp_name": "lineNumber"})
@@ -47,7 +56,7 @@ class ScriptPosition:
 @dataclass(kw_only=True, slots=True)
 class LocationRange:
     """
-    Location range within one script.
+    Location range within one script. Experimental: this API may change or be removed.
     """
 
     script_id: runtime.ScriptId = field(metadata={"cdp_name": "scriptId"})
@@ -62,20 +71,53 @@ class CallFrame:
     """
 
     call_frame_id: CallFrameId = field(metadata={"cdp_name": "callFrameId"})
+    """
+    Call frame identifier. This identifier is only valid while the virtual machine is
+    paused.
+    """
     function_name: str = field(metadata={"cdp_name": "functionName"})
+    """
+    Name of the JavaScript function called on this call frame.
+    """
     function_location: Location | None = field(
         default=None, metadata={"cdp_name": "functionLocation"}
     )
+    """
+    Location in the source code.
+    """
     location: Location
+    """
+    Location in the source code.
+    """
     url: str
+    """
+    JavaScript script name or url. Deprecated in favor of using the `location.scriptId`
+    to resolve the URL via a previously sent `Debugger.scriptParsed` event. Deprecated
+    in the Chrome DevTools Protocol.
+    """
     scope_chain: list[Scope] = field(metadata={"cdp_name": "scopeChain"})
+    """
+    Scope chain for this call frame.
+    """
     this: runtime.RemoteObject
+    """
+    `this` object for this call frame.
+    """
     return_value: runtime.RemoteObject | None = field(
         default=None, metadata={"cdp_name": "returnValue"}
     )
+    """
+    The value being returned, if the function is at return point.
+    """
     can_be_restarted: bool | None = field(
         default=None, metadata={"cdp_name": "canBeRestarted"}
     )
+    """
+    Valid only while the VM is paused and indicates whether this frame can be restarted
+    or not. Note that a `true` value here does not guarantee that Debugger#restartFrame
+    with this CallFrameId will be successful, but it is very likely. Experimental: this
+    API may change or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -96,17 +138,38 @@ class Scope:
         "module",
         "wasm-expression-stack",
     ]
+    """
+    Scope type.
+    """
     object: runtime.RemoteObject
+    """
+    Object representing the scope. For `global` and `with` scopes it represents the
+    actual object; for the rest of the scopes, it is artificial transient object
+    enumerating scope variables as its properties.
+    """
     name: str | None = None
     start_location: Location | None = field(
         default=None, metadata={"cdp_name": "startLocation"}
     )
+    """
+    Location in the source code where scope starts
+    """
     end_location: Location | None = field(
         default=None, metadata={"cdp_name": "endLocation"}
     )
+    """
+    Location in the source code where scope ends
+    """
     empty_reason: Literal["no-variables", "all-unavailable"] | None = field(
         default=None, metadata={"cdp_name": "emptyReason"}
     )
+    """
+    Present if the scope has no variable values to show. Absent means that the scope
+    declares at least one variable with an available value. Empty scopes are retained in
+    the scope chain because they can be targeted via `evaluateOnCallFrame` (using
+    `scopeNumber`) or matched against scopes in source maps. Experimental: this API may
+    change or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -116,23 +179,48 @@ class SearchMatch:
     """
 
     line_number: float = field(metadata={"cdp_name": "lineNumber"})
+    """
+    Line number in resource content.
+    """
     line_content: str = field(metadata={"cdp_name": "lineContent"})
+    """
+    Line with match content.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class BreakLocation:
     script_id: runtime.ScriptId = field(metadata={"cdp_name": "scriptId"})
+    """
+    Script identifier as reported in the `Debugger.scriptParsed`.
+    """
     line_number: int = field(metadata={"cdp_name": "lineNumber"})
+    """
+    Line number in the script (0-based).
+    """
     column_number: int | None = field(
         default=None, metadata={"cdp_name": "columnNumber"}
     )
+    """
+    Column number in the script (0-based).
+    """
     type: Literal["debuggerStatement", "call", "return"] | None = None
 
 
 @dataclass(kw_only=True, slots=True)
 class WasmDisassemblyChunk:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     lines: list[str]
+    """
+    The next chunk of disassembled lines.
+    """
     bytecode_offsets: list[int] = field(metadata={"cdp_name": "bytecodeOffsets"})
+    """
+    The bytecode offsets describing the start of each line.
+    """
 
 
 class ScriptLanguage(CDPStrEnum):
@@ -151,10 +239,22 @@ class DebugSymbols:
     """
 
     type: Literal["SourceMap", "EmbeddedDWARF", "ExternalDWARF"]
+    """
+    Type of the debug symbols.
+    """
     external_url: str | None = field(default=None, metadata={"cdp_name": "externalURL"})
+    """
+    URL of the external symbol source.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class ResolvedBreakpoint:
     breakpoint_id: BreakpointId = field(metadata={"cdp_name": "breakpointId"})
+    """
+    Breakpoint unique identifier.
+    """
     location: Location
+    """
+    Actual breakpoint location.
+    """

@@ -22,7 +22,7 @@ class DOMBreakpointType(CDPStrEnum):
 
 class CSPViolationType(CDPStrEnum):
     """
-    CSP Violation type.
+    CSP Violation type. Experimental: this API may change or be removed.
     """
 
     TRUSTEDTYPE_SINK_VIOLATION = "trustedtype-sink-violation"
@@ -36,16 +36,46 @@ class EventListener:
     """
 
     type: str
+    """
+    `EventListener`'s type.
+    """
     use_capture: bool = field(metadata={"cdp_name": "useCapture"})
+    """
+    `EventListener`'s useCapture.
+    """
     passive: bool
+    """
+    `EventListener`'s passive flag.
+    """
     once: bool
+    """
+    `EventListener`'s once flag.
+    """
     script_id: runtime.ScriptId = field(metadata={"cdp_name": "scriptId"})
+    """
+    Script id of the handler code.
+    """
     line_number: int = field(metadata={"cdp_name": "lineNumber"})
+    """
+    Line number in the script (0-based).
+    """
     column_number: int = field(metadata={"cdp_name": "columnNumber"})
+    """
+    Column number in the script (0-based).
+    """
     handler: runtime.RemoteObject | None = None
+    """
+    Event handler function value.
+    """
     original_handler: runtime.RemoteObject | None = field(
         default=None, metadata={"cdp_name": "originalHandler"}
     )
+    """
+    Event original handler function value.
+    """
     backend_node_id: dom.BackendNodeId | None = field(
         default=None, metadata={"cdp_name": "backendNodeId"}
     )
+    """
+    Node the listener is added to (if any).
+    """

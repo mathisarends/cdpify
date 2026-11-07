@@ -31,6 +31,11 @@ class PWA:
     ) -> GetOsAppStateResult:
         """
         Returns the following OS state for the given manifest id.
+
+        Args:
+            manifest_id: The id from the webapp's manifest file, commonly it's the url
+                of the site installing the webapp. See
+                https://web.dev/learn/pwa/web-app-manifest.
         """
         _params: dict[str, Any] = {}
         _params["manifestId"] = manifest_id
@@ -62,6 +67,10 @@ class PWA:
         https://github.com/WICG/isolated-web-apps/blob/main/Scheme.md#suffix 3. Encode
         the entire sequence using Base32 without padding. If Chrome is not in IWA dev
         mode, the installation will fail, regardless of the state of the allowlist.
+
+        Args:
+            install_url_or_bundle_url: The location of the app or bundle overriding the
+                one derived from the manifestId.
         """
         _params: dict[str, Any] = {}
         _params["manifestId"] = manifest_id
@@ -171,6 +180,16 @@ class PWA:
         manifest files of the web apps, these settings are provided by the browser and
         controlled by the users, they impact the way the browser handling the web apps.
         See the comment of each parameter.
+
+        Args:
+            link_capturing: If user allows the links clicked on by the user in the app's
+                scope, or extended scope if the manifest has scope extensions and the
+                flags `DesktopPWAsLinkCapturingWithScopeExtensions` and
+                `WebAppEnableScopeExtensions` are enabled.  Note, the API does not
+                support resetting the linkCapturing to the initial value, uninstalling
+                and installing the web app again will reset it.
+                TODO(crbug.com/339453269): Setting this value on ChromeOS is not
+                supported yet.
         """
         _params: dict[str, Any] = {}
         _params["manifestId"] = manifest_id

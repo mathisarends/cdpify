@@ -1,7 +1,8 @@
 import keyword
 import re
+import textwrap
 
-from cdpify.generator.schemas import Parameter
+from cdpify.generator.schemas import Command, Parameter
 from cdpify.shared.naming import to_snake_case
 
 
@@ -52,7 +53,7 @@ def format_docstring(text: str, indent: int = 4) -> str:
     indent_str = " " * indent
     max_length = 88 - indent
 
-    words = text.split()
+    words = _escape_docstring(text).split()
     lines = []
     current_line = []
     current_length = 0
@@ -75,6 +76,63 @@ def format_docstring(text: str, indent: int = 4) -> str:
     result.append(f'{indent_str}"""')
 
     return "\n".join(result)
+
+
+def _escape_docstring(text: str) -> str:
+    return text.replace("\\", "\\\\").replace('"""', '\\"\\"\\"')
+
+
+def api_description(
+    description: str | None, *, experimental: bool = False, deprecated: bool = False
+) -> str:
+    parts = [description] if description else []
+    if experimental:
+        parts.append("Experimental: this API may change or be removed.")
+    if deprecated:
+        parts.append("Deprecated in the Chrome DevTools Protocol.")
+    return " ".join(parts)
+
+
+def method_docstring(command: "Command") -> str:
+    """Preserve parameter descriptions and units in IDE method documentation."""
+    description = api_description(
+        command.description,
+        experimental=command.experimental,
+        deprecated=command.deprecated,
+    )
+    lines = format_docstring(description, indent=8).splitlines()
+    documented = [
+        p for p in command.parameters if p.description or p.experimental or p.deprecated
+    ]
+    if not documented:
+        return "\n".join(lines)
+    if not lines:
+        lines = ['        """', '        """']
+    lines.pop()
+    if description:
+        lines.append("")
+    lines.append("        Args:")
+    for param in documented:
+        text = _escape_docstring(
+            api_description(
+                param.description,
+                experimental=param.experimental,
+                deprecated=param.deprecated,
+            )
+        )
+        prefix = f"            {to_identifier(param.name)}: "
+        lines.extend(
+            textwrap.wrap(
+                text,
+                width=88,
+                initial_indent=prefix,
+                subsequent_indent="                ",
+                break_long_words=False,
+                break_on_hyphens=False,
+            )
+        )
+    lines.append('        """')
+    return "\n".join(lines)
 
 
 def _get_base_type(param: Parameter) -> str:

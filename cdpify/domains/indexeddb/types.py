@@ -17,8 +17,18 @@ class DatabaseWithObjectStores:
     """
 
     name: str
+    """
+    Database name.
+    """
     version: float
+    """
+    Database version (type is not 'integer', as the standard requires the version
+    number to be 'unsigned long long')
+    """
     object_stores: list[ObjectStore] = field(metadata={"cdp_name": "objectStores"})
+    """
+    Object stores in this database.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -28,9 +38,21 @@ class ObjectStore:
     """
 
     name: str
+    """
+    Object store name.
+    """
     key_path: KeyPath = field(metadata={"cdp_name": "keyPath"})
+    """
+    Object store key path.
+    """
     auto_increment: bool = field(metadata={"cdp_name": "autoIncrement"})
+    """
+    If true, object store has auto increment flag set.
+    """
     indexes: list[ObjectStoreIndex]
+    """
+    Indexes in this object store.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -40,9 +62,21 @@ class ObjectStoreIndex:
     """
 
     name: str
+    """
+    Index name.
+    """
     key_path: KeyPath = field(metadata={"cdp_name": "keyPath"})
+    """
+    Index key path.
+    """
     unique: bool
+    """
+    If true, index is unique.
+    """
     multi_entry: bool = field(metadata={"cdp_name": "multiEntry"})
+    """
+    If true, index allows multiple entries for a key.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -52,10 +86,25 @@ class Key:
     """
 
     type: Literal["number", "string", "date", "array"]
+    """
+    Key type.
+    """
     number: float | None = None
+    """
+    Number value.
+    """
     string: str | None = None
+    """
+    String value.
+    """
     date: float | None = None
+    """
+    Date value.
+    """
     array: list[Key] | None = None
+    """
+    Array value.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -65,9 +114,21 @@ class KeyRange:
     """
 
     lower: Key | None = None
+    """
+    Lower bound.
+    """
     upper: Key | None = None
+    """
+    Upper bound.
+    """
     lower_open: bool = field(metadata={"cdp_name": "lowerOpen"})
+    """
+    If true lower bound is open.
+    """
     upper_open: bool = field(metadata={"cdp_name": "upperOpen"})
+    """
+    If true upper bound is open.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -77,8 +138,17 @@ class DataEntry:
     """
 
     key: runtime.RemoteObject
+    """
+    Key object.
+    """
     primary_key: runtime.RemoteObject = field(metadata={"cdp_name": "primaryKey"})
+    """
+    Primary key object.
+    """
     value: runtime.RemoteObject
+    """
+    Value object.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -88,5 +158,14 @@ class KeyPath:
     """
 
     type: Literal["null", "string", "array"]
+    """
+    Key path type.
+    """
     string: str | None = None
+    """
+    String value.
+    """
     array: list[str] | None = None
+    """
+    Array value.
+    """

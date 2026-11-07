@@ -39,6 +39,10 @@ class LayerTree:
     ) -> CompositingReasonsResult:
         """
         Provides the reasons why the given layer was composited.
+
+        Args:
+            layer_id: The id of the layer for which we want to get the reasons it was
+                composited.
         """
         _params: dict[str, Any] = {}
         _params["layerId"] = _encode_value(layer_id)
@@ -78,6 +82,9 @@ class LayerTree:
     ) -> LoadSnapshotResult:
         """
         Returns the snapshot identifier.
+
+        Args:
+            tiles: An array of tiles composing the snapshot.
         """
         _params: dict[str, Any] = {}
         _params["tiles"] = _encode_value(tiles)
@@ -95,6 +102,9 @@ class LayerTree:
     ) -> MakeSnapshotResult:
         """
         Returns the layer snapshot identifier.
+
+        Args:
+            layer_id: The id of the layer.
         """
         _params: dict[str, Any] = {}
         _params["layerId"] = _encode_value(layer_id)
@@ -113,6 +123,14 @@ class LayerTree:
         min_duration: float | None = None,
         clip_rect: dom.Rect | None = None,
     ) -> ProfileSnapshotResult:
+        """
+        Args:
+            snapshot_id: The id of the layer snapshot.
+            min_repeat_count: The maximum number of times to replay the snapshot (1, if
+                not specified).
+            min_duration: The minimum duration (in seconds) to replay the snapshot.
+            clip_rect: The clip rectangle to apply when replaying the snapshot.
+        """
         _params: dict[str, Any] = {}
         _params["snapshotId"] = _encode_value(snapshot_id)
         if min_repeat_count is not None:
@@ -135,6 +153,9 @@ class LayerTree:
     ) -> None:
         """
         Releases layer snapshot captured by the back-end.
+
+        Args:
+            snapshot_id: The id of the layer snapshot.
         """
         _params: dict[str, Any] = {}
         _params["snapshotId"] = _encode_value(snapshot_id)
@@ -154,6 +175,13 @@ class LayerTree:
     ) -> ReplaySnapshotResult:
         """
         Replays the layer snapshot and returns the resulting bitmap.
+
+        Args:
+            snapshot_id: The id of the layer snapshot.
+            from_step: The first step to replay from (replay from the very start if not
+                specified).
+            to_step: The last step to replay to (replay till the end if not specified).
+            scale: The scale to apply while replaying (defaults to 1).
         """
         _params: dict[str, Any] = {}
         _params["snapshotId"] = _encode_value(snapshot_id)
@@ -177,6 +205,9 @@ class LayerTree:
     ) -> SnapshotCommandLogResult:
         """
         Replays the layer snapshot and returns canvas log.
+
+        Args:
+            snapshot_id: The id of the layer snapshot.
         """
         _params: dict[str, Any] = {}
         _params["snapshotId"] = _encode_value(snapshot_id)

@@ -116,7 +116,8 @@ class CookieSameSite(CDPStrEnum):
 class CookiePriority(CDPStrEnum):
     """
     Represents the cookie's 'Priority' status:
-    https://tools.ietf.org/html/draft-west-cookie-priority-00
+    https://tools.ietf.org/html/draft-west-cookie-priority-00 Experimental: this API may
+    change or be removed.
     """
 
     LOW = "Low"
@@ -128,7 +129,8 @@ class CookieSourceScheme(CDPStrEnum):
     """
     Represents the source scheme of the origin that originally set the cookie. A value
     of "Unset" allows protocol clients to emulate legacy cookie scope for the scheme.
-    This is a temporary ability and it will be removed in the future.
+    This is a temporary ability and it will be removed in the future. Experimental: this
+    API may change or be removed.
     """
 
     UNSET = "Unset"
@@ -143,32 +145,102 @@ class ResourceTiming:
     """
 
     request_time: float = field(metadata={"cdp_name": "requestTime"})
+    """
+    Timing's requestTime is a baseline in seconds, while the other numbers are ticks in
+    milliseconds relatively to this requestTime.
+    """
     proxy_start: float = field(metadata={"cdp_name": "proxyStart"})
+    """
+    Started resolving proxy.
+    """
     proxy_end: float = field(metadata={"cdp_name": "proxyEnd"})
+    """
+    Finished resolving proxy.
+    """
     dns_start: float = field(metadata={"cdp_name": "dnsStart"})
+    """
+    Started DNS address resolve.
+    """
     dns_end: float = field(metadata={"cdp_name": "dnsEnd"})
+    """
+    Finished DNS address resolve.
+    """
     connect_start: float = field(metadata={"cdp_name": "connectStart"})
+    """
+    Started connecting to the remote host.
+    """
     connect_end: float = field(metadata={"cdp_name": "connectEnd"})
+    """
+    Connected to the remote host.
+    """
     ssl_start: float = field(metadata={"cdp_name": "sslStart"})
+    """
+    Started SSL handshake.
+    """
     ssl_end: float = field(metadata={"cdp_name": "sslEnd"})
+    """
+    Finished SSL handshake.
+    """
     worker_start: float = field(metadata={"cdp_name": "workerStart"})
+    """
+    Started running ServiceWorker. Experimental: this API may change or be removed.
+    """
     worker_ready: float = field(metadata={"cdp_name": "workerReady"})
+    """
+    Finished Starting ServiceWorker. Experimental: this API may change or be removed.
+    """
     worker_fetch_start: float = field(metadata={"cdp_name": "workerFetchStart"})
+    """
+    Started fetch event. Experimental: this API may change or be removed.
+    """
     worker_respond_with_settled: float = field(
         metadata={"cdp_name": "workerRespondWithSettled"}
     )
+    """
+    Settled fetch event respondWith promise. Experimental: this API may change or be
+    removed.
+    """
     worker_router_evaluation_start: float | None = field(
         default=None, metadata={"cdp_name": "workerRouterEvaluationStart"}
     )
+    """
+    Started ServiceWorker static routing source evaluation. Experimental: this API may
+    change or be removed.
+    """
     worker_cache_lookup_start: float | None = field(
         default=None, metadata={"cdp_name": "workerCacheLookupStart"}
     )
+    """
+    Started cache lookup when the source was evaluated to `cache`. Experimental: this
+    API may change or be removed.
+    """
     send_start: float = field(metadata={"cdp_name": "sendStart"})
+    """
+    Started sending request.
+    """
     send_end: float = field(metadata={"cdp_name": "sendEnd"})
+    """
+    Finished sending request.
+    """
     push_start: float = field(metadata={"cdp_name": "pushStart"})
+    """
+    Time the server started pushing request. Experimental: this API may change or be
+    removed.
+    """
     push_end: float = field(metadata={"cdp_name": "pushEnd"})
+    """
+    Time the server finished pushing request. Experimental: this API may change or be
+    removed.
+    """
     receive_headers_start: float = field(metadata={"cdp_name": "receiveHeadersStart"})
+    """
+    Started receiving response headers. Experimental: this API may change or be
+    removed.
+    """
     receive_headers_end: float = field(metadata={"cdp_name": "receiveHeadersEnd"})
+    """
+    Finished receiving response headers.
+    """
 
 
 class ResourcePriority(CDPStrEnum):
@@ -185,7 +257,8 @@ class ResourcePriority(CDPStrEnum):
 
 class RenderBlockingBehavior(CDPStrEnum):
     """
-    The render-blocking behavior of a resource request.
+    The render-blocking behavior of a resource request. Experimental: this API may
+    change or be removed.
     """
 
     BLOCKING = "Blocking"
@@ -211,20 +284,50 @@ class Request:
     """
 
     url: str
+    """
+    Request URL (without fragment).
+    """
     url_fragment: str | None = field(default=None, metadata={"cdp_name": "urlFragment"})
+    """
+    Fragment of the requested URL starting with hash, if present.
+    """
     method: str
+    """
+    HTTP request method.
+    """
     headers: Headers
+    """
+    HTTP request headers.
+    """
     post_data: str | None = field(default=None, metadata={"cdp_name": "postData"})
+    """
+    HTTP POST request data. Use postDataEntries instead. Deprecated in the Chrome
+    DevTools Protocol.
+    """
     has_post_data: bool | None = field(
         default=None, metadata={"cdp_name": "hasPostData"}
     )
+    """
+    True when the request has POST data. Note that postData might still be omitted when
+    this flag is true when the data is too long.
+    """
     post_data_entries: list[PostDataEntry] | None = field(
         default=None, metadata={"cdp_name": "postDataEntries"}
     )
+    """
+    Request body elements (post data broken into individual entries). Experimental:
+    this API may change or be removed.
+    """
     mixed_content_type: security.MixedContentType | None = field(
         default=None, metadata={"cdp_name": "mixedContentType"}
     )
+    """
+    The mixed content type of the request.
+    """
     initial_priority: ResourcePriority = field(metadata={"cdp_name": "initialPriority"})
+    """
+    Priority of the resource request at the time request is sent.
+    """
     referrer_policy: Literal[
         "unsafe-url",
         "no-referrer-when-downgrade",
@@ -237,16 +340,36 @@ class Request:
     ] = field(  # noqa: E501
         metadata={"cdp_name": "referrerPolicy"},
     )
+    """
+    The referrer policy of the request, as defined in
+    https://www.w3.org/TR/referrer-policy/
+    """
     is_link_preload: bool | None = field(
         default=None, metadata={"cdp_name": "isLinkPreload"}
     )
+    """
+    Whether is loaded via link preload.
+    """
     trust_token_params: TrustTokenParams | None = field(
         default=None, metadata={"cdp_name": "trustTokenParams"}
     )
+    """
+    Set for requests when the TrustToken API is used. Contains the parameters passed by
+    the developer (e.g. via "fetch") as understood by the backend. Experimental: this
+    API may change or be removed.
+    """
     is_same_site: bool | None = field(default=None, metadata={"cdp_name": "isSameSite"})
+    """
+    True if this resource request is considered to be the 'same site' as the request
+    corresponding to the main frame. Experimental: this API may change or be removed.
+    """
     is_ad_related: bool | None = field(
         default=None, metadata={"cdp_name": "isAdRelated"}
     )
+    """
+    True when the resource request is ad-related. Experimental: this API may change or
+    be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -256,13 +379,38 @@ class SignedCertificateTimestamp:
     """
 
     status: str
+    """
+    Validation status.
+    """
     origin: str
+    """
+    Origin.
+    """
     log_description: str = field(metadata={"cdp_name": "logDescription"})
+    """
+    Log name / description.
+    """
     log_id: str = field(metadata={"cdp_name": "logId"})
+    """
+    Log ID.
+    """
     timestamp: float
+    """
+    Issuance date. Unlike TimeSinceEpoch, this contains the number of milliseconds
+    since January 1, 1970, UTC, not the number of seconds.
+    """
     hash_algorithm: str = field(metadata={"cdp_name": "hashAlgorithm"})
+    """
+    Hash algorithm.
+    """
     signature_algorithm: str = field(metadata={"cdp_name": "signatureAlgorithm"})
+    """
+    Signature algorithm.
+    """
     signature_data: str = field(metadata={"cdp_name": "signatureData"})
+    """
+    Signature data.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -272,30 +420,76 @@ class SecurityDetails:
     """
 
     protocol: str
+    """
+    Protocol name (e.g. "TLS 1.2" or "QUIC").
+    """
     key_exchange: str = field(metadata={"cdp_name": "keyExchange"})
+    """
+    Key Exchange used by the connection, or the empty string if not applicable.
+    """
     key_exchange_group: str | None = field(
         default=None, metadata={"cdp_name": "keyExchangeGroup"}
     )
+    """
+    (EC)DH group used by the connection, if applicable.
+    """
     cipher: str
+    """
+    Cipher name.
+    """
     mac: str | None = None
+    """
+    TLS MAC. Note that AEAD ciphers do not have separate MACs.
+    """
     certificate_id: security.CertificateId = field(
         metadata={"cdp_name": "certificateId"}
     )
+    """
+    Certificate ID value.
+    """
     subject_name: str = field(metadata={"cdp_name": "subjectName"})
+    """
+    Certificate subject name.
+    """
     san_list: list[str] = field(metadata={"cdp_name": "sanList"})
+    """
+    Subject Alternative Name (SAN) DNS names and IP addresses.
+    """
     issuer: str
+    """
+    Name of the issuing CA.
+    """
     valid_from: TimeSinceEpoch = field(metadata={"cdp_name": "validFrom"})
+    """
+    Certificate valid from date.
+    """
     valid_to: TimeSinceEpoch = field(metadata={"cdp_name": "validTo"})
+    """
+    Certificate valid to (expiration) date
+    """
     signed_certificate_timestamp_list: list[SignedCertificateTimestamp] = field(
         metadata={"cdp_name": "signedCertificateTimestampList"}
     )
+    """
+    List of signed certificate timestamps (SCTs).
+    """
     certificate_transparency_compliance: CertificateTransparencyCompliance = field(
         metadata={"cdp_name": "certificateTransparencyCompliance"}
     )
+    """
+    Whether the request complied with Certificate Transparency policy
+    """
     server_signature_algorithm: int | None = field(
         default=None, metadata={"cdp_name": "serverSignatureAlgorithm"}
     )
+    """
+    The signature algorithm used by the server in the TLS server signature, represented
+    as a TLS SignatureScheme code point. Omitted if not applicable or not known.
+    """
     encrypted_client_hello: bool = field(metadata={"cdp_name": "encryptedClientHello"})
+    """
+    Whether the connection used Encrypted ClientHello
+    """
 
 
 class CertificateTransparencyCompliance(CDPStrEnum):
@@ -396,17 +590,29 @@ class TrustTokenParams:
     """
     Determines what type of Trust Token operation is executed and depending on the
     type, some additional parameters. The values are specified in
-    third_party/blink/renderer/core/fetch/trust_token.idl.
+    third_party/blink/renderer/core/fetch/trust_token.idl. Experimental: this API may
+    change or be removed.
     """
 
     operation: TrustTokenOperationType
     refresh_policy: Literal["UseCached", "Refresh"] = field(
         metadata={"cdp_name": "refreshPolicy"}
     )
+    """
+    Only set for "token-redemption" operation and determine whether to request a fresh
+    SRR or use a still valid cached SRR.
+    """
     issuers: list[str] | None = None
+    """
+    Origins of issuers from whom to request tokens or redemption records.
+    """
 
 
 class TrustTokenOperationType(CDPStrEnum):
+    """
+    Experimental: this API may change or be removed.
+    """
+
     ISSUANCE = "Issuance"
     REDEMPTION = "Redemption"
     SIGNING = "Signing"
@@ -415,6 +621,7 @@ class TrustTokenOperationType(CDPStrEnum):
 class AlternateProtocolUsage(CDPStrEnum):
     """
     The reason why Chrome uses a specific transport protocol for HTTP semantics.
+    Experimental: this API may change or be removed.
     """
 
     ALTERNATIVE_JOB_WON_WITHOUT_RACE = "alternativeJobWonWithoutRace"
@@ -441,15 +648,30 @@ class ServiceWorkerRouterSource(CDPStrEnum):
 
 @dataclass(kw_only=True, slots=True)
 class ServiceWorkerRouterInfo:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     rule_id_matched: int | None = field(
         default=None, metadata={"cdp_name": "ruleIdMatched"}
     )
+    """
+    ID of the rule matched. If there is a matched rule, this field will be set,
+    otherwiser no value will be set.
+    """
     matched_source_type: ServiceWorkerRouterSource | None = field(
         default=None, metadata={"cdp_name": "matchedSourceType"}
     )
+    """
+    The router source of the matched rule. If there is a matched rule, this field will
+    be set, otherwise no value will be set.
+    """
     actual_source_type: ServiceWorkerRouterSource | None = field(
         default=None, metadata={"cdp_name": "actualSourceType"}
     )
+    """
+    The actual router source used.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -459,60 +681,148 @@ class Response:
     """
 
     url: str
+    """
+    Response URL. This URL can be different from CachedResource.url in case of
+    redirect.
+    """
     status: int
+    """
+    HTTP response status code.
+    """
     status_text: str = field(metadata={"cdp_name": "statusText"})
+    """
+    HTTP response status text.
+    """
     headers: Headers
+    """
+    HTTP response headers.
+    """
     headers_text: str | None = field(default=None, metadata={"cdp_name": "headersText"})
+    """
+    HTTP response headers text. This has been replaced by the headers in
+    Network.responseReceivedExtraInfo. Deprecated in the Chrome DevTools Protocol.
+    """
     mime_type: str = field(metadata={"cdp_name": "mimeType"})
+    """
+    Resource mimeType as determined by the browser.
+    """
     charset: str
+    """
+    Resource charset as determined by the browser (if applicable).
+    """
     request_headers: Headers | None = field(
         default=None, metadata={"cdp_name": "requestHeaders"}
     )
+    """
+    Refined HTTP request headers that were actually transmitted over the network.
+    """
     request_headers_text: str | None = field(
         default=None, metadata={"cdp_name": "requestHeadersText"}
     )
+    """
+    HTTP request headers text. This has been replaced by the headers in
+    Network.requestWillBeSentExtraInfo. Deprecated in the Chrome DevTools Protocol.
+    """
     connection_reused: bool = field(metadata={"cdp_name": "connectionReused"})
+    """
+    Specifies whether physical connection was actually reused for this request.
+    """
     connection_id: float = field(metadata={"cdp_name": "connectionId"})
+    """
+    Physical connection id that was actually used for this request.
+    """
     remote_ip_address: str | None = field(
         default=None, metadata={"cdp_name": "remoteIPAddress"}
     )
+    """
+    Remote IP address.
+    """
     remote_port: int | None = field(default=None, metadata={"cdp_name": "remotePort"})
+    """
+    Remote port.
+    """
     from_disk_cache: bool | None = field(
         default=None, metadata={"cdp_name": "fromDiskCache"}
     )
+    """
+    Specifies that the request was served from the disk cache.
+    """
     from_service_worker: bool | None = field(
         default=None, metadata={"cdp_name": "fromServiceWorker"}
     )
+    """
+    Specifies that the request was served from the ServiceWorker.
+    """
     from_prefetch_cache: bool | None = field(
         default=None, metadata={"cdp_name": "fromPrefetchCache"}
     )
+    """
+    Specifies that the request was served from the prefetch cache.
+    """
     from_early_hints: bool | None = field(
         default=None, metadata={"cdp_name": "fromEarlyHints"}
     )
+    """
+    Specifies that the request was served from the prefetch cache.
+    """
     service_worker_router_info: ServiceWorkerRouterInfo | None = field(
         default=None, metadata={"cdp_name": "serviceWorkerRouterInfo"}
     )
+    """
+    Information about how ServiceWorker Static Router API was used. If this field is
+    set with `matchedSourceType` field, a matching rule is found. If this field is set
+    without `matchedSource`, no matching rule is found. Otherwise, the API is not used.
+    Experimental: this API may change or be removed.
+    """
     encoded_data_length: float = field(metadata={"cdp_name": "encodedDataLength"})
+    """
+    Total number of bytes received for this request so far.
+    """
     timing: ResourceTiming | None = None
+    """
+    Timing information for the given request.
+    """
     service_worker_response_source: ServiceWorkerResponseSource | None = field(
         default=None, metadata={"cdp_name": "serviceWorkerResponseSource"}
     )
+    """
+    Response source of response from ServiceWorker.
+    """
     response_time: TimeSinceEpoch | None = field(
         default=None, metadata={"cdp_name": "responseTime"}
     )
+    """
+    The time at which the returned response was generated.
+    """
     cache_storage_cache_name: str | None = field(
         default=None, metadata={"cdp_name": "cacheStorageCacheName"}
     )
+    """
+    Cache Storage Cache Name.
+    """
     protocol: str | None = None
+    """
+    Protocol used to fetch this request.
+    """
     alternate_protocol_usage: AlternateProtocolUsage | None = field(
         default=None, metadata={"cdp_name": "alternateProtocolUsage"}
     )
+    """
+    The reason why Chrome uses a specific transport protocol for HTTP semantics.
+    Experimental: this API may change or be removed.
+    """
     security_state: security.SecurityState = field(
         metadata={"cdp_name": "securityState"}
     )
+    """
+    Security state of the request resource.
+    """
     security_details: SecurityDetails | None = field(
         default=None, metadata={"cdp_name": "securityDetails"}
     )
+    """
+    Security details for the request.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -522,6 +832,9 @@ class WebSocketRequest:
     """
 
     headers: Headers
+    """
+    HTTP request headers.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -531,15 +844,33 @@ class WebSocketResponse:
     """
 
     status: int
+    """
+    HTTP response status code.
+    """
     status_text: str = field(metadata={"cdp_name": "statusText"})
+    """
+    HTTP response status text.
+    """
     headers: Headers
+    """
+    HTTP response headers.
+    """
     headers_text: str | None = field(default=None, metadata={"cdp_name": "headersText"})
+    """
+    HTTP response headers text.
+    """
     request_headers: Headers | None = field(
         default=None, metadata={"cdp_name": "requestHeaders"}
     )
+    """
+    HTTP request headers.
+    """
     request_headers_text: str | None = field(
         default=None, metadata={"cdp_name": "requestHeadersText"}
     )
+    """
+    HTTP request headers text.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -550,8 +881,19 @@ class WebSocketFrame:
     """
 
     opcode: float
+    """
+    WebSocket message opcode.
+    """
     mask: bool
+    """
+    WebSocket message mask.
+    """
     payload_data: str = field(metadata={"cdp_name": "payloadData"})
+    """
+    WebSocket message payload data. If the opcode is 1, this is a text message and
+    payloadData is a UTF-8 string. If the opcode isn't 1, then payloadData is a base64
+    encoded string representing binary data.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -561,9 +903,21 @@ class CachedResource:
     """
 
     url: str
+    """
+    Resource URL. This is the url of the original network request.
+    """
     type: ResourceType
+    """
+    Type of this resource.
+    """
     response: Response | None = None
+    """
+    Cached response data.
+    """
     body_size: float = field(metadata={"cdp_name": "bodySize"})
+    """
+    Cached response body size.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -575,15 +929,37 @@ class Initiator:
     type: Literal[
         "parser", "script", "preload", "SignedExchange", "preflight", "FedCM", "other"
     ]
+    """
+    Type of this initiator.
+    """
     stack: runtime.StackTrace | None = None
+    """
+    Initiator JavaScript stack trace, set for Script only. Requires the Debugger domain
+    to be enabled.
+    """
     url: str | None = None
+    """
+    Initiator URL, set for Parser type or for Script type (when script is importing
+    module) or for SignedExchange type.
+    """
     line_number: float | None = field(default=None, metadata={"cdp_name": "lineNumber"})
+    """
+    Initiator line number, set for Parser type or for Script type (when script is
+    importing module) (0-based).
+    """
     column_number: float | None = field(
         default=None, metadata={"cdp_name": "columnNumber"}
     )
+    """
+    Initiator column number, set for Parser type or for Script type (when script is
+    importing module) (0-based).
+    """
     request_id: RequestId | None = field(
         default=None, metadata={"cdp_name": "requestId"}
     )
+    """
+    Set if another request triggered this request (e.g. preflight).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -591,11 +967,18 @@ class CookiePartitionKey:
     """
     cookiePartitionKey object The representation of the components of the key that are
     created by the cookiePartitionKey class contained in
-    net/cookies/cookie_partition_key.h.
+    net/cookies/cookie_partition_key.h. Experimental: this API may change or be removed.
     """
 
     top_level_site: str = field(metadata={"cdp_name": "topLevelSite"})
+    """
+    The site of the top-level URL the browser was visiting at the start of the request
+    to the endpoint that set the cookie.
+    """
     has_cross_site_ancestor: bool = field(metadata={"cdp_name": "hasCrossSiteAncestor"})
+    """
+    Indicates if the cookie has any ancestors that are cross-site to the topLevelSite.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -605,31 +988,83 @@ class Cookie:
     """
 
     name: str
+    """
+    Cookie name.
+    """
     value: str
+    """
+    Cookie value.
+    """
     domain: str
+    """
+    Cookie domain.
+    """
     path: str
+    """
+    Cookie path.
+    """
     expires: float
+    """
+    Cookie expiration date as the number of seconds since the UNIX epoch. The value is
+    set to -1 if the expiry date is not set. The value can be null for values that
+    cannot be represented in JSON (±Inf).
+    """
     size: int
+    """
+    Cookie size.
+    """
     http_only: bool = field(metadata={"cdp_name": "httpOnly"})
+    """
+    True if cookie is http-only.
+    """
     secure: bool
+    """
+    True if cookie is secure.
+    """
     session: bool
+    """
+    True in case of session cookie.
+    """
     same_site: CookieSameSite | None = field(
         default=None, metadata={"cdp_name": "sameSite"}
     )
+    """
+    Cookie SameSite type.
+    """
     priority: CookiePriority
+    """
+    Cookie Priority Experimental: this API may change or be removed.
+    """
     source_scheme: CookieSourceScheme = field(metadata={"cdp_name": "sourceScheme"})
+    """
+    Cookie source scheme type. Experimental: this API may change or be removed.
+    """
     source_port: int = field(metadata={"cdp_name": "sourcePort"})
+    """
+    Cookie source port. Valid values are {-1, [1, 65535]}, -1 indicates an unspecified
+    port. An unspecified port value allows protocol clients to emulate legacy cookie
+    scope for the port. This is a temporary ability and it will be removed in the
+    future. Experimental: this API may change or be removed.
+    """
     partition_key: CookiePartitionKey | None = field(
         default=None, metadata={"cdp_name": "partitionKey"}
     )
+    """
+    Cookie partition key. Experimental: this API may change or be removed.
+    """
     partition_key_opaque: bool | None = field(
         default=None, metadata={"cdp_name": "partitionKeyOpaque"}
     )
+    """
+    True if cookie partition key is opaque. Experimental: this API may change or be
+    removed.
+    """
 
 
 class SetCookieBlockedReason(CDPStrEnum):
     """
-    Types of reasons why a cookie may not be stored from a response.
+    Types of reasons why a cookie may not be stored from a response. Experimental: this
+    API may change or be removed.
     """
 
     SECURE_ONLY = "SecureOnly"
@@ -657,7 +1092,8 @@ class SetCookieBlockedReason(CDPStrEnum):
 
 class CookieBlockedReason(CDPStrEnum):
     """
-    Types of reasons why a cookie may not be sent with a request.
+    Types of reasons why a cookie may not be sent with a request. Experimental: this
+    API may change or be removed.
     """
 
     SECURE_ONLY = "SecureOnly"
@@ -684,7 +1120,7 @@ class CookieBlockedReason(CDPStrEnum):
 class CookieExemptionReason(CDPStrEnum):
     """
     Types of reasons why a cookie should have been blocked by 3PCD but is exempted for
-    the request.
+    the request. Experimental: this API may change or be removed.
     """
 
     NONE = "None"
@@ -700,13 +1136,27 @@ class CookieExemptionReason(CDPStrEnum):
 class BlockedSetCookieWithReason:
     """
     A cookie which was not stored from a response with the corresponding reason.
+    Experimental: this API may change or be removed.
     """
 
     blocked_reasons: list[SetCookieBlockedReason] = field(
         metadata={"cdp_name": "blockedReasons"}
     )
+    """
+    The reason(s) this cookie was blocked.
+    """
     cookie_line: str = field(metadata={"cdp_name": "cookieLine"})
+    """
+    The string representing this individual cookie as it would appear in the header.
+    This is not the entire "cookie" or "set-cookie" header which could have multiple
+    cookies.
+    """
     cookie: Cookie | None = None
+    """
+    The cookie object which represents the cookie which was not stored. It is optional
+    because sometimes complete cookie information is not available, such as in the case
+    of parsing errors.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -714,30 +1164,50 @@ class ExemptedSetCookieWithReason:
     """
     A cookie should have been blocked by 3PCD but is exempted and stored from a
     response with the corresponding reason. A cookie could only have at most one
-    exemption reason.
+    exemption reason. Experimental: this API may change or be removed.
     """
 
     exemption_reason: CookieExemptionReason = field(
         metadata={"cdp_name": "exemptionReason"}
     )
+    """
+    The reason the cookie was exempted.
+    """
     cookie_line: str = field(metadata={"cdp_name": "cookieLine"})
+    """
+    The string representing this individual cookie as it would appear in the header.
+    """
     cookie: Cookie
+    """
+    The cookie object representing the cookie.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class AssociatedCookie:
     """
     A cookie associated with the request which may or may not be sent with it. Includes
-    the cookies itself and reasons for blocking or exemption.
+    the cookies itself and reasons for blocking or exemption. Experimental: this API may
+    change or be removed.
     """
 
     cookie: Cookie
+    """
+    The cookie object representing the cookie which was not sent.
+    """
     blocked_reasons: list[CookieBlockedReason] = field(
         metadata={"cdp_name": "blockedReasons"}
     )
+    """
+    The reason(s) the cookie was blocked. If empty means the cookie is included.
+    """
     exemption_reason: CookieExemptionReason | None = field(
         default=None, metadata={"cdp_name": "exemptionReason"}
     )
+    """
+    The reason the cookie should have been blocked by 3PCD but is exempted. A cookie
+    could only have at most one exemption reason.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -747,47 +1217,118 @@ class CookieParam:
     """
 
     name: str
+    """
+    Cookie name.
+    """
     value: str
+    """
+    Cookie value.
+    """
     url: str | None = None
+    """
+    The request-URI to associate with the setting of the cookie. This value can affect
+    the default domain, path, source port, and source scheme values of the created
+    cookie.
+    """
     domain: str | None = None
+    """
+    Cookie domain.
+    """
     path: str | None = None
+    """
+    Cookie path.
+    """
     secure: bool | None = None
+    """
+    True if cookie is secure.
+    """
     http_only: bool | None = field(default=None, metadata={"cdp_name": "httpOnly"})
+    """
+    True if cookie is http-only.
+    """
     same_site: CookieSameSite | None = field(
         default=None, metadata={"cdp_name": "sameSite"}
     )
+    """
+    Cookie SameSite type.
+    """
     expires: TimeSinceEpoch | None = None
+    """
+    Cookie expiration date, session cookie if not set
+    """
     priority: CookiePriority | None = None
+    """
+    Cookie Priority. Experimental: this API may change or be removed.
+    """
     source_scheme: CookieSourceScheme | None = field(
         default=None, metadata={"cdp_name": "sourceScheme"}
     )
+    """
+    Cookie source scheme type. Experimental: this API may change or be removed.
+    """
     source_port: int | None = field(default=None, metadata={"cdp_name": "sourcePort"})
+    """
+    Cookie source port. Valid values are {-1, [1, 65535]}, -1 indicates an unspecified
+    port. An unspecified port value allows protocol clients to emulate legacy cookie
+    scope for the port. This is a temporary ability and it will be removed in the
+    future. Experimental: this API may change or be removed.
+    """
     partition_key: CookiePartitionKey | None = field(
         default=None, metadata={"cdp_name": "partitionKey"}
     )
+    """
+    Cookie partition key. If not set, the cookie will be set as not partitioned.
+    Experimental: this API may change or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class AuthChallenge:
     """
-    Authorization challenge for HTTP status code 401 or 407.
+    Authorization challenge for HTTP status code 401 or 407. Experimental: this API may
+    change or be removed.
     """
 
     source: Literal["Server", "Proxy"] | None = None
+    """
+    Source of the authentication challenge.
+    """
     origin: str
+    """
+    Origin of the challenger.
+    """
     scheme: str
+    """
+    The authentication scheme used, such as basic or digest
+    """
     realm: str
+    """
+    The realm of the challenge. May be empty.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class AuthChallengeResponse:
     """
-    Response to an AuthChallenge.
+    Response to an AuthChallenge. Experimental: this API may change or be removed.
     """
 
     response: Literal["Default", "CancelAuth", "ProvideCredentials"]
+    """
+    The decision on what to do in response to the authorization challenge. Default
+    means deferring to the default behavior of the net stack, which will likely either
+    the Cancel authentication or display a popup dialog box.
+    """
     username: str | None = None
+    """
+    The username to provide, possibly empty. Should only be set if response is
+    ProvideCredentials.
+    """
     password: str | None = None
+    """
+    The password to provide, possibly empty. Should only be set if response is
+    ProvideCredentials.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -795,17 +1336,45 @@ class SignedExchangeSignature:
     """
     Information about a signed exchange signature.
     https://wicg.github.io/webpackage/draft-yasskin-httpbis-origin-signed-exchanges-impl.html#rfc.section.3.1
+    Experimental: this API may change or be removed.
     """
 
     label: str
+    """
+    Signed exchange signature label.
+    """
     signature: str
+    """
+    The hex string of signed exchange signature.
+    """
     integrity: str
+    """
+    Signed exchange signature integrity.
+    """
     cert_url: str | None = field(default=None, metadata={"cdp_name": "certUrl"})
+    """
+    Signed exchange signature cert Url.
+    """
     cert_sha256: str | None = field(default=None, metadata={"cdp_name": "certSha256"})
+    """
+    The hex string of signed exchange signature cert sha256.
+    """
     validity_url: str = field(metadata={"cdp_name": "validityUrl"})
+    """
+    Signed exchange signature validity Url.
+    """
     date: int
+    """
+    Signed exchange signature date.
+    """
     expires: int
+    """
+    Signed exchange signature expires.
+    """
     certificates: list[str] | None = None
+    """
+    The encoded certificates.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -813,18 +1382,35 @@ class SignedExchangeHeader:
     """
     Information about a signed exchange header.
     https://wicg.github.io/webpackage/draft-yasskin-httpbis-origin-signed-exchanges-impl.html#cbor-representation
+    Experimental: this API may change or be removed.
     """
 
     request_url: str = field(metadata={"cdp_name": "requestUrl"})
+    """
+    Signed exchange request URL.
+    """
     response_code: int = field(metadata={"cdp_name": "responseCode"})
+    """
+    Signed exchange response code.
+    """
     response_headers: Headers = field(metadata={"cdp_name": "responseHeaders"})
+    """
+    Signed exchange response headers.
+    """
     signatures: list[SignedExchangeSignature]
+    """
+    Signed exchange response signature.
+    """
     header_integrity: str = field(metadata={"cdp_name": "headerIntegrity"})
+    """
+    Signed exchange header integrity hash in the form of `sha256-<base64-hash-value>`.
+    """
 
 
 class SignedExchangeErrorField(CDPStrEnum):
     """
-    Field type for a signed exchange related error.
+    Field type for a signed exchange related error. Experimental: this API may change
+    or be removed.
     """
 
     SIGNATURE_SIG = "signatureSig"
@@ -838,75 +1424,170 @@ class SignedExchangeErrorField(CDPStrEnum):
 @dataclass(kw_only=True, slots=True)
 class SignedExchangeError:
     """
-    Information about a signed exchange response.
+    Information about a signed exchange response. Experimental: this API may change or
+    be removed.
     """
 
     message: str
+    """
+    Error message.
+    """
     signature_index: int | None = field(
         default=None, metadata={"cdp_name": "signatureIndex"}
     )
+    """
+    The index of the signature which caused the error.
+    """
     error_field: SignedExchangeErrorField | None = field(
         default=None, metadata={"cdp_name": "errorField"}
     )
+    """
+    The field which caused the error.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SignedExchangeInfo:
     """
-    Information about a signed exchange response.
+    Information about a signed exchange response. Experimental: this API may change or
+    be removed.
     """
 
     outer_response: Response = field(metadata={"cdp_name": "outerResponse"})
+    """
+    The outer response of signed HTTP exchange which was received from network.
+    """
     has_extra_info: bool = field(metadata={"cdp_name": "hasExtraInfo"})
+    """
+    Whether network response for the signed exchange was accompanied by extra headers.
+    """
     header: SignedExchangeHeader | None = None
+    """
+    Information about the signed exchange header.
+    """
     security_details: SecurityDetails | None = field(
         default=None, metadata={"cdp_name": "securityDetails"}
     )
+    """
+    Security details for the signed exchange header.
+    """
     errors: list[SignedExchangeError] | None = None
+    """
+    Errors occurred while handling the signed exchange.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class NetworkConditions:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     url_pattern: str = field(metadata={"cdp_name": "urlPattern"})
+    """
+    Only matching requests will be affected by these conditions. Patterns use the
+    URLPattern constructor string syntax (https://urlpattern.spec.whatwg.org/) and must
+    be absolute. If the pattern is empty, all requests are matched (including p2p
+    connections).
+    """
     latency: float
+    """
+    Minimum latency from request sent to response headers received (ms).
+    """
     download_throughput: float = field(metadata={"cdp_name": "downloadThroughput"})
+    """
+    Maximal aggregated download throughput (bytes/sec). -1 disables download
+    throttling.
+    """
     upload_throughput: float = field(metadata={"cdp_name": "uploadThroughput"})
+    """
+    Maximal aggregated upload throughput (bytes/sec). -1 disables upload throttling.
+    """
     connection_type: ConnectionType | None = field(
         default=None, metadata={"cdp_name": "connectionType"}
     )
+    """
+    Connection type if known.
+    """
     packet_loss: float | None = field(default=None, metadata={"cdp_name": "packetLoss"})
+    """
+    WebRTC packet loss (percent, 0-100). 0 disables packet loss emulation, 100 drops
+    all the packets.
+    """
     packet_queue_length: int | None = field(
         default=None, metadata={"cdp_name": "packetQueueLength"}
     )
+    """
+    WebRTC packet queue length (packet). 0 removes any queue length limitations.
+    """
     packet_reordering: bool | None = field(
         default=None, metadata={"cdp_name": "packetReordering"}
     )
+    """
+    WebRTC packetReordering feature.
+    """
     offline: bool | None = None
+    """
+    True to emulate internet disconnection.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class BlockPattern:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     url_pattern: str = field(metadata={"cdp_name": "urlPattern"})
+    """
+    URL pattern to match. Patterns use the URLPattern constructor string syntax
+    (https://urlpattern.spec.whatwg.org/) and must be absolute. Example:
+    `*://*:*/*.css`.
+    """
     block: bool
+    """
+    Whether or not to block the pattern. If false, a matching request will not be
+    blocked even if it matches a later `BlockPattern`.
+    """
 
 
 class DirectSocketDnsQueryType(CDPStrEnum):
+    """
+    Experimental: this API may change or be removed.
+    """
+
     IPV4 = "ipv4"
     IPV6 = "ipv6"
 
 
 @dataclass(kw_only=True, slots=True)
 class DirectTCPSocketOptions:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     no_delay: bool = field(metadata={"cdp_name": "noDelay"})
+    """
+    TCP_NODELAY option
+    """
     keep_alive_delay: float | None = field(
         default=None, metadata={"cdp_name": "keepAliveDelay"}
     )
+    """
+    Expected to be unsigned integer.
+    """
     send_buffer_size: float | None = field(
         default=None, metadata={"cdp_name": "sendBufferSize"}
     )
+    """
+    Expected to be unsigned integer.
+    """
     receive_buffer_size: float | None = field(
         default=None, metadata={"cdp_name": "receiveBufferSize"}
     )
+    """
+    Expected to be unsigned integer.
+    """
     dns_query_type: DirectSocketDnsQueryType | None = field(
         default=None, metadata={"cdp_name": "dnsQueryType"}
     )
@@ -914,25 +1595,44 @@ class DirectTCPSocketOptions:
 
 @dataclass(kw_only=True, slots=True)
 class DirectUDPSocketOptions:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     remote_addr: str | None = field(default=None, metadata={"cdp_name": "remoteAddr"})
     remote_port: int | None = field(default=None, metadata={"cdp_name": "remotePort"})
+    """
+    Unsigned int 16.
+    """
     local_addr: str | None = field(default=None, metadata={"cdp_name": "localAddr"})
     local_port: int | None = field(default=None, metadata={"cdp_name": "localPort"})
+    """
+    Unsigned int 16.
+    """
     dns_query_type: DirectSocketDnsQueryType | None = field(
         default=None, metadata={"cdp_name": "dnsQueryType"}
     )
     send_buffer_size: float | None = field(
         default=None, metadata={"cdp_name": "sendBufferSize"}
     )
+    """
+    Expected to be unsigned integer.
+    """
     receive_buffer_size: float | None = field(
         default=None, metadata={"cdp_name": "receiveBufferSize"}
     )
+    """
+    Expected to be unsigned integer.
+    """
     multicast_loopback: bool | None = field(
         default=None, metadata={"cdp_name": "multicastLoopback"}
     )
     multicast_time_to_live: int | None = field(
         default=None, metadata={"cdp_name": "multicastTimeToLive"}
     )
+    """
+    Unsigned int 8.
+    """
     multicast_allow_address_sharing: bool | None = field(
         default=None, metadata={"cdp_name": "multicastAllowAddressSharing"}
     )
@@ -940,12 +1640,26 @@ class DirectUDPSocketOptions:
 
 @dataclass(kw_only=True, slots=True)
 class DirectUDPMessage:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     data: str
     remote_addr: str | None = field(default=None, metadata={"cdp_name": "remoteAddr"})
+    """
+    Null for connected mode.
+    """
     remote_port: int | None = field(default=None, metadata={"cdp_name": "remotePort"})
+    """
+    Null for connected mode. Expected to be unsigned integer.
+    """
 
 
 class LocalNetworkAccessRequestPolicy(CDPStrEnum):
+    """
+    Experimental: this API may change or be removed.
+    """
+
     ALLOW = "Allow"
     BLOCK_FROM_INSECURE_TO_MORE_PRIVATE = "BlockFromInsecureToMorePrivate"
     WARN_FROM_INSECURE_TO_MORE_PRIVATE = "WarnFromInsecureToMorePrivate"
@@ -954,6 +1668,10 @@ class LocalNetworkAccessRequestPolicy(CDPStrEnum):
 
 
 class IPAddressSpace(CDPStrEnum):
+    """
+    Experimental: this API may change or be removed.
+    """
+
     LOOPBACK = "Loopback"
     LOCAL = "Local"
     PUBLIC = "Public"
@@ -962,11 +1680,24 @@ class IPAddressSpace(CDPStrEnum):
 
 @dataclass(kw_only=True, slots=True)
 class ConnectTiming:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     request_time: float = field(metadata={"cdp_name": "requestTime"})
+    """
+    Timing's requestTime is a baseline in seconds, while the other numbers are ticks in
+    milliseconds relatively to this requestTime. Matches ResourceTiming's requestTime
+    for the same request (but not for redirected requests).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class ClientSecurityState:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     initiator_is_secure_context: bool = field(
         metadata={"cdp_name": "initiatorIsSecureContext"}
     )
@@ -984,27 +1715,46 @@ class AdScriptIdentifier:
     Identifies the script on the stack that caused a resource or element to be labeled
     as an ad. For resources, this indicates the context that triggered the fetch. For
     elements, this indicates the context that caused the element to be appended to the
-    DOM.
+    DOM. Experimental: this API may change or be removed.
     """
 
     script_id: runtime.ScriptId = field(metadata={"cdp_name": "scriptId"})
+    """
+    The script's V8 identifier.
+    """
     debugger_id: runtime.UniqueDebuggerId = field(metadata={"cdp_name": "debuggerId"})
+    """
+    V8's debugging ID for the v8::Context.
+    """
     name: str
+    """
+    The script's url (or generated name based on id if inline script).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class AdAncestry:
     """
     Encapsulates the script ancestry and the root script filter list rule that caused
-    the resource or element to be labeled as an ad.
+    the resource or element to be labeled as an ad. Experimental: this API may change or
+    be removed.
     """
 
     ancestry_chain: list[AdScriptIdentifier] = field(
         metadata={"cdp_name": "ancestryChain"}
     )
+    """
+    A chain of `AdScriptIdentifier`s representing the ancestry of an ad script that led
+    to the creation of a resource or element. The chain is ordered from the script
+    itself (lowest level) up to its root ancestor that was flagged by a filter list.
+    """
     root_script_filterlist_rule: str | None = field(
         default=None, metadata={"cdp_name": "rootScriptFilterlistRule"}
     )
+    """
+    The filter list rule that caused the root (last) script in `ancestryChain` to be
+    tagged as an ad.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -1015,18 +1765,31 @@ class AdProvenance:
     the resource URL directly matches a filter list rule. If `adScriptAncestry` is
     provided, an ad script initiated the resource fetch or appended the element to the
     DOM. If neither is provided, the entity is known to be an ad, but provenance
-    tracking information is unavailable.
+    tracking information is unavailable. Experimental: this API may change or be
+    removed.
     """
 
     filterlist_rule: str | None = field(
         default=None, metadata={"cdp_name": "filterlistRule"}
     )
+    """
+    The filterlist rule that matched, if any.
+    """
     ad_script_ancestry: AdAncestry | None = field(
         default=None, metadata={"cdp_name": "adScriptAncestry"}
     )
+    """
+    The script ancestry that created the ad, if any. Note: depending on the context,
+    this may represent the full ancestry up to the root script, or it may contain only
+    one script representing the immediate ancestor.
+    """
 
 
 class CrossOriginOpenerPolicyValue(CDPStrEnum):
+    """
+    Experimental: this API may change or be removed.
+    """
+
     SAME_ORIGIN = "SameOrigin"
     SAME_ORIGIN_ALLOW_POPUPS = "SameOriginAllowPopups"
     RESTRICT_PROPERTIES = "RestrictProperties"
@@ -1038,6 +1801,10 @@ class CrossOriginOpenerPolicyValue(CDPStrEnum):
 
 @dataclass(kw_only=True, slots=True)
 class CrossOriginOpenerPolicyStatus:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     value: CrossOriginOpenerPolicyValue
     report_only_value: CrossOriginOpenerPolicyValue = field(
         metadata={"cdp_name": "reportOnlyValue"}
@@ -1051,6 +1818,10 @@ class CrossOriginOpenerPolicyStatus:
 
 
 class CrossOriginEmbedderPolicyValue(CDPStrEnum):
+    """
+    Experimental: this API may change or be removed.
+    """
+
     NONE = "None"
     CREDENTIALLESS = "Credentialless"
     REQUIRE_CORP = "RequireCorp"
@@ -1058,6 +1829,10 @@ class CrossOriginEmbedderPolicyValue(CDPStrEnum):
 
 @dataclass(kw_only=True, slots=True)
 class CrossOriginEmbedderPolicyStatus:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     value: CrossOriginEmbedderPolicyValue
     report_only_value: CrossOriginEmbedderPolicyValue = field(
         metadata={"cdp_name": "reportOnlyValue"}
@@ -1071,12 +1846,20 @@ class CrossOriginEmbedderPolicyStatus:
 
 
 class ContentSecurityPolicySource(CDPStrEnum):
+    """
+    Experimental: this API may change or be removed.
+    """
+
     HTTP = "HTTP"
     META = "Meta"
 
 
 @dataclass(kw_only=True, slots=True)
 class ContentSecurityPolicyStatus:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     effective_directives: str = field(metadata={"cdp_name": "effectiveDirectives"})
     is_enforced: bool = field(metadata={"cdp_name": "isEnforced"})
     source: ContentSecurityPolicySource
@@ -1084,6 +1867,10 @@ class ContentSecurityPolicyStatus:
 
 @dataclass(kw_only=True, slots=True)
 class SecurityIsolationStatus:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     coop: CrossOriginOpenerPolicyStatus | None = None
     coep: CrossOriginEmbedderPolicyStatus | None = None
     csp: list[ContentSecurityPolicyStatus] | None = None
@@ -1091,7 +1878,8 @@ class SecurityIsolationStatus:
 
 class ReportStatus(CDPStrEnum):
     """
-    The status of a Reporting API report.
+    The status of a Reporting API report. Experimental: this API may change or be
+    removed.
     """
 
     QUEUED = "Queued"
@@ -1101,48 +1889,92 @@ class ReportStatus(CDPStrEnum):
 
 
 type ReportId = str
+"""
+Experimental: this API may change or be removed.
+"""
 
 
 @dataclass(kw_only=True, slots=True)
 class ReportingApiReport:
     """
-    An object representing a report generated by the Reporting API.
+    An object representing a report generated by the Reporting API. Experimental: this
+    API may change or be removed.
     """
 
     id: ReportId
     initiator_url: str = field(metadata={"cdp_name": "initiatorUrl"})
+    """
+    The URL of the document that triggered the report.
+    """
     destination: str
+    """
+    The name of the endpoint group that should be used to deliver the report.
+    """
     type: str
+    """
+    The type of the report (specifies the set of data that is contained in the report
+    body).
+    """
     timestamp: network.TimeSinceEpoch
+    """
+    When the report was generated.
+    """
     depth: int
+    """
+    How many uploads deep the related request was.
+    """
     completed_attempts: int = field(metadata={"cdp_name": "completedAttempts"})
+    """
+    The number of delivery attempts made so far, not including an active attempt.
+    """
     body: dict[str, Any]
     status: ReportStatus
 
 
 @dataclass(kw_only=True, slots=True)
 class ReportingApiEndpoint:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     url: str
+    """
+    The URL of the endpoint to which reports may be delivered.
+    """
     group_name: str = field(metadata={"cdp_name": "groupName"})
+    """
+    Name of the endpoint group.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class DeviceBoundSessionKey:
     """
-    Unique identifier for a device bound session.
+    Unique identifier for a device bound session. Experimental: this API may change or
+    be removed.
     """
 
     site: str
+    """
+    The site the session is set up for.
+    """
     id: str
+    """
+    The id of the session.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class DeviceBoundSessionWithUsage:
     """
-    How a device bound session was used during a request.
+    How a device bound session was used during a request. Experimental: this API may
+    change or be removed.
     """
 
     session_key: DeviceBoundSessionKey = field(metadata={"cdp_name": "sessionKey"})
+    """
+    The key for the session.
+    """
     usage: Literal[
         "NotInScope",
         "InScopeRefreshNotYetNeeded",
@@ -1151,81 +1983,151 @@ class DeviceBoundSessionWithUsage:
         "ProactiveRefreshAttempted",
         "Deferred",
     ]
+    """
+    How the session was used (or not used).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class DeviceBoundSessionCookieCraving:
     """
-    A device bound session's cookie craving.
+    A device bound session's cookie craving. Experimental: this API may change or be
+    removed.
     """
 
     name: str
+    """
+    The name of the craving.
+    """
     domain: str
+    """
+    The domain of the craving.
+    """
     path: str
+    """
+    The path of the craving.
+    """
     secure: bool
+    """
+    The `Secure` attribute of the craving attributes.
+    """
     http_only: bool = field(metadata={"cdp_name": "httpOnly"})
+    """
+    The `HttpOnly` attribute of the craving attributes.
+    """
     same_site: CookieSameSite | None = field(
         default=None, metadata={"cdp_name": "sameSite"}
     )
+    """
+    The `SameSite` attribute of the craving attributes.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class DeviceBoundSessionUrlRule:
     """
-    A device bound session's inclusion URL rule.
+    A device bound session's inclusion URL rule. Experimental: this API may change or
+    be removed.
     """
 
     rule_type: Literal["Exclude", "Include"] = field(metadata={"cdp_name": "ruleType"})
+    """
+    See comments on
+    `net::device_bound_sessions::SessionInclusionRules::UrlRule::rule_type`.
+    """
     host_pattern: str = field(metadata={"cdp_name": "hostPattern"})
+    """
+    See comments on
+    `net::device_bound_sessions::SessionInclusionRules::UrlRule::host_pattern`.
+    """
     path_prefix: str = field(metadata={"cdp_name": "pathPrefix"})
+    """
+    See comments on
+    `net::device_bound_sessions::SessionInclusionRules::UrlRule::path_prefix`.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class DeviceBoundSessionInclusionRules:
     """
-    A device bound session's inclusion rules.
+    A device bound session's inclusion rules. Experimental: this API may change or be
+    removed.
     """
 
     origin: str
+    """
+    See comments on `net::device_bound_sessions::SessionInclusionRules::origin_`.
+    """
     include_site: bool = field(metadata={"cdp_name": "includeSite"})
+    """
+    Whether the whole site is included. See comments on
+    `net::device_bound_sessions::SessionInclusionRules::include_site_` for more details;
+    this boolean is true if that value is populated.
+    """
     url_rules: list[DeviceBoundSessionUrlRule] = field(
         metadata={"cdp_name": "urlRules"}
     )
+    """
+    See comments on `net::device_bound_sessions::SessionInclusionRules::url_rules_`.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class DeviceBoundSession:
     """
-    A device bound session.
+    A device bound session. Experimental: this API may change or be removed.
     """
 
     key: DeviceBoundSessionKey
+    """
+    The site and session ID of the session.
+    """
     refresh_url: str = field(metadata={"cdp_name": "refreshUrl"})
+    """
+    See comments on `net::device_bound_sessions::Session::refresh_url_`.
+    """
     inclusion_rules: DeviceBoundSessionInclusionRules = field(
         metadata={"cdp_name": "inclusionRules"}
     )
+    """
+    See comments on `net::device_bound_sessions::Session::inclusion_rules_`.
+    """
     cookie_cravings: list[DeviceBoundSessionCookieCraving] = field(
         metadata={"cdp_name": "cookieCravings"}
     )
+    """
+    See comments on `net::device_bound_sessions::Session::cookie_cravings_`.
+    """
     expiry_date: network.TimeSinceEpoch = field(metadata={"cdp_name": "expiryDate"})
+    """
+    See comments on `net::device_bound_sessions::Session::expiry_date_`.
+    """
     cached_challenge: str | None = field(
         default=None, metadata={"cdp_name": "cachedChallenge"}
     )
+    """
+    See comments on `net::device_bound_sessions::Session::cached_challenge__`.
+    """
     allowed_refresh_initiators: list[str] = field(
         metadata={"cdp_name": "allowedRefreshInitiators"}
     )
+    """
+    See comments on `net::device_bound_sessions::Session::allowed_refresh_initiators_`.
+    """
 
 
 type DeviceBoundSessionEventId = str
 """
-A unique identifier for a device bound session event.
+A unique identifier for a device bound session event. Experimental: this API may change
+or be removed.
 """
 
 
 class DeviceBoundSessionFetchResult(CDPStrEnum):
     """
     A fetch result for a device bound session creation or refresh.
-    LINT.IfChange(DeviceBoundSessionFetchResult)
+    LINT.IfChange(DeviceBoundSessionFetchResult) Experimental: this API may change or be
+    removed.
     """
 
     SUCCESS = "Success"
@@ -1334,40 +2236,66 @@ class DeviceBoundSessionFetchResult(CDPStrEnum):
 @dataclass(kw_only=True, slots=True)
 class DeviceBoundSessionFailedRequest:
     """
-    Details about a failed device bound session network request.
+    Details about a failed device bound session network request. Experimental: this API
+    may change or be removed.
     """
 
     request_url: str = field(metadata={"cdp_name": "requestUrl"})
+    """
+    The failed request URL.
+    """
     net_error: str | None = field(default=None, metadata={"cdp_name": "netError"})
+    """
+    The net error of the response if it was not OK.
+    """
     response_error: int | None = field(
         default=None, metadata={"cdp_name": "responseError"}
     )
+    """
+    The response code if the net error was OK and the response code was not 200.
+    """
     response_error_body: str | None = field(
         default=None, metadata={"cdp_name": "responseErrorBody"}
     )
+    """
+    The body of the response if the net error was OK, the response code was not 200,
+    and the response body was not empty.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class CreationEventDetails:
     """
-    Session event details specific to creation.
+    Session event details specific to creation. Experimental: this API may change or be
+    removed.
     """
 
     fetch_result: DeviceBoundSessionFetchResult = field(
         metadata={"cdp_name": "fetchResult"}
     )
+    """
+    The result of the fetch attempt.
+    """
     new_session: DeviceBoundSession | None = field(
         default=None, metadata={"cdp_name": "newSession"}
     )
+    """
+    The session if there was a newly created session. This is populated for all
+    successful creation events.
+    """
     failed_request: DeviceBoundSessionFailedRequest | None = field(
         default=None, metadata={"cdp_name": "failedRequest"}
     )
+    """
+    Details about a failed device bound session network request if there was one.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class RefreshEventDetails:
     """
-    Session event details specific to refresh.
+    Session event details specific to refresh. Experimental: this API may change or be
+    removed.
     """
 
     refresh_result: Literal[
@@ -1384,24 +2312,43 @@ class RefreshEventDetails:
     ] = field(  # noqa: E501
         metadata={"cdp_name": "refreshResult"},
     )
+    """
+    The result of a refresh. LINT.IfChange(DeviceBoundSessionRefreshResult)
+    """
     fetch_result: DeviceBoundSessionFetchResult | None = field(
         default=None, metadata={"cdp_name": "fetchResult"}
     )
+    """
+    LINT.ThenChange(//net/device_bound_sessions/refresh_result.h:DeviceBoundSessionRefreshResult,//content/browser/devtools/protocol/network_handler.cc:DeviceBoundSessionRefreshResult)
+    If there was a fetch attempt, the result of that.
+    """
     new_session: DeviceBoundSession | None = field(
         default=None, metadata={"cdp_name": "newSession"}
     )
+    """
+    The session display if there was a newly created session. This is populated for any
+    refresh event that modifies the session config.
+    """
     was_fully_proactive_refresh: bool = field(
         metadata={"cdp_name": "wasFullyProactiveRefresh"}
     )
+    """
+    See comments on
+    `net::device_bound_sessions::RefreshEventResult::was_fully_proactive_refresh`.
+    """
     failed_request: DeviceBoundSessionFailedRequest | None = field(
         default=None, metadata={"cdp_name": "failedRequest"}
     )
+    """
+    Details about a failed device bound session network request if there was one.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class TerminationEventDetails:
     """
-    Session event details specific to termination.
+    Session event details specific to termination. Experimental: this API may change or
+    be removed.
     """
 
     deletion_reason: Literal[
@@ -1418,12 +2365,16 @@ class TerminationEventDetails:
     ] = field(  # noqa: E501
         metadata={"cdp_name": "deletionReason"},
     )
+    """
+    The reason for a session being deleted.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class ChallengeEventDetails:
     """
-    Session event details specific to challenges.
+    Session event details specific to challenges. Experimental: this API may change or
+    be removed.
     """
 
     challenge_result: Literal[
@@ -1431,17 +2382,27 @@ class ChallengeEventDetails:
     ] = field(  # noqa: E501
         metadata={"cdp_name": "challengeResult"},
     )
+    """
+    The result of a challenge.
+    """
     challenge: str
+    """
+    The challenge set.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class LoadNetworkResourcePageResult:
     """
-    An object providing the result of a network resource load.
+    An object providing the result of a network resource load. Experimental: this API
+    may change or be removed.
     """
 
     success: bool
     net_error: float | None = field(default=None, metadata={"cdp_name": "netError"})
+    """
+    Optional values used for error reporting.
+    """
     net_error_name: str | None = field(
         default=None, metadata={"cdp_name": "netErrorName"}
     )
@@ -1449,14 +2410,20 @@ class LoadNetworkResourcePageResult:
         default=None, metadata={"cdp_name": "httpStatusCode"}
     )
     stream: io.StreamHandle | None = None
+    """
+    If successful, one of the following two fields holds the result.
+    """
     headers: network.Headers | None = None
+    """
+    Response headers.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class LoadNetworkResourceOptions:
     """
     An options object that may be extended later to better support CORS, CORB and
-    streaming.
+    streaming. Experimental: this API may change or be removed.
     """
 
     disable_cache: bool = field(metadata={"cdp_name": "disableCache"})

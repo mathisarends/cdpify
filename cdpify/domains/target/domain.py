@@ -63,6 +63,11 @@ class Target:
     ) -> AttachToTargetResult:
         """
         Attaches to the target with given id.
+
+        Args:
+            flatten: Enables "flat" access to the session via specifying sessionId
+                attribute in the commands. We plan to make this the default, deprecate
+                non-flattened mode, and eventually retire it. See crbug.com/991325.
         """
         _params: dict[str, Any] = {}
         _params["targetId"] = _encode_value(target_id)
@@ -79,7 +84,8 @@ class Target:
         self,
     ) -> AttachToBrowserTargetResult:
         """
-        Attaches to the browser target, only uses flat sessionId mode.
+        Attaches to the browser target, only uses flat sessionId mode. Experimental:
+        this API may change or be removed.
         """
         result = await self._executor.execute(
             method=TargetCommand.ATTACH_TO_BROWSER_TARGET,
@@ -117,7 +123,13 @@ class Target:
         The object has the following API: - `binding.send(json)` - a method to send
         messages over the remote debugging protocol - `binding.onmessage = json =>
         handleMessage(json)` - a callback that will be called for the protocol
-        notifications and command responses.
+        notifications and command responses. Experimental: this API may change or be
+        removed.
+
+        Args:
+            binding_name: Binding name, 'cdp' if not specified.
+            inherit_permissions: If true, inherits the current root session's
+                permissions (default: false).
         """
         _params: dict[str, Any] = {}
         _params["targetId"] = _encode_value(target_id)
@@ -142,6 +154,18 @@ class Target:
         """
         Creates a new empty BrowserContext. Similar to an incognito profile but you can
         have more than one.
+
+        Args:
+            dispose_on_detach: If specified, disposes this context when debugging
+                session disconnects. Experimental: this API may change or be removed.
+            proxy_server: Proxy server, similar to the one passed to --proxy-server
+                Experimental: this API may change or be removed.
+            proxy_bypass_list: Proxy bypass list, similar to the one passed to
+                --proxy-bypass-list Experimental: this API may change or be removed.
+            origins_with_universal_network_access: An optional list of origins to grant
+                unlimited cross-origin access to. Parts of the URL other than those
+                constituting origin are ignored. Experimental: this API may change or be
+                removed.
         """
         _params: dict[str, Any] = {}
         if dispose_on_detach is not None:
@@ -192,6 +216,44 @@ class Target:
     ) -> CreateTargetResult:
         """
         Creates a new page.
+
+        Args:
+            url: The initial URL the page will be navigated to. An empty string
+                indicates about:blank.
+            left: Frame left origin in DIP (requires newWindow to be true or headless
+                shell). Experimental: this API may change or be removed.
+            top: Frame top origin in DIP (requires newWindow to be true or headless
+                shell). Experimental: this API may change or be removed.
+            width: Frame width in DIP (requires newWindow to be true or headless shell).
+            height: Frame height in DIP (requires newWindow to be true or headless
+                shell).
+            window_state: Frame window state (requires newWindow to be true or headless
+                shell). Default is normal.
+            browser_context_id: The browser context to create the page in. Experimental:
+                this API may change or be removed.
+            enable_begin_frame_control: Whether BeginFrames for this target will be
+                controlled via DevTools (headless shell only, not supported on MacOS
+                yet, false by default). Experimental: this API may change or be removed.
+            new_window: Whether to create a new Window or Tab (false by default, not
+                supported by headless shell).
+            background: Whether to create the target in background or foreground (false
+                by default, not supported by headless shell).
+            for_tab: Whether to create the target of type "tab". Experimental: this API
+                may change or be removed.
+            hidden: Whether to create a hidden target. The hidden target is observable
+                via protocol, but not present in the tab UI strip. Cannot be created
+                with `forTab: true`, `newWindow: true` or `background: false`. The
+                life-time of the tab is limited to the life-time of the session.
+                Experimental: this API may change or be removed.
+            focus: If specified, determines whether the new target should be focused. By
+                default, the focus behavior depends on the `background` parameter: - If
+                `background` is false (default) and `focus` is omitted, the new target
+                is focused and the browser window is brought to the foreground. - If
+                `background` is false and `focus` is false, the target is opened but the
+                browser window's focus remains unchanged (e.g., if the window was in the
+                background, it stays there). - If `background` is true, setting `focus`
+                to true is not supported and will result in an error. Experimental: this
+                API may change or be removed.
         """
         _params: dict[str, Any] = {}
         _params["url"] = url
@@ -234,6 +296,10 @@ class Target:
     ) -> None:
         """
         Detaches session with given id.
+
+        Args:
+            session_id: Session to detach.
+            target_id: Deprecated. Deprecated in the Chrome DevTools Protocol.
         """
         _params: dict[str, Any] = {}
         if session_id is not None:
@@ -269,7 +335,8 @@ class Target:
         target_id: TargetID | None = None,
     ) -> GetTargetInfoResult:
         """
-        Returns information about a target.
+        Returns information about a target. Experimental: this API may change or be
+        removed.
         """
         _params: dict[str, Any] = {}
         if target_id is not None:
@@ -288,6 +355,12 @@ class Target:
     ) -> GetTargetsResult:
         """
         Retrieves a list of available targets.
+
+        Args:
+            filter: Only targets matching filter will be reported. If filter is not
+                specified and target discovery is currently enabled, a filter used for
+                target discovery is used for consistency. Experimental: this API may
+                change or be removed.
         """
         _params: dict[str, Any] = {}
         if filter is not None:
@@ -310,6 +383,11 @@ class Target:
         """
         Sends protocol message over session with given id. Consider using flat mode
         instead; see commands attachToTarget, setAutoAttach, and crbug.com/991325.
+        Deprecated in the Chrome DevTools Protocol.
+
+        Args:
+            session_id: Identifier of the session.
+            target_id: Deprecated. Deprecated in the Chrome DevTools Protocol.
         """
         _params: dict[str, Any] = {}
         _params["message"] = message
@@ -339,6 +417,17 @@ class Target:
         targets added by `autoAttachRelated` from the list of targets to watch for
         creation of related targets. You might want to call this recursively for
         auto-attached targets to attach to all available targets.
+
+        Args:
+            auto_attach: Whether to auto-attach to related targets.
+            wait_for_debugger_on_start: Whether to pause new targets when attaching to
+                them. Use `Runtime.runIfWaitingForDebugger` to run paused targets.
+            flatten: Enables "flat" access to the session via specifying sessionId
+                attribute in the commands. We plan to make this the default, deprecate
+                non-flattened mode, and eventually retire it. See crbug.com/991325.
+                Experimental: this API may change or be removed.
+            filter: Only targets matching filter will be attached. Experimental: this
+                API may change or be removed.
         """
         _params: dict[str, Any] = {}
         _params["autoAttach"] = auto_attach
@@ -366,7 +455,13 @@ class Target:
         service worker) and reported through `attachedToTarget`. The specified target is
         also auto-attached. This cancels the effect of any previous `setAutoAttach` and
         is also cancelled by subsequent `setAutoAttach`. Only available at the Browser
-        target.
+        target. Experimental: this API may change or be removed.
+
+        Args:
+            wait_for_debugger_on_start: Whether to pause new targets when attaching to
+                them. Use `Runtime.runIfWaitingForDebugger` to run paused targets.
+            filter: Only targets matching filter will be attached. Experimental: this
+                API may change or be removed.
         """
         _params: dict[str, Any] = {}
         _params["targetId"] = _encode_value(target_id)
@@ -388,6 +483,12 @@ class Target:
         """
         Controls whether to discover available targets and notify via
         `targetCreated/targetInfoChanged/targetDestroyed` events.
+
+        Args:
+            discover: Whether to discover available targets.
+            filter: Only targets matching filter will be attached. If `discover` is
+                false, `filter` must be omitted or empty. Experimental: this API may
+                change or be removed.
         """
         _params: dict[str, Any] = {}
         _params["discover"] = discover
@@ -406,7 +507,10 @@ class Target:
     ) -> None:
         """
         Enables target discovery for the specified locations, when `setDiscoverTargets`
-        was set to `true`.
+        was set to `true`. Experimental: this API may change or be removed.
+
+        Args:
+            locations: List of remote locations.
         """
         _params: dict[str, Any] = {}
         _params["locations"] = _encode_value(locations)
@@ -423,7 +527,10 @@ class Target:
     ) -> GetDevToolsTargetResult:
         """
         Gets the targetId of the DevTools page target opened for the given target (if
-        any).
+        any). Experimental: this API may change or be removed.
+
+        Args:
+            target_id: Page or tab target ID.
         """
         _params: dict[str, Any] = {}
         _params["targetId"] = _encode_value(target_id)
@@ -441,7 +548,14 @@ class Target:
         panel_id: str | None = None,
     ) -> OpenDevToolsResult:
         """
-        Opens a DevTools window for the target.
+        Opens a DevTools window for the target. Experimental: this API may change or be
+        removed.
+
+        Args:
+            target_id: This can be the page or tab target ID.
+            panel_id: The id of the panel we want DevTools to open initially. Currently
+                supported panels are elements, console, network, sources, resources,
+                timeline, chrome-recorder, heap-profiler, lighthouse, and security.
         """
         _params: dict[str, Any] = {}
         _params["targetId"] = _encode_value(target_id)

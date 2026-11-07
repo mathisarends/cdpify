@@ -1,7 +1,7 @@
 from cdpify.generator.generators.constants import FUTURE_ANNOTATIONS, HEADER
 from cdpify.generator.generators.context import GenerationContext
 from cdpify.generator.generators.utils import (
-    format_docstring,
+    method_docstring,
     resolve_type,
     to_enum_name,
     to_identifier,
@@ -77,11 +77,7 @@ def _build_method(
         parameters=parameters,
         return_type=return_type,
         command_member=to_enum_name(command.name),
-        docstring=(
-            format_docstring(command.description, indent=8)
-            if command.description
-            else None
-        ),
+        docstring=method_docstring(command) or None,
         deprecation=(
             f"{domain_name}.{command.name} is deprecated"
             if command.deprecated

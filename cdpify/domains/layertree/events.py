@@ -26,7 +26,13 @@ class LayerPaintedEvent:
     __cdp_event__: ClassVar[LayerTreeEvent] = LayerTreeEvent.LAYER_PAINTED
 
     layer_id: LayerId = field(metadata={"cdp_name": "layerId"})
+    """
+    The id of the painted layer.
+    """
     clip: dom.Rect
+    """
+    Clip rectangle.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -34,3 +40,6 @@ class LayerTreeDidChangeEvent:
     __cdp_event__: ClassVar[LayerTreeEvent] = LayerTreeEvent.LAYER_TREE_DID_CHANGE
 
     layers: list[Layer] | None = None
+    """
+    Layer tree, absent if not in the compositing mode.
+    """

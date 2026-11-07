@@ -34,6 +34,13 @@ class WebAuthn:
         """
         Enable the WebAuthn domain and start intercepting credential storage and
         retrieval with a virtual authenticator.
+
+        Args:
+            enable_ui: Whether to enable the WebAuthn user interface. Enabling the UI is
+                recommended for debugging and demo purposes, as it is closer to the real
+                experience. Disabling the UI is recommended for automated testing.
+                Supported at the embedder's discretion if UI is available. Defaults to
+                false.
         """
         _params: dict[str, Any] = {}
         if enable_ui is not None:
@@ -83,6 +90,14 @@ class WebAuthn:
         """
         Resets parameters isBogusSignature, isBadUV, isBadUP to false if they are not
         present.
+
+        Args:
+            is_bogus_signature: If isBogusSignature is set, overrides the signature in
+                the authenticator response to be zero. Defaults to false.
+            is_bad_uv: If isBadUV is set, overrides the UV bit in the flags in the
+                authenticator response to be zero. Defaults to false.
+            is_bad_up: If isBadUP is set, overrides the UP bit in the flags in the
+                authenticator response to be zero. Defaults to false.
         """
         _params: dict[str, Any] = {}
         _params["authenticatorId"] = _encode_value(authenticator_id)
@@ -255,6 +270,12 @@ class WebAuthn:
         """
         Allows setting credential properties.
         https://w3c.github.io/webauthn/#sctn-automation-set-credential-properties
+
+        Args:
+            sign_count: Must be equal to or greater than -1. If -1, the signature
+                counter is removed from the credential, and every assertion operation
+                will report a value of 0. See
+                https://w3c.github.io/webauthn/#signature-counter
         """
         _params: dict[str, Any] = {}
         _params["authenticatorId"] = _encode_value(authenticator_id)

@@ -34,7 +34,12 @@ class {{ model.name }}:
 {% if model.docstring %}
 {{ model.docstring }}
 {% endif %}
-    {{ model.fields | map(attribute="declaration") | join("\n    ") }}
+{% for model_field in model.fields %}
+    {{ model_field.declaration }}
+{% if model_field.docstring %}
+{{ model_field.docstring }}
+{% endif %}
+{% endfor %}
 {% endfor %}
 {% else %}
 

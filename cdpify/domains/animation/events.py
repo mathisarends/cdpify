@@ -29,6 +29,9 @@ class AnimationCanceledEvent:
     __cdp_event__: ClassVar[AnimationEvent] = AnimationEvent.ANIMATION_CANCELED
 
     id: str
+    """
+    Id of the animation that was cancelled.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -40,6 +43,9 @@ class AnimationCreatedEvent:
     __cdp_event__: ClassVar[AnimationEvent] = AnimationEvent.ANIMATION_CREATED
 
     id: str
+    """
+    Id of the animation that was created.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -51,6 +57,9 @@ class AnimationStartedEvent:
     __cdp_event__: ClassVar[AnimationEvent] = AnimationEvent.ANIMATION_STARTED
 
     animation: Animation
+    """
+    Animation that was started.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -62,3 +71,6 @@ class AnimationUpdatedEvent:
     __cdp_event__: ClassVar[AnimationEvent] = AnimationEvent.ANIMATION_UPDATED
 
     animation: Animation
+    """
+    Animation that was updated.
+    """

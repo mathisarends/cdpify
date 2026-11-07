@@ -24,6 +24,9 @@ class EventBreakpoints:
     ) -> None:
         """
         Sets breakpoint on particular native event.
+
+        Args:
+            event_name: Instrumentation name to stop on.
         """
         _params: dict[str, Any] = {}
         _params["eventName"] = event_name
@@ -40,6 +43,9 @@ class EventBreakpoints:
     ) -> None:
         """
         Removes breakpoint on particular native event.
+
+        Args:
+            event_name: Instrumentation name to stop on.
         """
         _params: dict[str, Any] = {}
         _params["eventName"] = event_name

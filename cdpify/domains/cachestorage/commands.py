@@ -33,6 +33,9 @@ class DeleteCacheParams:
     """
 
     cache_id: CacheId = field(metadata={"cdp_name": "cacheId"})
+    """
+    Id of cache for deletion.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -42,7 +45,13 @@ class DeleteEntryParams:
     """
 
     cache_id: CacheId = field(metadata={"cdp_name": "cacheId"})
+    """
+    Id of cache where the entry will be deleted.
+    """
     request: str
+    """
+    URL spec of the request.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -54,15 +63,28 @@ class RequestCacheNamesParams:
     security_origin: str | None = field(
         default=None, metadata={"cdp_name": "securityOrigin"}
     )
+    """
+    At least and at most one of securityOrigin, storageKey, storageBucket must be
+    specified. Security origin.
+    """
     storage_key: str | None = field(default=None, metadata={"cdp_name": "storageKey"})
+    """
+    Storage key.
+    """
     storage_bucket: storage.StorageBucket | None = field(
         default=None, metadata={"cdp_name": "storageBucket"}
     )
+    """
+    Storage bucket. If not specified, it uses the default bucket.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class RequestCacheNamesResult:
     caches: list[Cache]
+    """
+    Caches for the security origin.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -72,13 +94,25 @@ class RequestCachedResponseParams:
     """
 
     cache_id: CacheId = field(metadata={"cdp_name": "cacheId"})
+    """
+    Id of cache that contains the entry.
+    """
     request_url: str = field(metadata={"cdp_name": "requestURL"})
+    """
+    URL spec of the request.
+    """
     request_headers: list[Header] = field(metadata={"cdp_name": "requestHeaders"})
+    """
+    headers of the request.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class RequestCachedResponseResult:
     response: CachedResponse
+    """
+    Response read from the cache.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -88,9 +122,21 @@ class RequestEntriesParams:
     """
 
     cache_id: CacheId = field(metadata={"cdp_name": "cacheId"})
+    """
+    ID of cache to get entries from.
+    """
     skip_count: int | None = field(default=None, metadata={"cdp_name": "skipCount"})
+    """
+    Number of records to skip.
+    """
     page_size: int | None = field(default=None, metadata={"cdp_name": "pageSize"})
+    """
+    Number of records to fetch.
+    """
     path_filter: str | None = field(default=None, metadata={"cdp_name": "pathFilter"})
+    """
+    If present, only return the entries containing this substring in the path
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -98,4 +144,11 @@ class RequestEntriesResult:
     cache_data_entries: list[DataEntry] = field(
         metadata={"cdp_name": "cacheDataEntries"}
     )
+    """
+    Array of object store data entries.
+    """
     return_count: float = field(metadata={"cdp_name": "returnCount"})
+    """
+    Count of returned entries from this storage. If pathFilter is empty, it is the
+    count of all entries from this storage.
+    """

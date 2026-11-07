@@ -28,6 +28,11 @@ class EnableParams:
     disable_rejection_delay: bool | None = field(
         default=None, metadata={"cdp_name": "disableRejectionDelay"}
     )
+    """
+    Allows callers to disable the promise rejection delay that would normally happen,
+    if this is unimportant to what's being tested. (step 4 of
+    https://fedidcg.github.io/FedCM/#browser-api-rp-sign-in)
+    """
 
 
 @dataclass(kw_only=True, slots=True)

@@ -36,6 +36,10 @@ class HeapProfiler:
         """
         Enables console to refer to the node with given id via $x (see Command Line API
         for more details $x functions).
+
+        Args:
+            heap_object_id: Heap snapshot object id to be accessible by means of $x
+                command line API.
         """
         _params: dict[str, Any] = {}
         _params["heapObjectId"] = _encode_value(heap_object_id)
@@ -74,6 +78,10 @@ class HeapProfiler:
         *,
         object_id: runtime.RemoteObjectId,
     ) -> GetHeapObjectIdResult:
+        """
+        Args:
+            object_id: Identifier of the object to get heap object id for.
+        """
         _params: dict[str, Any] = {}
         _params["objectId"] = _encode_value(object_id)
 
@@ -89,6 +97,11 @@ class HeapProfiler:
         object_id: HeapSnapshotObjectId,
         object_group: str | None = None,
     ) -> GetObjectByHeapObjectIdResult:
+        """
+        Args:
+            object_group: Symbolic group name that can be used to release multiple
+                objects.
+        """
         _params: dict[str, Any] = {}
         _params["objectId"] = _encode_value(object_id)
         if object_group is not None:
@@ -117,6 +130,26 @@ class HeapProfiler:
         include_objects_collected_by_major_gc: bool | None = None,
         include_objects_collected_by_minor_gc: bool | None = None,
     ) -> None:
+        """
+        Args:
+            sampling_interval: Average sample interval in bytes. Poisson distribution is
+                used for the intervals. The default value is 32768 bytes.
+            stack_depth: Maximum stack depth. The default value is 128.
+            include_objects_collected_by_major_gc: By default, the sampling heap
+                profiler reports only objects which are still alive when the profile is
+                returned via getSamplingProfile or stopSampling, which is useful for
+                determining what functions contribute the most to steady-state memory
+                usage. This flag instructs the sampling heap profiler to also include
+                information about objects discarded by major GC, which will show which
+                functions cause large temporary memory usage or long GC pauses.
+            include_objects_collected_by_minor_gc: By default, the sampling heap
+                profiler reports only objects which are still alive when the profile is
+                returned via getSamplingProfile or stopSampling, which is useful for
+                determining what functions contribute the most to steady-state memory
+                usage. This flag instructs the sampling heap profiler to also include
+                information about objects discarded by minor GC, which is useful when
+                tuning a latency-sensitive application for minimal GC activity.
+        """
         _params: dict[str, Any] = {}
         if sampling_interval is not None:
             _params["samplingInterval"] = sampling_interval
@@ -167,6 +200,17 @@ class HeapProfiler:
         capture_numeric_value: bool | None = None,
         expose_internals: bool | None = None,
     ) -> None:
+        """
+        Args:
+            report_progress: If true 'reportHeapSnapshotProgress' events will be
+                generated while snapshot is being taken when the tracking is stopped.
+            treat_global_objects_as_roots: Deprecated in favor of `exposeInternals`.
+                Deprecated in the Chrome DevTools Protocol.
+            capture_numeric_value: If true, numerical values are included in the
+                snapshot
+            expose_internals: If true, exposes internals of the snapshot. Experimental:
+                this API may change or be removed.
+        """
         _params: dict[str, Any] = {}
         if report_progress is not None:
             _params["reportProgress"] = report_progress
@@ -190,6 +234,18 @@ class HeapProfiler:
         capture_numeric_value: bool | None = None,
         expose_internals: bool | None = None,
     ) -> None:
+        """
+        Args:
+            report_progress: If true 'reportHeapSnapshotProgress' events will be
+                generated while snapshot is being taken.
+            treat_global_objects_as_roots: If true, a raw snapshot without artificial
+                roots will be generated. Deprecated in favor of `exposeInternals`.
+                Deprecated in the Chrome DevTools Protocol.
+            capture_numeric_value: If true, numerical values are included in the
+                snapshot
+            expose_internals: If true, exposes internals of the snapshot. Experimental:
+                this API may change or be removed.
+        """
         _params: dict[str, Any] = {}
         if report_progress is not None:
             _params["reportProgress"] = report_progress

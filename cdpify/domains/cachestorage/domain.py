@@ -35,6 +35,9 @@ class CacheStorage:
     ) -> None:
         """
         Deletes a cache.
+
+        Args:
+            cache_id: Id of cache for deletion.
         """
         _params: dict[str, Any] = {}
         _params["cacheId"] = _encode_value(cache_id)
@@ -52,6 +55,10 @@ class CacheStorage:
     ) -> None:
         """
         Deletes a cache entry.
+
+        Args:
+            cache_id: Id of cache where the entry will be deleted.
+            request: URL spec of the request.
         """
         _params: dict[str, Any] = {}
         _params["cacheId"] = _encode_value(cache_id)
@@ -71,6 +78,13 @@ class CacheStorage:
     ) -> RequestCacheNamesResult:
         """
         Requests cache names.
+
+        Args:
+            security_origin: At least and at most one of securityOrigin, storageKey,
+                storageBucket must be specified. Security origin.
+            storage_key: Storage key.
+            storage_bucket: Storage bucket. If not specified, it uses the default
+                bucket.
         """
         _params: dict[str, Any] = {}
         if security_origin is not None:
@@ -95,6 +109,11 @@ class CacheStorage:
     ) -> RequestCachedResponseResult:
         """
         Fetches cache entry.
+
+        Args:
+            cache_id: Id of cache that contains the entry.
+            request_url: URL spec of the request.
+            request_headers: headers of the request.
         """
         _params: dict[str, Any] = {}
         _params["cacheId"] = _encode_value(cache_id)
@@ -117,6 +136,13 @@ class CacheStorage:
     ) -> RequestEntriesResult:
         """
         Requests data from cache.
+
+        Args:
+            cache_id: ID of cache to get entries from.
+            skip_count: Number of records to skip.
+            page_size: Number of records to fetch.
+            path_filter: If present, only return the entries containing this substring
+                in the path
         """
         _params: dict[str, Any] = {}
         _params["cacheId"] = _encode_value(cache_id)

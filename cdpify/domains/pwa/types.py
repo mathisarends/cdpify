@@ -17,6 +17,10 @@ class FileHandlerAccept:
     """
 
     media_type: str = field(metadata={"cdp_name": "mediaType"})
+    """
+    New name of the mimetype according to
+    https://www.iana.org/assignments/media-types/media-types.xhtml
+    """
     file_extensions: list[str] = field(metadata={"cdp_name": "fileExtensions"})
 
 

@@ -9,13 +9,19 @@ from dataclasses import dataclass, field
 from cdpify.shared.enums import CDPStrEnum
 
 type BrowserContextID = str
+"""
+Experimental: this API may change or be removed.
+"""
 
 type WindowID = int
+"""
+Experimental: this API may change or be removed.
+"""
 
 
 class WindowState(CDPStrEnum):
     """
-    The state of the browser window.
+    The state of the browser window. Experimental: this API may change or be removed.
     """
 
     NORMAL = "normal"
@@ -27,19 +33,38 @@ class WindowState(CDPStrEnum):
 @dataclass(kw_only=True, slots=True)
 class Bounds:
     """
-    Browser window bounds information
+    Browser window bounds information Experimental: this API may change or be removed.
     """
 
     left: int | None = None
+    """
+    The offset from the left edge of the screen to the window in pixels.
+    """
     top: int | None = None
+    """
+    The offset from the top edge of the screen to the window in pixels.
+    """
     width: int | None = None
+    """
+    The window width in pixels.
+    """
     height: int | None = None
+    """
+    The window height in pixels.
+    """
     window_state: WindowState | None = field(
         default=None, metadata={"cdp_name": "windowState"}
     )
+    """
+    The window state. Default to normal.
+    """
 
 
 class PermissionType(CDPStrEnum):
+    """
+    Experimental: this API may change or be removed.
+    """
+
     AR = "ar"
     AUDIO_CAPTURE = "audioCapture"
     AUTOMATIC_FULLSCREEN = "automaticFullscreen"
@@ -82,6 +107,10 @@ class PermissionType(CDPStrEnum):
 
 
 class PermissionSetting(CDPStrEnum):
+    """
+    Experimental: this API may change or be removed.
+    """
+
     GRANTED = "granted"
     DENIED = "denied"
     PROMPT = "prompt"
@@ -91,28 +120,51 @@ class PermissionSetting(CDPStrEnum):
 class PermissionDescriptor:
     """
     Definition of PermissionDescriptor defined in the Permissions API:
-    https://w3c.github.io/permissions/#dom-permissiondescriptor.
+    https://w3c.github.io/permissions/#dom-permissiondescriptor. Experimental: this API
+    may change or be removed.
     """
 
     name: str
+    """
+    Name of permission. See
+    https://cs.chromium.org/chromium/src/third_party/blink/renderer/modules/permissions/permission_descriptor.idl
+    for valid permission names.
+    """
     sysex: bool | None = None
+    """
+    For "midi" permission, may also specify sysex control.
+    """
     user_visible_only: bool | None = field(
         default=None, metadata={"cdp_name": "userVisibleOnly"}
     )
+    """
+    For "push" permission, may specify userVisibleOnly. Note that userVisibleOnly =
+    true is the only currently supported type.
+    """
     allow_without_sanitization: bool | None = field(
         default=None, metadata={"cdp_name": "allowWithoutSanitization"}
     )
+    """
+    For "clipboard" permission, may specify allowWithoutSanitization.
+    """
     allow_without_gesture: bool | None = field(
         default=None, metadata={"cdp_name": "allowWithoutGesture"}
     )
+    """
+    For "fullscreen" permission, must specify allowWithoutGesture:true.
+    """
     pan_tilt_zoom: bool | None = field(
         default=None, metadata={"cdp_name": "panTiltZoom"}
     )
+    """
+    For "camera" permission, may specify panTiltZoom.
+    """
 
 
 class BrowserCommandId(CDPStrEnum):
     """
-    Browser command ids used by executeBrowserCommand.
+    Browser command ids used by executeBrowserCommand. Experimental: this API may
+    change or be removed.
     """
 
     OPEN_TAB_SEARCH = "openTabSearch"
@@ -123,21 +175,42 @@ class BrowserCommandId(CDPStrEnum):
 @dataclass(kw_only=True, slots=True)
 class Bucket:
     """
-    Chrome histogram bucket.
+    Chrome histogram bucket. Experimental: this API may change or be removed.
     """
 
     low: int
+    """
+    Minimum value (inclusive).
+    """
     high: int
+    """
+    Maximum value (exclusive).
+    """
     count: int
+    """
+    Number of samples.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class Histogram:
     """
-    Chrome histogram.
+    Chrome histogram. Experimental: this API may change or be removed.
     """
 
     name: str
+    """
+    Name.
+    """
     sum: int
+    """
+    Sum of sample values.
+    """
     count: int
+    """
+    Total number of samples.
+    """
     buckets: list[Bucket]
+    """
+    Buckets.
+    """

@@ -25,13 +25,25 @@ class InvokeToolParams:
     """
 
     frame_id: page.FrameId = field(metadata={"cdp_name": "frameId"})
+    """
+    Frame in which to invoke the tool.
+    """
     tool_name: str = field(metadata={"cdp_name": "toolName"})
+    """
+    Name of the tool to invoke.
+    """
     input: dict[str, Any]
+    """
+    Input parameters for the tool, matching the tool's inputSchema.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class InvokeToolResult:
     invocation_id: str = field(metadata={"cdp_name": "invocationId"})
+    """
+    Unique identifier for this invocation. Response is sent before tool events.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -41,3 +53,6 @@ class CancelInvocationParams:
     """
 
     invocation_id: str = field(metadata={"cdp_name": "invocationId"})
+    """
+    Invocation identifier to cancel.
+    """

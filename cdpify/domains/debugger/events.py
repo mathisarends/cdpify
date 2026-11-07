@@ -30,13 +30,20 @@ class DebuggerEvent(StrEnum):
 class BreakpointResolvedEvent:
     """
     Fired when breakpoint is resolved to an actual script and location. Deprecated in
-    favor of `resolvedBreakpoints` in the `scriptParsed` event.
+    favor of `resolvedBreakpoints` in the `scriptParsed` event. Deprecated in the Chrome
+    DevTools Protocol.
     """
 
     __cdp_event__: ClassVar[DebuggerEvent] = DebuggerEvent.BREAKPOINT_RESOLVED
 
     breakpoint_id: BreakpointId = field(metadata={"cdp_name": "breakpointId"})
+    """
+    Breakpoint unique identifier.
+    """
     location: Location
+    """
+    Actual breakpoint location.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -49,6 +56,9 @@ class PausedEvent:
     __cdp_event__: ClassVar[DebuggerEvent] = DebuggerEvent.PAUSED
 
     call_frames: list[CallFrame] = field(metadata={"cdp_name": "callFrames"})
+    """
+    Call stack the virtual machine stopped on.
+    """
     reason: Literal[
         "ambiguous",
         "assert",
@@ -64,19 +74,38 @@ class PausedEvent:
         "XHR",
         "step",
     ]
+    """
+    Pause reason.
+    """
     data: dict[str, Any] | None = None
+    """
+    Object containing break-specific auxiliary properties.
+    """
     hit_breakpoints: list[str] | None = field(
         default=None, metadata={"cdp_name": "hitBreakpoints"}
     )
+    """
+    Hit breakpoints IDs
+    """
     async_stack_trace: runtime.StackTrace | None = field(
         default=None, metadata={"cdp_name": "asyncStackTrace"}
     )
+    """
+    Async stack trace, if any.
+    """
     async_stack_trace_id: runtime.StackTraceId | None = field(
         default=None, metadata={"cdp_name": "asyncStackTraceId"}
     )
+    """
+    Async stack trace, if any. Experimental: this API may change or be removed.
+    """
     async_call_stack_trace_id: runtime.StackTraceId | None = field(
         default=None, metadata={"cdp_name": "asyncCallStackTraceId"}
     )
+    """
+    Never present, will be removed. Experimental: this API may change or be removed.
+    Deprecated in the Chrome DevTools Protocol.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -97,37 +126,96 @@ class ScriptFailedToParseEvent:
     __cdp_event__: ClassVar[DebuggerEvent] = DebuggerEvent.SCRIPT_FAILED_TO_PARSE
 
     script_id: runtime.ScriptId = field(metadata={"cdp_name": "scriptId"})
+    """
+    Identifier of the script parsed.
+    """
     url: str
+    """
+    URL or name of the script parsed (if any).
+    """
     start_line: int = field(metadata={"cdp_name": "startLine"})
+    """
+    Line offset of the script within the resource with given URL (for script tags).
+    """
     start_column: int = field(metadata={"cdp_name": "startColumn"})
+    """
+    Column offset of the script within the resource with given URL.
+    """
     end_line: int = field(metadata={"cdp_name": "endLine"})
+    """
+    Last line of the script.
+    """
     end_column: int = field(metadata={"cdp_name": "endColumn"})
+    """
+    Length of the last line of the script.
+    """
     execution_context_id: runtime.ExecutionContextId = field(
         metadata={"cdp_name": "executionContextId"}
     )
+    """
+    Specifies script creation context.
+    """
     hash: str
+    """
+    Content hash of the script, SHA-256.
+    """
     build_id: str = field(metadata={"cdp_name": "buildId"})
+    """
+    For Wasm modules, the content of the `build_id` custom section. For JavaScript the
+    `debugId` magic comment.
+    """
     execution_context_aux_data: dict[str, Any] | None = field(
         default=None, metadata={"cdp_name": "executionContextAuxData"}
     )
+    """
+    Embedder-specific auxiliary data likely matching {isDefault: boolean, type:
+    'default'|'isolated'|'worker', frameId: string}
+    """
     source_map_url: str | None = field(
         default=None, metadata={"cdp_name": "sourceMapURL"}
     )
+    """
+    URL of source map associated with script (if any).
+    """
     has_source_url: bool | None = field(
         default=None, metadata={"cdp_name": "hasSourceURL"}
     )
+    """
+    True, if this script has sourceURL.
+    """
     is_module: bool | None = field(default=None, metadata={"cdp_name": "isModule"})
+    """
+    True, if this script is ES6 module.
+    """
     length: int | None = None
+    """
+    This script length.
+    """
     stack_trace: runtime.StackTrace | None = field(
         default=None, metadata={"cdp_name": "stackTrace"}
     )
+    """
+    JavaScript top stack frame of where the script parsed event was triggered if
+    available. Experimental: this API may change or be removed.
+    """
     code_offset: int | None = field(default=None, metadata={"cdp_name": "codeOffset"})
+    """
+    If the scriptLanguage is WebAssembly, the code section offset in the module.
+    Experimental: this API may change or be removed.
+    """
     script_language: debugger.ScriptLanguage | None = field(
         default=None, metadata={"cdp_name": "scriptLanguage"}
     )
+    """
+    The language of the script. Experimental: this API may change or be removed.
+    """
     embedder_name: str | None = field(
         default=None, metadata={"cdp_name": "embedderName"}
     )
+    """
+    The name the embedder supplied for this script. Experimental: this API may change
+    or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -140,41 +228,114 @@ class ScriptParsedEvent:
     __cdp_event__: ClassVar[DebuggerEvent] = DebuggerEvent.SCRIPT_PARSED
 
     script_id: runtime.ScriptId = field(metadata={"cdp_name": "scriptId"})
+    """
+    Identifier of the script parsed.
+    """
     url: str
+    """
+    URL or name of the script parsed (if any).
+    """
     start_line: int = field(metadata={"cdp_name": "startLine"})
+    """
+    Line offset of the script within the resource with given URL (for script tags).
+    """
     start_column: int = field(metadata={"cdp_name": "startColumn"})
+    """
+    Column offset of the script within the resource with given URL.
+    """
     end_line: int = field(metadata={"cdp_name": "endLine"})
+    """
+    Last line of the script.
+    """
     end_column: int = field(metadata={"cdp_name": "endColumn"})
+    """
+    Length of the last line of the script.
+    """
     execution_context_id: runtime.ExecutionContextId = field(
         metadata={"cdp_name": "executionContextId"}
     )
+    """
+    Specifies script creation context.
+    """
     hash: str
+    """
+    Content hash of the script, SHA-256.
+    """
     build_id: str = field(metadata={"cdp_name": "buildId"})
+    """
+    For Wasm modules, the content of the `build_id` custom section. For JavaScript the
+    `debugId` magic comment.
+    """
     execution_context_aux_data: dict[str, Any] | None = field(
         default=None, metadata={"cdp_name": "executionContextAuxData"}
     )
+    """
+    Embedder-specific auxiliary data likely matching {isDefault: boolean, type:
+    'default'|'isolated'|'worker', frameId: string}
+    """
     is_live_edit: bool | None = field(default=None, metadata={"cdp_name": "isLiveEdit"})
+    """
+    True, if this script is generated as a result of the live edit operation.
+    Experimental: this API may change or be removed.
+    """
     source_map_url: str | None = field(
         default=None, metadata={"cdp_name": "sourceMapURL"}
     )
+    """
+    URL of source map associated with script (if any).
+    """
     has_source_url: bool | None = field(
         default=None, metadata={"cdp_name": "hasSourceURL"}
     )
+    """
+    True, if this script has sourceURL.
+    """
     is_module: bool | None = field(default=None, metadata={"cdp_name": "isModule"})
+    """
+    True, if this script is ES6 module.
+    """
     length: int | None = None
+    """
+    This script length.
+    """
     stack_trace: runtime.StackTrace | None = field(
         default=None, metadata={"cdp_name": "stackTrace"}
     )
+    """
+    JavaScript top stack frame of where the script parsed event was triggered if
+    available. Experimental: this API may change or be removed.
+    """
     code_offset: int | None = field(default=None, metadata={"cdp_name": "codeOffset"})
+    """
+    If the scriptLanguage is WebAssembly, the code section offset in the module.
+    Experimental: this API may change or be removed.
+    """
     script_language: debugger.ScriptLanguage | None = field(
         default=None, metadata={"cdp_name": "scriptLanguage"}
     )
+    """
+    The language of the script. Experimental: this API may change or be removed.
+    """
     debug_symbols: list[debugger.DebugSymbols] | None = field(
         default=None, metadata={"cdp_name": "debugSymbols"}
     )
+    """
+    If the scriptLanguage is WebAssembly, the source of debug symbols for the module.
+    Experimental: this API may change or be removed.
+    """
     embedder_name: str | None = field(
         default=None, metadata={"cdp_name": "embedderName"}
     )
+    """
+    The name the embedder supplied for this script. Experimental: this API may change
+    or be removed.
+    """
     resolved_breakpoints: list[ResolvedBreakpoint] | None = field(
         default=None, metadata={"cdp_name": "resolvedBreakpoints"}
     )
+    """
+    The list of set breakpoints in this script if calls to `setBreakpointByUrl` matches
+    this script's URL or hash. Clients that use this list can ignore the
+    `breakpointResolved` event. They are equivalent. Experimental: this API may change
+    or be removed.
+    """

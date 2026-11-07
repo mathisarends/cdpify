@@ -37,9 +37,18 @@ class EnableParams:
     """
 
     patterns: list[RequestPattern] | None = None
+    """
+    If specified, only requests matching any of these patterns will produce
+    fetchRequested event and will be paused until clients response. If not set, all
+    requests will be affected.
+    """
     handle_auth_requests: bool | None = field(
         default=None, metadata={"cdp_name": "handleAuthRequests"}
     )
+    """
+    If true, authRequired events will be issued and requests will be paused expecting a
+    call to continueWithAuth.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -49,7 +58,13 @@ class FailRequestParams:
     """
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
+    """
+    An id the client received in requestPaused event.
+    """
     error_reason: network.ErrorReason = field(metadata={"cdp_name": "errorReason"})
+    """
+    Causes the request to fail with the given reason.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -59,17 +74,41 @@ class FulfillRequestParams:
     """
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
+    """
+    An id the client received in requestPaused event.
+    """
     response_code: int = field(metadata={"cdp_name": "responseCode"})
+    """
+    An HTTP response code.
+    """
     response_headers: list[HeaderEntry] | None = field(
         default=None, metadata={"cdp_name": "responseHeaders"}
     )
+    """
+    Response headers.
+    """
     binary_response_headers: str | None = field(
         default=None, metadata={"cdp_name": "binaryResponseHeaders"}
     )
+    """
+    Alternative way of specifying response headers as a \\0-separated series of name:
+    value pairs. Prefer the above method unless you need to represent some non-UTF8
+    values that can't be transmitted over the protocol as text. (Encoded as a base64
+    string when passed over JSON)
+    """
     body: str | None = None
+    """
+    A response body. If absent, original response body will be used if the request is
+    intercepted at the response stage and empty body will be used if the request is
+    intercepted at the request stage. (Encoded as a base64 string when passed over JSON)
+    """
     response_phrase: str | None = field(
         default=None, metadata={"cdp_name": "responsePhrase"}
     )
+    """
+    A textual representation of responseCode. If absent, a standard phrase matching
+    responseCode is used.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -79,13 +118,35 @@ class ContinueRequestParams:
     """
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
+    """
+    An id the client received in requestPaused event.
+    """
     url: str | None = None
+    """
+    If set, the request url will be modified in a way that's not observable by page.
+    """
     method: str | None = None
+    """
+    If set, the request method is overridden.
+    """
     post_data: str | None = field(default=None, metadata={"cdp_name": "postData"})
+    """
+    If set, overrides the post data in the request. (Encoded as a base64 string when
+    passed over JSON)
+    """
     headers: list[HeaderEntry] | None = None
+    """
+    If set, overrides the request headers. Note that the overrides do not extend to
+    subsequent redirect hops, if a redirect happens. Another override may be applied to
+    a different request produced by a redirect.
+    """
     intercept_response: bool | None = field(
         default=None, metadata={"cdp_name": "interceptResponse"}
     )
+    """
+    If set, overrides response interception behavior for this request. Experimental:
+    this API may change or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -95,9 +156,15 @@ class ContinueWithAuthParams:
     """
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
+    """
+    An id the client received in authRequired event.
+    """
     auth_challenge_response: AuthChallengeResponse = field(
         metadata={"cdp_name": "authChallengeResponse"}
     )
+    """
+    Response to with an authChallenge.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -105,22 +172,41 @@ class ContinueResponseParams:
     """
     Continues loading of the paused response, optionally modifying the response
     headers. If either responseCode or headers are modified, all of them must be
-    present.
+    present. Experimental: this API may change or be removed.
     """
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
+    """
+    An id the client received in requestPaused event.
+    """
     response_code: int | None = field(
         default=None, metadata={"cdp_name": "responseCode"}
     )
+    """
+    An HTTP response code. If absent, original response code will be used.
+    """
     response_phrase: str | None = field(
         default=None, metadata={"cdp_name": "responsePhrase"}
     )
+    """
+    A textual representation of responseCode. If absent, a standard phrase matching
+    responseCode is used.
+    """
     response_headers: list[HeaderEntry] | None = field(
         default=None, metadata={"cdp_name": "responseHeaders"}
     )
+    """
+    Response headers. If absent, original response headers will be used.
+    """
     binary_response_headers: str | None = field(
         default=None, metadata={"cdp_name": "binaryResponseHeaders"}
     )
+    """
+    Alternative way of specifying response headers as a \\0-separated series of name:
+    value pairs. Prefer the above method unless you need to represent some non-UTF8
+    values that can't be transmitted over the protocol as text. (Encoded as a base64
+    string when passed over JSON)
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -137,12 +223,21 @@ class GetResponseBodyParams:
     """
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
+    """
+    Identifier for the intercepted request to get body for.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetResponseBodyResult:
     body: str
+    """
+    Response body.
+    """
     base64_encoded: bool = field(metadata={"cdp_name": "base64Encoded"})
+    """
+    True, if content was sent as base64.
+    """
 
 
 @dataclass(kw_only=True, slots=True)

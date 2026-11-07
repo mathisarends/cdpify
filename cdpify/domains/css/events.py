@@ -35,6 +35,9 @@ class FontsUpdatedEvent:
     __cdp_event__: ClassVar[CSSEvent] = CSSEvent.FONTS_UPDATED
 
     font: FontFace | None = None
+    """
+    The web font that has loaded.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -57,6 +60,9 @@ class StyleSheetAddedEvent:
     __cdp_event__: ClassVar[CSSEvent] = CSSEvent.STYLE_SHEET_ADDED
 
     header: CSSStyleSheetHeader
+    """
+    Added stylesheet metainfo.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -79,10 +85,20 @@ class StyleSheetRemovedEvent:
     __cdp_event__: ClassVar[CSSEvent] = CSSEvent.STYLE_SHEET_REMOVED
 
     style_sheet_id: dom.StyleSheetId = field(metadata={"cdp_name": "styleSheetId"})
+    """
+    Identifier of the removed stylesheet.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class ComputedStyleUpdatedEvent:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     __cdp_event__: ClassVar[CSSEvent] = CSSEvent.COMPUTED_STYLE_UPDATED
 
     node_id: dom.NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    The node id that has updated computed styles.
+    """

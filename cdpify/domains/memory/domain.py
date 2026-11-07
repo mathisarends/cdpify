@@ -80,6 +80,9 @@ class Memory:
     ) -> None:
         """
         Enable/disable suppressing memory pressure notifications in all processes.
+
+        Args:
+            suppressed: If true, memory pressure notifications will be suppressed.
         """
         _params: dict[str, Any] = {}
         _params["suppressed"] = suppressed
@@ -96,6 +99,9 @@ class Memory:
     ) -> None:
         """
         Simulate a memory pressure notification in all processes.
+
+        Args:
+            level: Memory pressure level of the notification.
         """
         _params: dict[str, Any] = {}
         _params["level"] = _encode_value(level)
@@ -113,6 +119,10 @@ class Memory:
     ) -> None:
         """
         Start collecting native memory profile.
+
+        Args:
+            sampling_interval: Average number of bytes between samples.
+            suppress_randomness: Do not randomize intervals between samples.
         """
         _params: dict[str, Any] = {}
         if sampling_interval is not None:

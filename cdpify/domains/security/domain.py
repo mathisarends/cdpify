@@ -51,6 +51,9 @@ class Security:
     ) -> None:
         """
         Enable/disable whether all certificate errors should be ignored.
+
+        Args:
+            ignore: If true, all certificate errors will be ignored.
         """
         _params: dict[str, Any] = {}
         _params["ignore"] = ignore
@@ -68,7 +71,12 @@ class Security:
         action: CertificateErrorAction,
     ) -> None:
         """
-        Handles a certificate error that fired a certificateError event.
+        Handles a certificate error that fired a certificateError event. Deprecated in
+        the Chrome DevTools Protocol.
+
+        Args:
+            event_id: The ID of the event.
+            action: The action to take on the certificate error.
         """
         _params: dict[str, Any] = {}
         _params["eventId"] = event_id
@@ -88,7 +96,10 @@ class Security:
         """
         Enable/disable overriding certificate errors. If enabled, all certificate error
         events need to be handled by the DevTools client and should be answered with
-        `handleCertificateError` commands.
+        `handleCertificateError` commands. Deprecated in the Chrome DevTools Protocol.
+
+        Args:
+            override: If true, certificate errors will be overridden.
         """
         _params: dict[str, Any] = {}
         _params["override"] = override

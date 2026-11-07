@@ -12,23 +12,69 @@ from cdpify.shared.enums import CDPStrEnum
 @dataclass(kw_only=True, slots=True)
 class TouchPoint:
     x: float
+    """
+    X coordinate of the event relative to the main frame's viewport in CSS pixels.
+    """
     y: float
+    """
+    Y coordinate of the event relative to the main frame's viewport in CSS pixels. 0
+    refers to the top of the viewport and Y increases as it proceeds towards the bottom
+    of the viewport.
+    """
     radius_x: float | None = field(default=None, metadata={"cdp_name": "radiusX"})
+    """
+    X radius of the touch area (default: 1.0).
+    """
     radius_y: float | None = field(default=None, metadata={"cdp_name": "radiusY"})
+    """
+    Y radius of the touch area (default: 1.0).
+    """
     rotation_angle: float | None = field(
         default=None, metadata={"cdp_name": "rotationAngle"}
     )
+    """
+    Rotation angle (default: 0.0).
+    """
     force: float | None = None
+    """
+    Force (default: 1.0).
+    """
     tangential_pressure: float | None = field(
         default=None, metadata={"cdp_name": "tangentialPressure"}
     )
+    """
+    The normalized tangential pressure, which has a range of [-1,1] (default: 0).
+    Experimental: this API may change or be removed.
+    """
     tilt_x: float | None = field(default=None, metadata={"cdp_name": "tiltX"})
+    """
+    The plane angle between the Y-Z plane and the plane containing both the stylus axis
+    and the Y axis, in degrees of the range [-90,90], a positive tiltX is to the right
+    (default: 0)
+    """
     tilt_y: float | None = field(default=None, metadata={"cdp_name": "tiltY"})
+    """
+    The plane angle between the X-Z plane and the plane containing both the stylus axis
+    and the X axis, in degrees of the range [-90,90], a positive tiltY is towards the
+    user (default: 0).
+    """
     twist: int | None = None
+    """
+    The clockwise rotation of a pen stylus around its own major axis, in degrees in the
+    range [0,359] (default: 0). Experimental: this API may change or be removed.
+    """
     id: float | None = None
+    """
+    Identifier used to track touch sources between events, must be unique within an
+    event.
+    """
 
 
 class GestureSourceType(CDPStrEnum):
+    """
+    Experimental: this API may change or be removed.
+    """
+
     DEFAULT = "default"
     TOUCH = "touch"
     MOUSE = "mouse"
@@ -51,14 +97,42 @@ UTC time in seconds, counted from January 1, 1970.
 
 @dataclass(kw_only=True, slots=True)
 class DragDataItem:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     mime_type: str = field(metadata={"cdp_name": "mimeType"})
+    """
+    Mime type of the dragged data.
+    """
     data: str
+    """
+    Depending of the value of `mimeType`, it contains the dragged link, text, HTML
+    markup or any other data.
+    """
     title: str | None = None
+    """
+    Title associated with a link. Only valid when `mimeType` == "text/uri-list".
+    """
     base_url: str | None = field(default=None, metadata={"cdp_name": "baseURL"})
+    """
+    Stores the base URL for the contained markup. Only valid when `mimeType` ==
+    "text/html".
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class DragData:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     items: list[DragDataItem]
     files: list[str] | None = None
+    """
+    List of filenames that should be included when dropping
+    """
     drag_operations_mask: int = field(metadata={"cdp_name": "dragOperationsMask"})
+    """
+    Bit field representing allowed drag operations. Copy = 1, Link = 2, Move = 16
+    """

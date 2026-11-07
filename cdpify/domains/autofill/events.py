@@ -27,4 +27,11 @@ class AddressFormFilledEvent:
     __cdp_event__: ClassVar[AutofillEvent] = AutofillEvent.ADDRESS_FORM_FILLED
 
     filled_fields: list[FilledField] = field(metadata={"cdp_name": "filledFields"})
+    """
+    Information about the fields that were filled
+    """
     address_ui: AddressUI = field(metadata={"cdp_name": "addressUi"})
+    """
+    An UI representation of the address used to fill the form. Consists of a 2D array
+    where each child represents an address/profile line.
+    """

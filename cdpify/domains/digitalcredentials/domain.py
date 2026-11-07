@@ -35,6 +35,14 @@ class DigitalCredentials:
         """
         Sets the behavior of the virtual wallet for digital credential requests issued
         from this frame.
+
+        Args:
+            action: The action of the virtual wallet.
+            protocol: The protocol identifier (e.g. "openid4vp"). Required when |action|
+                is "respond", forbidden otherwise.
+            response: The response data object returned by the wallet. Required when
+                |action| is "respond", forbidden otherwise.
+            frame_id: The frame to scope the virtual wallet behavior to.
         """
         _params: dict[str, Any] = {}
         _params["action"] = _encode_value(action)

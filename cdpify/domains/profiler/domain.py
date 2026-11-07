@@ -59,6 +59,9 @@ class Profiler:
         """
         Changes CPU profiler sampling interval. Must be called before CPU profiles
         recording started.
+
+        Args:
+            interval: New sampling interval in microseconds.
         """
         _params: dict[str, Any] = {}
         _params["interval"] = interval
@@ -87,6 +90,13 @@ class Profiler:
         Enable precise code coverage. Coverage data for JavaScript executed before
         enabling precise code coverage may be incomplete. Enabling prevents running
         optimized code and resets execution counters.
+
+        Args:
+            call_count: Collect accurate call counts beyond simple 'covered' or 'not
+                covered'.
+            detailed: Collect block-based coverage.
+            allow_triggered_updates: Allow the backend to send updates on its own
+                initiative
         """
         _params: dict[str, Any] = {}
         if call_count is not None:

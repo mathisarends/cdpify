@@ -70,6 +70,10 @@ class DOM:
     ) -> CollectClassNamesFromSubtreeResult:
         """
         Collects class names for the node with given id and all of it's child nodes.
+        Experimental: this API may change or be removed.
+
+        Args:
+            node_id: Id of the node to collect class names.
         """
         _params: dict[str, Any] = {}
         _params["nodeId"] = _encode_value(node_id)
@@ -89,7 +93,14 @@ class DOM:
     ) -> CopyToResult:
         """
         Creates a deep copy of the specified node and places it into the target
-        container before the given anchor.
+        container before the given anchor. Experimental: this API may change or be
+        removed.
+
+        Args:
+            node_id: Id of the node to copy.
+            target_node_id: Id of the element to drop the copy into.
+            insert_before_node_id: Drop the copy before this node (if absent, the copy
+                becomes the last child of `targetNodeId`).
         """
         _params: dict[str, Any] = {}
         _params["nodeId"] = _encode_value(node_id)
@@ -115,6 +126,15 @@ class DOM:
         """
         Describes node given its id, does not require domain to be enabled. Does not
         start tracking any objects, can be used for automation.
+
+        Args:
+            node_id: Identifier of the node.
+            backend_node_id: Identifier of the backend node.
+            object_id: JavaScript object id of the node wrapper.
+            depth: The maximum depth at which children should be retrieved, defaults to
+                1. Use -1 for the entire subtree or provide an integer larger than 0.
+            pierce: Whether or not iframes and shadow roots should be traversed when
+                returning the subtree (default is false).
         """
         _params: dict[str, Any] = {}
         if node_id is not None:
@@ -146,6 +166,14 @@ class DOM:
         Scrolls the specified rect of the given node into view if not already visible.
         Note: exactly one between nodeId, backendNodeId and objectId should be passed to
         identify the node.
+
+        Args:
+            node_id: Identifier of the node.
+            backend_node_id: Identifier of the backend node.
+            object_id: JavaScript object id of the node wrapper.
+            rect: The rect to be scrolled into view, relative to the node's border box,
+                in CSS pixels. When omitted, center of the node will be used, similar to
+                Element.scrollIntoView.
         """
         _params: dict[str, Any] = {}
         if node_id is not None:
@@ -180,7 +208,11 @@ class DOM:
     ) -> None:
         """
         Discards search results from the session with the given id. `getSearchResults`
-        should no longer be called for that search.
+        should no longer be called for that search. Experimental: this API may change or
+        be removed.
+
+        Args:
+            search_id: Unique search session identifier.
         """
         _params: dict[str, Any] = {}
         _params["searchId"] = search_id
@@ -197,6 +229,10 @@ class DOM:
     ) -> None:
         """
         Enables DOM agent for the given page.
+
+        Args:
+            include_whitespace: Whether to include whitespaces in the children array of
+                returned Nodes. Experimental: this API may change or be removed.
         """
         _params: dict[str, Any] = {}
         if include_whitespace is not None:
@@ -216,6 +252,11 @@ class DOM:
     ) -> None:
         """
         Focuses the given element.
+
+        Args:
+            node_id: Identifier of the node.
+            backend_node_id: Identifier of the backend node.
+            object_id: JavaScript object id of the node wrapper.
         """
         _params: dict[str, Any] = {}
         if node_id is not None:
@@ -237,6 +278,9 @@ class DOM:
     ) -> GetAttributesResult:
         """
         Returns attributes for the specified node.
+
+        Args:
+            node_id: Id of the node to retrieve attributes for.
         """
         _params: dict[str, Any] = {}
         _params["nodeId"] = _encode_value(node_id)
@@ -256,6 +300,11 @@ class DOM:
     ) -> GetBoxModelResult:
         """
         Returns boxes for the given node.
+
+        Args:
+            node_id: Identifier of the node.
+            backend_node_id: Identifier of the backend node.
+            object_id: JavaScript object id of the node wrapper.
         """
         _params: dict[str, Any] = {}
         if node_id is not None:
@@ -280,7 +329,13 @@ class DOM:
     ) -> GetContentQuadsResult:
         """
         Returns quads that describe node position on the page. This method might return
-        multiple quads for inline nodes.
+        multiple quads for inline nodes. Experimental: this API may change or be
+        removed.
+
+        Args:
+            node_id: Identifier of the node.
+            backend_node_id: Identifier of the backend node.
+            object_id: JavaScript object id of the node wrapper.
         """
         _params: dict[str, Any] = {}
         if node_id is not None:
@@ -305,6 +360,12 @@ class DOM:
         """
         Returns the root DOM node (and optionally the subtree) to the caller.
         Implicitly enables the DOM domain events for the current target.
+
+        Args:
+            depth: The maximum depth at which children should be retrieved, defaults to
+                1. Use -1 for the entire subtree or provide an integer larger than 0.
+            pierce: Whether or not iframes and shadow roots should be traversed when
+                returning the subtree (default is false).
         """
         _params: dict[str, Any] = {}
         if depth is not None:
@@ -328,7 +389,14 @@ class DOM:
         """
         Returns the root DOM node (and optionally the subtree) to the caller.
         Deprecated, as it is not designed to work well with the rest of the DOM agent.
-        Use DOMSnapshot.captureSnapshot instead.
+        Use DOMSnapshot.captureSnapshot instead. Deprecated in the Chrome DevTools
+        Protocol.
+
+        Args:
+            depth: The maximum depth at which children should be retrieved, defaults to
+                1. Use -1 for the entire subtree or provide an integer larger than 0.
+            pierce: Whether or not iframes and shadow roots should be traversed when
+                returning the subtree (default is false).
         """
         _params: dict[str, Any] = {}
         if depth is not None:
@@ -350,7 +418,15 @@ class DOM:
         pierce: bool | None = None,
     ) -> GetNodesForSubtreeByStyleResult:
         """
-        Finds nodes with a given computed style in a subtree.
+        Finds nodes with a given computed style in a subtree. Experimental: this API
+        may change or be removed.
+
+        Args:
+            node_id: Node ID pointing to the root of a subtree.
+            computed_styles: The style to filter nodes by (includes nodes if any of
+                properties matches).
+            pierce: Whether or not iframes and shadow roots in the same target should be
+                traversed when returning the results (default is false).
         """
         _params: dict[str, Any] = {}
         _params["nodeId"] = _encode_value(node_id)
@@ -375,6 +451,14 @@ class DOM:
         """
         Returns node id at given location. Depending on whether DOM domain is enabled,
         nodeId is either returned or not.
+
+        Args:
+            x: X coordinate.
+            y: Y coordinate.
+            include_user_agent_shadow_dom: False to skip to the nearest non-UA shadow
+                root ancestor (default: false).
+            ignore_pointer_events_none: Whether to ignore pointer-events: none on
+                elements and hit test them.
         """
         _params: dict[str, Any] = {}
         _params["x"] = x
@@ -400,6 +484,13 @@ class DOM:
     ) -> GetOuterHTMLResult:
         """
         Returns node's HTML markup.
+
+        Args:
+            node_id: Identifier of the node.
+            backend_node_id: Identifier of the backend node.
+            object_id: JavaScript object id of the node wrapper.
+            include_shadow_dom: Include all shadow roots. Equals to false if not
+                specified. Experimental: this API may change or be removed.
         """
         _params: dict[str, Any] = {}
         if node_id is not None:
@@ -424,6 +515,10 @@ class DOM:
     ) -> GetRelayoutBoundaryResult:
         """
         Returns the id of the nearest ancestor that is a relayout boundary.
+        Experimental: this API may change or be removed.
+
+        Args:
+            node_id: Id of the node.
         """
         _params: dict[str, Any] = {}
         _params["nodeId"] = _encode_value(node_id)
@@ -443,7 +538,13 @@ class DOM:
     ) -> GetSearchResultsResult:
         """
         Returns search results from given `fromIndex` to given `toIndex` from the
-        search with the given identifier.
+        search with the given identifier. Experimental: this API may change or be
+        removed.
+
+        Args:
+            search_id: Unique search session identifier.
+            from_index: Start index of the search result to be returned.
+            to_index: End index of the search result to be returned.
         """
         _params: dict[str, Any] = {}
         _params["searchId"] = search_id
@@ -493,7 +594,7 @@ class DOM:
         self,
     ) -> None:
         """
-        Marks last undoable state.
+        Marks last undoable state. Experimental: this API may change or be removed.
         """
         await self._executor.execute(
             method=DOMCommand.MARK_UNDOABLE_STATE,
@@ -509,6 +610,12 @@ class DOM:
     ) -> MoveToResult:
         """
         Moves node into the new container, places it before the given anchor.
+
+        Args:
+            node_id: Id of the node to move.
+            target_node_id: Id of the element to drop the moved node into.
+            insert_before_node_id: Drop node before this one (if absent, the moved node
+                becomes the last child of `targetNodeId`).
         """
         _params: dict[str, Any] = {}
         _params["nodeId"] = _encode_value(node_id)
@@ -530,7 +637,12 @@ class DOM:
     ) -> PerformSearchResult:
         """
         Searches for a given string in the DOM tree. Use `getSearchResults` to access
-        search results or `cancelSearch` to end this search session.
+        search results or `cancelSearch` to end this search session. Experimental: this
+        API may change or be removed.
+
+        Args:
+            query: Plain text or query selector or XPath search query.
+            include_user_agent_shadow_dom: True to search in user agent shadow DOM.
         """
         _params: dict[str, Any] = {}
         _params["query"] = query
@@ -550,7 +662,10 @@ class DOM:
     ) -> PushNodeByPathToFrontendResult:
         """
         Requests that the node is sent to the caller given its path. // FIXME, use
-        XPath
+        XPath Experimental: this API may change or be removed.
+
+        Args:
+            path: Path to node in the proprietary format.
         """
         _params: dict[str, Any] = {}
         _params["path"] = path
@@ -568,7 +683,10 @@ class DOM:
     ) -> PushNodesByBackendIdsToFrontendResult:
         """
         Requests that a batch of nodes is sent to the caller given their backend node
-        ids.
+        ids. Experimental: this API may change or be removed.
+
+        Args:
+            backend_node_ids: The array of backend node ids.
         """
         _params: dict[str, Any] = {}
         _params["backendNodeIds"] = _encode_value(backend_node_ids)
@@ -587,6 +705,10 @@ class DOM:
     ) -> QuerySelectorResult:
         """
         Executes `querySelector` on a given node.
+
+        Args:
+            node_id: Id of the node to query upon.
+            selector: Selector string.
         """
         _params: dict[str, Any] = {}
         _params["nodeId"] = _encode_value(node_id)
@@ -606,6 +728,10 @@ class DOM:
     ) -> QuerySelectorAllResult:
         """
         Executes `querySelectorAll` on a given node.
+
+        Args:
+            node_id: Id of the node to query upon.
+            selector: Selector string.
         """
         _params: dict[str, Any] = {}
         _params["nodeId"] = _encode_value(node_id)
@@ -623,7 +749,7 @@ class DOM:
         """
         Returns NodeIds of current top layer elements. Top layer is rendered closest to
         the user within a viewport, therefore its elements always appear on top of all
-        other content.
+        other content. Experimental: this API may change or be removed.
         """
         result = await self._executor.execute(
             method=DOMCommand.GET_TOP_LAYER_ELEMENTS,
@@ -639,6 +765,11 @@ class DOM:
     ) -> GetElementByRelationResult:
         """
         Returns the NodeId of the matched element according to certain relations.
+        Experimental: this API may change or be removed.
+
+        Args:
+            node_id: Id of the node from which to query the relation.
+            relation: Type of relation to get.
         """
         _params: dict[str, Any] = {}
         _params["nodeId"] = _encode_value(node_id)
@@ -654,7 +785,8 @@ class DOM:
         self,
     ) -> None:
         """
-        Re-does the last undone action.
+        Re-does the last undone action. Experimental: this API may change or be
+        removed.
         """
         await self._executor.execute(
             method=DOMCommand.REDO,
@@ -669,6 +801,10 @@ class DOM:
     ) -> None:
         """
         Removes attribute with given name from an element with given id.
+
+        Args:
+            node_id: Id of the element to remove attribute from.
+            name: Name of the attribute to remove.
         """
         _params: dict[str, Any] = {}
         _params["nodeId"] = _encode_value(node_id)
@@ -686,6 +822,9 @@ class DOM:
     ) -> None:
         """
         Removes node with given id.
+
+        Args:
+            node_id: Id of the node to remove.
         """
         _params: dict[str, Any] = {}
         _params["nodeId"] = _encode_value(node_id)
@@ -706,6 +845,13 @@ class DOM:
         Requests that children of the node with given id are returned to the caller in
         form of `setChildNodes` events where not only immediate children are retrieved,
         but all children down to the specified depth.
+
+        Args:
+            node_id: Id of the node to get children for.
+            depth: The maximum depth at which children should be retrieved, defaults to
+                1. Use -1 for the entire subtree or provide an integer larger than 0.
+            pierce: Whether or not iframes and shadow roots should be traversed when
+                returning the sub-tree (default is false).
         """
         _params: dict[str, Any] = {}
         _params["nodeId"] = _encode_value(node_id)
@@ -728,6 +874,9 @@ class DOM:
         Requests that the node is sent to the caller given the JavaScript node object
         reference. All nodes that form the path from the node to the root are also sent
         to the client as a series of `setChildNodes` notifications.
+
+        Args:
+            object_id: JavaScript object id to convert into node.
         """
         _params: dict[str, Any] = {}
         _params["objectId"] = _encode_value(object_id)
@@ -748,6 +897,13 @@ class DOM:
     ) -> ResolveNodeResult:
         """
         Resolves the JavaScript node object for a given NodeId or BackendNodeId.
+
+        Args:
+            node_id: Id of the node to resolve.
+            backend_node_id: Backend identifier of the node to resolve.
+            object_group: Symbolic group name that can be used to release multiple
+                objects.
+            execution_context_id: Execution context in which to resolve the node.
         """
         _params: dict[str, Any] = {}
         if node_id is not None:
@@ -774,6 +930,11 @@ class DOM:
     ) -> None:
         """
         Sets attribute for an element with given id.
+
+        Args:
+            node_id: Id of the element to set attribute for.
+            name: Attribute name.
+            value: Attribute value.
         """
         _params: dict[str, Any] = {}
         _params["nodeId"] = _encode_value(node_id)
@@ -795,6 +956,13 @@ class DOM:
         """
         Sets attributes on element with given id. This method is useful when user edits
         some existing attribute value and types in several attribute name/value pairs.
+
+        Args:
+            node_id: Id of the element to set attributes for.
+            text: Text with a number of attributes. Will parse this text using HTML
+                parser.
+            name: Attribute name to replace with new attributes derived from text in
+                case text parsed successfully.
         """
         _params: dict[str, Any] = {}
         _params["nodeId"] = _encode_value(node_id)
@@ -817,6 +985,12 @@ class DOM:
     ) -> None:
         """
         Sets files for the given file input element.
+
+        Args:
+            files: Array of file paths to set.
+            node_id: Identifier of the node.
+            backend_node_id: Identifier of the backend node.
+            object_id: JavaScript object id of the node wrapper.
         """
         _params: dict[str, Any] = {}
         _params["files"] = _encode_value(files)
@@ -839,7 +1013,11 @@ class DOM:
     ) -> None:
         """
         Sets if stack traces should be captured for Nodes. See
-        `Node.getNodeStackTraces`. Default is disabled.
+        `Node.getNodeStackTraces`. Default is disabled. Experimental: this API may
+        change or be removed.
+
+        Args:
+            enable: Enable or disable.
         """
         _params: dict[str, Any] = {}
         _params["enable"] = enable
@@ -856,7 +1034,10 @@ class DOM:
     ) -> GetNodeStackTracesResult:
         """
         Gets stack traces associated with a Node. As of now, only provides stack trace
-        for Node creation.
+        for Node creation. Experimental: this API may change or be removed.
+
+        Args:
+            node_id: Id of the node to get stack traces for.
         """
         _params: dict[str, Any] = {}
         _params["nodeId"] = _encode_value(node_id)
@@ -873,7 +1054,11 @@ class DOM:
         object_id: runtime.RemoteObjectId,
     ) -> GetFileInfoResult:
         """
-        Returns file information for the given File wrapper.
+        Returns file information for the given File wrapper. Experimental: this API may
+        change or be removed.
+
+        Args:
+            object_id: JavaScript object id of the node wrapper.
         """
         _params: dict[str, Any] = {}
         _params["objectId"] = _encode_value(object_id)
@@ -888,7 +1073,7 @@ class DOM:
         self,
     ) -> GetDetachedDomNodesResult:
         """
-        Returns list of detached nodes
+        Returns list of detached nodes Experimental: this API may change or be removed.
         """
         result = await self._executor.execute(
             method=DOMCommand.GET_DETACHED_DOM_NODES,
@@ -903,7 +1088,10 @@ class DOM:
     ) -> None:
         """
         Enables console to refer to the node with given id via $x (see Command Line API
-        for more details $x functions).
+        for more details $x functions). Experimental: this API may change or be removed.
+
+        Args:
+            node_id: DOM node id to be accessible by means of $x command line API.
         """
         _params: dict[str, Any] = {}
         _params["nodeId"] = _encode_value(node_id)
@@ -921,6 +1109,10 @@ class DOM:
     ) -> SetNodeNameResult:
         """
         Sets node name for a node with given id.
+
+        Args:
+            node_id: Id of the node to set name for.
+            name: New node's name.
         """
         _params: dict[str, Any] = {}
         _params["nodeId"] = _encode_value(node_id)
@@ -940,6 +1132,10 @@ class DOM:
     ) -> None:
         """
         Sets node value for a node with given id.
+
+        Args:
+            node_id: Id of the node to set value for.
+            value: New node's value.
         """
         _params: dict[str, Any] = {}
         _params["nodeId"] = _encode_value(node_id)
@@ -958,6 +1154,10 @@ class DOM:
     ) -> None:
         """
         Sets node HTML markup, returns new node id.
+
+        Args:
+            node_id: Id of the node to set markup for.
+            outer_html: Outer HTML markup to set.
         """
         _params: dict[str, Any] = {}
         _params["nodeId"] = _encode_value(node_id)
@@ -972,7 +1172,8 @@ class DOM:
         self,
     ) -> None:
         """
-        Undoes the last performed action.
+        Undoes the last performed action. Experimental: this API may change or be
+        removed.
         """
         await self._executor.execute(
             method=DOMCommand.UNDO,
@@ -985,7 +1186,8 @@ class DOM:
         frame_id: page.FrameId,
     ) -> GetFrameOwnerResult:
         """
-        Returns iframe node that owns iframe with the given domain.
+        Returns iframe node that owns iframe with the given domain. Experimental: this
+        API may change or be removed.
         """
         _params: dict[str, Any] = {}
         _params["frameId"] = _encode_value(frame_id)
@@ -1012,6 +1214,7 @@ class DOM:
         scroll-state or anchored elements. If no axes are provided and
         queriesScrollState is false, the style container is returned, which is the
         direct parent or the closest element with a matching container-name.
+        Experimental: this API may change or be removed.
         """
         _params: dict[str, Any] = {}
         _params["nodeId"] = _encode_value(node_id)
@@ -1039,7 +1242,10 @@ class DOM:
     ) -> GetQueryingDescendantsForContainerResult:
         """
         Returns the descendants of a container query container that have container
-        queries against this container.
+        queries against this container. Experimental: this API may change or be removed.
+
+        Args:
+            node_id: Id of the container node to find querying descendants from.
         """
         _params: dict[str, Any] = {}
         _params["nodeId"] = _encode_value(node_id)
@@ -1058,7 +1264,15 @@ class DOM:
     ) -> GetAnchorElementResult:
         """
         Returns the target anchor element of the given anchor query according to
-        https://www.w3.org/TR/css-anchor-position-1/#target.
+        https://www.w3.org/TR/css-anchor-position-1/#target. Experimental: this API may
+        change or be removed.
+
+        Args:
+            node_id: Id of the positioned element from which to find the anchor.
+            anchor_specifier: An optional anchor specifier, as defined in
+                https://www.w3.org/TR/css-anchor-position-1/#anchor-specifier. If not
+                provided, it will return the implicit anchor element for the given
+                positioned element.
         """
         _params: dict[str, Any] = {}
         _params["nodeId"] = _encode_value(node_id)
@@ -1080,7 +1294,17 @@ class DOM:
     ) -> ForceShowPopoverResult:
         """
         When enabling, this API force-opens the popover identified by nodeId and keeps
-        it open until disabled.
+        it open until disabled. Experimental: this API may change or be removed.
+
+        Args:
+            node_id: Id of the popover HTMLElement
+            enable: If true, opens the popover and keeps it open. If false, closes the
+                popover if it was previously force-opened.
+            invoker_node_id: Optional ID of the element invoking this popover, used to
+                establish the implicit anchor. If not provided, it will fall back to the
+                first invoker in the document, preferring elements with a popovertarget
+                attribute over those with a commandfor attribute. Note that if there are
+                multiple invokers, this is just an estimate.
         """
         _params: dict[str, Any] = {}
         _params["nodeId"] = _encode_value(node_id)
@@ -1101,6 +1325,10 @@ class DOM:
     ) -> GetImplicitAnchorCandidatesResult:
         """
         Returns candidate nodes that are configured as triggers for the given popover.
+        Experimental: this API may change or be removed.
+
+        Args:
+            node_id: Id of the popover HTMLElement.
         """
         _params: dict[str, Any] = {}
         _params["nodeId"] = _encode_value(node_id)
@@ -1119,7 +1347,13 @@ class DOM:
     ) -> None:
         """
         When enabling, this API forces an element to gain interest in its target,
-        keeping interest active until disabled.
+        keeping interest active until disabled. Experimental: this API may change or be
+        removed.
+
+        Args:
+            node_id: Id of the interest invoker HTMLElement.
+            enable: If true, opens and holds interest. If false, releases forced
+                interest.
         """
         _params: dict[str, Any] = {}
         _params["nodeId"] = _encode_value(node_id)
@@ -1144,7 +1378,18 @@ class DOM:
         Sets a spelling or grammar error marker on the given range of text. See
         https://github.com/Igalia/explainers/blob/main/force-spelling-grammar-markers/README.md
         Note: exactly one between nodeId, backendNodeId and objectId should be passed to
-        identify the node.
+        identify the node. Experimental: this API may change or be removed.
+
+        Args:
+            node_id: Identifier of the node.
+            backend_node_id: Identifier of the backend node.
+            object_id: JavaScript object id of the node wrapper.
+            type: The type of marker to set on the given range of text.
+            start: Start offset into the element's rendered text in UTF-16 code units.
+                For a text control, an offset into the control's value. Offsets count
+                text in DOM order and do not enter shadow trees. To mark text inside a
+                shadow tree, pass the element inside the shadow tree.
+            end: End offset (exclusive) in the same units and space as start.
         """
         _params: dict[str, Any] = {}
         if node_id is not None:
@@ -1168,7 +1413,8 @@ class DOM:
         """
         Clears the spelling and grammar error text markers overlapping the ranges set
         by setTextMarker in this session. These markers are also removed when the DOM
-        domain is disabled or the session ends.
+        domain is disabled or the session ends. Experimental: this API may change or be
+        removed.
         """
         await self._executor.execute(
             method=DOMCommand.CLEAR_TEXT_MARKERS,

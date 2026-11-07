@@ -17,7 +17,8 @@ Unique frame identifier.
 
 class AdFrameType(CDPStrEnum):
     """
-    Indicates whether a frame has been identified as an ad.
+    Indicates whether a frame has been identified as an ad. Experimental: this API may
+    change or be removed.
     """
 
     NONE = "none"
@@ -26,6 +27,10 @@ class AdFrameType(CDPStrEnum):
 
 
 class AdFrameExplanation(CDPStrEnum):
+    """
+    Experimental: this API may change or be removed.
+    """
+
     PARENT_IS_AD = "ParentIsAd"
     CREATED_BY_AD_SCRIPT = "CreatedByAdScript"
     MATCHED_BLOCKING_RULE = "MatchedBlockingRule"
@@ -34,7 +39,8 @@ class AdFrameExplanation(CDPStrEnum):
 @dataclass(kw_only=True, slots=True)
 class AdFrameStatus:
     """
-    Indicates whether a frame has been identified as an ad and why.
+    Indicates whether a frame has been identified as an ad and why. Experimental: this
+    API may change or be removed.
     """
 
     ad_frame_type: AdFrameType = field(metadata={"cdp_name": "adFrameType"})
@@ -44,6 +50,7 @@ class AdFrameStatus:
 class SecureContextType(CDPStrEnum):
     """
     Indicates whether the frame is a secure context and why it is the case.
+    Experimental: this API may change or be removed.
     """
 
     SECURE = "Secure"
@@ -55,6 +62,7 @@ class SecureContextType(CDPStrEnum):
 class CrossOriginIsolatedContextType(CDPStrEnum):
     """
     Indicates whether the frame is cross-origin isolated and why it is the case.
+    Experimental: this API may change or be removed.
     """
 
     ISOLATED = "Isolated"
@@ -63,6 +71,10 @@ class CrossOriginIsolatedContextType(CDPStrEnum):
 
 
 class GatedAPIFeatures(CDPStrEnum):
+    """
+    Experimental: this API may change or be removed.
+    """
+
     SHARED_ARRAY_BUFFERS = "SharedArrayBuffers"
     SHARED_ARRAY_BUFFERS_TRANSFER_ALLOWED = "SharedArrayBuffersTransferAllowed"
     PERFORMANCE_MEASURE_MEMORY = "PerformanceMeasureMemory"
@@ -73,7 +85,8 @@ class PermissionsPolicyFeature(CDPStrEnum):
     """
     All Permissions Policy features. This enum should match the one defined in
     services/network/public/cpp/permissions_policy/permissions_policy_features.json5.
-    LINT.IfChange(PermissionsPolicyFeature)
+    LINT.IfChange(PermissionsPolicyFeature) Experimental: this API may change or be
+    removed.
     """
 
     ACCELEROMETER = "accelerometer"
@@ -188,7 +201,8 @@ class PermissionsPolicyFeature(CDPStrEnum):
 
 class PermissionsPolicyBlockReason(CDPStrEnum):
     """
-    Reason for a permissions policy feature to be disabled.
+    Reason for a permissions policy feature to be disabled. Experimental: this API may
+    change or be removed.
     """
 
     HEADER = "Header"
@@ -199,6 +213,10 @@ class PermissionsPolicyBlockReason(CDPStrEnum):
 
 @dataclass(kw_only=True, slots=True)
 class PermissionsPolicyBlockLocator:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
     block_reason: PermissionsPolicyBlockReason = field(
         metadata={"cdp_name": "blockReason"}
@@ -207,6 +225,10 @@ class PermissionsPolicyBlockLocator:
 
 @dataclass(kw_only=True, slots=True)
 class PermissionsPolicyFeatureState:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     feature: PermissionsPolicyFeature
     allowed: bool
     locator: PermissionsPolicyBlockLocator | None = None
@@ -215,7 +237,7 @@ class PermissionsPolicyFeatureState:
 class OriginTrialTokenStatus(CDPStrEnum):
     """
     Origin Trial(https://www.chromium.org/blink/origin-trials) support. Status for an
-    Origin Trial token.
+    Origin Trial token. Experimental: this API may change or be removed.
     """
 
     SUCCESS = "Success"
@@ -234,7 +256,7 @@ class OriginTrialTokenStatus(CDPStrEnum):
 
 class OriginTrialStatus(CDPStrEnum):
     """
-    Status for an Origin Trial.
+    Status for an Origin Trial. Experimental: this API may change or be removed.
     """
 
     ENABLED = "Enabled"
@@ -244,12 +266,20 @@ class OriginTrialStatus(CDPStrEnum):
 
 
 class OriginTrialUsageRestriction(CDPStrEnum):
+    """
+    Experimental: this API may change or be removed.
+    """
+
     NONE = "None"
     SUBSET = "Subset"
 
 
 @dataclass(kw_only=True, slots=True)
 class OriginTrialToken:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     origin: str
     match_sub_domains: bool = field(metadata={"cdp_name": "matchSubDomains"})
     trial_name: str = field(metadata={"cdp_name": "trialName"})
@@ -262,15 +292,26 @@ class OriginTrialToken:
 
 @dataclass(kw_only=True, slots=True)
 class OriginTrialTokenWithStatus:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     raw_token_text: str = field(metadata={"cdp_name": "rawTokenText"})
     parsed_token: OriginTrialToken | None = field(
         default=None, metadata={"cdp_name": "parsedToken"}
     )
+    """
+    `parsedToken` is present only when the token is extractable and parsable.
+    """
     status: OriginTrialTokenStatus
 
 
 @dataclass(kw_only=True, slots=True)
 class OriginTrial:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     trial_name: str = field(metadata={"cdp_name": "trialName"})
     status: OriginTrialStatus
     tokens_with_status: list[OriginTrialTokenWithStatus] = field(
@@ -281,10 +322,15 @@ class OriginTrial:
 @dataclass(kw_only=True, slots=True)
 class SecurityOriginDetails:
     """
-    Additional information about the frame document's security origin.
+    Additional information about the frame document's security origin. Experimental:
+    this API may change or be removed.
     """
 
     is_localhost: bool = field(metadata={"cdp_name": "isLocalhost"})
+    """
+    Indicates whether the frame document's security origin is one of the local
+    hostnames (e.g. "localhost") or IP addresses (IPv4 127.0.0.0/8 or IPv6 ::1).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -294,64 +340,152 @@ class Frame:
     """
 
     id: FrameId
+    """
+    Frame unique identifier.
+    """
     parent_id: FrameId | None = field(default=None, metadata={"cdp_name": "parentId"})
+    """
+    Parent frame identifier.
+    """
     loader_id: network.LoaderId = field(metadata={"cdp_name": "loaderId"})
+    """
+    Identifier of the loader associated with this frame.
+    """
     name: str | None = None
+    """
+    Frame's name as specified in the tag.
+    """
     url: str
+    """
+    Frame document's URL without fragment.
+    """
     url_fragment: str | None = field(default=None, metadata={"cdp_name": "urlFragment"})
+    """
+    Frame document's URL fragment including the '#'. Experimental: this API may change
+    or be removed.
+    """
     domain_and_registry: str = field(metadata={"cdp_name": "domainAndRegistry"})
+    """
+    Frame document's registered domain, taking the public suffixes list into account.
+    Extracted from the Frame's url. Example URLs: http://www.google.com/file.html ->
+    "google.com" http://a.b.co.uk/file.html -> "b.co.uk" Experimental: this API may
+    change or be removed.
+    """
     security_origin: str = field(metadata={"cdp_name": "securityOrigin"})
+    """
+    Frame document's security origin.
+    """
     security_origin_details: SecurityOriginDetails | None = field(
         default=None, metadata={"cdp_name": "securityOriginDetails"}
     )
+    """
+    Additional details about the frame document's security origin. Experimental: this
+    API may change or be removed.
+    """
     mime_type: str = field(metadata={"cdp_name": "mimeType"})
+    """
+    Frame document's mimeType as determined by the browser.
+    """
     unreachable_url: str | None = field(
         default=None, metadata={"cdp_name": "unreachableUrl"}
     )
+    """
+    If the frame failed to load, this contains the URL that could not be loaded. Note
+    that unlike url above, this URL may contain a fragment. Experimental: this API may
+    change or be removed.
+    """
     ad_frame_status: AdFrameStatus | None = field(
         default=None, metadata={"cdp_name": "adFrameStatus"}
     )
+    """
+    Indicates whether this frame was tagged as an ad and why. Experimental: this API
+    may change or be removed.
+    """
     secure_context_type: SecureContextType = field(
         metadata={"cdp_name": "secureContextType"}
     )
+    """
+    Indicates whether the main document is a secure context and explains why that is
+    the case. Experimental: this API may change or be removed.
+    """
     cross_origin_isolated_context_type: CrossOriginIsolatedContextType = field(
         metadata={"cdp_name": "crossOriginIsolatedContextType"}
     )
+    """
+    Indicates whether this is a cross origin isolated context. Experimental: this API
+    may change or be removed.
+    """
     gated_api_features: list[GatedAPIFeatures] = field(
         metadata={"cdp_name": "gatedAPIFeatures"}
     )
+    """
+    Indicated which gated APIs / features are available. Experimental: this API may
+    change or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class FrameResource:
     """
-    Information about the Resource on the page.
+    Information about the Resource on the page. Experimental: this API may change or be
+    removed.
     """
 
     url: str
+    """
+    Resource URL.
+    """
     type: network.ResourceType
+    """
+    Type of this resource.
+    """
     mime_type: str = field(metadata={"cdp_name": "mimeType"})
+    """
+    Resource mimeType as determined by the browser.
+    """
     last_modified: network.TimeSinceEpoch | None = field(
         default=None, metadata={"cdp_name": "lastModified"}
     )
+    """
+    last-modified timestamp as reported by server.
+    """
     content_size: float | None = field(
         default=None, metadata={"cdp_name": "contentSize"}
     )
+    """
+    Resource content size.
+    """
     failed: bool | None = None
+    """
+    True if the resource failed to load.
+    """
     canceled: bool | None = None
+    """
+    True if the resource was canceled during loading.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class FrameResourceTree:
     """
     Information about the Frame hierarchy along with their cached resources.
+    Experimental: this API may change or be removed.
     """
 
     frame: Frame
+    """
+    Frame information for this tree item.
+    """
     child_frames: list[FrameResourceTree] | None = field(
         default=None, metadata={"cdp_name": "childFrames"}
     )
+    """
+    Child frames.
+    """
     resources: list[FrameResource]
+    """
+    Information about frame resources.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -361,9 +495,15 @@ class FrameTree:
     """
 
     frame: Frame
+    """
+    Frame information for this tree item.
+    """
     child_frames: list[FrameTree] | None = field(
         default=None, metadata={"cdp_name": "childFrames"}
     )
+    """
+    Child frames.
+    """
 
 
 type ScriptIdentifier = str
@@ -399,28 +539,67 @@ class NavigationEntry:
     """
 
     id: int
+    """
+    Unique id of the navigation history entry.
+    """
     url: str
+    """
+    URL of the navigation history entry.
+    """
     user_typed_url: str = field(metadata={"cdp_name": "userTypedURL"})
+    """
+    URL that the user typed in the url bar.
+    """
     title: str
+    """
+    Title of the navigation history entry.
+    """
     transition_type: TransitionType = field(metadata={"cdp_name": "transitionType"})
+    """
+    Transition type.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class ScreencastFrameMetadata:
     """
-    Screencast frame metadata.
+    Screencast frame metadata. Experimental: this API may change or be removed.
     """
 
     offset_top: float = field(metadata={"cdp_name": "offsetTop"})
+    """
+    Top offset in DIP.
+    """
     page_scale_factor: float = field(metadata={"cdp_name": "pageScaleFactor"})
+    """
+    Page scale factor.
+    """
     device_width: float = field(metadata={"cdp_name": "deviceWidth"})
+    """
+    Device screen width in DIP.
+    """
     device_height: float = field(metadata={"cdp_name": "deviceHeight"})
+    """
+    Device screen height in DIP.
+    """
     scroll_offset_x: float = field(metadata={"cdp_name": "scrollOffsetX"})
+    """
+    Position of horizontal scroll in CSS pixels.
+    """
     scroll_offset_y: float = field(metadata={"cdp_name": "scrollOffsetY"})
+    """
+    Position of vertical scroll in CSS pixels.
+    """
     timestamp: network.TimeSinceEpoch | None = None
+    """
+    Frame swap timestamp.
+    """
     monotonic_timestamp: network.MonotonicTime | None = field(
         default=None, metadata={"cdp_name": "monotonicTimestamp"}
     )
+    """
+    Frame swap timestamp as monotonic time.
+    """
 
 
 class DialogType(CDPStrEnum):
@@ -441,18 +620,33 @@ class AppManifestError:
     """
 
     message: str
+    """
+    Error message.
+    """
     critical: int
+    """
+    If critical, this is a non-recoverable parse error.
+    """
     line: int
+    """
+    Error line.
+    """
     column: int
+    """
+    Error column.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class AppManifestParsedProperties:
     """
-    Parsed app manifest properties.
+    Parsed app manifest properties. Experimental: this API may change or be removed.
     """
 
     scope: str
+    """
+    Computed scope value
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -462,9 +656,21 @@ class LayoutViewport:
     """
 
     page_x: int = field(metadata={"cdp_name": "pageX"})
+    """
+    Horizontal offset relative to the document (CSS pixels).
+    """
     page_y: int = field(metadata={"cdp_name": "pageY"})
+    """
+    Vertical offset relative to the document (CSS pixels).
+    """
     client_width: int = field(metadata={"cdp_name": "clientWidth"})
+    """
+    Width (CSS pixels), excludes scrollbar if present.
+    """
     client_height: int = field(metadata={"cdp_name": "clientHeight"})
+    """
+    Height (CSS pixels), excludes scrollbar if present.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -474,13 +680,37 @@ class VisualViewport:
     """
 
     offset_x: float = field(metadata={"cdp_name": "offsetX"})
+    """
+    Horizontal offset relative to the layout viewport (CSS pixels).
+    """
     offset_y: float = field(metadata={"cdp_name": "offsetY"})
+    """
+    Vertical offset relative to the layout viewport (CSS pixels).
+    """
     page_x: float = field(metadata={"cdp_name": "pageX"})
+    """
+    Horizontal offset relative to the document (CSS pixels).
+    """
     page_y: float = field(metadata={"cdp_name": "pageY"})
+    """
+    Vertical offset relative to the document (CSS pixels).
+    """
     client_width: float = field(metadata={"cdp_name": "clientWidth"})
+    """
+    Width (CSS pixels), excludes scrollbar if present.
+    """
     client_height: float = field(metadata={"cdp_name": "clientHeight"})
+    """
+    Height (CSS pixels), excludes scrollbar if present.
+    """
     scale: float
+    """
+    Scale relative to the ideal viewport (size at width=device-width).
+    """
     zoom: float | None = None
+    """
+    Page zoom factor (CSS to device independent pixels ratio).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -490,48 +720,101 @@ class Viewport:
     """
 
     x: float
+    """
+    X offset in device independent pixels (dip).
+    """
     y: float
+    """
+    Y offset in device independent pixels (dip).
+    """
     width: float
+    """
+    Rectangle width in device independent pixels (dip).
+    """
     height: float
+    """
+    Rectangle height in device independent pixels (dip).
+    """
     scale: float
+    """
+    Page scale factor.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class FontFamilies:
     """
-    Generic font families collection.
+    Generic font families collection. Experimental: this API may change or be removed.
     """
 
     standard: str | None = None
+    """
+    The standard font-family.
+    """
     fixed: str | None = None
+    """
+    The fixed font-family.
+    """
     serif: str | None = None
+    """
+    The serif font-family.
+    """
     sans_serif: str | None = field(default=None, metadata={"cdp_name": "sansSerif"})
+    """
+    The sansSerif font-family.
+    """
     cursive: str | None = None
+    """
+    The cursive font-family.
+    """
     fantasy: str | None = None
+    """
+    The fantasy font-family.
+    """
     math: str | None = None
+    """
+    The math font-family.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class ScriptFontFamilies:
     """
-    Font families collection for a script.
+    Font families collection for a script. Experimental: this API may change or be
+    removed.
     """
 
     script: str
+    """
+    Name of the script which these font families are defined for.
+    """
     font_families: FontFamilies = field(metadata={"cdp_name": "fontFamilies"})
+    """
+    Generic font families collection for the script.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class FontSizes:
     """
-    Default font sizes.
+    Default font sizes. Experimental: this API may change or be removed.
     """
 
     standard: int | None = None
+    """
+    Default standard font size.
+    """
     fixed: int | None = None
+    """
+    Default fixed font size.
+    """
 
 
 class ClientNavigationReason(CDPStrEnum):
+    """
+    Experimental: this API may change or be removed.
+    """
+
     ANCHOR_CLICK = "anchorClick"
     FORM_SUBMISSION_GET = "formSubmissionGet"
     FORM_SUBMISSION_POST = "formSubmissionPost"
@@ -545,6 +828,10 @@ class ClientNavigationReason(CDPStrEnum):
 
 
 class ClientNavigationDisposition(CDPStrEnum):
+    """
+    Experimental: this API may change or be removed.
+    """
+
     CURRENT_TAB = "currentTab"
     NEW_TAB = "newTab"
     NEW_WINDOW = "newWindow"
@@ -553,25 +840,43 @@ class ClientNavigationDisposition(CDPStrEnum):
 
 @dataclass(kw_only=True, slots=True)
 class InstallabilityErrorArgument:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     name: str
+    """
+    Argument name (e.g. name:'minimum-icon-size-in-pixels').
+    """
     value: str
+    """
+    Argument value (e.g. value:'64').
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class InstallabilityError:
     """
-    The installability error
+    The installability error Experimental: this API may change or be removed.
     """
 
     error_id: str = field(metadata={"cdp_name": "errorId"})
+    """
+    The error id (e.g. 'manifest-missing-suitable-icon').
+    """
     error_arguments: list[InstallabilityErrorArgument] = field(
         metadata={"cdp_name": "errorArguments"}
     )
+    """
+    The list of error arguments (e.g. {name:'minimum-icon-size-in-pixels',
+    value:'64'}).
+    """
 
 
 class ReferrerPolicy(CDPStrEnum):
     """
-    The referring-policy used for the navigation.
+    The referring-policy used for the navigation. Experimental: this API may change or
+    be removed.
     """
 
     NO_REFERRER = "noReferrer"
@@ -588,62 +893,113 @@ class ReferrerPolicy(CDPStrEnum):
 class CompilationCacheParams:
     """
     Per-script compilation cache parameters for `Page.produceCompilationCache`
+    Experimental: this API may change or be removed.
     """
 
     url: str
+    """
+    The URL of the script to produce a compilation cache entry for.
+    """
     eager: bool | None = None
+    """
+    A hint to the backend whether eager compilation is recommended. (the actual
+    compilation mode used is upon backend discretion).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class FileFilter:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     name: str | None = None
     accepts: list[str] | None = None
 
 
 @dataclass(kw_only=True, slots=True)
 class FileHandler:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     action: str
     name: str
     accepts: list[FileFilter] | None = None
+    """
+    Mimic a map, name is the key, accepts is the value.
+    """
     launch_type: str = field(metadata={"cdp_name": "launchType"})
+    """
+    Won't repeat the enums, using string for easy comparison. Same as the other enums
+    below.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class ImageResource:
     """
-    The image definition used in both icon and screenshot.
+    The image definition used in both icon and screenshot. Experimental: this API may
+    change or be removed.
     """
 
     url: str
+    """
+    The src field in the definition, but changing to url in favor of consistency.
+    """
     sizes: str | None = None
     type: str | None = None
 
 
 @dataclass(kw_only=True, slots=True)
 class LaunchHandler:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     client_mode: str = field(metadata={"cdp_name": "clientMode"})
 
 
 @dataclass(kw_only=True, slots=True)
 class ProtocolHandler:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     protocol: str
     url: str
 
 
 @dataclass(kw_only=True, slots=True)
 class RelatedApplication:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     id: str | None = None
     url: str
 
 
 @dataclass(kw_only=True, slots=True)
 class ScopeExtension:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     origin: str
+    """
+    Instead of using tuple, this field always returns the serialized string for easy
+    understanding and comparison.
+    """
     has_origin_wildcard: bool = field(metadata={"cdp_name": "hasOriginWildcard"})
 
 
 @dataclass(kw_only=True, slots=True)
 class Screenshot:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     image: ImageResource
     form_factor: str = field(metadata={"cdp_name": "formFactor"})
     label: str | None = None
@@ -651,10 +1007,17 @@ class Screenshot:
 
 @dataclass(kw_only=True, slots=True)
 class ShareTarget:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     action: str
     method: str
     enctype: str
     title: str | None = None
+    """
+    Embed the ShareTargetParams
+    """
     text: str | None = None
     url: str | None = None
     files: list[FileFilter] | None = None
@@ -662,30 +1025,51 @@ class ShareTarget:
 
 @dataclass(kw_only=True, slots=True)
 class Shortcut:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     name: str
     url: str
 
 
 @dataclass(kw_only=True, slots=True)
 class WebAppManifest:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     background_color: str | None = field(
         default=None, metadata={"cdp_name": "backgroundColor"}
     )
     description: str | None = None
+    """
+    The extra description provided by the manifest.
+    """
     dir: str | None = None
     display: str | None = None
     display_overrides: list[str] | None = field(
         default=None, metadata={"cdp_name": "displayOverrides"}
     )
+    """
+    The overrided display mode controlled by the user.
+    """
     file_handlers: list[FileHandler] | None = field(
         default=None, metadata={"cdp_name": "fileHandlers"}
     )
+    """
+    The handlers to open files.
+    """
     icons: list[ImageResource] | None = None
     id: str | None = None
     lang: str | None = None
     launch_handler: LaunchHandler | None = field(
         default=None, metadata={"cdp_name": "launchHandler"}
     )
+    """
+    TODO(crbug.com/1231886): This field is non-standard and part of a Chrome
+    experiment. See: https://github.com/WICG/web-app-launch/blob/main/launch_handler.md
+    """
     name: str | None = None
     orientation: str | None = None
     prefer_related_applications: bool | None = field(
@@ -694,6 +1078,9 @@ class WebAppManifest:
     protocol_handlers: list[ProtocolHandler] | None = field(
         default=None, metadata={"cdp_name": "protocolHandlers"}
     )
+    """
+    The handlers to open protocols.
+    """
     related_applications: list[RelatedApplication] | None = field(
         default=None, metadata={"cdp_name": "relatedApplications"}
     )
@@ -701,7 +1088,14 @@ class WebAppManifest:
     scope_extensions: list[ScopeExtension] | None = field(
         default=None, metadata={"cdp_name": "scopeExtensions"}
     )
+    """
+    Non-standard, see
+    https://github.com/WICG/manifest-incubations/blob/gh-pages/scope_extensions-explainer.md
+    """
     screenshots: list[Screenshot] | None = None
+    """
+    The screenshots used by chromium.
+    """
     share_target: ShareTarget | None = field(
         default=None, metadata={"cdp_name": "shareTarget"}
     )
@@ -714,14 +1108,27 @@ class WebAppManifest:
 @dataclass(kw_only=True, slots=True)
 class SubApp:
     name: str
+    """
+    Display name of the sub-app.
+    """
     scope: str
+    """
+    Scope of the sub-app.
+    """
     manifest_id: str = field(metadata={"cdp_name": "manifestId"})
+    """
+    Manifest id of the sub-app.
+    """
     start_url: str = field(metadata={"cdp_name": "startUrl"})
+    """
+    Start URL of the sub-app.
+    """
 
 
 class NavigationType(CDPStrEnum):
     """
-    The type of a frameNavigated event.
+    The type of a frameNavigated event. Experimental: this API may change or be
+    removed.
     """
 
     NAVIGATION = "Navigation"
@@ -730,7 +1137,8 @@ class NavigationType(CDPStrEnum):
 
 class BackForwardCacheNotRestoredReason(CDPStrEnum):
     """
-    List of not restored reasons for back-forward cache.
+    List of not restored reasons for back-forward cache. Experimental: this API may
+    change or be removed.
     """
 
     NOT_PRIMARY_MAIN_FRAME = "NotPrimaryMainFrame"
@@ -914,7 +1322,8 @@ class BackForwardCacheNotRestoredReason(CDPStrEnum):
 
 class BackForwardCacheNotRestoredReasonType(CDPStrEnum):
     """
-    Types of not restored reasons for back-forward cache.
+    Types of not restored reasons for back-forward cache. Experimental: this API may
+    change or be removed.
     """
 
     SUPPORT_PENDING = "SupportPending"
@@ -924,22 +1333,66 @@ class BackForwardCacheNotRestoredReasonType(CDPStrEnum):
 
 @dataclass(kw_only=True, slots=True)
 class BackForwardCacheBlockingDetails:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     url: str | None = None
+    """
+    Url of the file where blockage happened. Optional because of tests.
+    """
     function: str | None = None
+    """
+    Function name where blockage happened. Optional because of anonymous functions and
+    tests.
+    """
     line_number: int = field(metadata={"cdp_name": "lineNumber"})
+    """
+    Line number in the script (0-based).
+    """
     column_number: int = field(metadata={"cdp_name": "columnNumber"})
+    """
+    Column number in the script (0-based).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class BackForwardCacheNotRestoredExplanation:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     type: BackForwardCacheNotRestoredReasonType
+    """
+    Type of the reason
+    """
     reason: BackForwardCacheNotRestoredReason
+    """
+    Not restored reason
+    """
     context: str | None = None
+    """
+    Context associated with the reason. The meaning of this context is dependent on the
+    reason: - EmbedderExtensionSentMessageToCachedFrame: the extension ID.
+    """
     details: list[BackForwardCacheBlockingDetails] | None = None
 
 
 @dataclass(kw_only=True, slots=True)
 class BackForwardCacheNotRestoredExplanationTree:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     url: str
+    """
+    URL of each frame
+    """
     explanations: list[BackForwardCacheNotRestoredExplanation]
+    """
+    Not restored reasons of each frame
+    """
     children: list[BackForwardCacheNotRestoredExplanationTree]
+    """
+    Array of children frame
+    """

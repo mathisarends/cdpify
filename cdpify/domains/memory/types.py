@@ -25,8 +25,17 @@ class SamplingProfileNode:
     """
 
     size: float
+    """
+    Size of the sampled allocation.
+    """
     total: float
+    """
+    Total bytes attributed to this sample.
+    """
     stack: list[str]
+    """
+    Execution stack at the point of allocation.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -46,9 +55,22 @@ class Module:
     """
 
     name: str
+    """
+    Name of the module.
+    """
     uuid: str
+    """
+    UUID of the module.
+    """
     base_address: str = field(metadata={"cdp_name": "baseAddress"})
+    """
+    Base address where the module is loaded into memory. Encoded as a decimal or
+    hexadecimal (0x prefixed) string.
+    """
     size: float
+    """
+    Size of the module in bytes.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -58,4 +80,11 @@ class DOMCounter:
     """
 
     name: str
+    """
+    Object name. Note: object names should be presumed volatile and clients should not
+    expect the returned names to be consistent across runs.
+    """
     count: int
+    """
+    Object count.
+    """

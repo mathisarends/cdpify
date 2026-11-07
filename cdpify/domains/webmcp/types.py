@@ -18,12 +18,30 @@ class Annotation:
     """
 
     read_only: bool | None = field(default=None, metadata={"cdp_name": "readOnly"})
+    """
+    A hint indicating that the tool does not modify any state.
+    """
     untrusted_content: bool | None = field(
         default=None, metadata={"cdp_name": "untrustedContent"}
     )
+    """
+    A hint indicating that the tool output may contain untrusted content, ex: UGC, 3rd
+    party data.
+    """
     consequential: bool | None = None
+    """
+    A hint indicating that executing the tool will result in consequential actions, ex:
+    booking a flight, transferring money.
+    """
     debugging: bool | None = None
+    """
+    If true, indicates that the tool is intended for debugging and developer tooling
+    rather than end-user interactions.
+    """
     autosubmit: bool | None = None
+    """
+    If the declarative tool was declared with the autosubmit attribute.
+    """
 
 
 class InvocationStatus(CDPStrEnum):
@@ -43,18 +61,39 @@ class Tool:
     """
 
     name: str
+    """
+    Tool name.
+    """
     description: str
+    """
+    Tool description.
+    """
     input_schema: dict[str, Any] | None = field(
         default=None, metadata={"cdp_name": "inputSchema"}
     )
+    """
+    Schema for the tool's input parameters.
+    """
     annotations: Annotation | None = None
+    """
+    Optional annotations for the tool.
+    """
     frame_id: page.FrameId = field(metadata={"cdp_name": "frameId"})
+    """
+    Frame identifier associated with the tool registration.
+    """
     backend_node_id: dom.BackendNodeId | None = field(
         default=None, metadata={"cdp_name": "backendNodeId"}
     )
+    """
+    Optional node ID for declarative tools.
+    """
     stack_trace: runtime.StackTrace | None = field(
         default=None, metadata={"cdp_name": "stackTrace"}
     )
+    """
+    The stack trace at the time of the registration.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -64,4 +103,10 @@ class RemovedTool:
     """
 
     name: str
+    """
+    Tool name.
+    """
     frame_id: page.FrameId = field(metadata={"cdp_name": "frameId"})
+    """
+    Frame identifier associated with the tool registration.
+    """

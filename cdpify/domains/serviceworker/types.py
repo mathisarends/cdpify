@@ -47,6 +47,9 @@ class ServiceWorkerRouterCondition:
     """
 
     url_pattern: str | None = field(default=None, metadata={"cdp_name": "urlPattern"})
+    """
+    Plain text, or JSON serialization of URLPatternInit or URLPattern
+    """
     request_method: str | None = field(
         default=None, metadata={"cdp_name": "requestMethod"}
     )
@@ -96,6 +99,9 @@ class ServiceWorkerRouterSource:
     source_dict: ServiceWorkerRouterSourceDict | None = field(
         default=None, metadata={"cdp_name": "sourceDict"}
     )
+    """
+    Non-empty iff `type` equals "sourceDict".
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -103,6 +109,9 @@ class ServiceWorkerRouterRule:
     condition: ServiceWorkerRouterCondition
     source: ServiceWorkerRouterSource
     id: int
+    """
+    Rule ID assigned by the browser. Unique within each ServiceWorkerVersion.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -121,9 +130,16 @@ class ServiceWorkerVersion:
     script_last_modified: float | None = field(
         default=None, metadata={"cdp_name": "scriptLastModified"}
     )
+    """
+    The Last-Modified header value of the main script.
+    """
     script_response_time: float | None = field(
         default=None, metadata={"cdp_name": "scriptResponseTime"}
     )
+    """
+    The time at which the response headers of the main script were received from the
+    server. For cached script it is the last time the cache entry was validated.
+    """
     controlled_clients: list[target.TargetID] | None = field(
         default=None, metadata={"cdp_name": "controlledClients"}
     )
@@ -131,6 +147,11 @@ class ServiceWorkerVersion:
         default=None, metadata={"cdp_name": "targetId"}
     )
     router_rules: str | None = field(default=None, metadata={"cdp_name": "routerRules"})
+    """
+    Migration to `typedRouterRules` is in progress. The browser sends either
+    `routerRules` or `typedRouterRules`. TODO(crbug.com/540469610): Remove `routerRules`
+    after the migration.
+    """
     typed_router_rules: list[ServiceWorkerRouterRule] | None = field(
         default=None, metadata={"cdp_name": "typedRouterRules"}
     )

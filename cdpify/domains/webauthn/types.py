@@ -42,42 +42,102 @@ class VirtualAuthenticatorOptions:
     ctap2_version: Ctap2Version | None = field(
         default=None, metadata={"cdp_name": "ctap2Version"}
     )
+    """
+    Defaults to ctap2_0. Ignored if |protocol| == u2f.
+    """
     transport: AuthenticatorTransport
     has_resident_key: bool | None = field(
         default=None, metadata={"cdp_name": "hasResidentKey"}
     )
+    """
+    Defaults to false.
+    """
     has_user_verification: bool | None = field(
         default=None, metadata={"cdp_name": "hasUserVerification"}
     )
+    """
+    Defaults to false.
+    """
     has_large_blob: bool | None = field(
         default=None, metadata={"cdp_name": "hasLargeBlob"}
     )
+    """
+    If set to true, the authenticator will support the largeBlob extension.
+    https://w3c.github.io/webauthn#largeBlob Defaults to false.
+    """
     has_cred_blob: bool | None = field(
         default=None, metadata={"cdp_name": "hasCredBlob"}
     )
+    """
+    If set to true, the authenticator will support the credBlob extension.
+    https://fidoalliance.org/specs/fido-v2.1-rd-20201208/fido-client-to-authenticator-protocol-v2.1-rd-20201208.html#sctn-credBlob-extension
+    Defaults to false.
+    """
     has_min_pin_length: bool | None = field(
         default=None, metadata={"cdp_name": "hasMinPinLength"}
     )
+    """
+    If set to true, the authenticator will support the minPinLength extension.
+    https://fidoalliance.org/specs/fido-v2.1-ps-20210615/fido-client-to-authenticator-protocol-v2.1-ps-20210615.html#sctn-minpinlength-extension
+    Defaults to false.
+    """
     has_prf: bool | None = field(default=None, metadata={"cdp_name": "hasPrf"})
+    """
+    If set to true, the authenticator will support the prf extension.
+    https://w3c.github.io/webauthn/#prf-extension Defaults to false.
+    """
     has_hmac_secret: bool | None = field(
         default=None, metadata={"cdp_name": "hasHmacSecret"}
     )
+    """
+    If set to true, the authenticator will support the hmac-secret extension.
+    https://fidoalliance.org/specs/fido-v2.1-ps-20210615/fido-client-to-authenticator-protocol-v2.1-ps-20210615.html#sctn-hmac-secret-extension
+    Defaults to false.
+    """
     has_hmac_secret_mc: bool | None = field(
         default=None, metadata={"cdp_name": "hasHmacSecretMc"}
     )
+    """
+    If set to true, the authenticator will support the hmac-secret-mc extension.
+    https://fidoalliance.org/specs/fido-v2.2-rd-20241003/fido-client-to-authenticator-protocol-v2.2-rd-20241003.html#sctn-hmac-secret-make-cred-extension
+    Defaults to false.
+    """
     has_cmtg_key: bool | None = field(default=None, metadata={"cdp_name": "hasCmtgKey"})
+    """
+    If set to true, the authenticator will support the cmtgKey (Credential Manager
+    Trust Group Key) extension. https://github.com/w3c/webauthn/pull/2377 Defaults to
+    false.
+    """
     automatic_presence_simulation: bool | None = field(
         default=None, metadata={"cdp_name": "automaticPresenceSimulation"}
     )
+    """
+    If set to true, tests of user presence will succeed immediately. Otherwise, they
+    will not be resolved. Defaults to true.
+    """
     is_user_verified: bool | None = field(
         default=None, metadata={"cdp_name": "isUserVerified"}
     )
+    """
+    Sets whether User Verification succeeds or fails for an authenticator. Defaults to
+    false.
+    """
     default_backup_eligibility: bool | None = field(
         default=None, metadata={"cdp_name": "defaultBackupEligibility"}
     )
+    """
+    Credentials created by this authenticator will have the backup eligibility (BE)
+    flag set to this value. Defaults to false.
+    https://w3c.github.io/webauthn/#sctn-credential-backup
+    """
     default_backup_state: bool | None = field(
         default=None, metadata={"cdp_name": "defaultBackupState"}
     )
+    """
+    Credentials created by this authenticator will have the backup state (BS) flag set
+    to this value. Defaults to false.
+    https://w3c.github.io/webauthn/#sctn-credential-backup
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -85,24 +145,70 @@ class Credential:
     credential_id: str = field(metadata={"cdp_name": "credentialId"})
     is_resident_credential: bool = field(metadata={"cdp_name": "isResidentCredential"})
     rp_id: str | None = field(default=None, metadata={"cdp_name": "rpId"})
+    """
+    Relying Party ID the credential is scoped to. Must be set when adding a credential.
+    """
     private_key: str = field(metadata={"cdp_name": "privateKey"})
+    """
+    The ECDSA P-256 private key in PKCS#8 format. (Encoded as a base64 string when
+    passed over JSON)
+    """
     user_handle: str | None = field(default=None, metadata={"cdp_name": "userHandle"})
+    """
+    An opaque byte sequence with a maximum size of 64 bytes mapping the credential to a
+    specific user. (Encoded as a base64 string when passed over JSON)
+    """
     sign_count: float = field(metadata={"cdp_name": "signCount"})
+    """
+    Signature counter. Must be equal to or greater than -1. If -1, the credential won't
+    have an associated signature counter, and every assertion operation will report a
+    value of 0. See https://w3c.github.io/webauthn/#signature-counter
+    """
     large_blob: str | None = field(default=None, metadata={"cdp_name": "largeBlob"})
+    """
+    The large blob associated with the credential. See
+    https://w3c.github.io/webauthn/#sctn-large-blob-extension (Encoded as a base64
+    string when passed over JSON)
+    """
     backup_eligibility: bool | None = field(
         default=None, metadata={"cdp_name": "backupEligibility"}
     )
+    """
+    Assertions returned by this credential will have the backup eligibility (BE) flag
+    set to this value. Defaults to the authenticator's defaultBackupEligibility value.
+    """
     backup_state: bool | None = field(
         default=None, metadata={"cdp_name": "backupState"}
     )
+    """
+    Assertions returned by this credential will have the backup state (BS) flag set to
+    this value. Defaults to the authenticator's defaultBackupState value.
+    """
     user_name: str | None = field(default=None, metadata={"cdp_name": "userName"})
+    """
+    The credential's user.name property. Equivalent to empty if not set.
+    https://w3c.github.io/webauthn/#dom-publickeycredentialentity-name
+    """
     user_display_name: str | None = field(
         default=None, metadata={"cdp_name": "userDisplayName"}
     )
+    """
+    The credential's user.displayName property. Equivalent to empty if not set.
+    https://w3c.github.io/webauthn/#dom-publickeycredentialuserentity-displayname
+    """
     cmtg_keys: list[str] | None = field(default=None, metadata={"cdp_name": "cmtgKeys"})
+    """
+    The CMTG keys associated with the credential.
+    """
     active_cmtg_key_index: int | None = field(
         default=None, metadata={"cdp_name": "activeCmtgKeyIndex"}
     )
+    """
+    The 0-based index of the active key in cmtgKeys.
+    """
     generate_cmtg_key_on_next_operation: bool | None = field(
         default=None, metadata={"cdp_name": "generateCmtgKeyOnNextOperation"}
     )
+    """
+    If true, the authenticator will generate a new CMTG key on the next operation.
+    """

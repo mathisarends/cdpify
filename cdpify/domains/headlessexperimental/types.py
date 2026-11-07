@@ -15,7 +15,16 @@ class ScreenshotParams:
     """
 
     format: Literal["jpeg", "png", "webp"] | None = None
+    """
+    Image compression format (defaults to png).
+    """
     quality: int | None = None
+    """
+    Compression quality from range [0..100] (jpeg and webp only).
+    """
     optimize_for_speed: bool | None = field(
         default=None, metadata={"cdp_name": "optimizeForSpeed"}
     )
+    """
+    Optimize image encoding for speed, not for resulting size (defaults to false)
+    """

@@ -52,32 +52,58 @@ class BrowserCommand(StrEnum):
 @dataclass(kw_only=True, slots=True)
 class SetPermissionParams:
     """
-    Set permission settings for given embedding and embedded origins.
+    Set permission settings for given embedding and embedded origins. Experimental:
+    this API may change or be removed.
     """
 
     permission: PermissionDescriptor
+    """
+    Descriptor of permission to override.
+    """
     setting: PermissionSetting
+    """
+    Setting of the permission.
+    """
     origin: str | None = None
+    """
+    Embedding origin the permission applies to, all origins if not specified.
+    """
     embedded_origin: str | None = field(
         default=None, metadata={"cdp_name": "embeddedOrigin"}
     )
+    """
+    Embedded origin the permission applies to. It is ignored unless the embedding
+    origin is present and valid. If the embedding origin is provided but the embedded
+    origin isn't, the embedding origin is used as the embedded origin.
+    """
     browser_context_id: BrowserContextID | None = field(
         default=None, metadata={"cdp_name": "browserContextId"}
     )
+    """
+    Context to override. When omitted, default browser context is used.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GrantPermissionsParams:
     """
     Grant specific permissions to the given origin and reject all others. Deprecated.
-    Use setPermission instead.
+    Use setPermission instead. Experimental: this API may change or be removed.
+    Deprecated in the Chrome DevTools Protocol.
     """
 
     permissions: list[PermissionType]
     origin: str | None = None
+    """
+    Origin the permission applies to, all origins if not specified.
+    """
     browser_context_id: BrowserContextID | None = field(
         default=None, metadata={"cdp_name": "browserContextId"}
     )
+    """
+    BrowserContext to override permissions. When omitted, default browser context is
+    used.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -89,50 +115,95 @@ class ResetPermissionsParams:
     browser_context_id: BrowserContextID | None = field(
         default=None, metadata={"cdp_name": "browserContextId"}
     )
+    """
+    BrowserContext to reset permissions. When omitted, default browser context is used.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SetDownloadBehaviorParams:
     """
-    Set the behavior when downloading a file.
+    Set the behavior when downloading a file. Experimental: this API may change or be
+    removed.
     """
 
     behavior: Literal["deny", "allow", "allowAndName", "default"]
+    """
+    Whether to allow all or deny all download requests, or use default Chrome behavior
+    if available (otherwise deny). |allowAndName| allows download and names files
+    according to their download guids.
+    """
     browser_context_id: BrowserContextID | None = field(
         default=None, metadata={"cdp_name": "browserContextId"}
     )
+    """
+    BrowserContext to set download behavior. When omitted, default browser context is
+    used.
+    """
     download_path: str | None = field(
         default=None, metadata={"cdp_name": "downloadPath"}
     )
+    """
+    The default path to save downloaded files to. This is required if behavior is set
+    to 'allow' or 'allowAndName'.
+    """
     events_enabled: bool | None = field(
         default=None, metadata={"cdp_name": "eventsEnabled"}
     )
+    """
+    Whether to emit download events (defaults to false).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class CancelDownloadParams:
     """
-    Cancel a download if in progress
+    Cancel a download if in progress Experimental: this API may change or be removed.
     """
 
     guid: str
+    """
+    Global unique identifier of the download.
+    """
     browser_context_id: BrowserContextID | None = field(
         default=None, metadata={"cdp_name": "browserContextId"}
     )
+    """
+    BrowserContext to perform the action in. When omitted, default browser context is
+    used.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetVersionResult:
     protocol_version: str = field(metadata={"cdp_name": "protocolVersion"})
+    """
+    Protocol version.
+    """
     product: str
+    """
+    Product name.
+    """
     revision: str
+    """
+    Product revision.
+    """
     user_agent: str = field(metadata={"cdp_name": "userAgent"})
+    """
+    User-Agent.
+    """
     js_version: str = field(metadata={"cdp_name": "jsVersion"})
+    """
+    V8 version.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetBrowserCommandLineResult:
     arguments: list[str]
+    """
+    Commandline parameters
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -140,108 +211,179 @@ class AddMockCameraParams:
     """
     Adds or updates a mock camera in the shared video capture device list for test
     automation. The mock camera is not scoped to a particular page or frame and is
-    removed when the DevTools session that created it disconnects.
+    removed when the DevTools session that created it disconnects. Experimental: this
+    API may change or be removed.
     """
 
     device_id: str = field(metadata={"cdp_name": "deviceId"})
+    """
+    Required non-empty identifier for the mock camera within the current DevTools
+    session. Different sessions can use the same identifier without replacing each
+    other's cameras. This is not the MediaDeviceInfo.deviceId exposed to the page.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetHistogramsParams:
     """
-    Get Chrome histograms.
+    Get Chrome histograms. Experimental: this API may change or be removed.
     """
 
     query: str | None = None
+    """
+    Requested substring in name. Only histograms which have query as a substring in
+    their name are extracted. An empty or absent query returns all histograms.
+    """
     delta: bool | None = None
+    """
+    If true, retrieve delta since last delta call.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetHistogramsResult:
     histograms: list[Histogram]
+    """
+    Histograms.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetHistogramParams:
     """
-    Get a Chrome histogram by name.
+    Get a Chrome histogram by name. Experimental: this API may change or be removed.
     """
 
     name: str
+    """
+    Requested histogram name.
+    """
     delta: bool | None = None
+    """
+    If true, retrieve delta since last delta call.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetHistogramResult:
     histogram: Histogram
+    """
+    Histogram.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetWindowBoundsParams:
     """
-    Get position and size of the browser window.
+    Get position and size of the browser window. Experimental: this API may change or
+    be removed.
     """
 
     window_id: WindowID = field(metadata={"cdp_name": "windowId"})
+    """
+    Browser window id.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetWindowBoundsResult:
     bounds: Bounds
+    """
+    Bounds information of the window. When window state is 'minimized', the restored
+    window position and size are returned.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetWindowForTargetParams:
     """
-    Get the browser window that contains the devtools target.
+    Get the browser window that contains the devtools target. Experimental: this API
+    may change or be removed.
     """
 
     target_id: target.TargetID | None = field(
         default=None, metadata={"cdp_name": "targetId"}
     )
+    """
+    Devtools agent host id. If called as a part of the session, associated targetId is
+    used.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetWindowForTargetResult:
     window_id: WindowID = field(metadata={"cdp_name": "windowId"})
+    """
+    Browser window id.
+    """
     bounds: Bounds
+    """
+    Bounds information of the window. When window state is 'minimized', the restored
+    window position and size are returned.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SetWindowBoundsParams:
     """
-    Set position and/or size of the browser window.
+    Set position and/or size of the browser window. Experimental: this API may change
+    or be removed.
     """
 
     window_id: WindowID = field(metadata={"cdp_name": "windowId"})
+    """
+    Browser window id.
+    """
     bounds: Bounds
+    """
+    New window bounds. The 'minimized', 'maximized' and 'fullscreen' states cannot be
+    combined with 'left', 'top', 'width' or 'height'. Leaves unspecified fields
+    unchanged.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SetContentsSizeParams:
     """
     Set size of the browser contents resizing browser window as necessary.
+    Experimental: this API may change or be removed.
     """
 
     window_id: WindowID = field(metadata={"cdp_name": "windowId"})
+    """
+    Browser window id.
+    """
     width: int | None = None
+    """
+    The window contents width in DIP. Assumes current width if omitted. Must be
+    specified if 'height' is omitted.
+    """
     height: int | None = None
+    """
+    The window contents height in DIP. Assumes current height if omitted. Must be
+    specified if 'width' is omitted.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SetDockTileParams:
     """
-    Set dock tile details, platform-specific.
+    Set dock tile details, platform-specific. Experimental: this API may change or be
+    removed.
     """
 
     badge_label: str | None = field(default=None, metadata={"cdp_name": "badgeLabel"})
     image: str | None = None
+    """
+    Png encoded image. (Encoded as a base64 string when passed over JSON)
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class ExecuteBrowserCommandParams:
     """
-    Invoke custom browser commands used by telemetry.
+    Invoke custom browser commands used by telemetry. Experimental: this API may change
+    or be removed.
     """
 
     command_id: BrowserCommandId = field(metadata={"cdp_name": "commandId"})
@@ -266,7 +408,8 @@ class GetGlobalPrivacyControlResult:
 class SetGlobalPrivacyControlParams:
     """
     Sets and then gets the current globally-applied privacy control status See
-    https://www.w3.org/TR/gpc/#set-global-privacy-control
+    https://www.w3.org/TR/gpc/#set-global-privacy-control Experimental: this API may
+    change or be removed.
     """
 
     gpc: bool

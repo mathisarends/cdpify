@@ -37,6 +37,11 @@ class DeviceOrientation:
     ) -> None:
         """
         Overrides the Device Orientation.
+
+        Args:
+            alpha: Mock alpha
+            beta: Mock beta
+            gamma: Mock gamma
         """
         _params: dict[str, Any] = {}
         _params["alpha"] = alpha

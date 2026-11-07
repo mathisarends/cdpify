@@ -35,13 +35,37 @@ class DataEntry:
     """
 
     request_url: str = field(metadata={"cdp_name": "requestURL"})
+    """
+    Request URL.
+    """
     request_method: str = field(metadata={"cdp_name": "requestMethod"})
+    """
+    Request method.
+    """
     request_headers: list[Header] = field(metadata={"cdp_name": "requestHeaders"})
+    """
+    Request headers
+    """
     response_time: float = field(metadata={"cdp_name": "responseTime"})
+    """
+    Number of seconds since epoch.
+    """
     response_status: int = field(metadata={"cdp_name": "responseStatus"})
+    """
+    HTTP response status code.
+    """
     response_status_text: str = field(metadata={"cdp_name": "responseStatusText"})
+    """
+    HTTP response status text.
+    """
     response_type: CachedResponseType = field(metadata={"cdp_name": "responseType"})
+    """
+    HTTP response type
+    """
     response_headers: list[Header] = field(metadata={"cdp_name": "responseHeaders"})
+    """
+    Response headers
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -51,12 +75,27 @@ class Cache:
     """
 
     cache_id: CacheId = field(metadata={"cdp_name": "cacheId"})
+    """
+    An opaque unique id of the cache.
+    """
     security_origin: str = field(metadata={"cdp_name": "securityOrigin"})
+    """
+    Security origin of the cache.
+    """
     storage_key: str = field(metadata={"cdp_name": "storageKey"})
+    """
+    Storage key of the cache.
+    """
     storage_bucket: storage.StorageBucket | None = field(
         default=None, metadata={"cdp_name": "storageBucket"}
     )
+    """
+    Storage bucket of the cache.
+    """
     cache_name: str = field(metadata={"cdp_name": "cacheName"})
+    """
+    The name of the cache.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -72,3 +111,6 @@ class CachedResponse:
     """
 
     body: str
+    """
+    Entry content, base64-encoded. (Encoded as a base64 string when passed over JSON)
+    """

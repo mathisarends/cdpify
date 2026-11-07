@@ -27,6 +27,9 @@ class CloseParams:
     """
 
     handle: StreamHandle
+    """
+    Handle of the stream to close.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -36,8 +39,18 @@ class ReadParams:
     """
 
     handle: StreamHandle
+    """
+    Handle of the stream to read.
+    """
     offset: int | None = None
+    """
+    Seek to the specified offset before reading (if not specified, proceed with offset
+    following the last read). Some types of streams may only support sequential reads.
+    """
     size: int | None = None
+    """
+    Maximum number of bytes to read (left upon the agent discretion if not specified).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -45,19 +58,35 @@ class ReadResult:
     base64_encoded: bool | None = field(
         default=None, metadata={"cdp_name": "base64Encoded"}
     )
+    """
+    Set if the data is base64-encoded
+    """
     data: str
+    """
+    Data that were read.
+    """
     eof: bool
+    """
+    Set if the end-of-file condition occurred while reading.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class ResolveBlobParams:
     """
-    Return UUID of Blob object specified by a remote object id.
+    Return UUID of Blob object specified by a remote object id. Deprecated in the
+    Chrome DevTools Protocol.
     """
 
     object_id: runtime.RemoteObjectId = field(metadata={"cdp_name": "objectId"})
+    """
+    Object id of a Blob object wrapper.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class ResolveBlobResult:
     uuid: str
+    """
+    UUID of the specified Blob.
+    """

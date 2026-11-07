@@ -27,16 +27,26 @@ class SetIgnoreCertificateErrorsParams:
     """
 
     ignore: bool
+    """
+    If true, all certificate errors will be ignored.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class HandleCertificateErrorParams:
     """
-    Handles a certificate error that fired a certificateError event.
+    Handles a certificate error that fired a certificateError event. Deprecated in the
+    Chrome DevTools Protocol.
     """
 
     event_id: int = field(metadata={"cdp_name": "eventId"})
+    """
+    The ID of the event.
+    """
     action: CertificateErrorAction
+    """
+    The action to take on the certificate error.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -44,7 +54,10 @@ class SetOverrideCertificateErrorsParams:
     """
     Enable/disable overriding certificate errors. If enabled, all certificate error
     events need to be handled by the DevTools client and should be answered with
-    `handleCertificateError` commands.
+    `handleCertificateError` commands. Deprecated in the Chrome DevTools Protocol.
     """
 
     override: bool
+    """
+    If true, certificate errors will be overridden.
+    """

@@ -16,62 +16,150 @@ class DOMNode:
     """
 
     node_type: int = field(metadata={"cdp_name": "nodeType"})
+    """
+    `Node`'s nodeType.
+    """
     node_name: str = field(metadata={"cdp_name": "nodeName"})
+    """
+    `Node`'s nodeName.
+    """
     node_value: str = field(metadata={"cdp_name": "nodeValue"})
+    """
+    `Node`'s nodeValue.
+    """
     text_value: str | None = field(default=None, metadata={"cdp_name": "textValue"})
+    """
+    Only set for textarea elements, contains the text value.
+    """
     input_value: str | None = field(default=None, metadata={"cdp_name": "inputValue"})
+    """
+    Only set for input elements, contains the input's associated text value.
+    """
     input_checked: bool | None = field(
         default=None, metadata={"cdp_name": "inputChecked"}
     )
+    """
+    Only set for radio and checkbox input elements, indicates if the element has been
+    checked
+    """
     option_selected: bool | None = field(
         default=None, metadata={"cdp_name": "optionSelected"}
     )
+    """
+    Only set for option elements, indicates if the element has been selected
+    """
     backend_node_id: dom.BackendNodeId = field(metadata={"cdp_name": "backendNodeId"})
+    """
+    `Node`'s id, corresponds to DOM.Node.backendNodeId.
+    """
     child_node_indexes: list[int] | None = field(
         default=None, metadata={"cdp_name": "childNodeIndexes"}
     )
+    """
+    The indexes of the node's child nodes in the `domNodes` array returned by
+    `getSnapshot`, if any.
+    """
     attributes: list[NameValue] | None = None
+    """
+    Attributes of an `Element` node.
+    """
     pseudo_element_indexes: list[int] | None = field(
         default=None, metadata={"cdp_name": "pseudoElementIndexes"}
     )
+    """
+    Indexes of pseudo elements associated with this node in the `domNodes` array
+    returned by `getSnapshot`, if any.
+    """
     layout_node_index: int | None = field(
         default=None, metadata={"cdp_name": "layoutNodeIndex"}
     )
+    """
+    The index of the node's related layout tree node in the `layoutTreeNodes` array
+    returned by `getSnapshot`, if any.
+    """
     document_url: str | None = field(default=None, metadata={"cdp_name": "documentURL"})
+    """
+    Document URL that `Document` or `FrameOwner` node points to.
+    """
     base_url: str | None = field(default=None, metadata={"cdp_name": "baseURL"})
+    """
+    Base URL that `Document` or `FrameOwner` node uses for URL completion.
+    """
     content_language: str | None = field(
         default=None, metadata={"cdp_name": "contentLanguage"}
     )
+    """
+    Only set for documents, contains the document's content language.
+    """
     document_encoding: str | None = field(
         default=None, metadata={"cdp_name": "documentEncoding"}
     )
+    """
+    Only set for documents, contains the document's character set encoding.
+    """
     public_id: str | None = field(default=None, metadata={"cdp_name": "publicId"})
+    """
+    `DocumentType` node's publicId.
+    """
     system_id: str | None = field(default=None, metadata={"cdp_name": "systemId"})
+    """
+    `DocumentType` node's systemId.
+    """
     frame_id: page.FrameId | None = field(
         default=None, metadata={"cdp_name": "frameId"}
     )
+    """
+    Frame ID for frame owner elements and also for the document node.
+    """
     content_document_index: int | None = field(
         default=None, metadata={"cdp_name": "contentDocumentIndex"}
     )
+    """
+    The index of a frame owner element's content document in the `domNodes` array
+    returned by `getSnapshot`, if any.
+    """
     pseudo_type: dom.PseudoType | None = field(
         default=None, metadata={"cdp_name": "pseudoType"}
     )
+    """
+    Type of a pseudo element node.
+    """
     shadow_root_type: dom.ShadowRootType | None = field(
         default=None, metadata={"cdp_name": "shadowRootType"}
     )
+    """
+    Shadow root type.
+    """
     is_clickable: bool | None = field(
         default=None, metadata={"cdp_name": "isClickable"}
     )
+    """
+    Whether this DOM node responds to mouse clicks. This includes nodes that have had
+    click event listeners attached via JavaScript as well as anchor tags that naturally
+    navigate when clicked.
+    """
     event_listeners: list[domdebugger.EventListener] | None = field(
         default=None, metadata={"cdp_name": "eventListeners"}
     )
+    """
+    Details of the node's event listeners, if any.
+    """
     current_source_url: str | None = field(
         default=None, metadata={"cdp_name": "currentSourceURL"}
     )
+    """
+    The selected url for nodes with a srcset attribute.
+    """
     origin_url: str | None = field(default=None, metadata={"cdp_name": "originURL"})
+    """
+    The url of the script (if any) that generates this node.
+    """
     scroll_offset_x: float | None = field(
         default=None, metadata={"cdp_name": "scrollOffsetX"}
     )
+    """
+    Scroll offsets, set when this node is a Document.
+    """
     scroll_offset_y: float | None = field(
         default=None, metadata={"cdp_name": "scrollOffsetY"}
     )
@@ -85,8 +173,20 @@ class InlineTextBox:
     """
 
     bounding_box: dom.Rect = field(metadata={"cdp_name": "boundingBox"})
+    """
+    The bounding box in document coordinates. Note that scroll offset of the document
+    is ignored.
+    """
     start_character_index: int = field(metadata={"cdp_name": "startCharacterIndex"})
+    """
+    The starting index in characters, for this post layout textbox substring.
+    Characters that would be represented as a surrogate pair in UTF-16 have length 2.
+    """
     num_characters: int = field(metadata={"cdp_name": "numCharacters"})
+    """
+    The number of characters in this post layout textbox substring. Characters that
+    would be represented as a surrogate pair in UTF-16 have length 2.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -96,16 +196,41 @@ class LayoutTreeNode:
     """
 
     dom_node_index: int = field(metadata={"cdp_name": "domNodeIndex"})
+    """
+    The index of the related DOM node in the `domNodes` array returned by
+    `getSnapshot`.
+    """
     bounding_box: dom.Rect = field(metadata={"cdp_name": "boundingBox"})
+    """
+    The bounding box in document coordinates. Note that scroll offset of the document
+    is ignored.
+    """
     layout_text: str | None = field(default=None, metadata={"cdp_name": "layoutText"})
+    """
+    Contents of the LayoutText, if any.
+    """
     inline_text_nodes: list[InlineTextBox] | None = field(
         default=None, metadata={"cdp_name": "inlineTextNodes"}
     )
+    """
+    The post-layout inline text nodes, if any.
+    """
     style_index: int | None = field(default=None, metadata={"cdp_name": "styleIndex"})
+    """
+    Index into the `computedStyles` array returned by `getSnapshot`.
+    """
     paint_order: int | None = field(default=None, metadata={"cdp_name": "paintOrder"})
+    """
+    Global paint order index, which is determined by the stacking order of the nodes.
+    Nodes that are painted together will have the same index. Only provided if
+    includePaintOrder in getSnapshot was true.
+    """
     is_stacking_context: bool | None = field(
         default=None, metadata={"cdp_name": "isStackingContext"}
     )
+    """
+    Set to true to indicate the element begins a new stacking context.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -115,6 +240,9 @@ class ComputedStyle:
     """
 
     properties: list[NameValue]
+    """
+    Name/value pairs of computed style properties.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -124,7 +252,13 @@ class NameValue:
     """
 
     name: str
+    """
+    Attribute/property name.
+    """
     value: str
+    """
+    Attribute/property value.
+    """
 
 
 type StringIndex = int
@@ -171,28 +305,73 @@ class DocumentSnapshot:
     document_url: StringIndex | None = field(
         default=None, metadata={"cdp_name": "documentURL"}
     )
+    """
+    Document URL that `Document` or `FrameOwner` node points to.
+    """
     title: StringIndex
+    """
+    Document title.
+    """
     base_url: StringIndex | None = field(default=None, metadata={"cdp_name": "baseURL"})
+    """
+    Base URL that `Document` or `FrameOwner` node uses for URL completion.
+    """
     content_language: StringIndex = field(metadata={"cdp_name": "contentLanguage"})
+    """
+    Contains the document's content language.
+    """
     encoding_name: StringIndex = field(metadata={"cdp_name": "encodingName"})
+    """
+    Contains the document's character set encoding.
+    """
     public_id: StringIndex = field(metadata={"cdp_name": "publicId"})
+    """
+    `DocumentType` node's publicId.
+    """
     system_id: StringIndex = field(metadata={"cdp_name": "systemId"})
+    """
+    `DocumentType` node's systemId.
+    """
     frame_id: StringIndex = field(metadata={"cdp_name": "frameId"})
+    """
+    Frame ID for frame owner elements and also for the document node.
+    """
     nodes: NodeTreeSnapshot
+    """
+    A table with dom nodes.
+    """
     layout: LayoutTreeSnapshot
+    """
+    The nodes in the layout tree.
+    """
     text_boxes: TextBoxSnapshot = field(metadata={"cdp_name": "textBoxes"})
+    """
+    The post-layout inline text nodes.
+    """
     scroll_offset_x: float | None = field(
         default=None, metadata={"cdp_name": "scrollOffsetX"}
     )
+    """
+    Horizontal scroll offset.
+    """
     scroll_offset_y: float | None = field(
         default=None, metadata={"cdp_name": "scrollOffsetY"}
     )
+    """
+    Vertical scroll offset.
+    """
     content_width: float | None = field(
         default=None, metadata={"cdp_name": "contentWidth"}
     )
+    """
+    Document content width.
+    """
     content_height: float | None = field(
         default=None, metadata={"cdp_name": "contentHeight"}
     )
+    """
+    Document content height.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -204,50 +383,106 @@ class NodeTreeSnapshot:
     parent_index: list[int] | None = field(
         default=None, metadata={"cdp_name": "parentIndex"}
     )
+    """
+    Parent node index.
+    """
     node_type: list[int] | None = field(default=None, metadata={"cdp_name": "nodeType"})
+    """
+    `Node`'s nodeType.
+    """
     shadow_root_type: RareStringData | None = field(
         default=None, metadata={"cdp_name": "shadowRootType"}
     )
+    """
+    Type of the shadow root the `Node` is in. String values are equal to the
+    `ShadowRootType` enum.
+    """
     node_name: list[StringIndex] | None = field(
         default=None, metadata={"cdp_name": "nodeName"}
     )
+    """
+    `Node`'s nodeName.
+    """
     node_value: list[StringIndex] | None = field(
         default=None, metadata={"cdp_name": "nodeValue"}
     )
+    """
+    `Node`'s nodeValue.
+    """
     backend_node_id: list[dom.BackendNodeId] | None = field(
         default=None, metadata={"cdp_name": "backendNodeId"}
     )
+    """
+    `Node`'s id, corresponds to DOM.Node.backendNodeId.
+    """
     attributes: list[ArrayOfStrings] | None = None
+    """
+    Attributes of an `Element` node. Flatten name, value pairs.
+    """
     text_value: RareStringData | None = field(
         default=None, metadata={"cdp_name": "textValue"}
     )
+    """
+    Only set for textarea elements, contains the text value.
+    """
     input_value: RareStringData | None = field(
         default=None, metadata={"cdp_name": "inputValue"}
     )
+    """
+    Only set for input elements, contains the input's associated text value.
+    """
     input_checked: RareBooleanData | None = field(
         default=None, metadata={"cdp_name": "inputChecked"}
     )
+    """
+    Only set for radio and checkbox input elements, indicates if the element has been
+    checked
+    """
     option_selected: RareBooleanData | None = field(
         default=None, metadata={"cdp_name": "optionSelected"}
     )
+    """
+    Only set for option elements, indicates if the element has been selected
+    """
     content_document_index: RareIntegerData | None = field(
         default=None, metadata={"cdp_name": "contentDocumentIndex"}
     )
+    """
+    The index of the document in the list of the snapshot documents.
+    """
     pseudo_type: RareStringData | None = field(
         default=None, metadata={"cdp_name": "pseudoType"}
     )
+    """
+    Type of a pseudo element node.
+    """
     pseudo_identifier: RareStringData | None = field(
         default=None, metadata={"cdp_name": "pseudoIdentifier"}
     )
+    """
+    Pseudo element identifier for this node. Only present if there is a valid
+    pseudoType.
+    """
     is_clickable: RareBooleanData | None = field(
         default=None, metadata={"cdp_name": "isClickable"}
     )
+    """
+    Whether this DOM node responds to mouse clicks. This includes nodes that have had
+    click event listeners attached via JavaScript as well as anchor tags that naturally
+    navigate when clicked.
+    """
     current_source_url: RareStringData | None = field(
         default=None, metadata={"cdp_name": "currentSourceURL"}
     )
+    """
+    The selected url for nodes with a srcset attribute.
+    """
     origin_url: RareStringData | None = field(
         default=None, metadata={"cdp_name": "originURL"}
     )
+    """
+    The url of the script (if any) that generates this node.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -257,30 +492,69 @@ class LayoutTreeSnapshot:
     """
 
     node_index: list[int] = field(metadata={"cdp_name": "nodeIndex"})
+    """
+    Index of the corresponding node in the `NodeTreeSnapshot` array returned by
+    `captureSnapshot`.
+    """
     styles: list[ArrayOfStrings]
+    """
+    Array of indexes specifying computed style strings, filtered according to the
+    `computedStyles` parameter passed to `captureSnapshot`.
+    """
     bounds: list[Rectangle]
+    """
+    The absolute position bounding box.
+    """
     text: list[StringIndex]
+    """
+    Contents of the LayoutText, if any.
+    """
     stacking_contexts: RareBooleanData = field(
         metadata={"cdp_name": "stackingContexts"}
     )
+    """
+    Stacking context information.
+    """
     paint_orders: list[int] | None = field(
         default=None, metadata={"cdp_name": "paintOrders"}
     )
+    """
+    Global paint order index, which is determined by the stacking order of the nodes.
+    Nodes that are painted together will have the same index. Only provided if
+    includePaintOrder in captureSnapshot was true.
+    """
     offset_rects: list[Rectangle] | None = field(
         default=None, metadata={"cdp_name": "offsetRects"}
     )
+    """
+    The offset rect of nodes. Only available when includeDOMRects is set to true
+    """
     scroll_rects: list[Rectangle] | None = field(
         default=None, metadata={"cdp_name": "scrollRects"}
     )
+    """
+    The scroll rect of nodes. Only available when includeDOMRects is set to true
+    """
     client_rects: list[Rectangle] | None = field(
         default=None, metadata={"cdp_name": "clientRects"}
     )
+    """
+    The client rect of nodes. Only available when includeDOMRects is set to true
+    """
     blended_background_colors: list[StringIndex] | None = field(
         default=None, metadata={"cdp_name": "blendedBackgroundColors"}
     )
+    """
+    The list of background colors that are blended with colors of overlapping elements.
+    Experimental: this API may change or be removed.
+    """
     text_color_opacities: list[float] | None = field(
         default=None, metadata={"cdp_name": "textColorOpacities"}
     )
+    """
+    The list of computed text opacities. Experimental: this API may change or be
+    removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -291,6 +565,20 @@ class TextBoxSnapshot:
     """
 
     layout_index: list[int] = field(metadata={"cdp_name": "layoutIndex"})
+    """
+    Index of the layout tree node that owns this box collection.
+    """
     bounds: list[Rectangle]
+    """
+    The absolute position bounding box.
+    """
     start: list[int]
+    """
+    The starting index in characters, for this post layout textbox substring.
+    Characters that would be represented as a surrogate pair in UTF-16 have length 2.
+    """
     length: list[int]
+    """
+    The number of characters in this post layout textbox substring. Characters that
+    would be represented as a surrogate pair in UTF-16 have length 2.
+    """

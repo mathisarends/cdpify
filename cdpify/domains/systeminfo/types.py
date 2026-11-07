@@ -17,13 +17,37 @@ class GPUDevice:
     """
 
     vendor_id: float = field(metadata={"cdp_name": "vendorId"})
+    """
+    PCI ID of the GPU vendor, if available; 0 otherwise.
+    """
     device_id: float = field(metadata={"cdp_name": "deviceId"})
+    """
+    PCI ID of the GPU device, if available; 0 otherwise.
+    """
     sub_sys_id: float | None = field(default=None, metadata={"cdp_name": "subSysId"})
+    """
+    Sub sys ID of the GPU, only available on Windows.
+    """
     revision: float | None = None
+    """
+    Revision of the GPU, only available on Windows.
+    """
     vendor_string: str = field(metadata={"cdp_name": "vendorString"})
+    """
+    String description of the GPU vendor, if the PCI ID is not available.
+    """
     device_string: str = field(metadata={"cdp_name": "deviceString"})
+    """
+    String description of the GPU device, if the PCI ID is not available.
+    """
     driver_vendor: str = field(metadata={"cdp_name": "driverVendor"})
+    """
+    String description of the GPU driver vendor.
+    """
     driver_version: str = field(metadata={"cdp_name": "driverVersion"})
+    """
+    String description of the GPU driver version.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -33,7 +57,13 @@ class Size:
     """
 
     width: int
+    """
+    Width in pixels.
+    """
     height: int
+    """
+    Height in pixels.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -44,8 +74,17 @@ class VideoDecodeAcceleratorCapability:
     """
 
     profile: str
+    """
+    Video codec profile that is supported, e.g. VP9 Profile 2.
+    """
     max_resolution: Size = field(metadata={"cdp_name": "maxResolution"})
+    """
+    Maximum video dimensions in pixels supported for this |profile|.
+    """
     min_resolution: Size = field(metadata={"cdp_name": "minResolution"})
+    """
+    Minimum video dimensions in pixels supported for this |profile|.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -56,8 +95,18 @@ class VideoEncodeAcceleratorCapability:
     """
 
     profile: str
+    """
+    Video codec profile that is supported, e.g H264 Main.
+    """
     max_resolution: Size = field(metadata={"cdp_name": "maxResolution"})
+    """
+    Maximum video dimensions in pixels supported for this |profile|.
+    """
     max_framerate_numerator: int = field(metadata={"cdp_name": "maxFramerateNumerator"})
+    """
+    Maximum encoding framerate in frames per second supported for this |profile|, as
+    fraction's numerator and denominator, e.g. 24/1 fps, 24000/1001 fps, etc.
+    """
     max_framerate_denominator: int = field(
         metadata={"cdp_name": "maxFramerateDenominator"}
     )
@@ -90,21 +139,39 @@ class GPUInfo:
     """
 
     devices: list[GPUDevice]
+    """
+    The graphics devices on the system. Element 0 is the primary GPU.
+    """
     aux_attributes: dict[str, Any] | None = field(
         default=None, metadata={"cdp_name": "auxAttributes"}
     )
+    """
+    An optional dictionary of additional GPU related attributes.
+    """
     feature_status: dict[str, Any] | None = field(
         default=None, metadata={"cdp_name": "featureStatus"}
     )
+    """
+    An optional dictionary of graphics features and their status.
+    """
     driver_bug_workarounds: list[str] = field(
         metadata={"cdp_name": "driverBugWorkarounds"}
     )
+    """
+    An optional array of GPU driver bug workarounds.
+    """
     video_decoding: list[VideoDecodeAcceleratorCapability] = field(
         metadata={"cdp_name": "videoDecoding"}
     )
+    """
+    Supported accelerated video decoding capabilities.
+    """
     video_encoding: list[VideoEncodeAcceleratorCapability] = field(
         metadata={"cdp_name": "videoEncoding"}
     )
+    """
+    Supported accelerated video encoding capabilities.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -114,5 +181,15 @@ class ProcessInfo:
     """
 
     type: str
+    """
+    Specifies process type.
+    """
     id: int
+    """
+    Specifies process id.
+    """
     cpu_time: float = field(metadata={"cdp_name": "cpuTime"})
+    """
+    Specifies cumulative CPU usage in seconds across all threads of the process since
+    the process start.
+    """

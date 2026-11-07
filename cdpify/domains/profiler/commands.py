@@ -28,6 +28,9 @@ class ProfilerCommand(StrEnum):
 @dataclass(kw_only=True, slots=True)
 class GetBestEffortCoverageResult:
     result: list[ScriptCoverage]
+    """
+    Coverage data for the current isolate.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -38,6 +41,9 @@ class SetSamplingIntervalParams:
     """
 
     interval: int
+    """
+    New sampling interval in microseconds.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -49,23 +55,46 @@ class StartPreciseCoverageParams:
     """
 
     call_count: bool | None = field(default=None, metadata={"cdp_name": "callCount"})
+    """
+    Collect accurate call counts beyond simple 'covered' or 'not covered'.
+    """
     detailed: bool | None = None
+    """
+    Collect block-based coverage.
+    """
     allow_triggered_updates: bool | None = field(
         default=None, metadata={"cdp_name": "allowTriggeredUpdates"}
     )
+    """
+    Allow the backend to send updates on its own initiative
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class StartPreciseCoverageResult:
     timestamp: float
+    """
+    Monotonically increasing time (in seconds) when the coverage update was taken in
+    the backend.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class StopResult:
     profile: Profile
+    """
+    Recorded profile.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class TakePreciseCoverageResult:
     result: list[ScriptCoverage]
+    """
+    Coverage data for the current isolate.
+    """
     timestamp: float
+    """
+    Monotonically increasing time (in seconds) when the coverage update was taken in
+    the backend.
+    """

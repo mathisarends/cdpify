@@ -37,12 +37,28 @@ class ClearObjectStoreParams:
     security_origin: str | None = field(
         default=None, metadata={"cdp_name": "securityOrigin"}
     )
+    """
+    At least and at most one of securityOrigin, storageKey, or storageBucket must be
+    specified. Security origin.
+    """
     storage_key: str | None = field(default=None, metadata={"cdp_name": "storageKey"})
+    """
+    Storage key.
+    """
     storage_bucket: storage.StorageBucket | None = field(
         default=None, metadata={"cdp_name": "storageBucket"}
     )
+    """
+    Storage bucket. If not specified, it uses the default bucket.
+    """
     database_name: str = field(metadata={"cdp_name": "databaseName"})
+    """
+    Database name.
+    """
     object_store_name: str = field(metadata={"cdp_name": "objectStoreName"})
+    """
+    Object store name.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -54,11 +70,24 @@ class DeleteDatabaseParams:
     security_origin: str | None = field(
         default=None, metadata={"cdp_name": "securityOrigin"}
     )
+    """
+    At least and at most one of securityOrigin, storageKey, or storageBucket must be
+    specified. Security origin.
+    """
     storage_key: str | None = field(default=None, metadata={"cdp_name": "storageKey"})
+    """
+    Storage key.
+    """
     storage_bucket: storage.StorageBucket | None = field(
         default=None, metadata={"cdp_name": "storageBucket"}
     )
+    """
+    Storage bucket. If not specified, it uses the default bucket.
+    """
     database_name: str = field(metadata={"cdp_name": "databaseName"})
+    """
+    Database name.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -70,13 +99,26 @@ class DeleteObjectStoreEntriesParams:
     security_origin: str | None = field(
         default=None, metadata={"cdp_name": "securityOrigin"}
     )
+    """
+    At least and at most one of securityOrigin, storageKey, or storageBucket must be
+    specified. Security origin.
+    """
     storage_key: str | None = field(default=None, metadata={"cdp_name": "storageKey"})
+    """
+    Storage key.
+    """
     storage_bucket: storage.StorageBucket | None = field(
         default=None, metadata={"cdp_name": "storageBucket"}
     )
+    """
+    Storage bucket. If not specified, it uses the default bucket.
+    """
     database_name: str = field(metadata={"cdp_name": "databaseName"})
     object_store_name: str = field(metadata={"cdp_name": "objectStoreName"})
     key_range: KeyRange = field(metadata={"cdp_name": "keyRange"})
+    """
+    Range of entry keys to delete
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -88,16 +130,44 @@ class RequestDataParams:
     security_origin: str | None = field(
         default=None, metadata={"cdp_name": "securityOrigin"}
     )
+    """
+    At least and at most one of securityOrigin, storageKey, or storageBucket must be
+    specified. Security origin.
+    """
     storage_key: str | None = field(default=None, metadata={"cdp_name": "storageKey"})
+    """
+    Storage key.
+    """
     storage_bucket: storage.StorageBucket | None = field(
         default=None, metadata={"cdp_name": "storageBucket"}
     )
+    """
+    Storage bucket. If not specified, it uses the default bucket.
+    """
     database_name: str = field(metadata={"cdp_name": "databaseName"})
+    """
+    Database name.
+    """
     object_store_name: str = field(metadata={"cdp_name": "objectStoreName"})
+    """
+    Object store name.
+    """
     index_name: str | None = field(default=None, metadata={"cdp_name": "indexName"})
+    """
+    Index name. If not specified, it performs an object store data request.
+    """
     skip_count: int = field(metadata={"cdp_name": "skipCount"})
+    """
+    Number of records to skip.
+    """
     page_size: int = field(metadata={"cdp_name": "pageSize"})
+    """
+    Number of records to fetch.
+    """
     key_range: KeyRange | None = field(default=None, metadata={"cdp_name": "keyRange"})
+    """
+    Key range.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -105,7 +175,13 @@ class RequestDataResult:
     object_store_data_entries: list[DataEntry] = field(
         metadata={"cdp_name": "objectStoreDataEntries"}
     )
+    """
+    Array of object store data entries.
+    """
     has_more: bool = field(metadata={"cdp_name": "hasMore"})
+    """
+    If true, there are more entries to fetch in the given range.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -117,18 +193,41 @@ class GetMetadataParams:
     security_origin: str | None = field(
         default=None, metadata={"cdp_name": "securityOrigin"}
     )
+    """
+    At least and at most one of securityOrigin, storageKey, or storageBucket must be
+    specified. Security origin.
+    """
     storage_key: str | None = field(default=None, metadata={"cdp_name": "storageKey"})
+    """
+    Storage key.
+    """
     storage_bucket: storage.StorageBucket | None = field(
         default=None, metadata={"cdp_name": "storageBucket"}
     )
+    """
+    Storage bucket. If not specified, it uses the default bucket.
+    """
     database_name: str = field(metadata={"cdp_name": "databaseName"})
+    """
+    Database name.
+    """
     object_store_name: str = field(metadata={"cdp_name": "objectStoreName"})
+    """
+    Object store name.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetMetadataResult:
     entries_count: float = field(metadata={"cdp_name": "entriesCount"})
+    """
+    the entries count
+    """
     key_generator_value: float = field(metadata={"cdp_name": "keyGeneratorValue"})
+    """
+    the current value of key generator, to become the next inserted key into the object
+    store. Valid if objectStore.autoIncrement is true.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -140,11 +239,24 @@ class RequestDatabaseParams:
     security_origin: str | None = field(
         default=None, metadata={"cdp_name": "securityOrigin"}
     )
+    """
+    At least and at most one of securityOrigin, storageKey, or storageBucket must be
+    specified. Security origin.
+    """
     storage_key: str | None = field(default=None, metadata={"cdp_name": "storageKey"})
+    """
+    Storage key.
+    """
     storage_bucket: storage.StorageBucket | None = field(
         default=None, metadata={"cdp_name": "storageBucket"}
     )
+    """
+    Storage bucket. If not specified, it uses the default bucket.
+    """
     database_name: str = field(metadata={"cdp_name": "databaseName"})
+    """
+    Database name.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -152,6 +264,9 @@ class RequestDatabaseResult:
     database_with_object_stores: DatabaseWithObjectStores = field(
         metadata={"cdp_name": "databaseWithObjectStores"}
     )
+    """
+    Database with an array of object stores.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -163,12 +278,25 @@ class RequestDatabaseNamesParams:
     security_origin: str | None = field(
         default=None, metadata={"cdp_name": "securityOrigin"}
     )
+    """
+    At least and at most one of securityOrigin, storageKey, or storageBucket must be
+    specified. Security origin.
+    """
     storage_key: str | None = field(default=None, metadata={"cdp_name": "storageKey"})
+    """
+    Storage key.
+    """
     storage_bucket: storage.StorageBucket | None = field(
         default=None, metadata={"cdp_name": "storageBucket"}
     )
+    """
+    Storage bucket. If not specified, it uses the default bucket.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class RequestDatabaseNamesResult:
     database_names: list[str] = field(metadata={"cdp_name": "databaseNames"})
+    """
+    Database names for origin.
+    """

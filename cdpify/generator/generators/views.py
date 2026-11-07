@@ -1,6 +1,8 @@
 from collections.abc import Iterable
 from dataclasses import dataclass, replace
 
+from cdpify.generator.generators.utils import api_description, format_docstring
+
 
 @dataclass(frozen=True, slots=True)
 class FieldView:
@@ -9,6 +11,18 @@ class FieldView:
     optional: bool = False
     cdp_name: str | None = None
     encode_value: bool = False
+    description: str | None = None
+    experimental: bool = False
+    deprecated: bool = False
+
+    @property
+    def docstring(self) -> str:
+        description = api_description(
+            self.description, experimental=self.experimental, deprecated=self.deprecated
+        )
+        if self.uses_unset:
+            description += " Omit with UNSET; None encodes JSON null."
+        return format_docstring(description.strip(), indent=4)
 
     @property
     def uses_unset(self) -> bool:

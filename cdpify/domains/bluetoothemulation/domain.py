@@ -38,6 +38,10 @@ class BluetoothEmulation:
     ) -> None:
         """
         Enable the BluetoothEmulation domain.
+
+        Args:
+            state: State of the simulated central.
+            le_supported: If the simulated central supports low-energy.
         """
         _params: dict[str, Any] = {}
         _params["state"] = _encode_value(state)
@@ -55,6 +59,9 @@ class BluetoothEmulation:
     ) -> None:
         """
         Set the state of the simulated central.
+
+        Args:
+            state: State of the simulated central.
         """
         _params: dict[str, Any] = {}
         _params["state"] = _encode_value(state)

@@ -54,6 +54,11 @@ class WebMCP:
     ) -> InvokeToolResult:
         """
         Invokes a registered tool.
+
+        Args:
+            frame_id: Frame in which to invoke the tool.
+            tool_name: Name of the tool to invoke.
+            input: Input parameters for the tool, matching the tool's inputSchema.
         """
         _params: dict[str, Any] = {}
         _params["frameId"] = _encode_value(frame_id)
@@ -73,6 +78,9 @@ class WebMCP:
     ) -> None:
         """
         Cancels a pending tool invocation.
+
+        Args:
+            invocation_id: Invocation identifier to cancel.
         """
         _params: dict[str, Any] = {}
         _params["invocationId"] = invocation_id

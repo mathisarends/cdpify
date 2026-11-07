@@ -94,16 +94,35 @@ class AddRuleParams:
     """
 
     style_sheet_id: dom.StyleSheetId = field(metadata={"cdp_name": "styleSheetId"})
+    """
+    The css style sheet identifier where a new rule should be inserted.
+    """
     rule_text: str = field(metadata={"cdp_name": "ruleText"})
+    """
+    The text of a new rule.
+    """
     location: SourceRange
+    """
+    Text position of a new rule in the target style sheet.
+    """
     node_for_property_syntax_validation: dom.NodeId | None = field(
         default=None, metadata={"cdp_name": "nodeForPropertySyntaxValidation"}
     )
+    """
+    NodeId for the DOM node in whose context custom property declarations for
+    registered properties should be validated. If omitted, declarations in the new rule
+    text can only be validated statically, which may produce incorrect results if the
+    declaration contains a var() for example. Experimental: this API may change or be
+    removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class AddRuleResult:
     rule: CSSRule
+    """
+    The newly created rule.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -118,6 +137,9 @@ class CollectClassNamesParams:
 @dataclass(kw_only=True, slots=True)
 class CollectClassNamesResult:
     class_names: list[str] = field(metadata={"cdp_name": "classNames"})
+    """
+    Class name list.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -127,12 +149,23 @@ class CreateStyleSheetParams:
     """
 
     frame_id: page.FrameId = field(metadata={"cdp_name": "frameId"})
+    """
+    Identifier of the frame where "via-inspector" stylesheet should be created.
+    """
     force: bool | None = None
+    """
+    If true, creates a new stylesheet for every call. If false, returns a stylesheet
+    previously created by a call with force=false for the frame's document if it exists
+    or creates a new stylesheet (default: false).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class CreateStyleSheetResult:
     style_sheet_id: dom.StyleSheetId = field(metadata={"cdp_name": "styleSheetId"})
+    """
+    Identifier of the created "via-inspector" stylesheet.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -143,9 +176,15 @@ class ForcePseudoStateParams:
     """
 
     node_id: dom.NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    The element id for which to force the pseudo state.
+    """
     forced_pseudo_classes: list[str] = field(
         metadata={"cdp_name": "forcedPseudoClasses"}
     )
+    """
+    Element pseudo classes to force when computing the element's style.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -155,7 +194,13 @@ class ForceStartingStyleParams:
     """
 
     node_id: dom.NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    The element id for which to force the starting-style state.
+    """
     forced: bool
+    """
+    Boolean indicating if this is on or off.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -165,12 +210,22 @@ class ForcePositionTryOptionParams:
     """
 
     node_id: dom.NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    The element id for which to force the position-try option.
+    """
     index: int | None = None
+    """
+    The 1-based index of the position-try fallback option, 0 for base position (no
+    fallback), or omitted to clear the forced state.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetBackgroundColorsParams:
     node_id: dom.NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    Id of the node to get background colors for.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -178,12 +233,26 @@ class GetBackgroundColorsResult:
     background_colors: list[str] | None = field(
         default=None, metadata={"cdp_name": "backgroundColors"}
     )
+    """
+    The range of background colors behind this element, if it contains any visible
+    text. If no visible text is present, this will be undefined. In the case of a flat
+    background color, this will consist of simply that color. In the case of a gradient,
+    this will consist of each of the color stops. For anything more complicated, this
+    will be an empty array. Images will be ignored (as if the image had failed to load).
+    """
     computed_font_size: str | None = field(
         default=None, metadata={"cdp_name": "computedFontSize"}
     )
+    """
+    The computed font size for this node, as a CSS computed value string (e.g. '12px').
+    """
     computed_font_weight: str | None = field(
         default=None, metadata={"cdp_name": "computedFontWeight"}
     )
+    """
+    The computed font weight for this node, as a CSS computed value string (e.g.
+    'normal' or '100').
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -200,7 +269,14 @@ class GetComputedStyleForNodeResult:
     computed_style: list[CSSComputedStyleProperty] = field(
         metadata={"cdp_name": "computedStyle"}
     )
+    """
+    Computed style for the specified DOM node.
+    """
     extra_fields: ComputedStyleExtraFields = field(metadata={"cdp_name": "extraFields"})
+    """
+    A list of non-standard "extra fields" which blink stores alongside each computed
+    style. Experimental: this API may change or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -214,20 +290,37 @@ class ResolveValuesParams:
     parsed using combined syntax as if null `propertyName` was provided. If the value
     cannot be resolved even then, return the provided value without any changes. Note:
     this function currently does not resolve CSS random() function, it returns
-    unmodified random() function parts.`
+    unmodified random() function parts.` Experimental: this API may change or be
+    removed.
     """
 
     values: list[str]
+    """
+    Cascade-dependent keywords (revert/revert-layer) do not work.
+    """
     node_id: dom.NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    Id of the node in whose context the expression is evaluated
+    """
     property_name: str | None = field(
         default=None, metadata={"cdp_name": "propertyName"}
     )
+    """
+    Only longhands and custom property names are accepted.
+    """
     pseudo_type: dom.PseudoType | None = field(
         default=None, metadata={"cdp_name": "pseudoType"}
     )
+    """
+    Pseudo element type, only works for pseudo elements that generate elements in the
+    tree, such as ::before and ::after.
+    """
     pseudo_identifier: str | None = field(
         default=None, metadata={"cdp_name": "pseudoIdentifier"}
     )
+    """
+    Pseudo element custom ident.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -237,6 +330,10 @@ class ResolveValuesResult:
 
 @dataclass(kw_only=True, slots=True)
 class GetLonghandPropertiesParams:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     shorthand_name: str = field(metadata={"cdp_name": "shorthandName"})
     value: str
 
@@ -263,16 +360,23 @@ class GetInlineStylesForNodeResult:
     inline_style: CSSStyle | None = field(
         default=None, metadata={"cdp_name": "inlineStyle"}
     )
+    """
+    Inline style for the specified DOM node.
+    """
     attributes_style: CSSStyle | None = field(
         default=None, metadata={"cdp_name": "attributesStyle"}
     )
+    """
+    Attribute-defined element style (e.g. resulting from "width=20 height=100%").
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetAnimatedStylesForNodeParams:
     """
     Returns the styles coming from animations & transitions including the animation &
-    transition styles coming from inheritance chain.
+    transition styles coming from inheritance chain. Experimental: this API may change
+    or be removed.
     """
 
     node_id: dom.NodeId = field(metadata={"cdp_name": "nodeId"})
@@ -283,10 +387,20 @@ class GetAnimatedStylesForNodeResult:
     animation_styles: list[CSSAnimationStyle] | None = field(
         default=None, metadata={"cdp_name": "animationStyles"}
     )
+    """
+    Styles coming from animations.
+    """
     transitions_style: CSSStyle | None = field(
         default=None, metadata={"cdp_name": "transitionsStyle"}
     )
+    """
+    Style coming from transitions.
+    """
     inherited: list[InheritedAnimatedStyleEntry] | None = None
+    """
+    Inherited style entries for animationsStyle and transitionsStyle from the
+    inheritance chain of the element.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -303,43 +417,91 @@ class GetMatchedStylesForNodeResult:
     inline_style: CSSStyle | None = field(
         default=None, metadata={"cdp_name": "inlineStyle"}
     )
+    """
+    Inline style for the specified DOM node.
+    """
     attributes_style: CSSStyle | None = field(
         default=None, metadata={"cdp_name": "attributesStyle"}
     )
+    """
+    Attribute-defined element style (e.g. resulting from "width=20 height=100%").
+    """
     matched_css_rules: list[RuleMatch] | None = field(
         default=None, metadata={"cdp_name": "matchedCSSRules"}
     )
+    """
+    CSS rules matching this node, from all applicable stylesheets.
+    """
     pseudo_elements: list[PseudoElementMatches] | None = field(
         default=None, metadata={"cdp_name": "pseudoElements"}
     )
+    """
+    Pseudo style matches for this node.
+    """
     inherited: list[InheritedStyleEntry] | None = None
+    """
+    A chain of inherited styles (from the immediate node parent up to the DOM tree
+    root).
+    """
     inherited_pseudo_elements: list[InheritedPseudoElementMatches] | None = field(
         default=None, metadata={"cdp_name": "inheritedPseudoElements"}
     )
+    """
+    A chain of inherited pseudo element styles (from the immediate node parent up to
+    the DOM tree root).
+    """
     css_keyframes_rules: list[CSSKeyframesRule] | None = field(
         default=None, metadata={"cdp_name": "cssKeyframesRules"}
     )
+    """
+    A list of CSS keyframed animations matching this node.
+    """
     css_position_try_rules: list[CSSPositionTryRule] | None = field(
         default=None, metadata={"cdp_name": "cssPositionTryRules"}
     )
+    """
+    A list of CSS @position-try rules matching this node, based on the
+    position-try-fallbacks property.
+    """
     active_position_fallback_index: int | None = field(
         default=None, metadata={"cdp_name": "activePositionFallbackIndex"}
     )
+    """
+    Index of the active fallback in the applied position-try-fallback property, will
+    not be set if there is no active position-try fallback.
+    """
     css_property_rules: list[CSSPropertyRule] | None = field(
         default=None, metadata={"cdp_name": "cssPropertyRules"}
     )
+    """
+    A list of CSS at-property rules matching this node.
+    """
     css_property_registrations: list[CSSPropertyRegistration] | None = field(
         default=None, metadata={"cdp_name": "cssPropertyRegistrations"}
     )
+    """
+    A list of CSS property registrations matching this node.
+    """
     css_at_rules: list[CSSAtRule] | None = field(
         default=None, metadata={"cdp_name": "cssAtRules"}
     )
+    """
+    A list of simple @rules matching this node or its pseudo-elements.
+    """
     parent_layout_node_id: dom.NodeId | None = field(
         default=None, metadata={"cdp_name": "parentLayoutNodeId"}
     )
+    """
+    Id of the first parent element that does not have display: contents. Experimental:
+    this API may change or be removed.
+    """
     css_function_rules: list[CSSFunctionRule] | None = field(
         default=None, metadata={"cdp_name": "cssFunctionRules"}
     )
+    """
+    A list of CSS at-function rules referenced by styles of this node. Experimental:
+    this API may change or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -367,6 +529,9 @@ class GetPlatformFontsForNodeParams:
 @dataclass(kw_only=True, slots=True)
 class GetPlatformFontsForNodeResult:
     fonts: list[PlatformFontUsage]
+    """
+    Usage statistics for every employed platform font.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -381,6 +546,9 @@ class GetStyleSheetTextParams:
 @dataclass(kw_only=True, slots=True)
 class GetStyleSheetTextResult:
     text: str
+    """
+    The stylesheet text.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -389,7 +557,8 @@ class GetLayersForNodeParams:
     Returns all layers parsed by the rendering engine for the tree scope of a node.
     Given a DOM element identified by nodeId, getLayersForNode returns the root layer
     for the nearest ancestor document or shadow root. The layer root contains the full
-    layer tree for the tree scope and their ordering.
+    layer tree for the tree scope and their ordering. Experimental: this API may change
+    or be removed.
     """
 
     node_id: dom.NodeId = field(metadata={"cdp_name": "nodeId"})
@@ -404,7 +573,8 @@ class GetLayersForNodeResult:
 class GetLocationForSelectorParams:
     """
     Given a CSS selector text and a style sheet ID, getLocationForSelector returns an
-    array of locations of the CSS selector in the style sheet.
+    array of locations of the CSS selector in the style sheet. Experimental: this API
+    may change or be removed.
     """
 
     style_sheet_id: dom.StyleSheetId = field(metadata={"cdp_name": "styleSheetId"})
@@ -423,7 +593,7 @@ class TrackComputedStyleUpdatesForNodeParams:
     computed style is updated for node, it queues a `computedStyleUpdated` event with
     throttling. There can only be 1 node tracked for computed style updates so passing a
     new node id removes tracking from the previous node. Pass `undefined` to disable
-    tracking.
+    tracking. Experimental: this API may change or be removed.
     """
 
     node_id: dom.NodeId | None = field(default=None, metadata={"cdp_name": "nodeId"})
@@ -438,7 +608,7 @@ class TrackComputedStyleUpdatesParams:
     properties modified. The changes to computed style properties are only tracked for
     nodes pushed to the front-end by the DOM agent. If no changes to the tracked
     properties occur after the node has been pushed to the front-end, no updates will be
-    issued for the node.
+    issued for the node. Experimental: this API may change or be removed.
     """
 
     properties_to_track: list[CSSComputedStyleProperty] = field(
@@ -449,6 +619,9 @@ class TrackComputedStyleUpdatesParams:
 @dataclass(kw_only=True, slots=True)
 class TakeComputedStyleUpdatesResult:
     node_ids: list[dom.NodeId] = field(metadata={"cdp_name": "nodeIds"})
+    """
+    The list of node Ids that have their tracked computed styles updated.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -459,6 +632,9 @@ class SetEffectivePropertyValueForNodeParams:
     """
 
     node_id: dom.NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    The element id for which to set property.
+    """
     property_name: str = field(metadata={"cdp_name": "propertyName"})
     value: str
 
@@ -477,6 +653,9 @@ class SetPropertyRulePropertyNameParams:
 @dataclass(kw_only=True, slots=True)
 class SetPropertyRulePropertyNameResult:
     property_name: Value = field(metadata={"cdp_name": "propertyName"})
+    """
+    The resulting key text after modification.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -493,6 +672,9 @@ class SetKeyframeKeyParams:
 @dataclass(kw_only=True, slots=True)
 class SetKeyframeKeyResult:
     key_text: Value = field(metadata={"cdp_name": "keyText"})
+    """
+    The resulting key text after modification.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -509,13 +691,17 @@ class SetMediaTextParams:
 @dataclass(kw_only=True, slots=True)
 class SetMediaTextResult:
     media: CSSMedia
+    """
+    The resulting CSS media rule after modification.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SetContainerQueryTextParams:
     """
     Modifies the expression of a container query. Deprecated. Use
-    setContainerQueryConditionText instead.
+    setContainerQueryConditionText instead. Experimental: this API may change or be
+    removed. Deprecated in the Chrome DevTools Protocol.
     """
 
     style_sheet_id: dom.StyleSheetId = field(metadata={"cdp_name": "styleSheetId"})
@@ -526,10 +712,17 @@ class SetContainerQueryTextParams:
 @dataclass(kw_only=True, slots=True)
 class SetContainerQueryTextResult:
     container_query: CSSContainerQuery = field(metadata={"cdp_name": "containerQuery"})
+    """
+    The resulting CSS container query rule after modification.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SetContainerQueryConditionTextParams:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     style_sheet_id: dom.StyleSheetId = field(metadata={"cdp_name": "styleSheetId"})
     range: SourceRange
     text: str
@@ -538,12 +731,16 @@ class SetContainerQueryConditionTextParams:
 @dataclass(kw_only=True, slots=True)
 class SetContainerQueryConditionTextResult:
     container_query: CSSContainerQuery = field(metadata={"cdp_name": "containerQuery"})
+    """
+    The resulting CSS container query rule after modification.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SetSupportsTextParams:
     """
-    Modifies the expression of a supports at-rule.
+    Modifies the expression of a supports at-rule. Experimental: this API may change or
+    be removed.
     """
 
     style_sheet_id: dom.StyleSheetId = field(metadata={"cdp_name": "styleSheetId"})
@@ -554,12 +751,16 @@ class SetSupportsTextParams:
 @dataclass(kw_only=True, slots=True)
 class SetSupportsTextResult:
     supports: CSSSupports
+    """
+    The resulting CSS Supports rule after modification.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SetNavigationTextParams:
     """
-    Modifies the expression of a navigation at-rule.
+    Modifies the expression of a navigation at-rule. Experimental: this API may change
+    or be removed.
     """
 
     style_sheet_id: dom.StyleSheetId = field(metadata={"cdp_name": "styleSheetId"})
@@ -570,12 +771,16 @@ class SetNavigationTextParams:
 @dataclass(kw_only=True, slots=True)
 class SetNavigationTextResult:
     navigation: CSSNavigation
+    """
+    The resulting CSS Navigation rule after modification.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SetScopeTextParams:
     """
-    Modifies the expression of a scope at-rule.
+    Modifies the expression of a scope at-rule. Experimental: this API may change or be
+    removed.
     """
 
     style_sheet_id: dom.StyleSheetId = field(metadata={"cdp_name": "styleSheetId"})
@@ -586,6 +791,9 @@ class SetScopeTextParams:
 @dataclass(kw_only=True, slots=True)
 class SetScopeTextResult:
     scope: CSSScope
+    """
+    The resulting CSS Scope rule after modification.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -602,6 +810,9 @@ class SetRuleSelectorParams:
 @dataclass(kw_only=True, slots=True)
 class SetRuleSelectorResult:
     selector_list: SelectorList = field(metadata={"cdp_name": "selectorList"})
+    """
+    The resulting selector list after modification.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -619,6 +830,9 @@ class SetStyleSheetTextResult:
     source_map_url: str | None = field(
         default=None, metadata={"cdp_name": "sourceMapURL"}
     )
+    """
+    URL of source map associated with script (if any).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -631,11 +845,21 @@ class SetStyleTextsParams:
     node_for_property_syntax_validation: dom.NodeId | None = field(
         default=None, metadata={"cdp_name": "nodeForPropertySyntaxValidation"}
     )
+    """
+    NodeId for the DOM node in whose context custom property declarations for
+    registered properties should be validated. If omitted, declarations in the new rule
+    text can only be validated statically, which may produce incorrect results if the
+    declaration contains a var() for example. Experimental: this API may change or be
+    removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SetStyleTextsResult:
     styles: list[CSSStyle]
+    """
+    The resulting styles after modification.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -647,12 +871,19 @@ class StopRuleUsageTrackingResult:
 class TakeCoverageDeltaResult:
     coverage: list[RuleUsage]
     timestamp: float
+    """
+    Monotonically increasing time, in seconds.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SetLocalFontsEnabledParams:
     """
-    Enables/disables rendering of local CSS fonts (enabled by default).
+    Enables/disables rendering of local CSS fonts (enabled by default). Experimental:
+    this API may change or be removed.
     """
 
     enabled: bool
+    """
+    Whether rendering of local fonts is enabled.
+    """

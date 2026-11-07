@@ -38,6 +38,10 @@ class Performance:
     ) -> None:
         """
         Enable collecting and reporting metrics.
+
+        Args:
+            time_domain: Time domain to use for collecting and reporting duration
+                metrics.
         """
         _params: dict[str, Any] = {}
         if time_domain is not None:
@@ -57,7 +61,11 @@ class Performance:
         """
         Sets time domain to use for collecting and reporting duration metrics. Note
         that this must be called before enabling metrics collection. Calling this method
-        while metrics collection is enabled returns an error.
+        while metrics collection is enabled returns an error. Experimental: this API may
+        change or be removed. Deprecated in the Chrome DevTools Protocol.
+
+        Args:
+            time_domain: Time domain
         """
         _params: dict[str, Any] = {}
         _params["timeDomain"] = time_domain

@@ -64,7 +64,16 @@ class Accessibility:
     ) -> GetPartialAXTreeResult:
         """
         Fetches the accessibility node and partial accessibility tree for this DOM
-        node, if it exists.
+        node, if it exists. Experimental: this API may change or be removed.
+
+        Args:
+            node_id: Identifier of the node to get the partial accessibility tree for.
+            backend_node_id: Identifier of the backend node to get the partial
+                accessibility tree for.
+            object_id: JavaScript object id of the node wrapper to get the partial
+                accessibility tree for.
+            fetch_relatives: Whether to fetch this node's ancestors, siblings and
+                children. Defaults to true.
         """
         _params: dict[str, Any] = {}
         if node_id is not None:
@@ -89,7 +98,14 @@ class Accessibility:
         frame_id: page.FrameId | None = None,
     ) -> GetFullAXTreeResult:
         """
-        Fetches the entire accessibility tree for the root Document
+        Fetches the entire accessibility tree for the root Document Experimental: this
+        API may change or be removed.
+
+        Args:
+            depth: The maximum depth at which descendants of the root node should be
+                retrieved. If omitted, the full tree is returned.
+            frame_id: The frame for whose document the AX tree should be retrieved. If
+                omitted, the root frame is used.
         """
         _params: dict[str, Any] = {}
         if depth is not None:
@@ -110,6 +126,11 @@ class Accessibility:
     ) -> GetRootAXNodeResult:
         """
         Fetches the root node. Requires `enable()` to have been called previously.
+        Experimental: this API may change or be removed.
+
+        Args:
+            frame_id: The frame in whose document the node resides. If omitted, the root
+                frame is used.
         """
         _params: dict[str, Any] = {}
         if frame_id is not None:
@@ -130,7 +151,13 @@ class Accessibility:
     ) -> GetAXNodeAndAncestorsResult:
         """
         Fetches a node and all ancestors up to and including the root. Requires
-        `enable()` to have been called previously.
+        `enable()` to have been called previously. Experimental: this API may change or
+        be removed.
+
+        Args:
+            node_id: Identifier of the node to get.
+            backend_node_id: Identifier of the backend node to get.
+            object_id: JavaScript object id of the node wrapper to get.
         """
         _params: dict[str, Any] = {}
         if node_id is not None:
@@ -154,7 +181,11 @@ class Accessibility:
     ) -> GetChildAXNodesResult:
         """
         Fetches a particular accessibility node by AXNodeId. Requires `enable()` to
-        have been called previously.
+        have been called previously. Experimental: this API may change or be removed.
+
+        Args:
+            frame_id: The frame in whose document the node resides. If omitted, the root
+                frame is used.
         """
         _params: dict[str, Any] = {}
         _params["id"] = _encode_value(id)
@@ -182,7 +213,15 @@ class Accessibility:
         that are ignored for accessibility, and returns those that match the specified
         name and role. If no DOM node is specified, or the DOM node does not exist, the
         command returns an error. If neither `accessibleName` or `role` is specified, it
-        returns all the accessibility nodes in the subtree.
+        returns all the accessibility nodes in the subtree. Experimental: this API may
+        change or be removed.
+
+        Args:
+            node_id: Identifier of the node for the root to query.
+            backend_node_id: Identifier of the backend node for the root to query.
+            object_id: JavaScript object id of the node wrapper for the root to query.
+            accessible_name: Find nodes with this computed name.
+            role: Find nodes with this computed role.
         """
         _params: dict[str, Any] = {}
         if node_id is not None:

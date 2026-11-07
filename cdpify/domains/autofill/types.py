@@ -13,16 +13,38 @@ from cdpify.shared.enums import CDPStrEnum
 @dataclass(kw_only=True, slots=True)
 class CreditCard:
     number: str
+    """
+    16-digit credit card number.
+    """
     name: str
+    """
+    Name of the credit card owner.
+    """
     expiry_month: str = field(metadata={"cdp_name": "expiryMonth"})
+    """
+    2-digit expiry month.
+    """
     expiry_year: str = field(metadata={"cdp_name": "expiryYear"})
+    """
+    4-digit expiry year.
+    """
     cvc: str
+    """
+    3-digit card verification code.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class AddressField:
     name: str
+    """
+    address field name, for example GIVEN_NAME. The full list of supported field names:
+    https://source.chromium.org/chromium/chromium/src/+/main:components/autofill/core/browser/field_types.cc;l=38
+    """
     value: str
+    """
+    address field value, for example Jon Doe.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -37,6 +59,9 @@ class AddressFields:
 @dataclass(kw_only=True, slots=True)
 class Address:
     fields: list[AddressField]
+    """
+    fields and values defining an address.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -51,6 +76,10 @@ class AddressUI:
     """
 
     address_fields: list[AddressFields] = field(metadata={"cdp_name": "addressFields"})
+    """
+    A two dimension array containing the representation of values from an address
+    profile.
+    """
 
 
 class FillingStrategy(CDPStrEnum):
@@ -66,10 +95,34 @@ class FillingStrategy(CDPStrEnum):
 @dataclass(kw_only=True, slots=True)
 class FilledField:
     html_type: str = field(metadata={"cdp_name": "htmlType"})
+    """
+    The type of the field, e.g text, password etc.
+    """
     id: str
+    """
+    the html id
+    """
     name: str
+    """
+    the html name
+    """
     value: str
+    """
+    the field value
+    """
     autofill_type: str = field(metadata={"cdp_name": "autofillType"})
+    """
+    The actual field type, e.g FAMILY_NAME
+    """
     filling_strategy: FillingStrategy = field(metadata={"cdp_name": "fillingStrategy"})
+    """
+    The filling strategy
+    """
     frame_id: page.FrameId = field(metadata={"cdp_name": "frameId"})
+    """
+    The frame the field belongs to
+    """
     field_id: dom.BackendNodeId = field(metadata={"cdp_name": "fieldId"})
+    """
+    The form field's DOM node
+    """

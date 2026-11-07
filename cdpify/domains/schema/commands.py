@@ -19,3 +19,6 @@ class SchemaCommand(StrEnum):
 @dataclass(kw_only=True, slots=True)
 class GetDomainsResult:
     domains: list[Domain]
+    """
+    List of supported domains.
+    """

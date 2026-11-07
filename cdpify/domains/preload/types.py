@@ -23,10 +23,29 @@ class RuleSet:
 
     id: RuleSetId
     loader_id: network.LoaderId = field(metadata={"cdp_name": "loaderId"})
+    """
+    Identifies a document which the rule set is associated with.
+    """
     source_text: str = field(metadata={"cdp_name": "sourceText"})
+    """
+    Source text of JSON representing the rule set. If it comes from `<script>` tag, it
+    is the textContent of the node. Note that it is a JSON for valid case. See also: -
+    https://wicg.github.io/nav-speculation/speculation-rules.html -
+    https://github.com/WICG/nav-speculation/blob/main/triggers.md
+    """
     backend_node_id: dom.BackendNodeId | None = field(
         default=None, metadata={"cdp_name": "backendNodeId"}
     )
+    """
+    A speculation rule set is either added through an inline `<script>` tag or through
+    an external resource via the 'Speculation-Rules' HTTP header. For the first case, we
+    include the BackendNodeId of the relevant `<script>` tag. For the second case, we
+    include the external URL where the rule set was loaded from, and also RequestId if
+    Network domain is enabled. See also: -
+    https://wicg.github.io/nav-speculation/speculation-rules.html#speculation-rules-script
+    -
+    https://wicg.github.io/nav-speculation/speculation-rules.html#speculation-rules-header
+    """
     url: str | None = None
     request_id: network.RequestId | None = field(
         default=None, metadata={"cdp_name": "requestId"}
@@ -34,10 +53,21 @@ class RuleSet:
     error_type: RuleSetErrorType | None = field(
         default=None, metadata={"cdp_name": "errorType"}
     )
+    """
+    Error information `errorMessage` is null iff `errorType` is null.
+    """
     error_message: str | None = field(
         default=None, metadata={"cdp_name": "errorMessage"}
     )
+    """
+    TODO(https://crbug.com/1425354): Replace this property with structured error.
+    Deprecated in the Chrome DevTools Protocol.
+    """
     tag: str | None = None
+    """
+    For more details, see:
+    https://github.com/WICG/nav-speculation/blob/main/speculation-rules-tags.md
+    """
 
 
 class RuleSetErrorType(CDPStrEnum):

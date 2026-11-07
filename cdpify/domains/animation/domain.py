@@ -50,6 +50,9 @@ class Animation:
     ) -> GetCurrentTimeResult:
         """
         Returns the current time of the an animation.
+
+        Args:
+            id: Id of animation.
         """
         _params: dict[str, Any] = {}
         _params["id"] = id
@@ -79,6 +82,9 @@ class Animation:
     ) -> None:
         """
         Releases a set of animations to no longer be manipulated.
+
+        Args:
+            animations: List of animation ids to seek.
         """
         _params: dict[str, Any] = {}
         _params["animations"] = _encode_value(animations)
@@ -95,6 +101,9 @@ class Animation:
     ) -> ResolveAnimationResult:
         """
         Gets the remote object of the Animation.
+
+        Args:
+            animation_id: Animation id.
         """
         _params: dict[str, Any] = {}
         _params["animationId"] = animation_id
@@ -114,6 +123,13 @@ class Animation:
     ) -> None:
         """
         Seek a set of animations to a particular time within each animation.
+
+        Args:
+            animations: List of animation ids to seek.
+            current_time: Set each animation to the same time.
+            current_times: Set each animation to a different time. If set, should have
+                the same length as animations. Exactly one of currentTime or
+                currentTimes should be set.
         """
         _params: dict[str, Any] = {}
         _params["animations"] = _encode_value(animations)
@@ -135,6 +151,10 @@ class Animation:
     ) -> None:
         """
         Sets the paused state of a set of animations.
+
+        Args:
+            animations: Animations to set the pause state of.
+            paused: Paused state to set to.
         """
         _params: dict[str, Any] = {}
         _params["animations"] = _encode_value(animations)
@@ -152,6 +172,9 @@ class Animation:
     ) -> None:
         """
         Sets the playback rate of the document timeline.
+
+        Args:
+            playback_rate: Playback rate for animations on page
         """
         _params: dict[str, Any] = {}
         _params["playbackRate"] = playback_rate
@@ -170,6 +193,11 @@ class Animation:
     ) -> None:
         """
         Sets the timing of an animation node.
+
+        Args:
+            animation_id: Animation id.
+            duration: Duration of the animation.
+            delay: Delay of the animation.
         """
         _params: dict[str, Any] = {}
         _params["animationId"] = animation_id

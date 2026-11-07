@@ -26,3 +26,6 @@ class EntryAddedEvent:
     __cdp_event__: ClassVar[LogEvent] = LogEvent.ENTRY_ADDED
 
     entry: LogEntry
+    """
+    The entry.
+    """

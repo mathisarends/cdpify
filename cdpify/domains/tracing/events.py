@@ -24,13 +24,28 @@ class TracingEvent(StrEnum):
 
 @dataclass(kw_only=True, slots=True)
 class BufferUsageEvent:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     __cdp_event__: ClassVar[TracingEvent] = TracingEvent.BUFFER_USAGE
 
     percent_full: float | None = field(
         default=None, metadata={"cdp_name": "percentFull"}
     )
+    """
+    A number in range [0..1] that indicates the used size of event buffer as a fraction
+    of its total size.
+    """
     event_count: float | None = field(default=None, metadata={"cdp_name": "eventCount"})
+    """
+    An approximate number of events in the trace log.
+    """
     value: float | None = None
+    """
+    A number in range [0..1] that indicates the used size of event buffer as a fraction
+    of its total size.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -38,7 +53,7 @@ class DataCollectedEvent:
     """
     Contains a bucket of collected trace events. When tracing is stopped collected
     events will be sent as a sequence of dataCollected events followed by
-    tracingComplete event.
+    tracingComplete event. Experimental: this API may change or be removed.
     """
 
     __cdp_event__: ClassVar[TracingEvent] = TracingEvent.DATA_COLLECTED
@@ -56,10 +71,23 @@ class TracingCompleteEvent:
     __cdp_event__: ClassVar[TracingEvent] = TracingEvent.TRACING_COMPLETE
 
     data_loss_occurred: bool = field(metadata={"cdp_name": "dataLossOccurred"})
+    """
+    Indicates whether some trace data is known to have been lost, e.g. because the
+    trace ring buffer wrapped around.
+    """
     stream: io.StreamHandle | None = None
+    """
+    A handle of the stream that holds resulting trace data.
+    """
     trace_format: StreamFormat | None = field(
         default=None, metadata={"cdp_name": "traceFormat"}
     )
+    """
+    Trace data format of returned stream.
+    """
     stream_compression: StreamCompression | None = field(
         default=None, metadata={"cdp_name": "streamCompression"}
     )
+    """
+    Compression format of returned stream.
+    """

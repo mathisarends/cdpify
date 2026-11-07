@@ -31,12 +31,22 @@ class RequestStage(CDPStrEnum):
 @dataclass(kw_only=True, slots=True)
 class RequestPattern:
     url_pattern: str | None = field(default=None, metadata={"cdp_name": "urlPattern"})
+    """
+    Wildcards (`'*'` -> zero or more, `'?'` -> exactly one) are allowed. Escape
+    character is backslash. Omitting is equivalent to `"*"`.
+    """
     resource_type: network.ResourceType | None = field(
         default=None, metadata={"cdp_name": "resourceType"}
     )
+    """
+    If set, only requests for matching resource types will be intercepted.
+    """
     request_stage: RequestStage | None = field(
         default=None, metadata={"cdp_name": "requestStage"}
     )
+    """
+    Stage at which to begin intercepting requests. Default is Request.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -56,9 +66,21 @@ class AuthChallenge:
     """
 
     source: Literal["Server", "Proxy"] | None = None
+    """
+    Source of the authentication challenge.
+    """
     origin: str
+    """
+    Origin of the challenger.
+    """
     scheme: str
+    """
+    The authentication scheme used, such as basic or digest
+    """
     realm: str
+    """
+    The realm of the challenge. May be empty.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -68,5 +90,18 @@ class AuthChallengeResponse:
     """
 
     response: Literal["Default", "CancelAuth", "ProvideCredentials"]
+    """
+    The decision on what to do in response to the authorization challenge. Default
+    means deferring to the default behavior of the net stack, which will likely either
+    the Cancel authentication or display a popup dialog box.
+    """
     username: str | None = None
+    """
+    The username to provide, possibly empty. Should only be set if response is
+    ProvideCredentials.
+    """
     password: str | None = None
+    """
+    The password to provide, possibly empty. Should only be set if response is
+    ProvideCredentials.
+    """

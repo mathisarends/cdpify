@@ -51,7 +51,13 @@ class EnableParams:
     """
 
     state: CentralState
+    """
+    State of the simulated central.
+    """
     le_supported: bool = field(metadata={"cdp_name": "leSupported"})
+    """
+    If the simulated central supports low-energy.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -61,6 +67,9 @@ class SetSimulatedCentralStateParams:
     """
 
     state: CentralState
+    """
+    State of the simulated central.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -144,6 +153,9 @@ class AddServiceParams:
 @dataclass(kw_only=True, slots=True)
 class AddServiceResult:
     service_id: str = field(metadata={"cdp_name": "serviceId"})
+    """
+    An identifier that uniquely represents this service.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -170,6 +182,9 @@ class AddCharacteristicParams:
 @dataclass(kw_only=True, slots=True)
 class AddCharacteristicResult:
     characteristic_id: str = field(metadata={"cdp_name": "characteristicId"})
+    """
+    An identifier that uniquely represents this characteristic.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -196,6 +211,9 @@ class AddDescriptorParams:
 @dataclass(kw_only=True, slots=True)
 class AddDescriptorResult:
     descriptor_id: str = field(metadata={"cdp_name": "descriptorId"})
+    """
+    An identifier that uniquely represents this descriptor.
+    """
 
 
 @dataclass(kw_only=True, slots=True)

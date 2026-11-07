@@ -92,24 +92,36 @@ class EmulationCommand(StrEnum):
 @dataclass(kw_only=True, slots=True)
 class CanEmulateResult:
     result: bool
+    """
+    True if emulation is supported.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SetFocusEmulationEnabledParams:
     """
-    Enables or disables simulating a focused and active page.
+    Enables or disables simulating a focused and active page. Experimental: this API
+    may change or be removed.
     """
 
     enabled: bool
+    """
+    Whether to enable to disable focus emulation.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SetAutoDarkModeOverrideParams:
     """
-    Automatically render all web contents using a dark theme.
+    Automatically render all web contents using a dark theme. Experimental: this API
+    may change or be removed.
     """
 
     enabled: bool | None = None
+    """
+    Whether to enable or disable automatic dark mode. If not specified, any existing
+    override will be cleared.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -119,6 +131,9 @@ class SetCPUThrottlingRateParams:
     """
 
     rate: float
+    """
+    Throttling rate as a slowdown factor (1 is no throttle, 2 is 2x slowdown, etc).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -129,6 +144,10 @@ class SetDefaultBackgroundColorOverrideParams:
     """
 
     color: dom.RGBA | None = None
+    """
+    RGBA of the default background color. If not specified, any existing override will
+    be cleared.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -136,7 +155,7 @@ class SetSafeAreaInsetsOverrideParams:
     """
     Overrides the values for env(safe-area-inset-*) and env(safe-area-max-inset-*).
     Unset values will cause the respective variables to be undefined, even if previously
-    overridden.
+    overridden. Experimental: this API may change or be removed.
     """
 
     insets: SafeAreaInsets
@@ -150,7 +169,8 @@ class SetVirtualKeyboardGeometryOverrideParams:
     geometrychange events, and env(keyboard-inset-*) values on the inspected frame. The
     override applies independently of navigator.virtualKeyboard.overlaysContent so
     clients can preview overlay geometry without mutating page state. Values are rounded
-    to the nearest CSS pixel. Omitting the rect clears the override.
+    to the nearest CSS pixel. Omitting the rect clears the override. Experimental: this
+    API may change or be removed.
     """
 
     keyboard_rect: dom.Rect | None = field(
@@ -167,48 +187,128 @@ class SetDeviceMetricsOverrideParams:
     """
 
     width: int
+    """
+    Overriding width value in pixels (minimum 0, maximum 10000000). 0 disables the
+    override.
+    """
     height: int
+    """
+    Overriding height value in pixels (minimum 0, maximum 10000000). 0 disables the
+    override.
+    """
     device_scale_factor: float = field(metadata={"cdp_name": "deviceScaleFactor"})
+    """
+    Overriding device scale factor value. 0 disables the override.
+    """
     mobile: bool
+    """
+    Whether to emulate mobile device. This includes viewport meta tag, overlay
+    scrollbars, text autosizing and more.
+    """
     scale: float | None = None
+    """
+    Scale to apply to resulting view image. Experimental: this API may change or be
+    removed.
+    """
     screen_width: int | None = field(default=None, metadata={"cdp_name": "screenWidth"})
+    """
+    Overriding screen width value in pixels (minimum 0, maximum 10000000).
+    Experimental: this API may change or be removed.
+    """
     screen_height: int | None = field(
         default=None, metadata={"cdp_name": "screenHeight"}
     )
+    """
+    Overriding screen height value in pixels (minimum 0, maximum 10000000).
+    Experimental: this API may change or be removed.
+    """
     position_x: int | None = field(default=None, metadata={"cdp_name": "positionX"})
+    """
+    Overriding view X position on screen in pixels (minimum 0, maximum 10000000).
+    Experimental: this API may change or be removed.
+    """
     position_y: int | None = field(default=None, metadata={"cdp_name": "positionY"})
+    """
+    Overriding view Y position on screen in pixels (minimum 0, maximum 10000000).
+    Experimental: this API may change or be removed.
+    """
     dont_set_visible_size: bool | None = field(
         default=None, metadata={"cdp_name": "dontSetVisibleSize"}
     )
+    """
+    Do not set visible view size, rely upon explicit setVisibleSize call. Experimental:
+    this API may change or be removed.
+    """
     screen_orientation: ScreenOrientation | None = field(
         default=None, metadata={"cdp_name": "screenOrientation"}
     )
+    """
+    Screen orientation override.
+    """
     viewport: page.Viewport | None = None
+    """
+    If set, the visible area of the page will be overridden to this viewport. This
+    viewport change is not observed by the page, e.g. viewport-relative elements do not
+    change positions. Experimental: this API may change or be removed.
+    """
     display_feature: DisplayFeature | None = field(
         default=None, metadata={"cdp_name": "displayFeature"}
     )
+    """
+    If set, the display feature of a multi-segment screen. If not set, multi-segment
+    support is turned-off. Deprecated, use Emulation.setDisplayFeaturesOverride.
+    Experimental: this API may change or be removed. Deprecated in the Chrome DevTools
+    Protocol.
+    """
     device_posture: DevicePosture | None = field(
         default=None, metadata={"cdp_name": "devicePosture"}
     )
+    """
+    If set, the posture of a foldable device. If not set the posture is set to
+    continuous. Deprecated, use Emulation.setDevicePostureOverride. Experimental: this
+    API may change or be removed. Deprecated in the Chrome DevTools Protocol.
+    """
     scrollbar_type: Literal["overlay", "default"] | None = field(
         default=None, metadata={"cdp_name": "scrollbarType"}
     )
+    """
+    Scrollbar type. Default: `default`. Experimental: this API may change or be
+    removed.
+    """
     screen_orientation_lock_emulation: bool | None = field(
         default=None, metadata={"cdp_name": "screenOrientationLockEmulation"}
     )
+    """
+    If set to true, enables screen orientation lock emulation, which intercepts
+    screen.orientation.lock() calls from the page and reports orientation changes via
+    screenOrientationLockChanged events. This is useful for emulating mobile device
+    orientation lock behavior in responsive design mode. Experimental: this API may
+    change or be removed.
+    """
     viewport_meta: Literal["enable", "default"] | None = field(
         default=None, metadata={"cdp_name": "viewportMeta"}
     )
+    """
+    Viewport meta tag behavior. Default: `default`. Note: if `mobile` is `true`, the
+    viewport meta tag is always enabled. Experimental: this API may change or be
+    removed.
+    """
     text_layout_mode: Literal["mobile", "default"] | None = field(
         default=None, metadata={"cdp_name": "textLayoutMode"}
     )
+    """
+    Text layout mode. Default: `default`. Note: if `mobile` is `true`, mobile text
+    layout mode (text autosizing) is always enabled. Experimental: this API may change
+    or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SetDevicePostureOverrideParams:
     """
     Start reporting the given posture value to the Device Posture API. This override
-    can also be set in setDeviceMetricsOverride().
+    can also be set in setDeviceMetricsOverride(). Experimental: this API may change or
+    be removed.
     """
 
     posture: DevicePosture
@@ -218,7 +318,8 @@ class SetDevicePostureOverrideParams:
 class SetDisplayFeaturesOverrideParams:
     """
     Start using the given display features to pupulate the Viewport Segments API. This
-    override can also be set in setDeviceMetricsOverride().
+    override can also be set in setDeviceMetricsOverride(). Experimental: this API may
+    change or be removed.
     """
 
     features: list[DisplayFeature]
@@ -226,18 +327,42 @@ class SetDisplayFeaturesOverrideParams:
 
 @dataclass(kw_only=True, slots=True)
 class SetScrollbarsHiddenParams:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     hidden: bool
+    """
+    Whether scrollbars should be always hidden.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SetDocumentCookieDisabledParams:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     disabled: bool
+    """
+    Whether document.coookie API should be disabled.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SetEmitTouchEventsForMouseParams:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     enabled: bool
+    """
+    Whether touch emulation based on mouse input should be enabled.
+    """
     configuration: Literal["mobile", "desktop"] | None = None
+    """
+    Touch/gesture events configuration. Default: current platform.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -247,7 +372,13 @@ class SetEmulatedMediaParams:
     """
 
     media: str | None = None
+    """
+    Media type to emulate. Empty string disables the override.
+    """
     features: list[MediaFeature] | None = None
+    """
+    Media features to emulate.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -265,6 +396,11 @@ class SetEmulatedVisionDeficiencyParams:
         "protanopia",
         "tritanopia",
     ]
+    """
+    Vision deficiency to emulate. Order: best-effort emulations come first, followed by
+    any physiologically accurate emulations for medically recognized color vision
+    deficiencies.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -284,18 +420,43 @@ class SetGeolocationOverrideParams:
     """
 
     latitude: float | None = None
+    """
+    Mock latitude
+    """
     longitude: float | None = None
+    """
+    Mock longitude
+    """
     accuracy: float | None = None
+    """
+    Mock accuracy
+    """
     altitude: float | None = None
+    """
+    Mock altitude
+    """
     altitude_accuracy: float | None = field(
         default=None, metadata={"cdp_name": "altitudeAccuracy"}
     )
+    """
+    Mock altitudeAccuracy
+    """
     heading: float | None = None
+    """
+    Mock heading
+    """
     speed: float | None = None
+    """
+    Mock speed
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetOverriddenSensorInformationParams:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     type: SensorType
 
 
@@ -313,7 +474,7 @@ class SetSensorOverrideEnabledParams:
     Sensor.start() will use a virtual sensor as backend rather than fetching data from a
     real hardware sensor. Otherwise, existing virtual sensor-backend Sensor objects will
     fire an error event and new calls to Sensor.start() will attempt to use a real
-    sensor instead.
+    sensor instead. Experimental: this API may change or be removed.
     """
 
     enabled: bool
@@ -325,7 +486,7 @@ class SetSensorOverrideEnabledParams:
 class SetSensorOverrideReadingsParams:
     """
     Updates the sensor readings reported by a sensor type previously overridden by
-    setSensorOverrideEnabled.
+    setSensorOverrideEnabled. Experimental: this API may change or be removed.
     """
 
     type: SensorType
@@ -338,7 +499,7 @@ class SetPressureSourceOverrideEnabledParams:
     Overrides a pressure source of a given type, as used by the Compute Pressure API,
     so that updates to PressureObserver.observe() are provided via
     setPressureStateOverride instead of being retrieved from platform-provided telemetry
-    data.
+    data. Experimental: this API may change or be removed.
     """
 
     enabled: bool
@@ -351,7 +512,7 @@ class SetPressureStateOverrideParams:
     """
     Provides a given pressure state that will be processed and eventually be delivered
     to PressureObserver users. |source| must have been previously overridden by
-    setPressureSourceOverrideEnabled.
+    setPressureSourceOverrideEnabled. Experimental: this API may change or be removed.
     """
 
     source: PressureSource
@@ -365,25 +526,39 @@ class SetIdleOverrideParams:
     """
 
     is_user_active: bool = field(metadata={"cdp_name": "isUserActive"})
+    """
+    Mock isUserActive
+    """
     is_screen_unlocked: bool = field(metadata={"cdp_name": "isScreenUnlocked"})
+    """
+    Mock isScreenUnlocked
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SetNavigatorOverridesParams:
     """
-    Overrides value returned by the javascript navigator object.
+    Overrides value returned by the javascript navigator object. Experimental: this API
+    may change or be removed. Deprecated in the Chrome DevTools Protocol.
     """
 
     platform: str
+    """
+    The platform navigator.platform should return.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SetPageScaleFactorParams:
     """
-    Sets a specified page scale factor.
+    Sets a specified page scale factor. Experimental: this API may change or be
+    removed.
     """
 
     page_scale_factor: float = field(metadata={"cdp_name": "pageScaleFactor"})
+    """
+    Page scale factor.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -393,6 +568,9 @@ class SetScriptExecutionDisabledParams:
     """
 
     value: bool
+    """
+    Whether script execution should be disabled in the page.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -402,9 +580,15 @@ class SetTouchEmulationEnabledParams:
     """
 
     enabled: bool
+    """
+    Whether the touch event emulation should be enabled.
+    """
     max_touch_points: int | None = field(
         default=None, metadata={"cdp_name": "maxTouchPoints"}
     )
+    """
+    Maximum touch points supported. Defaults to one.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -412,17 +596,28 @@ class SetVirtualTimePolicyParams:
     """
     Turns on virtual time for all frames (replacing real-time with a synthetic time
     source) and sets the current virtual time policy. Note this supersedes any previous
-    time budget.
+    time budget. Experimental: this API may change or be removed.
     """
 
     policy: VirtualTimePolicy
     budget: float | None = None
+    """
+    If set, after this many virtual milliseconds have elapsed virtual time will be
+    paused and a virtualTimeBudgetExpired event is sent.
+    """
     max_virtual_time_task_starvation_count: int | None = field(
         default=None, metadata={"cdp_name": "maxVirtualTimeTaskStarvationCount"}
     )
+    """
+    If set this specifies the maximum number of tasks that can be run before virtual is
+    forced forwards to prevent deadlock.
+    """
     initial_virtual_time: network.TimeSinceEpoch | None = field(
         default=None, metadata={"cdp_name": "initialVirtualTime"}
     )
+    """
+    If set, base::Time::Now will be overridden to initially return this value.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -430,15 +625,24 @@ class SetVirtualTimePolicyResult:
     virtual_time_ticks_base: float = field(
         metadata={"cdp_name": "virtualTimeTicksBase"}
     )
+    """
+    Absolute timestamp at which virtual time was first enabled (up time in
+    milliseconds).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SetLocaleOverrideParams:
     """
-    Overrides default host system locale with the specified one.
+    Overrides default host system locale with the specified one. Experimental: this API
+    may change or be removed.
     """
 
     locale: str | None = None
+    """
+    ICU style C locale (e.g. "en_US"). If not specified or empty, disables the override
+    and restores default host system locale.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -448,6 +652,11 @@ class SetTimezoneOverrideParams:
     """
 
     timezone_id: str = field(metadata={"cdp_name": "timezoneId"})
+    """
+    The timezone identifier. List of supported timezones:
+    https://source.chromium.org/chromium/chromium/deps/icu.git/+/faee8bc70570192d82d2978a71e2a615788597d1:source/data/misc/metaZones.txt
+    If empty, disables the override and restores default host system timezone.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -455,43 +664,72 @@ class SetVisibleSizeParams:
     """
     Resizes the frame/viewport of the page. Note that this does not affect the frame's
     container (e.g. browser window). Can be used to produce screenshots of the specified
-    size. Not supported on Android.
+    size. Not supported on Android. Experimental: this API may change or be removed.
+    Deprecated in the Chrome DevTools Protocol.
     """
 
     width: int
+    """
+    Frame width (DIP).
+    """
     height: int
+    """
+    Frame height (DIP).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SetDisabledImageTypesParams:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     image_types: list[DisabledImageType] = field(metadata={"cdp_name": "imageTypes"})
+    """
+    Image types to disable.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SetDataSaverOverrideParams:
     """
-    Override the value of navigator.connection.saveData
+    Override the value of navigator.connection.saveData Experimental: this API may
+    change or be removed.
     """
 
     data_saver_enabled: bool | None = field(
         default=None, metadata={"cdp_name": "dataSaverEnabled"}
     )
+    """
+    Override value. Omitting the parameter disables the override.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SetHardwareConcurrencyOverrideParams:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     hardware_concurrency: int = field(metadata={"cdp_name": "hardwareConcurrency"})
+    """
+    Hardware concurrency to report
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SetCPUPerformanceOverrideParams:
     """
-    Overrides the value of navigator.cpuPerformance
+    Overrides the value of navigator.cpuPerformance Experimental: this API may change
+    or be removed.
     """
 
     performance_tier: Literal["unknown", "low", "mid", "high", "ultra"] | None = field(
         default=None, metadata={"cdp_name": "performanceTier"}
     )
+    """
+    Override value. Omitting the parameter disables the override.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -502,22 +740,39 @@ class SetUserAgentOverrideParams:
     """
 
     user_agent: str = field(metadata={"cdp_name": "userAgent"})
+    """
+    User agent to use.
+    """
     accept_language: str | None = field(
         default=None, metadata={"cdp_name": "acceptLanguage"}
     )
+    """
+    Browser language to emulate.
+    """
     platform: str | None = None
+    """
+    The platform navigator.platform should return.
+    """
     user_agent_metadata: UserAgentMetadata | None = field(
         default=None, metadata={"cdp_name": "userAgentMetadata"}
     )
+    """
+    To be sent in Sec-CH-UA-* headers and returned in navigator.userAgentData
+    Experimental: this API may change or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SetAutomationOverrideParams:
     """
-    Allows overriding the automation flag.
+    Allows overriding the automation flag. Experimental: this API may change or be
+    removed.
     """
 
     enabled: bool
+    """
+    Whether the override should be enabled.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -525,10 +780,14 @@ class SetSmallViewportHeightDifferenceOverrideParams:
     """
     Allows overriding the difference between the small and large viewport sizes, which
     determine the value of the `svh` and `lvh` unit, respectively. Only supported for
-    top-level frames.
+    top-level frames. Experimental: this API may change or be removed.
     """
 
     difference: int
+    """
+    This will cause an element of size 100svh to be `difference` pixels smaller than an
+    element of size 100lvh.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -539,23 +798,56 @@ class GetScreenInfosResult:
 @dataclass(kw_only=True, slots=True)
 class AddScreenParams:
     """
-    Add a new screen to the device. Only supported in headless mode.
+    Add a new screen to the device. Only supported in headless mode. Experimental: this
+    API may change or be removed.
     """
 
     left: int
+    """
+    Offset of the left edge of the screen in pixels.
+    """
     top: int
+    """
+    Offset of the top edge of the screen in pixels.
+    """
     width: int
+    """
+    The width of the screen in pixels.
+    """
     height: int
+    """
+    The height of the screen in pixels.
+    """
     work_area_insets: WorkAreaInsets | None = field(
         default=None, metadata={"cdp_name": "workAreaInsets"}
     )
+    """
+    Specifies the screen's work area. Default is entire screen.
+    """
     device_pixel_ratio: float | None = field(
         default=None, metadata={"cdp_name": "devicePixelRatio"}
     )
+    """
+    Specifies the screen's device pixel ratio. Default is 1.
+    """
     rotation: int | None = None
+    """
+    Specifies the screen's rotation angle. Available values are 0, 90, 180 and 270.
+    Default is 0.
+    """
     color_depth: int | None = field(default=None, metadata={"cdp_name": "colorDepth"})
+    """
+    Specifies the screen's color depth in bits. Default is 24.
+    """
     label: str | None = None
+    """
+    Specifies the descriptive label for the screen. Default is none.
+    """
     is_internal: bool | None = field(default=None, metadata={"cdp_name": "isInternal"})
+    """
+    Indicates whether the screen is internal to the device or external, attached to the
+    device. Default is false.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -566,24 +858,59 @@ class AddScreenResult:
 @dataclass(kw_only=True, slots=True)
 class UpdateScreenParams:
     """
-    Updates specified screen parameters. Only supported in headless mode.
+    Updates specified screen parameters. Only supported in headless mode. Experimental:
+    this API may change or be removed.
     """
 
     screen_id: ScreenId = field(metadata={"cdp_name": "screenId"})
+    """
+    Target screen identifier.
+    """
     left: int | None = None
+    """
+    Offset of the left edge of the screen in pixels.
+    """
     top: int | None = None
+    """
+    Offset of the top edge of the screen in pixels.
+    """
     width: int | None = None
+    """
+    The width of the screen in pixels.
+    """
     height: int | None = None
+    """
+    The height of the screen in pixels.
+    """
     work_area_insets: WorkAreaInsets | None = field(
         default=None, metadata={"cdp_name": "workAreaInsets"}
     )
+    """
+    Specifies the screen's work area.
+    """
     device_pixel_ratio: float | None = field(
         default=None, metadata={"cdp_name": "devicePixelRatio"}
     )
+    """
+    Specifies the screen's device pixel ratio.
+    """
     rotation: int | None = None
+    """
+    Specifies the screen's rotation angle. Available values are 0, 90, 180 and 270.
+    """
     color_depth: int | None = field(default=None, metadata={"cdp_name": "colorDepth"})
+    """
+    Specifies the screen's color depth in bits.
+    """
     label: str | None = None
+    """
+    Specifies the descriptive label for the screen.
+    """
     is_internal: bool | None = field(default=None, metadata={"cdp_name": "isInternal"})
+    """
+    Indicates whether the screen is internal to the device or external, attached to the
+    device. Default is false.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -594,7 +921,8 @@ class UpdateScreenResult:
 @dataclass(kw_only=True, slots=True)
 class RemoveScreenParams:
     """
-    Remove screen from the device. Only supported in headless mode.
+    Remove screen from the device. Only supported in headless mode. Experimental: this
+    API may change or be removed.
     """
 
     screen_id: ScreenId = field(metadata={"cdp_name": "screenId"})
@@ -605,7 +933,8 @@ class SetPrimaryScreenParams:
     """
     Set primary screen. Only supported in headless mode. Note that this changes the
     coordinate system origin to the top-left of the new primary screen, updating the
-    bounds and work areas of all existing screens accordingly.
+    bounds and work areas of all existing screens accordingly. Experimental: this API
+    may change or be removed.
     """
 
     screen_id: ScreenId = field(metadata={"cdp_name": "screenId"})

@@ -49,6 +49,13 @@ class Fetch:
         """
         Enables issuing of requestPaused events. A request will be paused until client
         calls one of failRequest, fulfillRequest or continueRequest/continueWithAuth.
+
+        Args:
+            patterns: If specified, only requests matching any of these patterns will
+                produce fetchRequested event and will be paused until clients response.
+                If not set, all requests will be affected.
+            handle_auth_requests: If true, authRequired events will be issued and
+                requests will be paused expecting a call to continueWithAuth.
         """
         _params: dict[str, Any] = {}
         if patterns is not None:
@@ -69,6 +76,10 @@ class Fetch:
     ) -> None:
         """
         Causes the request to fail with specified reason.
+
+        Args:
+            request_id: An id the client received in requestPaused event.
+            error_reason: Causes the request to fail with the given reason.
         """
         _params: dict[str, Any] = {}
         _params["requestId"] = _encode_value(request_id)
@@ -91,6 +102,22 @@ class Fetch:
     ) -> None:
         """
         Provides response to the request.
+
+        Args:
+            request_id: An id the client received in requestPaused event.
+            response_code: An HTTP response code.
+            response_headers: Response headers.
+            binary_response_headers: Alternative way of specifying response headers as a
+                \\0-separated series of name: value pairs. Prefer the above method
+                unless you need to represent some non-UTF8 values that can't be
+                transmitted over the protocol as text. (Encoded as a base64 string when
+                passed over JSON)
+            body: A response body. If absent, original response body will be used if the
+                request is intercepted at the response stage and empty body will be used
+                if the request is intercepted at the request stage. (Encoded as a base64
+                string when passed over JSON)
+            response_phrase: A textual representation of responseCode. If absent, a
+                standard phrase matching responseCode is used.
         """
         _params: dict[str, Any] = {}
         _params["requestId"] = _encode_value(request_id)
@@ -121,6 +148,19 @@ class Fetch:
     ) -> None:
         """
         Continues the request, optionally modifying some of its parameters.
+
+        Args:
+            request_id: An id the client received in requestPaused event.
+            url: If set, the request url will be modified in a way that's not observable
+                by page.
+            method: If set, the request method is overridden.
+            post_data: If set, overrides the post data in the request. (Encoded as a
+                base64 string when passed over JSON)
+            headers: If set, overrides the request headers. Note that the overrides do
+                not extend to subsequent redirect hops, if a redirect happens. Another
+                override may be applied to a different request produced by a redirect.
+            intercept_response: If set, overrides response interception behavior for
+                this request. Experimental: this API may change or be removed.
         """
         _params: dict[str, Any] = {}
         _params["requestId"] = _encode_value(request_id)
@@ -149,6 +189,10 @@ class Fetch:
         """
         Continues a request supplying authChallengeResponse following authRequired
         event.
+
+        Args:
+            request_id: An id the client received in authRequired event.
+            auth_challenge_response: Response to  with an authChallenge.
         """
         _params: dict[str, Any] = {}
         _params["requestId"] = _encode_value(request_id)
@@ -171,7 +215,21 @@ class Fetch:
         """
         Continues loading of the paused response, optionally modifying the response
         headers. If either responseCode or headers are modified, all of them must be
-        present.
+        present. Experimental: this API may change or be removed.
+
+        Args:
+            request_id: An id the client received in requestPaused event.
+            response_code: An HTTP response code. If absent, original response code will
+                be used.
+            response_phrase: A textual representation of responseCode. If absent, a
+                standard phrase matching responseCode is used.
+            response_headers: Response headers. If absent, original response headers
+                will be used.
+            binary_response_headers: Alternative way of specifying response headers as a
+                \\0-separated series of name: value pairs. Prefer the above method
+                unless you need to represent some non-UTF8 values that can't be
+                transmitted over the protocol as text. (Encoded as a base64 string when
+                passed over JSON)
         """
         _params: dict[str, Any] = {}
         _params["requestId"] = _encode_value(request_id)
@@ -203,6 +261,9 @@ class Fetch:
         is not available for redirects. Requests paused in the _redirect received_ state
         may be differentiated by `responseCode` and presence of `location` response
         header, see comments to `requestPaused` for details.
+
+        Args:
+            request_id: Identifier for the intercepted request to get body for.
         """
         _params: dict[str, Any] = {}
         _params["requestId"] = _encode_value(request_id)

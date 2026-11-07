@@ -18,3 +18,6 @@ class CrashReportContextEntry:
     key: str
     value: str
     frame_id: page.FrameId = field(metadata={"cdp_name": "frameId"})
+    """
+    The ID of the frame where the key-value pair was set.
+    """

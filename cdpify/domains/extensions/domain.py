@@ -32,6 +32,10 @@ class Extensions:
     ) -> None:
         """
         Runs an extension default action.
+
+        Args:
+            id: Extension id.
+            target_id: A tab target ID to trigger the default extension action on.
         """
         _params: dict[str, Any] = {}
         _params["id"] = id
@@ -51,6 +55,10 @@ class Extensions:
         """
         Installs an unpacked extension from the filesystem similar to --load-extension
         CLI flags. Returns extension ID once the extension has been installed.
+
+        Args:
+            path: Absolute file path.
+            enable_in_incognito: Enable the extension in incognito
         """
         _params: dict[str, Any] = {}
         _params["path"] = path
@@ -82,6 +90,9 @@ class Extensions:
     ) -> None:
         """
         Uninstalls an unpacked extension (others not supported) from the profile.
+
+        Args:
+            id: Extension id.
         """
         _params: dict[str, Any] = {}
         _params["id"] = id
@@ -101,6 +112,11 @@ class Extensions:
         """
         Gets data from extension storage in the given `storageArea`. If `keys` is
         specified, these are used to filter the result.
+
+        Args:
+            id: ID of extension.
+            storage_area: StorageArea to retrieve data from.
+            keys: Keys to retrieve.
         """
         _params: dict[str, Any] = {}
         _params["id"] = id
@@ -123,6 +139,11 @@ class Extensions:
     ) -> None:
         """
         Removes `keys` from extension storage in the given `storageArea`.
+
+        Args:
+            id: ID of extension.
+            storage_area: StorageArea to remove data from.
+            keys: Keys to remove.
         """
         _params: dict[str, Any] = {}
         _params["id"] = id
@@ -142,6 +163,10 @@ class Extensions:
     ) -> None:
         """
         Clears extension storage in the given `storageArea`.
+
+        Args:
+            id: ID of extension.
+            storage_area: StorageArea to remove data from.
         """
         _params: dict[str, Any] = {}
         _params["id"] = id
@@ -162,6 +187,11 @@ class Extensions:
         """
         Sets `values` in extension storage in the given `storageArea`. The provided
         `values` will be merged with existing values in the storage area.
+
+        Args:
+            id: ID of extension.
+            storage_area: StorageArea to set data in.
+            values: Values to set.
         """
         _params: dict[str, Any] = {}
         _params["id"] = id

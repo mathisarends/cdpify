@@ -37,6 +37,14 @@ class Autofill:
         Trigger autofill on a form identified by the fieldId. If the field and related
         form cannot be autofilled, returns an error. Returns once the values have been
         applied to the form fields.
+
+        Args:
+            field_id: Identifies a field that serves as an anchor for autofill.
+            frame_id: Identifies the frame that field belongs to.
+            card: Credit card information to fill out the form. Credit card data is not
+                saved.  Mutually exclusive with `address`.
+            address: Address to fill out the form. Address data is not saved. Mutually
+                exclusive with `card`.
         """
         _params: dict[str, Any] = {}
         _params["fieldId"] = _encode_value(field_id)

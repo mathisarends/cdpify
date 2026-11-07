@@ -49,7 +49,20 @@ class Browser:
         browser_context_id: BrowserContextID | None = None,
     ) -> None:
         """
-        Set permission settings for given embedding and embedded origins.
+        Set permission settings for given embedding and embedded origins. Experimental:
+        this API may change or be removed.
+
+        Args:
+            permission: Descriptor of permission to override.
+            setting: Setting of the permission.
+            origin: Embedding origin the permission applies to, all origins if not
+                specified.
+            embedded_origin: Embedded origin the permission applies to. It is ignored
+                unless the embedding origin is present and valid. If the embedding
+                origin is provided but the embedded origin isn't, the embedding origin
+                is used as the embedded origin.
+            browser_context_id: Context to override. When omitted, default browser
+                context is used.
         """
         _params: dict[str, Any] = {}
         _params["permission"] = _encode_value(permission)
@@ -76,7 +89,13 @@ class Browser:
     ) -> None:
         """
         Grant specific permissions to the given origin and reject all others.
-        Deprecated. Use setPermission instead.
+        Deprecated. Use setPermission instead. Experimental: this API may change or be
+        removed. Deprecated in the Chrome DevTools Protocol.
+
+        Args:
+            origin: Origin the permission applies to, all origins if not specified.
+            browser_context_id: BrowserContext to override permissions. When omitted,
+                default browser context is used.
         """
         _params: dict[str, Any] = {}
         _params["permissions"] = _encode_value(permissions)
@@ -97,6 +116,10 @@ class Browser:
     ) -> None:
         """
         Reset all permission management for all origins.
+
+        Args:
+            browser_context_id: BrowserContext to reset permissions. When omitted,
+                default browser context is used.
         """
         _params: dict[str, Any] = {}
         if browser_context_id is not None:
@@ -116,7 +139,18 @@ class Browser:
         events_enabled: bool | None = None,
     ) -> None:
         """
-        Set the behavior when downloading a file.
+        Set the behavior when downloading a file. Experimental: this API may change or
+        be removed.
+
+        Args:
+            behavior: Whether to allow all or deny all download requests, or use default
+                Chrome behavior if available (otherwise deny). |allowAndName| allows
+                download and names files according to their download guids.
+            browser_context_id: BrowserContext to set download behavior. When omitted,
+                default browser context is used.
+            download_path: The default path to save downloaded files to. This is
+                required if behavior is set to 'allow' or 'allowAndName'.
+            events_enabled: Whether to emit download events (defaults to false).
         """
         _params: dict[str, Any] = {}
         _params["behavior"] = behavior
@@ -139,7 +173,13 @@ class Browser:
         browser_context_id: BrowserContextID | None = None,
     ) -> None:
         """
-        Cancel a download if in progress
+        Cancel a download if in progress Experimental: this API may change or be
+        removed.
+
+        Args:
+            guid: Global unique identifier of the download.
+            browser_context_id: BrowserContext to perform the action in. When omitted,
+                default browser context is used.
         """
         _params: dict[str, Any] = {}
         _params["guid"] = guid
@@ -166,7 +206,8 @@ class Browser:
         self,
     ) -> None:
         """
-        Crashes browser on the main thread.
+        Crashes browser on the main thread. Experimental: this API may change or be
+        removed.
         """
         await self._executor.execute(
             method=BrowserCommand.CRASH,
@@ -177,7 +218,7 @@ class Browser:
         self,
     ) -> None:
         """
-        Crashes GPU process.
+        Crashes GPU process. Experimental: this API may change or be removed.
         """
         await self._executor.execute(
             method=BrowserCommand.CRASH_GPU_PROCESS,
@@ -201,7 +242,8 @@ class Browser:
     ) -> GetBrowserCommandLineResult:
         """
         Returns the command line switches for the browser process if, and only if
-        --enable-automation is on the commandline.
+        --enable-automation is on the commandline. Experimental: this API may change or
+        be removed.
         """
         result = await self._executor.execute(
             method=BrowserCommand.GET_BROWSER_COMMAND_LINE,
@@ -217,7 +259,14 @@ class Browser:
         """
         Adds or updates a mock camera in the shared video capture device list for test
         automation. The mock camera is not scoped to a particular page or frame and is
-        removed when the DevTools session that created it disconnects.
+        removed when the DevTools session that created it disconnects. Experimental:
+        this API may change or be removed.
+
+        Args:
+            device_id: Required non-empty identifier for the mock camera within the
+                current DevTools session. Different sessions can use the same identifier
+                without replacing each other's cameras. This is not the
+                MediaDeviceInfo.deviceId exposed to the page.
         """
         _params: dict[str, Any] = {}
         _params["deviceId"] = device_id
@@ -234,7 +283,13 @@ class Browser:
         delta: bool | None = None,
     ) -> GetHistogramsResult:
         """
-        Get Chrome histograms.
+        Get Chrome histograms. Experimental: this API may change or be removed.
+
+        Args:
+            query: Requested substring in name. Only histograms which have query as a
+                substring in their name are extracted. An empty or absent query returns
+                all histograms.
+            delta: If true, retrieve delta since last delta call.
         """
         _params: dict[str, Any] = {}
         if query is not None:
@@ -255,7 +310,12 @@ class Browser:
         delta: bool | None = None,
     ) -> GetHistogramResult:
         """
-        Get a Chrome histogram by name.
+        Get a Chrome histogram by name. Experimental: this API may change or be
+        removed.
+
+        Args:
+            name: Requested histogram name.
+            delta: If true, retrieve delta since last delta call.
         """
         _params: dict[str, Any] = {}
         _params["name"] = name
@@ -274,7 +334,11 @@ class Browser:
         window_id: WindowID,
     ) -> GetWindowBoundsResult:
         """
-        Get position and size of the browser window.
+        Get position and size of the browser window. Experimental: this API may change
+        or be removed.
+
+        Args:
+            window_id: Browser window id.
         """
         _params: dict[str, Any] = {}
         _params["windowId"] = _encode_value(window_id)
@@ -291,7 +355,12 @@ class Browser:
         target_id: target.TargetID | None = None,
     ) -> GetWindowForTargetResult:
         """
-        Get the browser window that contains the devtools target.
+        Get the browser window that contains the devtools target. Experimental: this
+        API may change or be removed.
+
+        Args:
+            target_id: Devtools agent host id. If called as a part of the session,
+                associated targetId is used.
         """
         _params: dict[str, Any] = {}
         if target_id is not None:
@@ -310,7 +379,14 @@ class Browser:
         bounds: Bounds,
     ) -> None:
         """
-        Set position and/or size of the browser window.
+        Set position and/or size of the browser window. Experimental: this API may
+        change or be removed.
+
+        Args:
+            window_id: Browser window id.
+            bounds: New window bounds. The 'minimized', 'maximized' and 'fullscreen'
+                states cannot be combined with 'left', 'top', 'width' or 'height'.
+                Leaves unspecified fields unchanged.
         """
         _params: dict[str, Any] = {}
         _params["windowId"] = _encode_value(window_id)
@@ -330,6 +406,14 @@ class Browser:
     ) -> None:
         """
         Set size of the browser contents resizing browser window as necessary.
+        Experimental: this API may change or be removed.
+
+        Args:
+            window_id: Browser window id.
+            width: The window contents width in DIP. Assumes current width if omitted.
+                Must be specified if 'height' is omitted.
+            height: The window contents height in DIP. Assumes current height if
+                omitted. Must be specified if 'width' is omitted.
         """
         _params: dict[str, Any] = {}
         _params["windowId"] = _encode_value(window_id)
@@ -350,7 +434,11 @@ class Browser:
         image: str | None = None,
     ) -> None:
         """
-        Set dock tile details, platform-specific.
+        Set dock tile details, platform-specific. Experimental: this API may change or
+        be removed.
+
+        Args:
+            image: Png encoded image. (Encoded as a base64 string when passed over JSON)
         """
         _params: dict[str, Any] = {}
         if badge_label is not None:
@@ -369,7 +457,8 @@ class Browser:
         command_id: BrowserCommandId,
     ) -> None:
         """
-        Invoke custom browser commands used by telemetry.
+        Invoke custom browser commands used by telemetry. Experimental: this API may
+        change or be removed.
         """
         _params: dict[str, Any] = {}
         _params["commandId"] = _encode_value(command_id)
@@ -401,7 +490,8 @@ class Browser:
     ) -> GetGlobalPrivacyControlResult:
         """
         Gets the current globally-applied privacy control status See
-        https://www.w3.org/TR/gpc/#get-global-privacy-control
+        https://www.w3.org/TR/gpc/#get-global-privacy-control Experimental: this API may
+        change or be removed.
         """
         result = await self._executor.execute(
             method=BrowserCommand.GET_GLOBAL_PRIVACY_CONTROL,
@@ -416,7 +506,8 @@ class Browser:
     ) -> SetGlobalPrivacyControlResult:
         """
         Sets and then gets the current globally-applied privacy control status See
-        https://www.w3.org/TR/gpc/#set-global-privacy-control
+        https://www.w3.org/TR/gpc/#set-global-privacy-control Experimental: this API may
+        change or be removed.
         """
         _params: dict[str, Any] = {}
         _params["gpc"] = gpc

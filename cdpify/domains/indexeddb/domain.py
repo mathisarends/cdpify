@@ -39,6 +39,15 @@ class IndexedDB:
     ) -> None:
         """
         Clears all entries from an object store.
+
+        Args:
+            security_origin: At least and at most one of securityOrigin, storageKey, or
+                storageBucket must be specified. Security origin.
+            storage_key: Storage key.
+            storage_bucket: Storage bucket. If not specified, it uses the default
+                bucket.
+            database_name: Database name.
+            object_store_name: Object store name.
         """
         _params: dict[str, Any] = {}
         if security_origin is not None:
@@ -65,6 +74,14 @@ class IndexedDB:
     ) -> None:
         """
         Deletes a database.
+
+        Args:
+            security_origin: At least and at most one of securityOrigin, storageKey, or
+                storageBucket must be specified. Security origin.
+            storage_key: Storage key.
+            storage_bucket: Storage bucket. If not specified, it uses the default
+                bucket.
+            database_name: Database name.
         """
         _params: dict[str, Any] = {}
         if security_origin is not None:
@@ -92,6 +109,14 @@ class IndexedDB:
     ) -> None:
         """
         Delete a range of entries from an object store
+
+        Args:
+            security_origin: At least and at most one of securityOrigin, storageKey, or
+                storageBucket must be specified. Security origin.
+            storage_key: Storage key.
+            storage_bucket: Storage bucket. If not specified, it uses the default
+                bucket.
+            key_range: Range of entry keys to delete
         """
         _params: dict[str, Any] = {}
         if security_origin is not None:
@@ -146,6 +171,20 @@ class IndexedDB:
     ) -> RequestDataResult:
         """
         Requests data from object store or index.
+
+        Args:
+            security_origin: At least and at most one of securityOrigin, storageKey, or
+                storageBucket must be specified. Security origin.
+            storage_key: Storage key.
+            storage_bucket: Storage bucket. If not specified, it uses the default
+                bucket.
+            database_name: Database name.
+            object_store_name: Object store name.
+            index_name: Index name. If not specified, it performs an object store data
+                request.
+            skip_count: Number of records to skip.
+            page_size: Number of records to fetch.
+            key_range: Key range.
         """
         _params: dict[str, Any] = {}
         if security_origin is not None:
@@ -180,6 +219,15 @@ class IndexedDB:
     ) -> GetMetadataResult:
         """
         Gets metadata of an object store.
+
+        Args:
+            security_origin: At least and at most one of securityOrigin, storageKey, or
+                storageBucket must be specified. Security origin.
+            storage_key: Storage key.
+            storage_bucket: Storage bucket. If not specified, it uses the default
+                bucket.
+            database_name: Database name.
+            object_store_name: Object store name.
         """
         _params: dict[str, Any] = {}
         if security_origin is not None:
@@ -207,6 +255,14 @@ class IndexedDB:
     ) -> RequestDatabaseResult:
         """
         Requests database with given name in given frame.
+
+        Args:
+            security_origin: At least and at most one of securityOrigin, storageKey, or
+                storageBucket must be specified. Security origin.
+            storage_key: Storage key.
+            storage_bucket: Storage bucket. If not specified, it uses the default
+                bucket.
+            database_name: Database name.
         """
         _params: dict[str, Any] = {}
         if security_origin is not None:
@@ -232,6 +288,13 @@ class IndexedDB:
     ) -> RequestDatabaseNamesResult:
         """
         Requests database names for given security origin.
+
+        Args:
+            security_origin: At least and at most one of securityOrigin, storageKey, or
+                storageBucket must be specified. Security origin.
+            storage_key: Storage key.
+            storage_bucket: Storage bucket. If not specified, it uses the default
+                bucket.
         """
         _params: dict[str, Any] = {}
         if security_origin is not None:

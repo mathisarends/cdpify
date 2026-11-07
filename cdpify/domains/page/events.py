@@ -70,10 +70,21 @@ class FileChooserOpenedEvent:
     __cdp_event__: ClassVar[PageEvent] = PageEvent.FILE_CHOOSER_OPENED
 
     frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
+    """
+    Id of the frame containing input node. Experimental: this API may change or be
+    removed.
+    """
     mode: Literal["selectSingle", "selectMultiple"]
+    """
+    Input mode.
+    """
     backend_node_id: dom.BackendNodeId | None = field(
         default=None, metadata={"cdp_name": "backendNodeId"}
     )
+    """
+    Input node id. Only present for file choosers opened via an `<input type="file">`
+    element. Experimental: this API may change or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -85,19 +96,33 @@ class FrameAttachedEvent:
     __cdp_event__: ClassVar[PageEvent] = PageEvent.FRAME_ATTACHED
 
     frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
+    """
+    Id of the frame that has been attached.
+    """
     parent_frame_id: FrameId = field(metadata={"cdp_name": "parentFrameId"})
+    """
+    Parent frame identifier.
+    """
     stack: runtime.StackTrace | None = None
+    """
+    JavaScript stack trace of when frame was attached, only set if frame initiated from
+    script.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class FrameClearedScheduledNavigationEvent:
     """
-    Fired when frame no longer has a scheduled navigation.
+    Fired when frame no longer has a scheduled navigation. Deprecated in the Chrome
+    DevTools Protocol.
     """
 
     __cdp_event__: ClassVar[PageEvent] = PageEvent.FRAME_CLEARED_SCHEDULED_NAVIGATION
 
     frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
+    """
+    Id of the frame that has cleared its scheduled navigation.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -109,19 +134,28 @@ class FrameDetachedEvent:
     __cdp_event__: ClassVar[PageEvent] = PageEvent.FRAME_DETACHED
 
     frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
+    """
+    Id of the frame that has been detached.
+    """
     reason: Literal["remove", "swap"]
+    """
+    Experimental: this API may change or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class FrameSubtreeWillBeDetachedEvent:
     """
     Fired before frame subtree is detached. Emitted before any frame of the subtree is
-    actually detached.
+    actually detached. Experimental: this API may change or be removed.
     """
 
     __cdp_event__: ClassVar[PageEvent] = PageEvent.FRAME_SUBTREE_WILL_BE_DETACHED
 
     frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
+    """
+    Id of the frame that is the root of the subtree that will be detached.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -134,22 +168,36 @@ class FrameNavigatedEvent:
     __cdp_event__: ClassVar[PageEvent] = PageEvent.FRAME_NAVIGATED
 
     frame: Frame
+    """
+    Frame object.
+    """
     type: NavigationType
+    """
+    Experimental: this API may change or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class DocumentOpenedEvent:
     """
-    Fired when opening document to write to.
+    Fired when opening document to write to. Experimental: this API may change or be
+    removed.
     """
 
     __cdp_event__: ClassVar[PageEvent] = PageEvent.DOCUMENT_OPENED
 
     frame: Frame
+    """
+    Frame object.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class FrameResizedEvent:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     __cdp_event__: ClassVar[PageEvent] = PageEvent.FRAME_RESIZED
 
 
@@ -161,14 +209,25 @@ class FrameStartedNavigatingEvent:
     fired after `frameRequestedNavigation`. Navigation may still be cancelled after the
     event is issued. Multiple events can be fired for a single navigation, for example,
     when a same-document navigation becomes a cross-document navigation (such as in the
-    case of a frameset).
+    case of a frameset). Experimental: this API may change or be removed.
     """
 
     __cdp_event__: ClassVar[PageEvent] = PageEvent.FRAME_STARTED_NAVIGATING
 
     frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
+    """
+    ID of the frame that is being navigated.
+    """
     url: str
+    """
+    The URL the navigation started with. The final URL can be different.
+    """
     loader_id: network.LoaderId = field(metadata={"cdp_name": "loaderId"})
+    """
+    Loader identifier. Even though it is present in case of same-document navigation,
+    the previously committed loaderId would not change unless the navigation changes
+    from a same-document to a cross-document navigation.
+    """
     navigation_type: Literal[
         "reload",
         "reloadBypassingCache",
@@ -187,81 +246,143 @@ class FrameStartedNavigatingEvent:
 class FrameRequestedNavigationEvent:
     """
     Fired when a renderer-initiated navigation is requested. Navigation may still be
-    cancelled after the event is issued.
+    cancelled after the event is issued. Experimental: this API may change or be
+    removed.
     """
 
     __cdp_event__: ClassVar[PageEvent] = PageEvent.FRAME_REQUESTED_NAVIGATION
 
     frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
+    """
+    Id of the frame that is being navigated.
+    """
     reason: ClientNavigationReason
+    """
+    The reason for the navigation.
+    """
     url: str
+    """
+    The destination URL for the requested navigation.
+    """
     disposition: ClientNavigationDisposition
+    """
+    The disposition for the navigation.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class FrameScheduledNavigationEvent:
     """
-    Fired when frame schedules a potential navigation.
+    Fired when frame schedules a potential navigation. Deprecated in the Chrome
+    DevTools Protocol.
     """
 
     __cdp_event__: ClassVar[PageEvent] = PageEvent.FRAME_SCHEDULED_NAVIGATION
 
     frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
+    """
+    Id of the frame that has scheduled a navigation.
+    """
     delay: float
+    """
+    Delay (in seconds) until the navigation is scheduled to begin. The navigation is
+    not guaranteed to start.
+    """
     reason: ClientNavigationReason
+    """
+    The reason for the navigation.
+    """
     url: str
+    """
+    The destination URL for the scheduled navigation.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class FrameStartedLoadingEvent:
     """
-    Fired when frame has started loading.
+    Fired when frame has started loading. Experimental: this API may change or be
+    removed.
     """
 
     __cdp_event__: ClassVar[PageEvent] = PageEvent.FRAME_STARTED_LOADING
 
     frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
+    """
+    Id of the frame that has started loading.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class FrameStoppedLoadingEvent:
     """
-    Fired when frame has stopped loading.
+    Fired when frame has stopped loading. Experimental: this API may change or be
+    removed.
     """
 
     __cdp_event__: ClassVar[PageEvent] = PageEvent.FRAME_STOPPED_LOADING
 
     frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
+    """
+    Id of the frame that has stopped loading.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class DownloadWillBeginEvent:
     """
     Fired when page is about to start a download. Deprecated. Use
-    Browser.downloadWillBegin instead.
+    Browser.downloadWillBegin instead. Experimental: this API may change or be removed.
+    Deprecated in the Chrome DevTools Protocol.
     """
 
     __cdp_event__: ClassVar[PageEvent] = PageEvent.DOWNLOAD_WILL_BEGIN
 
     frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
+    """
+    Id of the frame that caused download to begin.
+    """
     guid: str
+    """
+    Global unique identifier of the download.
+    """
     url: str
+    """
+    URL of the resource being downloaded.
+    """
     suggested_filename: str = field(metadata={"cdp_name": "suggestedFilename"})
+    """
+    Suggested file name of the resource (the actual name of the file saved on disk may
+    differ).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class DownloadProgressEvent:
     """
     Fired when download makes progress. Last call has |done| == true. Deprecated. Use
-    Browser.downloadProgress instead.
+    Browser.downloadProgress instead. Experimental: this API may change or be removed.
+    Deprecated in the Chrome DevTools Protocol.
     """
 
     __cdp_event__: ClassVar[PageEvent] = PageEvent.DOWNLOAD_PROGRESS
 
     guid: str
+    """
+    Global unique identifier of the download.
+    """
     total_bytes: float = field(metadata={"cdp_name": "totalBytes"})
+    """
+    Total expected bytes to download.
+    """
     received_bytes: float = field(metadata={"cdp_name": "receivedBytes"})
+    """
+    Total bytes received.
+    """
     state: Literal["inProgress", "completed", "canceled"]
+    """
+    Download status.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -292,8 +413,17 @@ class JavascriptDialogClosedEvent:
     __cdp_event__: ClassVar[PageEvent] = PageEvent.JAVASCRIPT_DIALOG_CLOSED
 
     frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
+    """
+    Frame id. Experimental: this API may change or be removed.
+    """
     result: bool
+    """
+    Whether dialog was confirmed.
+    """
     user_input: str = field(metadata={"cdp_name": "userInput"})
+    """
+    User input in case of prompt.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -306,13 +436,34 @@ class JavascriptDialogOpeningEvent:
     __cdp_event__: ClassVar[PageEvent] = PageEvent.JAVASCRIPT_DIALOG_OPENING
 
     url: str
+    """
+    Frame url.
+    """
     frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
+    """
+    Frame id. Experimental: this API may change or be removed.
+    """
     message: str
+    """
+    Message that will be displayed by the dialog.
+    """
     type: DialogType
+    """
+    Dialog type.
+    """
     has_browser_handler: bool = field(metadata={"cdp_name": "hasBrowserHandler"})
+    """
+    True iff browser is capable showing or acting on the given dialog. When browser has
+    no dialog handler for given target, calling alert while Page domain is engaged will
+    stall the page execution. Execution can be resumed via calling
+    Page.handleJavaScriptDialog.
+    """
     default_prompt: str | None = field(
         default=None, metadata={"cdp_name": "defaultPrompt"}
     )
+    """
+    Default dialog prompt.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -325,7 +476,13 @@ class LifecycleEventEvent:
     __cdp_event__: ClassVar[PageEvent] = PageEvent.LIFECYCLE_EVENT
 
     frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
+    """
+    Id of the frame.
+    """
     loader_id: network.LoaderId = field(metadata={"cdp_name": "loaderId"})
+    """
+    Loader identifier. Empty string if the request is fetched from worker.
+    """
     name: str
     timestamp: network.MonotonicTime
 
@@ -336,22 +493,35 @@ class BackForwardCacheNotUsedEvent:
     Fired for failed bfcache history navigations if BackForwardCache feature is
     enabled. Do not assume any ordering with the Page.frameNavigated event. This event
     is fired only for main-frame history navigation where the document changes
-    (non-same-document navigations), when bfcache navigation fails.
+    (non-same-document navigations), when bfcache navigation fails. Experimental: this
+    API may change or be removed.
     """
 
     __cdp_event__: ClassVar[PageEvent] = PageEvent.BACK_FORWARD_CACHE_NOT_USED
 
     loader_id: network.LoaderId = field(metadata={"cdp_name": "loaderId"})
+    """
+    The loader id for the associated navigation.
+    """
     frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
+    """
+    The frame id of the associated frame.
+    """
     not_restored_explanations: list[BackForwardCacheNotRestoredExplanation] = field(
         metadata={"cdp_name": "notRestoredExplanations"}
     )
+    """
+    Array of reasons why the page could not be cached. This must not be empty.
+    """
     not_restored_explanations_tree: (
         BackForwardCacheNotRestoredExplanationTree | None
     ) = field(  # noqa: E501
         default=None,
         metadata={"cdp_name": "notRestoredExplanationsTree"},
     )
+    """
+    Tree structure of reasons why the page could not be cached for each frame.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -365,40 +535,63 @@ class LoadEventFiredEvent:
 class NavigatedWithinDocumentEvent:
     """
     Fired when same-document navigation happens, e.g. due to history API usage or
-    anchor navigation.
+    anchor navigation. Experimental: this API may change or be removed.
     """
 
     __cdp_event__: ClassVar[PageEvent] = PageEvent.NAVIGATED_WITHIN_DOCUMENT
 
     frame_id: FrameId = field(metadata={"cdp_name": "frameId"})
+    """
+    Id of the frame.
+    """
     url: str
+    """
+    Frame's new url.
+    """
     navigation_type: Literal["fragment", "historyApi", "other"] = field(
         metadata={"cdp_name": "navigationType"}
     )
+    """
+    Navigation type
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class ScreencastFrameEvent:
     """
-    Compressed image data requested by the `startScreencast`.
+    Compressed image data requested by the `startScreencast`. Experimental: this API
+    may change or be removed.
     """
 
     __cdp_event__: ClassVar[PageEvent] = PageEvent.SCREENCAST_FRAME
 
     data: str
+    """
+    Base64-encoded compressed image. (Encoded as a base64 string when passed over JSON)
+    """
     metadata: ScreencastFrameMetadata
+    """
+    Screencast frame metadata.
+    """
     session_id: int = field(metadata={"cdp_name": "sessionId"})
+    """
+    Frame number.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class ScreencastVisibilityChangedEvent:
     """
     Fired when the page with currently enabled screencast was shown or hidden `.
+    Experimental: this API may change or be removed.
     """
 
     __cdp_event__: ClassVar[PageEvent] = PageEvent.SCREENCAST_VISIBILITY_CHANGED
 
     visible: bool
+    """
+    True if the page is visible.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -411,18 +604,34 @@ class WindowOpenEvent:
     __cdp_event__: ClassVar[PageEvent] = PageEvent.WINDOW_OPEN
 
     url: str
+    """
+    The URL for the new window.
+    """
     window_name: str = field(metadata={"cdp_name": "windowName"})
+    """
+    Window name.
+    """
     window_features: list[str] = field(metadata={"cdp_name": "windowFeatures"})
+    """
+    An array of enabled window features.
+    """
     user_gesture: bool = field(metadata={"cdp_name": "userGesture"})
+    """
+    Whether or not it was triggered by user gesture.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class CompilationCacheProducedEvent:
     """
-    Issued for every compilation cache generated.
+    Issued for every compilation cache generated. Experimental: this API may change or
+    be removed.
     """
 
     __cdp_event__: ClassVar[PageEvent] = PageEvent.COMPILATION_CACHE_PRODUCED
 
     url: str
     data: str
+    """
+    Base64-encoded data (Encoded as a base64 string when passed over JSON)
+    """

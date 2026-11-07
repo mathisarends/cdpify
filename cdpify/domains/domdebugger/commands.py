@@ -36,13 +36,27 @@ class GetEventListenersParams:
     """
 
     object_id: runtime.RemoteObjectId = field(metadata={"cdp_name": "objectId"})
+    """
+    Identifier of the object to return listeners for.
+    """
     depth: int | None = None
+    """
+    The maximum depth at which Node children should be retrieved, defaults to 1. Use -1
+    for the entire subtree or provide an integer larger than 0.
+    """
     pierce: bool | None = None
+    """
+    Whether or not iframes and shadow roots should be traversed when returning the
+    subtree (default is false). Reports listeners for all contexts if pierce is enabled.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetEventListenersResult:
     listeners: list[EventListener]
+    """
+    Array of relevant listeners.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -52,7 +66,13 @@ class RemoveDOMBreakpointParams:
     """
 
     node_id: dom.NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    Identifier of the node to remove breakpoint from.
+    """
     type: DOMBreakpointType
+    """
+    Type of the breakpoint to remove.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -62,16 +82,26 @@ class RemoveEventListenerBreakpointParams:
     """
 
     event_name: str = field(metadata={"cdp_name": "eventName"})
+    """
+    Event name.
+    """
     target_name: str | None = field(default=None, metadata={"cdp_name": "targetName"})
+    """
+    EventTarget interface name. Experimental: this API may change or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class RemoveInstrumentationBreakpointParams:
     """
-    Removes breakpoint on particular native event.
+    Removes breakpoint on particular native event. Experimental: this API may change or
+    be removed. Deprecated in the Chrome DevTools Protocol.
     """
 
     event_name: str = field(metadata={"cdp_name": "eventName"})
+    """
+    Instrumentation name to stop on.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -81,17 +111,24 @@ class RemoveXHRBreakpointParams:
     """
 
     url: str
+    """
+    Resource URL substring.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SetBreakOnCSPViolationParams:
     """
-    Sets breakpoint on particular CSP violations.
+    Sets breakpoint on particular CSP violations. Experimental: this API may change or
+    be removed.
     """
 
     violation_types: list[CSPViolationType] = field(
         metadata={"cdp_name": "violationTypes"}
     )
+    """
+    CSP Violations to stop upon.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -101,7 +138,13 @@ class SetDOMBreakpointParams:
     """
 
     node_id: dom.NodeId = field(metadata={"cdp_name": "nodeId"})
+    """
+    Identifier of the node to set breakpoint on.
+    """
     type: DOMBreakpointType
+    """
+    Type of the operation to stop upon.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -111,16 +154,27 @@ class SetEventListenerBreakpointParams:
     """
 
     event_name: str = field(metadata={"cdp_name": "eventName"})
+    """
+    DOM Event name to stop on (any DOM event will do).
+    """
     target_name: str | None = field(default=None, metadata={"cdp_name": "targetName"})
+    """
+    EventTarget interface name to stop on. If equal to `"*"` or not provided, will stop
+    on any EventTarget. Experimental: this API may change or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SetInstrumentationBreakpointParams:
     """
-    Sets breakpoint on particular native event.
+    Sets breakpoint on particular native event. Experimental: this API may change or be
+    removed. Deprecated in the Chrome DevTools Protocol.
     """
 
     event_name: str = field(metadata={"cdp_name": "eventName"})
+    """
+    Instrumentation name to stop on.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -130,3 +184,7 @@ class SetXHRBreakpointParams:
     """
 
     url: str
+    """
+    Resource URL substring. All XHRs having this substring in the URL will get stopped
+    upon.
+    """

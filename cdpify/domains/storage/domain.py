@@ -42,7 +42,7 @@ class Storage:
     ) -> GetStorageKeyForFrameResult:
         """
         Returns a storage key given a frame id. Deprecated. Please use
-        Storage.getStorageKey instead.
+        Storage.getStorageKey instead. Deprecated in the Chrome DevTools Protocol.
         """
         _params: dict[str, Any] = {}
         _params["frameId"] = _encode_value(frame_id)
@@ -60,7 +60,8 @@ class Storage:
     ) -> GetStorageKeyResult:
         """
         Returns storage key for the given frame. If no frame ID is provided, the
-        storage key of the target executing this command is returned.
+        storage key of the target executing this command is returned. Experimental: this
+        API may change or be removed.
         """
         _params: dict[str, Any] = {}
         if frame_id is not None:
@@ -80,6 +81,10 @@ class Storage:
     ) -> None:
         """
         Clears storage for origin.
+
+        Args:
+            origin: Security origin.
+            storage_types: Comma separated list of StorageType to clear.
         """
         _params: dict[str, Any] = {}
         _params["origin"] = origin
@@ -98,6 +103,10 @@ class Storage:
     ) -> None:
         """
         Clears storage for storage key.
+
+        Args:
+            storage_key: Storage key.
+            storage_types: Comma separated list of StorageType to clear.
         """
         _params: dict[str, Any] = {}
         _params["storageKey"] = storage_key
@@ -115,6 +124,10 @@ class Storage:
     ) -> GetCookiesResult:
         """
         Returns all browser cookies.
+
+        Args:
+            browser_context_id: Browser context to use when called on the browser
+                endpoint.
         """
         _params: dict[str, Any] = {}
         if browser_context_id is not None:
@@ -134,6 +147,11 @@ class Storage:
     ) -> None:
         """
         Sets given cookies.
+
+        Args:
+            cookies: Cookies to be set.
+            browser_context_id: Browser context to use when called on the browser
+                endpoint.
         """
         _params: dict[str, Any] = {}
         _params["cookies"] = _encode_value(cookies)
@@ -152,6 +170,10 @@ class Storage:
     ) -> None:
         """
         Clears cookies.
+
+        Args:
+            browser_context_id: Browser context to use when called on the browser
+                endpoint.
         """
         _params: dict[str, Any] = {}
         if browser_context_id is not None:
@@ -169,6 +191,9 @@ class Storage:
     ) -> GetUsageAndQuotaResult:
         """
         Returns usage and quota in bytes.
+
+        Args:
+            origin: Security origin.
         """
         _params: dict[str, Any] = {}
         _params["origin"] = origin
@@ -186,7 +211,18 @@ class Storage:
         quota_size: float | None = None,
     ) -> None:
         """
-        Override quota for the specified origin
+        Override quota for the specified origin Experimental: this API may change or be
+        removed.
+
+        Args:
+            origin: Security origin.
+            quota_size: The quota size (in bytes) to override the original quota with.
+                If this is called multiple times, the overridden quota will be equal to
+                the quotaSize provided in the final call. If this is called without
+                specifying a quotaSize, the quota will be reset to the default value for
+                the specified origin. If this is called multiple times with different
+                origins, the override will be maintained for each origin until it is
+                disabled (called without a quotaSize).
         """
         _params: dict[str, Any] = {}
         _params["origin"] = origin
@@ -206,6 +242,9 @@ class Storage:
         """
         Registers origin to be notified when an update occurs to its cache storage
         list.
+
+        Args:
+            origin: Security origin.
         """
         _params: dict[str, Any] = {}
         _params["origin"] = origin
@@ -223,6 +262,9 @@ class Storage:
         """
         Registers storage key to be notified when an update occurs to its cache storage
         list.
+
+        Args:
+            storage_key: Storage key.
         """
         _params: dict[str, Any] = {}
         _params["storageKey"] = storage_key
@@ -239,6 +281,9 @@ class Storage:
     ) -> None:
         """
         Registers origin to be notified when an update occurs to its IndexedDB.
+
+        Args:
+            origin: Security origin.
         """
         _params: dict[str, Any] = {}
         _params["origin"] = origin
@@ -255,6 +300,9 @@ class Storage:
     ) -> None:
         """
         Registers storage key to be notified when an update occurs to its IndexedDB.
+
+        Args:
+            storage_key: Storage key.
         """
         _params: dict[str, Any] = {}
         _params["storageKey"] = storage_key
@@ -271,6 +319,9 @@ class Storage:
     ) -> None:
         """
         Unregisters origin from receiving notifications for cache storage.
+
+        Args:
+            origin: Security origin.
         """
         _params: dict[str, Any] = {}
         _params["origin"] = origin
@@ -287,6 +338,9 @@ class Storage:
     ) -> None:
         """
         Unregisters storage key from receiving notifications for cache storage.
+
+        Args:
+            storage_key: Storage key.
         """
         _params: dict[str, Any] = {}
         _params["storageKey"] = storage_key
@@ -303,6 +357,9 @@ class Storage:
     ) -> None:
         """
         Unregisters origin from receiving notifications for IndexedDB.
+
+        Args:
+            origin: Security origin.
         """
         _params: dict[str, Any] = {}
         _params["origin"] = origin
@@ -319,6 +376,9 @@ class Storage:
     ) -> None:
         """
         Unregisters storage key from receiving notifications for IndexedDB.
+
+        Args:
+            storage_key: Storage key.
         """
         _params: dict[str, Any] = {}
         _params["storageKey"] = storage_key
@@ -333,7 +393,7 @@ class Storage:
     ) -> GetTrustTokensResult:
         """
         Returns the number of stored Trust Tokens per issuer for the current browsing
-        context.
+        context. Experimental: this API may change or be removed.
         """
         result = await self._executor.execute(
             method=StorageCommand.GET_TRUST_TOKENS,
@@ -348,7 +408,8 @@ class Storage:
     ) -> ClearTrustTokensResult:
         """
         Removes all Trust Tokens issued by the provided issuerOrigin. Leaves other
-        stored data, including the issuer's Redemption Records, intact.
+        stored data, including the issuer's Redemption Records, intact. Experimental:
+        this API may change or be removed.
         """
         _params: dict[str, Any] = {}
         _params["issuerOrigin"] = issuer_origin
@@ -364,7 +425,7 @@ class Storage:
     ) -> GetPrivateVerificationTokensResult:
         """
         Returns all stored Private Verification Tokens for the current browsing
-        context.
+        context. Experimental: this API may change or be removed.
         """
         result = await self._executor.execute(
             method=StorageCommand.GET_PRIVATE_VERIFICATION_TOKENS,
@@ -377,7 +438,7 @@ class Storage:
     ) -> GetPrivateVerificationTokensIssuerConfigsResult:
         """
         Returns the configured Private Verification Tokens issuers and their redeemer
-        origins.
+        origins. Experimental: this API may change or be removed.
         """
         result = await self._executor.execute(
             method=StorageCommand.GET_PRIVATE_VERIFICATION_TOKENS_ISSUER_CONFIGS,
@@ -392,6 +453,7 @@ class Storage:
     ) -> None:
         """
         Removes all Private Verification Tokens issued by the provided issuerOrigin.
+        Experimental: this API may change or be removed.
         """
         _params: dict[str, Any] = {}
         _params["issuerOrigin"] = issuer_origin
@@ -407,7 +469,8 @@ class Storage:
         token_id: str,
     ) -> None:
         """
-        Removes a specific Private Verification Token by its ID.
+        Removes a specific Private Verification Token by its ID. Experimental: this API
+        may change or be removed.
         """
         _params: dict[str, Any] = {}
         _params["tokenId"] = token_id
@@ -423,7 +486,8 @@ class Storage:
         enable: bool,
     ) -> None:
         """
-        Set tracking for Private Verification Tokens.
+        Set tracking for Private Verification Tokens. Experimental: this API may change
+        or be removed.
         """
         _params: dict[str, Any] = {}
         _params["enable"] = enable
@@ -440,7 +504,8 @@ class Storage:
         enable: bool,
     ) -> None:
         """
-        Set tracking for a storage key's buckets.
+        Set tracking for a storage key's buckets. Experimental: this API may change or
+        be removed.
         """
         _params: dict[str, Any] = {}
         _params["storageKey"] = storage_key
@@ -458,6 +523,7 @@ class Storage:
     ) -> None:
         """
         Deletes the Storage Bucket with the given storage key and bucket name.
+        Experimental: this API may change or be removed.
         """
         _params: dict[str, Any] = {}
         _params["bucket"] = _encode_value(bucket)
@@ -472,6 +538,7 @@ class Storage:
     ) -> RunBounceTrackingMitigationsResult:
         """
         Deletes state for sites identified as potential bounce trackers, immediately.
+        Experimental: this API may change or be removed.
         """
         result = await self._executor.execute(
             method=StorageCommand.RUN_BOUNCE_TRACKING_MITIGATIONS,

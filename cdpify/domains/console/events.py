@@ -26,3 +26,6 @@ class MessageAddedEvent:
     __cdp_event__: ClassVar[ConsoleEvent] = ConsoleEvent.MESSAGE_ADDED
 
     message: ConsoleMessage
+    """
+    Console message that has been added.
+    """

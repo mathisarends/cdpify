@@ -73,6 +73,13 @@ class Overlay:
     ) -> GetHighlightObjectForTestResult:
         """
         For testing.
+
+        Args:
+            node_id: Id of the node to get highlight object for.
+            include_distance: Whether to include distance info.
+            include_style: Whether to include style info.
+            color_format: The color format to get config with (default: hex).
+            show_accessibility_info: Whether to show accessibility info (default: true).
         """
         _params: dict[str, Any] = {}
         _params["nodeId"] = _encode_value(node_id)
@@ -98,6 +105,9 @@ class Overlay:
     ) -> GetGridHighlightObjectsForTestResult:
         """
         For Persistent Grid testing.
+
+        Args:
+            node_ids: Ids of the node to get highlight object for.
         """
         _params: dict[str, Any] = {}
         _params["nodeIds"] = _encode_value(node_ids)
@@ -115,6 +125,9 @@ class Overlay:
     ) -> GetSourceOrderHighlightObjectForTestResult:
         """
         For Source Order Viewer testing.
+
+        Args:
+            node_id: Id of the node to highlight.
         """
         _params: dict[str, Any] = {}
         _params["nodeId"] = _encode_value(node_id)
@@ -148,7 +161,13 @@ class Overlay:
         Highlights owner element of the frame with given id. Deprecated: Doesn't work
         reliably and cannot be fixed due to process separation (the owner node might be
         in a different process). Determine the owner node in the client and use
-        highlightNode.
+        highlightNode. Deprecated in the Chrome DevTools Protocol.
+
+        Args:
+            frame_id: Identifier of the frame to highlight.
+            content_color: The content box highlight fill color (default: transparent).
+            content_outline_color: The content box highlight outline color (default:
+                transparent).
         """
         _params: dict[str, Any] = {}
         _params["frameId"] = _encode_value(frame_id)
@@ -174,6 +193,13 @@ class Overlay:
         """
         Highlights DOM node with given id or with the given JavaScript object wrapper.
         Either nodeId or objectId must be specified.
+
+        Args:
+            highlight_config: A descriptor for the highlight appearance.
+            node_id: Identifier of the node to highlight.
+            backend_node_id: Identifier of the backend node to highlight.
+            object_id: JavaScript object id of the node to be highlighted.
+            selector: Selectors to highlight relevant nodes.
         """
         _params: dict[str, Any] = {}
         _params["highlightConfig"] = _encode_value(highlight_config)
@@ -201,6 +227,11 @@ class Overlay:
         """
         Highlights given quad. Coordinates are absolute with respect to the main frame
         viewport.
+
+        Args:
+            quad: Quad to highlight
+            color: The highlight fill color (default: transparent).
+            outline_color: The highlight outline color (default: transparent).
         """
         _params: dict[str, Any] = {}
         _params["quad"] = _encode_value(quad)
@@ -229,6 +260,14 @@ class Overlay:
         frame viewport. Issue: the method does not handle device pixel ratio (DPR)
         correctly. The coordinates currently have to be adjusted by the client if DPR is
         not 1 (see crbug.com/437807128).
+
+        Args:
+            x: X coordinate
+            y: Y coordinate
+            width: Rectangle width
+            height: Rectangle height
+            color: The highlight fill color (default: transparent).
+            outline_color: The highlight outline color (default: transparent).
         """
         _params: dict[str, Any] = {}
         _params["x"] = x
@@ -257,6 +296,12 @@ class Overlay:
         Highlights the source order of the children of the DOM node with given id or
         with the given JavaScript object wrapper. Either nodeId or objectId must be
         specified.
+
+        Args:
+            source_order_config: A descriptor for the appearance of the overlay drawing.
+            node_id: Identifier of the node to highlight.
+            backend_node_id: Identifier of the backend node to highlight.
+            object_id: JavaScript object id of the node to be highlighted.
         """
         _params: dict[str, Any] = {}
         _params["sourceOrderConfig"] = _encode_value(source_order_config)
@@ -282,6 +327,11 @@ class Overlay:
         Enters the 'inspect' mode. In this mode, elements that user is hovering over
         are highlighted. Backend then generates 'inspectNodeRequested' event upon
         element selection.
+
+        Args:
+            mode: Set an inspection mode.
+            highlight_config: A descriptor for the highlight appearance of hovered-over
+                nodes. May be omitted if `enabled == false`.
         """
         _params: dict[str, Any] = {}
         _params["mode"] = _encode_value(mode)
@@ -300,6 +350,9 @@ class Overlay:
     ) -> None:
         """
         Highlights owner element of all frames detected to be ads.
+
+        Args:
+            show: True for showing ad highlights
         """
         _params: dict[str, Any] = {}
         _params["show"] = show
@@ -314,6 +367,11 @@ class Overlay:
         *,
         message: str | None = None,
     ) -> None:
+        """
+        Args:
+            message: The message to display, also triggers resume and step over
+                controls.
+        """
         _params: dict[str, Any] = {}
         if message is not None:
             _params["message"] = message
@@ -330,6 +388,9 @@ class Overlay:
     ) -> None:
         """
         Requests that backend shows debug borders on layers
+
+        Args:
+            show: True for showing debug borders
         """
         _params: dict[str, Any] = {}
         _params["show"] = show
@@ -346,6 +407,9 @@ class Overlay:
     ) -> None:
         """
         Requests that backend shows the FPS counter
+
+        Args:
+            show: True for showing the FPS counter
         """
         _params: dict[str, Any] = {}
         _params["show"] = show
@@ -362,6 +426,10 @@ class Overlay:
     ) -> None:
         """
         Highlight multiple elements with the CSS Grid overlay.
+
+        Args:
+            grid_node_highlight_configs: An array of node identifiers and descriptors
+                for the highlight appearance.
         """
         _params: dict[str, Any] = {}
         _params["gridNodeHighlightConfigs"] = _encode_value(grid_node_highlight_configs)
@@ -376,6 +444,11 @@ class Overlay:
         *,
         flex_node_highlight_configs: list[FlexNodeHighlightConfig],
     ) -> None:
+        """
+        Args:
+            flex_node_highlight_configs: An array of node identifiers and descriptors
+                for the highlight appearance.
+        """
         _params: dict[str, Any] = {}
         _params["flexNodeHighlightConfigs"] = _encode_value(flex_node_highlight_configs)
 
@@ -389,6 +462,11 @@ class Overlay:
         *,
         scroll_snap_highlight_configs: list[ScrollSnapHighlightConfig],
     ) -> None:
+        """
+        Args:
+            scroll_snap_highlight_configs: An array of node identifiers and descriptors
+                for the highlight appearance.
+        """
         _params: dict[str, Any] = {}
         _params["scrollSnapHighlightConfigs"] = _encode_value(
             scroll_snap_highlight_configs
@@ -404,6 +482,11 @@ class Overlay:
         *,
         container_query_highlight_configs: list[ContainerQueryHighlightConfig],
     ) -> None:
+        """
+        Args:
+            container_query_highlight_configs: An array of node identifiers and
+                descriptors for the highlight appearance.
+        """
         _params: dict[str, Any] = {}
         _params["containerQueryHighlightConfigs"] = _encode_value(
             container_query_highlight_configs
@@ -419,6 +502,11 @@ class Overlay:
         *,
         inspected_element_anchor_config: InspectedElementAnchorConfig,
     ) -> None:
+        """
+        Args:
+            inspected_element_anchor_config: Node identifier for which to show an anchor
+                for.
+        """
         _params: dict[str, Any] = {}
         _params["inspectedElementAnchorConfig"] = _encode_value(
             inspected_element_anchor_config
@@ -436,6 +524,9 @@ class Overlay:
     ) -> None:
         """
         Requests that backend shows paint rectangles
+
+        Args:
+            result: True for showing paint rectangles
         """
         _params: dict[str, Any] = {}
         _params["result"] = result
@@ -452,6 +543,9 @@ class Overlay:
     ) -> None:
         """
         Requests that backend shows layout shift regions
+
+        Args:
+            result: True for showing layout shift regions
         """
         _params: dict[str, Any] = {}
         _params["result"] = result
@@ -468,6 +562,9 @@ class Overlay:
     ) -> None:
         """
         Requests that backend shows scroll bottleneck rects
+
+        Args:
+            show: True for showing scroll bottleneck rects
         """
         _params: dict[str, Any] = {}
         _params["show"] = show
@@ -484,7 +581,11 @@ class Overlay:
         show: bool,
     ) -> None:
         """
-        Deprecated, no longer has any effect.
+        Deprecated, no longer has any effect. Deprecated in the Chrome DevTools
+        Protocol.
+
+        Args:
+            show: True for showing hit-test borders
         """
         _params: dict[str, Any] = {}
         _params["show"] = show
@@ -501,7 +602,8 @@ class Overlay:
         show: bool,
     ) -> None:
         """
-        Deprecated, no longer has any effect.
+        Deprecated, no longer has any effect. Deprecated in the Chrome DevTools
+        Protocol.
         """
         _params: dict[str, Any] = {}
         _params["show"] = show
@@ -518,6 +620,9 @@ class Overlay:
     ) -> None:
         """
         Paints viewport size upon main frame resize.
+
+        Args:
+            show: Whether to paint size or not.
         """
         _params: dict[str, Any] = {}
         _params["show"] = show
@@ -534,6 +639,9 @@ class Overlay:
     ) -> None:
         """
         Add a dual screen device hinge
+
+        Args:
+            hinge_config: hinge data, null means hideHinge
         """
         _params: dict[str, Any] = {}
         if hinge_config is not None:
@@ -551,6 +659,9 @@ class Overlay:
     ) -> None:
         """
         Add a display cutout overlay.
+
+        Args:
+            display_cutout_config: display cutout data, null means hide display cutout
         """
         _params: dict[str, Any] = {}
         if display_cutout_config is not None:
@@ -568,6 +679,10 @@ class Overlay:
     ) -> None:
         """
         Show elements in isolation mode with overlays.
+
+        Args:
+            isolated_element_highlight_configs: An array of node identifiers and
+                descriptors for the highlight appearance.
         """
         _params: dict[str, Any] = {}
         _params["isolatedElementHighlightConfigs"] = _encode_value(
@@ -586,6 +701,10 @@ class Overlay:
     ) -> None:
         """
         Show Window Controls Overlay for PWA
+
+        Args:
+            window_controls_overlay_config: Window Controls Overlay data, null means
+                hide Window Controls Overlay
         """
         _params: dict[str, Any] = {}
         if window_controls_overlay_config is not None:

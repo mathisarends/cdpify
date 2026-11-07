@@ -34,6 +34,9 @@ class ToolsAddedEvent:
     __cdp_event__: ClassVar[WebMCPEvent] = WebMCPEvent.TOOLS_ADDED
 
     tools: list[Tool]
+    """
+    Array of tools that were added.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -45,6 +48,9 @@ class ToolsRemovedEvent:
     __cdp_event__: ClassVar[WebMCPEvent] = WebMCPEvent.TOOLS_REMOVED
 
     tools: list[RemovedTool]
+    """
+    Array of tools that were removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -56,9 +62,21 @@ class ToolInvokedEvent:
     __cdp_event__: ClassVar[WebMCPEvent] = WebMCPEvent.TOOL_INVOKED
 
     tool_name: str = field(metadata={"cdp_name": "toolName"})
+    """
+    Name of the tool to invoke.
+    """
     frame_id: page.FrameId = field(metadata={"cdp_name": "frameId"})
+    """
+    Frame id
+    """
     invocation_id: str = field(metadata={"cdp_name": "invocationId"})
+    """
+    Invocation identifier.
+    """
     input: str
+    """
+    The input parameters used for the invocation.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -70,7 +88,25 @@ class ToolRespondedEvent:
     __cdp_event__: ClassVar[WebMCPEvent] = WebMCPEvent.TOOL_RESPONDED
 
     invocation_id: str = field(metadata={"cdp_name": "invocationId"})
+    """
+    Invocation identifier.
+    """
     status: InvocationStatus
+    """
+    Status of the invocation.
+    """
     output: Any | UnsetType = UNSET
+    """
+    Output or error delivered as delivered to the agent. Missing if `status` is
+    anything other than Completed. Note: The output is untrusted and poses a prompt
+    injection risk. Clients should treat this as potentially malicious user input. Omit
+    with UNSET; None encodes JSON null.
+    """
     error_text: str | None = field(default=None, metadata={"cdp_name": "errorText"})
+    """
+    Error text for protocol users.
+    """
     exception: runtime.RemoteObject | None = None
+    """
+    The exception object, if the javascript tool threw an error>
+    """

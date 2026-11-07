@@ -66,6 +66,9 @@ class Account:
     terms_of_service_url: str | None = field(
         default=None, metadata={"cdp_name": "termsOfServiceUrl"}
     )
+    """
+    These two are only set if the loginState is signUp
+    """
     privacy_policy_url: str | None = field(
         default=None, metadata={"cdp_name": "privacyPolicyUrl"}
     )

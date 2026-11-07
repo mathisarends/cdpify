@@ -66,7 +66,8 @@ class Page:
         script_source: str,
     ) -> AddScriptToEvaluateOnLoadResult:
         """
-        Deprecated, please use addScriptToEvaluateOnNewDocument instead.
+        Deprecated, please use addScriptToEvaluateOnNewDocument instead. Experimental:
+        this API may change or be removed. Deprecated in the Chrome DevTools Protocol.
         """
         _params: dict[str, Any] = {}
         _params["scriptSource"] = script_source
@@ -88,6 +89,18 @@ class Page:
         """
         Evaluates given script in every frame upon creation (before loading frame's
         scripts).
+
+        Args:
+            world_name: If specified, creates an isolated world with the given name and
+                evaluates given script in it. This world name will be used as the
+                ExecutionContextDescription::name when the corresponding event is
+                emitted. Experimental: this API may change or be removed.
+            include_command_line_api: Specifies whether command line API should be
+                available to the script, defaults to false. Experimental: this API may
+                change or be removed.
+            run_immediately: If true, runs the script immediately on existing execution
+                contexts or worlds. Default: false. Experimental: this API may change or
+                be removed.
         """
         _params: dict[str, Any] = {}
         _params["source"] = source
@@ -127,6 +140,18 @@ class Page:
     ) -> CaptureScreenshotResult:
         """
         Capture page screenshot.
+
+        Args:
+            format: Image compression format (defaults to png).
+            quality: Compression quality from range [0..100] (jpeg only).
+            clip: Capture the screenshot of a given region only.
+            from_surface: Capture the screenshot from the surface, rather than the view.
+                Defaults to true. Experimental: this API may change or be removed.
+            capture_beyond_viewport: Capture the screenshot beyond the viewport.
+                Defaults to false. Experimental: this API may change or be removed.
+            optimize_for_speed: Optimize image encoding for speed, not for resulting
+                size (defaults to false) Experimental: this API may change or be
+                removed.
         """
         _params: dict[str, Any] = {}
         if format is not None:
@@ -156,6 +181,10 @@ class Page:
         """
         Returns a snapshot of the page as a string. For MHTML format, the serialization
         includes iframes, shadow DOM, external resources, and element-inline styles.
+        Experimental: this API may change or be removed.
+
+        Args:
+            format: Format (defaults to mhtml).
         """
         _params: dict[str, Any] = {}
         if format is not None:
@@ -172,7 +201,8 @@ class Page:
         self,
     ) -> None:
         """
-        Clears the overridden device metrics.
+        Clears the overridden device metrics. Experimental: this API may change or be
+        removed. Deprecated in the Chrome DevTools Protocol.
         """
         await self._executor.execute(
             method=PageCommand.CLEAR_DEVICE_METRICS_OVERRIDE,
@@ -184,7 +214,8 @@ class Page:
         self,
     ) -> None:
         """
-        Clears the overridden Device Orientation.
+        Clears the overridden Device Orientation. Experimental: this API may change or
+        be removed. Deprecated in the Chrome DevTools Protocol.
         """
         await self._executor.execute(
             method=PageCommand.CLEAR_DEVICE_ORIENTATION_OVERRIDE,
@@ -196,7 +227,8 @@ class Page:
         self,
     ) -> None:
         """
-        Clears the overridden Geolocation Position and Error.
+        Clears the overridden Geolocation Position and Error. Deprecated in the Chrome
+        DevTools Protocol.
         """
         await self._executor.execute(
             method=PageCommand.CLEAR_GEOLOCATION_OVERRIDE,
@@ -213,6 +245,18 @@ class Page:
     ) -> CreateIsolatedWorldResult:
         """
         Creates an isolated world for the given frame.
+
+        Args:
+            frame_id: Id of the frame in which the isolated world should be created.
+            world_name: An optional name which is reported in the Execution Context.
+            grant_univeral_access: Whether or not universal access should be granted to
+                the isolated world. This is a powerful option, use with caution.
+            content_security_policy: An optional content security policy to set for the
+                isolated world. If omitted, any existing CSP for the world will be
+                cleared. Note that clearing or updating the CSP does not immediately
+                affect the active context in the same document because LocalDOMWindow
+                caches the ContentSecurityPolicy object. The change takes effect on
+                subsequent navigations when a new window context is created.
         """
         _params: dict[str, Any] = {}
         _params["frameId"] = _encode_value(frame_id)
@@ -237,7 +281,12 @@ class Page:
         url: str,
     ) -> None:
         """
-        Deletes browser cookie with given name, domain and path.
+        Deletes browser cookie with given name, domain and path. Experimental: this API
+        may change or be removed. Deprecated in the Chrome DevTools Protocol.
+
+        Args:
+            cookie_name: Name of the cookie to remove.
+            url: URL to match cooke domain and path.
         """
         _params: dict[str, Any] = {}
         _params["cookieName"] = cookie_name
@@ -266,6 +315,12 @@ class Page:
     ) -> None:
         """
         Enables page domain notifications.
+
+        Args:
+            enable_file_chooser_opened_event: If true, the `Page.fileChooserOpened`
+                event will be emitted regardless of the state set by
+                `Page.setInterceptFileChooserDialog` command (default: false).
+                Experimental: this API may change or be removed.
         """
         _params: dict[str, Any] = {}
         if enable_file_chooser_opened_event is not None:
@@ -300,6 +355,9 @@ class Page:
     async def get_installability_errors(
         self,
     ) -> GetInstallabilityErrorsResult:
+        """
+        Experimental: this API may change or be removed.
+        """
         result = await self._executor.execute(
             method=PageCommand.GET_INSTALLABILITY_ERRORS,
             params=None,
@@ -312,7 +370,8 @@ class Page:
     ) -> GetManifestIconsResult:
         """
         Deprecated because it's not guaranteed that the returned icon is in fact the
-        one used for PWA installation.
+        one used for PWA installation. Experimental: this API may change or be removed.
+        Deprecated in the Chrome DevTools Protocol.
         """
         result = await self._executor.execute(
             method=PageCommand.GET_MANIFEST_ICONS,
@@ -326,6 +385,7 @@ class Page:
         """
         Returns the unique (PWA) app id, along with IWA bundle ID and parent app info.
         Only returns values if the feature flag 'WebAppEnableManifestId' is enabled
+        Experimental: this API may change or be removed.
         """
         result = await self._executor.execute(
             method=PageCommand.GET_APP_ID,
@@ -338,6 +398,7 @@ class Page:
     ) -> GetSubAppsResult:
         """
         Returns the list of installed child Sub-Apps for the inspected parent app.
+        Experimental: this API may change or be removed.
         """
         result = await self._executor.execute(
             method=PageCommand.GET_SUB_APPS,
@@ -350,7 +411,7 @@ class Page:
     ) -> GetSiblingSubAppsResult:
         """
         Returns the list of sibling Sub-Apps sharing the same parent app if the
-        inspected context is a Sub-App.
+        inspected context is a Sub-App. Experimental: this API may change or be removed.
         """
         result = await self._executor.execute(
             method=PageCommand.GET_SIBLING_SUB_APPS,
@@ -363,6 +424,9 @@ class Page:
         *,
         frame_id: FrameId,
     ) -> GetAdScriptAncestryResult:
+        """
+        Experimental: this API may change or be removed.
+        """
         _params: dict[str, Any] = {}
         _params["frameId"] = _encode_value(frame_id)
 
@@ -381,6 +445,7 @@ class Page:
         Returns the words that the frame's document added to its spell check custom
         dictionary with `document.spellCheckCustomDictionary.addWords()`, sorted. Page
         script cannot read the dictionary back; this lets developers inspect it.
+        Experimental: this API may change or be removed.
         """
         _params: dict[str, Any] = {}
         _params["frameId"] = _encode_value(frame_id)
@@ -446,7 +511,12 @@ class Page:
         url: str,
     ) -> GetResourceContentResult:
         """
-        Returns content of the given resource.
+        Returns content of the given resource. Experimental: this API may change or be
+        removed.
+
+        Args:
+            frame_id: Frame id to get resource for.
+            url: URL of the resource to get content for.
         """
         _params: dict[str, Any] = {}
         _params["frameId"] = _encode_value(frame_id)
@@ -462,7 +532,8 @@ class Page:
         self,
     ) -> GetResourceTreeResult:
         """
-        Returns present frame / resource tree structure.
+        Returns present frame / resource tree structure. Experimental: this API may
+        change or be removed.
         """
         result = await self._executor.execute(
             method=PageCommand.GET_RESOURCE_TREE,
@@ -479,6 +550,11 @@ class Page:
         """
         Accepts or dismisses a JavaScript initiated dialog (alert, confirm, prompt, or
         onbeforeunload).
+
+        Args:
+            accept: Whether to accept or dismiss the dialog.
+            prompt_text: The text to enter into the dialog prompt before accepting. Used
+                only if this is a prompt dialog.
         """
         _params: dict[str, Any] = {}
         _params["accept"] = accept
@@ -501,6 +577,14 @@ class Page:
     ) -> NavigateResult:
         """
         Navigates current page to the given URL.
+
+        Args:
+            url: URL to navigate the page to.
+            referrer: Referrer URL.
+            transition_type: Intended transition type.
+            frame_id: Frame id to navigate, if not specified navigates the top frame.
+            referrer_policy: Referrer-policy used for the navigation. Experimental: this
+                API may change or be removed.
         """
         _params: dict[str, Any] = {}
         _params["url"] = url
@@ -526,6 +610,9 @@ class Page:
     ) -> None:
         """
         Navigates current page to the given history entry.
+
+        Args:
+            entry_id: Unique id of the entry to navigate to.
         """
         _params: dict[str, Any] = {}
         _params["entryId"] = entry_id
@@ -558,6 +645,43 @@ class Page:
     ) -> PrintToPDFResult:
         """
         Print page as PDF.
+
+        Args:
+            landscape: Paper orientation. Defaults to false.
+            display_header_footer: Display header and footer. Defaults to false.
+            print_background: Print background graphics. Defaults to false.
+            scale: Scale of the webpage rendering. Defaults to 1.
+            paper_width: Paper width in inches. Defaults to 8.5 inches.
+            paper_height: Paper height in inches. Defaults to 11 inches.
+            margin_top: Top margin in inches. Defaults to 1cm (~0.4 inches).
+            margin_bottom: Bottom margin in inches. Defaults to 1cm (~0.4 inches).
+            margin_left: Left margin in inches. Defaults to 1cm (~0.4 inches).
+            margin_right: Right margin in inches. Defaults to 1cm (~0.4 inches).
+            page_ranges: Paper ranges to print, one based, e.g., '1-5, 8, 11-13'. Pages
+                are printed in the document order, not in the order specified, and no
+                more than once. Defaults to empty string, which implies the entire
+                document is printed. The page numbers are quietly capped to actual page
+                count of the document, and ranges beyond the end of the document are
+                ignored. If this results in no pages to print, an error is reported. It
+                is an error to specify a range with start greater than end.
+            header_template: HTML template for the print header. Should be valid HTML
+                markup with following classes used to inject printing values into them:
+                - `date`: formatted print date - `title`: document title - `url`:
+                document location - `pageNumber`: current page number - `totalPages`:
+                total pages in the document  For example, `<span class=title></span>`
+                would generate span containing the title.
+            footer_template: HTML template for the print footer. Should use the same
+                format as the `headerTemplate`.
+            prefer_css_page_size: Whether or not to prefer page size as defined by css.
+                Defaults to false, in which case the content will be scaled to fit the
+                paper size.
+            transfer_mode: return as stream Experimental: this API may change or be
+                removed.
+            generate_tagged_pdf: Whether or not to generate tagged (accessible) PDF.
+                Defaults to embedder choice. Experimental: this API may change or be
+                removed.
+            generate_document_outline: Whether or not to embed the document outline into
+                the PDF. Experimental: this API may change or be removed.
         """
         _params: dict[str, Any] = {}
         if landscape is not None:
@@ -610,6 +734,17 @@ class Page:
     ) -> None:
         """
         Reloads given page optionally ignoring the cache.
+
+        Args:
+            ignore_cache: If true, browser cache is ignored (as if the user pressed
+                Shift+refresh).
+            script_to_evaluate_on_load: If set, the script will be injected into all
+                frames of the inspected page after reload. Argument will be ignored if
+                reloading dataURL origin.
+            loader_id: If set, an error will be thrown if the target page's main frame's
+                loader id does not match the provided id. This prevents accidentally
+                reloading an unintended target in case there's a racing navigation.
+                Experimental: this API may change or be removed.
         """
         _params: dict[str, Any] = {}
         if ignore_cache is not None:
@@ -632,6 +767,8 @@ class Page:
     ) -> None:
         """
         Deprecated, please use removeScriptToEvaluateOnNewDocument instead.
+        Experimental: this API may change or be removed. Deprecated in the Chrome
+        DevTools Protocol.
         """
         _params: dict[str, Any] = {}
         _params["identifier"] = _encode_value(identifier)
@@ -664,6 +801,10 @@ class Page:
     ) -> None:
         """
         Acknowledges that a screencast frame has been received by the frontend.
+        Experimental: this API may change or be removed.
+
+        Args:
+            session_id: Frame number.
         """
         _params: dict[str, Any] = {}
         _params["sessionId"] = session_id
@@ -683,7 +824,15 @@ class Page:
         is_regex: bool | None = None,
     ) -> SearchInResourceResult:
         """
-        Searches for given string in resource content.
+        Searches for given string in resource content. Experimental: this API may
+        change or be removed.
+
+        Args:
+            frame_id: Frame id for resource to search in.
+            url: URL of the resource to search in.
+            query: String to search for.
+            case_sensitive: If true, search is case sensitive.
+            is_regex: If true, treats string parameter as regex.
         """
         _params: dict[str, Any] = {}
         _params["frameId"] = _encode_value(frame_id)
@@ -706,7 +855,11 @@ class Page:
         enabled: bool,
     ) -> None:
         """
-        Enable Chrome's experimental ad filter on all sites.
+        Enable Chrome's experimental ad filter on all sites. Experimental: this API may
+        change or be removed.
+
+        Args:
+            enabled: Whether to block ads.
         """
         _params: dict[str, Any] = {}
         _params["enabled"] = enabled
@@ -723,6 +876,9 @@ class Page:
     ) -> None:
         """
         Enable page Content Security Policy by-passing.
+
+        Args:
+            enabled: Whether to bypass page CSP.
         """
         _params: dict[str, Any] = {}
         _params["enabled"] = enabled
@@ -738,7 +894,8 @@ class Page:
         frame_id: FrameId,
     ) -> GetPermissionsPolicyStateResult:
         """
-        Get Permissions Policy state on given frame.
+        Get Permissions Policy state on given frame. Experimental: this API may change
+        or be removed.
         """
         _params: dict[str, Any] = {}
         _params["frameId"] = _encode_value(frame_id)
@@ -755,7 +912,8 @@ class Page:
         frame_id: FrameId,
     ) -> GetOriginTrialsResult:
         """
-        Get Origin Trials on given frame.
+        Get Origin Trials on given frame. Experimental: this API may change or be
+        removed.
         """
         _params: dict[str, Any] = {}
         _params["frameId"] = _encode_value(frame_id)
@@ -786,7 +944,32 @@ class Page:
         """
         Overrides the values of device screen dimensions (window.screen.width,
         window.screen.height, window.innerWidth, window.innerHeight, and
-        "device-width"/"device-height"-related CSS media query results).
+        "device-width"/"device-height"-related CSS media query results). Experimental:
+        this API may change or be removed. Deprecated in the Chrome DevTools Protocol.
+
+        Args:
+            width: Overriding width value in pixels (minimum 0, maximum 10000000). 0
+                disables the override.
+            height: Overriding height value in pixels (minimum 0, maximum 10000000). 0
+                disables the override.
+            device_scale_factor: Overriding device scale factor value. 0 disables the
+                override.
+            mobile: Whether to emulate mobile device. This includes viewport meta tag,
+                overlay scrollbars, text autosizing and more.
+            scale: Scale to apply to resulting view image.
+            screen_width: Overriding screen width value in pixels (minimum 0, maximum
+                10000000).
+            screen_height: Overriding screen height value in pixels (minimum 0, maximum
+                10000000).
+            position_x: Overriding view X position on screen in pixels (minimum 0,
+                maximum 10000000).
+            position_y: Overriding view Y position on screen in pixels (minimum 0,
+                maximum 10000000).
+            dont_set_visible_size: Do not set visible view size, rely upon explicit
+                setVisibleSize call.
+            screen_orientation: Screen orientation override.
+            viewport: The viewport dimensions and scale. If not set, the override is
+                cleared.
         """
         _params: dict[str, Any] = {}
         _params["width"] = width
@@ -824,7 +1007,13 @@ class Page:
         gamma: float,
     ) -> None:
         """
-        Overrides the Device Orientation.
+        Overrides the Device Orientation. Experimental: this API may change or be
+        removed. Deprecated in the Chrome DevTools Protocol.
+
+        Args:
+            alpha: Mock alpha
+            beta: Mock beta
+            gamma: Mock gamma
         """
         _params: dict[str, Any] = {}
         _params["alpha"] = alpha
@@ -843,7 +1032,12 @@ class Page:
         for_scripts: list[ScriptFontFamilies] | None = None,
     ) -> None:
         """
-        Set generic font families.
+        Set generic font families. Experimental: this API may change or be removed.
+
+        Args:
+            font_families: Specifies font families to set. If a font family is not
+                specified, it won't be changed.
+            for_scripts: Specifies font families to set for individual scripts.
         """
         _params: dict[str, Any] = {}
         _params["fontFamilies"] = _encode_value(font_families)
@@ -861,7 +1055,11 @@ class Page:
         font_sizes: FontSizes,
     ) -> None:
         """
-        Set default font sizes.
+        Set default font sizes. Experimental: this API may change or be removed.
+
+        Args:
+            font_sizes: Specifies font sizes to set. If a font size is not specified, it
+                won't be changed.
         """
         _params: dict[str, Any] = {}
         _params["fontSizes"] = _encode_value(font_sizes)
@@ -879,6 +1077,10 @@ class Page:
     ) -> None:
         """
         Sets given markup as the document's HTML.
+
+        Args:
+            frame_id: Frame id to set HTML for.
+            html: HTML content to set.
         """
         _params: dict[str, Any] = {}
         _params["frameId"] = _encode_value(frame_id)
@@ -897,7 +1099,14 @@ class Page:
         download_path: str | None = None,
     ) -> None:
         """
-        Set the behavior when downloading a file.
+        Set the behavior when downloading a file. Experimental: this API may change or
+        be removed. Deprecated in the Chrome DevTools Protocol.
+
+        Args:
+            behavior: Whether to allow all or deny all download requests, or use default
+                Chrome behavior if available (otherwise deny).
+            download_path: The default path to save downloaded files to. This is
+                required if behavior is set to 'allow'
         """
         _params: dict[str, Any] = {}
         _params["behavior"] = behavior
@@ -919,7 +1128,12 @@ class Page:
     ) -> None:
         """
         Overrides the Geolocation Position or Error. Omitting any of the parameters
-        emulates position unavailable.
+        emulates position unavailable. Deprecated in the Chrome DevTools Protocol.
+
+        Args:
+            latitude: Mock latitude
+            longitude: Mock longitude
+            accuracy: Mock accuracy
         """
         _params: dict[str, Any] = {}
         if latitude is not None:
@@ -941,6 +1155,9 @@ class Page:
     ) -> None:
         """
         Controls whether page will emit lifecycle events.
+
+        Args:
+            enabled: If true, starts emitting lifecycle events.
         """
         _params: dict[str, Any] = {}
         _params["enabled"] = enabled
@@ -958,7 +1175,13 @@ class Page:
         configuration: Literal["mobile", "desktop"] | None = None,
     ) -> None:
         """
-        Toggles mouse event-based touch event emulation.
+        Toggles mouse event-based touch event emulation. Experimental: this API may
+        change or be removed. Deprecated in the Chrome DevTools Protocol.
+
+        Args:
+            enabled: Whether the touch event emulation should be enabled.
+            configuration: Touch/gesture events configuration. Default: current
+                platform.
         """
         _params: dict[str, Any] = {}
         _params["enabled"] = enabled
@@ -982,7 +1205,22 @@ class Page:
         send_last_frame: bool | None = None,
     ) -> None:
         """
-        Starts sending each frame using the `screencastFrame` event.
+        Starts sending each frame using the `screencastFrame` event. Experimental: this
+        API may change or be removed.
+
+        Args:
+            format: Image compression format.
+            quality: Compression quality from range [0..100].
+            max_width: Maximum screenshot width.
+            max_height: Maximum screenshot height.
+            every_nth_frame: Send every n-th frame. Must be a positive integer.
+            max_frames_in_flight: Maximum number of frames sent until screencastFrameAck
+                is required. Defaults to 3. Must be a positive integer.
+            send_last_frame: By default, after screencastFrameAck arrives, the next
+                produced frame is sent. Passing this flag enables storing the last
+                produced frame in memory, which is immediately sent upon
+                screencastFrameAck. This way, overall performance is traded for a better
+                latency.
         """
         _params: dict[str, Any] = {}
         if format is not None:
@@ -1014,7 +1252,13 @@ class Page:
         frame_rate: int | None = None,
     ) -> StartScreenRecordingResult:
         """
-        Starts screencast video recording.
+        Starts screencast video recording. Experimental: this API may change or be
+        removed.
+
+        Args:
+            max_width: Maximum frame width in pixels.
+            max_height: Maximum frame height in pixels.
+            frame_rate: Maximum frame rate in frames per second.
         """
         _params: dict[str, Any] = {}
         if audio is not None:
@@ -1036,7 +1280,8 @@ class Page:
         self,
     ) -> StopScreenRecordingResult:
         """
-        Stops screencast video recording.
+        Stops screencast video recording. Experimental: this API may change or be
+        removed.
         """
         result = await self._executor.execute(
             method=PageCommand.STOP_SCREEN_RECORDING,
@@ -1059,7 +1304,8 @@ class Page:
         self,
     ) -> None:
         """
-        Crashes renderer on the IO thread, generates minidumps.
+        Crashes renderer on the IO thread, generates minidumps. Experimental: this API
+        may change or be removed.
         """
         await self._executor.execute(
             method=PageCommand.CRASH,
@@ -1085,6 +1331,10 @@ class Page:
         """
         Tries to update the web lifecycle state of the page. It will transition the
         page to the given state according to: https://github.com/WICG/web-lifecycle/
+        Experimental: this API may change or be removed.
+
+        Args:
+            state: Target lifecycle state
         """
         _params: dict[str, Any] = {}
         _params["state"] = state
@@ -1098,7 +1348,8 @@ class Page:
         self,
     ) -> None:
         """
-        Stops sending each frame in the `screencastFrame`.
+        Stops sending each frame in the `screencastFrame`. Experimental: this API may
+        change or be removed.
         """
         await self._executor.execute(
             method=PageCommand.STOP_SCREENCAST,
@@ -1116,7 +1367,8 @@ class Page:
         produced. The list may be reset during page navigation. When script with a
         matching URL is encountered, the cache is optionally produced upon backend
         discretion, based on internal heuristics. See also:
-        `Page.compilationCacheProduced`.
+        `Page.compilationCacheProduced`. Experimental: this API may change or be
+        removed.
         """
         _params: dict[str, Any] = {}
         _params["scripts"] = _encode_value(scripts)
@@ -1134,7 +1386,10 @@ class Page:
     ) -> None:
         """
         Seeds compilation cache for given url. Compilation cache does not survive
-        cross-process navigation.
+        cross-process navigation. Experimental: this API may change or be removed.
+
+        Args:
+            data: Base64-encoded data (Encoded as a base64 string when passed over JSON)
         """
         _params: dict[str, Any] = {}
         _params["url"] = url
@@ -1149,7 +1404,8 @@ class Page:
         self,
     ) -> None:
         """
-        Clears seeded compilation cache.
+        Clears seeded compilation cache. Experimental: this API may change or be
+        removed.
         """
         await self._executor.execute(
             method=PageCommand.CLEAR_COMPILATION_CACHE,
@@ -1170,6 +1426,7 @@ class Page:
         """
         Sets the Secure Payment Confirmation transaction mode.
         https://w3c.github.io/secure-payment-confirmation/#sctn-automation-set-spc-transaction-mode
+        Experimental: this API may change or be removed.
         """
         _params: dict[str, Any] = {}
         _params["mode"] = mode
@@ -1187,6 +1444,7 @@ class Page:
         """
         Extensions for Custom Handlers API:
         https://html.spec.whatwg.org/multipage/system-state.html#rph-automation
+        Experimental: this API may change or be removed.
         """
         _params: dict[str, Any] = {}
         _params["mode"] = mode
@@ -1203,7 +1461,12 @@ class Page:
         group: str | None = None,
     ) -> None:
         """
-        Generates a report for testing.
+        Generates a report for testing. Experimental: this API may change or be
+        removed.
+
+        Args:
+            message: Message to be displayed in the report.
+            group: Specifies the endpoint group to deliver the report to.
         """
         _params: dict[str, Any] = {}
         _params["message"] = message
@@ -1220,7 +1483,8 @@ class Page:
     ) -> None:
         """
         Pauses page execution. Can be resumed using generic
-        Runtime.runIfWaitingForDebugger.
+        Runtime.runIfWaitingForDebugger. Experimental: this API may change or be
+        removed.
         """
         await self._executor.execute(
             method=PageCommand.WAIT_FOR_DEBUGGER,
@@ -1237,6 +1501,11 @@ class Page:
         Intercept file chooser requests and transfer control to protocol clients. When
         file chooser interception is enabled, native file chooser dialog is not shown.
         Instead, a protocol event `Page.fileChooserOpened` is emitted.
+
+        Args:
+            cancel: If true, cancels the dialog by emitting relevant events (if any) in
+                addition to not showing it if the interception is enabled (default:
+                false). Experimental: this API may change or be removed.
         """
         _params: dict[str, Any] = {}
         _params["enabled"] = enabled
@@ -1258,7 +1527,7 @@ class Page:
         https://crbug.com/1440085. See
         https://docs.google.com/document/d/12HVmFxYj5Jc-eJr5OmWsa2bqTJsbgGLKI6ZIyx0_wpA
         for more details. TODO(https://crbug.com/1440085): Remove this once Puppeteer
-        supports tab targets.
+        supports tab targets. Experimental: this API may change or be removed.
         """
         _params: dict[str, Any] = {}
         _params["isAllowed"] = is_allowed
@@ -1275,7 +1544,12 @@ class Page:
     ) -> GetAnnotatedPageContentResult:
         """
         Get the annotated page content for the main frame. This is an experimental
-        command that is subject to change.
+        command that is subject to change. Experimental: this API may change or be
+        removed.
+
+        Args:
+            include_actionable_information: Whether to include actionable information.
+                Defaults to true.
         """
         _params: dict[str, Any] = {}
         if include_actionable_information is not None:
@@ -1293,7 +1567,11 @@ class Page:
         clicks: bool | None = None,
     ) -> None:
         """
-        Configures input visualization on the page.
+        Configures input visualization on the page. Experimental: this API may change
+        or be removed.
+
+        Args:
+            clicks: Whether to enable click visualization.
         """
         _params: dict[str, Any] = {}
         if clicks is not None:

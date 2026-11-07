@@ -25,3 +25,6 @@ class PromptDevice:
 
     id: DeviceId
     name: str
+    """
+    Display name as it appears in a device request user prompt.
+    """

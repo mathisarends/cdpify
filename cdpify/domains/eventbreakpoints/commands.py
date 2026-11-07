@@ -23,6 +23,9 @@ class SetInstrumentationBreakpointParams:
     """
 
     event_name: str = field(metadata={"cdp_name": "eventName"})
+    """
+    Instrumentation name to stop on.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -32,3 +35,6 @@ class RemoveInstrumentationBreakpointParams:
     """
 
     event_name: str = field(metadata={"cdp_name": "eventName"})
+    """
+    Instrumentation name to stop on.
+    """

@@ -27,8 +27,26 @@ class ConsoleMessage:
         "deprecation",
         "worker",
     ]
+    """
+    Message source.
+    """
     level: Literal["log", "warning", "error", "debug", "info"]
+    """
+    Message severity.
+    """
     text: str
+    """
+    Message text.
+    """
     url: str | None = None
+    """
+    URL of the message origin.
+    """
     line: int | None = None
+    """
+    Line number in the resource that generated this message (1-based).
+    """
     column: int | None = None
+    """
+    Column number in the resource that generated this message (1-based).
+    """

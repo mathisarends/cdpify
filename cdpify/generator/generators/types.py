@@ -1,6 +1,7 @@
 from cdpify.generator.generators.constants import FUTURE_ANNOTATIONS, HEADER
 from cdpify.generator.generators.context import GenerationContext
 from cdpify.generator.generators.utils import (
+    api_description,
     format_docstring,
     map_cdp_type,
     resolve_type,
@@ -51,7 +52,7 @@ def _build_type_view(
 def _build_enum_view(type_def: TypeDefinition) -> TypeDefinitionView:
     members = []
     used_names = set()
-    for value in type_def.enum:
+    for value in type_def.enum or ():
         base_name = to_enum_name(value)
         name = base_name
         suffix = 2
@@ -64,7 +65,7 @@ def _build_enum_view(type_def: TypeDefinition) -> TypeDefinitionView:
         kind="enum",
         name=type_def.id,
         members=tuple(members),
-        docstring=_docstring(type_def.description, indent=4),
+        docstring=_type_docstring(type_def, indent=4),
     )
 
 
@@ -74,7 +75,7 @@ def _build_object_view(
     return TypeDefinitionView(
         kind="object",
         name=type_def.id,
-        docstring=_docstring(type_def.description, indent=4),
+        docstring=_type_docstring(type_def, indent=4),
         fields=tuple(
             _build_field_view(prop, type_def.id, ctx) for prop in type_def.properties
         ),
@@ -97,7 +98,7 @@ def _build_alias_view(
         kind="alias",
         name=type_def.id,
         annotation=py_type,
-        docstring=_docstring(type_def.description, indent=0),
+        docstring=_type_docstring(type_def, indent=0),
     )
 
 
@@ -119,8 +120,16 @@ def _build_field_view(
         py_type,
         optional=is_optional,
         cdp_name=param.name,
+        description=param.description,
+        experimental=param.experimental,
+        deprecated=param.deprecated,
     )
 
 
-def _docstring(text: str | None, *, indent: int) -> str | None:
+def _type_docstring(type_def: TypeDefinition, *, indent: int) -> str | None:
+    text = api_description(
+        type_def.description,
+        experimental=type_def.experimental,
+        deprecated=type_def.deprecated,
+    )
     return format_docstring(text, indent=indent) if text else None

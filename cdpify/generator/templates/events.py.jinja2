@@ -35,7 +35,12 @@ class {{ model.name }}:
     __cdp_event__: ClassVar[{{ domain_name }}Event] = {{ domain_name }}Event.{{ model.event_member }}
 {% if model.fields %}
 
-    {{ model.fields | map(attribute="declaration") | join("\n    ") }}
+{% for model_field in model.fields %}
+    {{ model_field.declaration }}
+{% if model_field.docstring %}
+{{ model_field.docstring }}
+{% endif %}
+{% endfor %}
 {% endif %}
 {% endfor %}
 {% else %}

@@ -24,6 +24,9 @@ class Tethering:
     ) -> None:
         """
         Request browser port binding.
+
+        Args:
+            port: Port number to bind.
         """
         _params: dict[str, Any] = {}
         _params["port"] = port
@@ -40,6 +43,9 @@ class Tethering:
     ) -> None:
         """
         Request browser port unbinding.
+
+        Args:
+            port: Port number to unbind.
         """
         _params: dict[str, Any] = {}
         _params["port"] = port

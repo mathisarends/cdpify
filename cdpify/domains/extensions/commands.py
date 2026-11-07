@@ -32,7 +32,13 @@ class TriggerActionParams:
     """
 
     id: str
+    """
+    Extension id.
+    """
     target_id: str = field(metadata={"cdp_name": "targetId"})
+    """
+    A tab target ID to trigger the default extension action on.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -43,14 +49,23 @@ class LoadUnpackedParams:
     """
 
     path: str
+    """
+    Absolute file path.
+    """
     enable_in_incognito: bool | None = field(
         default=None, metadata={"cdp_name": "enableInIncognito"}
     )
+    """
+    Enable the extension in incognito
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class LoadUnpackedResult:
     id: str
+    """
+    Extension id.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -65,6 +80,9 @@ class UninstallParams:
     """
 
     id: str
+    """
+    Extension id.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -75,8 +93,17 @@ class GetStorageItemsParams:
     """
 
     id: str
+    """
+    ID of extension.
+    """
     storage_area: StorageArea = field(metadata={"cdp_name": "storageArea"})
+    """
+    StorageArea to retrieve data from.
+    """
     keys: list[str] | None = None
+    """
+    Keys to retrieve.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -91,8 +118,17 @@ class RemoveStorageItemsParams:
     """
 
     id: str
+    """
+    ID of extension.
+    """
     storage_area: StorageArea = field(metadata={"cdp_name": "storageArea"})
+    """
+    StorageArea to remove data from.
+    """
     keys: list[str]
+    """
+    Keys to remove.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -102,7 +138,13 @@ class ClearStorageItemsParams:
     """
 
     id: str
+    """
+    ID of extension.
+    """
     storage_area: StorageArea = field(metadata={"cdp_name": "storageArea"})
+    """
+    StorageArea to remove data from.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -113,5 +155,14 @@ class SetStorageItemsParams:
     """
 
     id: str
+    """
+    ID of extension.
+    """
     storage_area: StorageArea = field(metadata={"cdp_name": "storageArea"})
+    """
+    StorageArea to set data in.
+    """
     values: dict[str, Any]
+    """
+    Values to set.
+    """

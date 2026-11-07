@@ -40,27 +40,60 @@ class RequestPausedEvent:
     __cdp_event__: ClassVar[FetchEvent] = FetchEvent.REQUEST_PAUSED
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
+    """
+    Each request the page makes will have a unique id.
+    """
     request: network.Request
+    """
+    The details of the request.
+    """
     frame_id: page.FrameId = field(metadata={"cdp_name": "frameId"})
+    """
+    The id of the frame that initiated the request.
+    """
     resource_type: network.ResourceType = field(metadata={"cdp_name": "resourceType"})
+    """
+    How the requested resource will be used.
+    """
     response_error_reason: network.ErrorReason | None = field(
         default=None, metadata={"cdp_name": "responseErrorReason"}
     )
+    """
+    Response error if intercepted at response stage.
+    """
     response_status_code: int | None = field(
         default=None, metadata={"cdp_name": "responseStatusCode"}
     )
+    """
+    Response code if intercepted at response stage.
+    """
     response_status_text: str | None = field(
         default=None, metadata={"cdp_name": "responseStatusText"}
     )
+    """
+    Response status text if intercepted at response stage.
+    """
     response_headers: list[HeaderEntry] | None = field(
         default=None, metadata={"cdp_name": "responseHeaders"}
     )
+    """
+    Response headers if intercepted at the response stage.
+    """
     network_id: network.RequestId | None = field(
         default=None, metadata={"cdp_name": "networkId"}
     )
+    """
+    If the intercepted request had a corresponding Network.requestWillBeSent event
+    fired for it, then this networkId will be the same as the requestId present in the
+    requestWillBeSent event.
+    """
     redirected_request_id: RequestId | None = field(
         default=None, metadata={"cdp_name": "redirectedRequestId"}
     )
+    """
+    If the request is due to a redirect response from the server, the id of the request
+    that has caused the redirect. Experimental: this API may change or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -73,7 +106,23 @@ class AuthRequiredEvent:
     __cdp_event__: ClassVar[FetchEvent] = FetchEvent.AUTH_REQUIRED
 
     request_id: RequestId = field(metadata={"cdp_name": "requestId"})
+    """
+    Each request the page makes will have a unique id.
+    """
     request: network.Request
+    """
+    The details of the request.
+    """
     frame_id: page.FrameId = field(metadata={"cdp_name": "frameId"})
+    """
+    The id of the frame that initiated the request.
+    """
     resource_type: network.ResourceType = field(metadata={"cdp_name": "resourceType"})
+    """
+    How the requested resource will be used.
+    """
     auth_challenge: AuthChallenge = field(metadata={"cdp_name": "authChallenge"})
+    """
+    Details of the Authorization Challenge encountered. If this is set, client should
+    respond with continueRequest that contains AuthChallengeResponse.
+    """

@@ -37,12 +37,36 @@ class EventMetadata:
 @dataclass(kw_only=True, slots=True)
 class BackgroundServiceEvent:
     timestamp: network.TimeSinceEpoch
+    """
+    Timestamp of the event (in seconds).
+    """
     origin: str
+    """
+    The origin this event belongs to.
+    """
     service_worker_registration_id: serviceworker.RegistrationID = field(
         metadata={"cdp_name": "serviceWorkerRegistrationId"}
     )
+    """
+    The Service Worker ID that initiated the event.
+    """
     service: ServiceName
+    """
+    The Background Service this event belongs to.
+    """
     event_name: str = field(metadata={"cdp_name": "eventName"})
+    """
+    A description of the event.
+    """
     instance_id: str = field(metadata={"cdp_name": "instanceId"})
+    """
+    An identifier that groups related events together.
+    """
     event_metadata: list[EventMetadata] = field(metadata={"cdp_name": "eventMetadata"})
+    """
+    A list of event-specific information.
+    """
     storage_key: str = field(metadata={"cdp_name": "storageKey"})
+    """
+    Storage key this event belongs to.
+    """

@@ -27,7 +27,13 @@ class ScrollRect:
     """
 
     rect: dom.Rect
+    """
+    Rectangle itself.
+    """
     type: Literal["RepaintsOnScroll", "TouchEventHandler", "WheelEventHandler"]
+    """
+    Reason for rectangle to force scrolling on the main thread
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -37,15 +43,27 @@ class StickyPositionConstraint:
     """
 
     sticky_box_rect: dom.Rect = field(metadata={"cdp_name": "stickyBoxRect"})
+    """
+    Layout rectangle of the sticky element before being shifted
+    """
     containing_block_rect: dom.Rect = field(
         metadata={"cdp_name": "containingBlockRect"}
     )
+    """
+    Layout rectangle of the containing block of the sticky element
+    """
     nearest_layer_shifting_sticky_box: LayerId | None = field(
         default=None, metadata={"cdp_name": "nearestLayerShiftingStickyBox"}
     )
+    """
+    The nearest sticky layer that shifts the sticky box
+    """
     nearest_layer_shifting_containing_block: LayerId | None = field(
         default=None, metadata={"cdp_name": "nearestLayerShiftingContainingBlock"}
     )
+    """
+    The nearest sticky layer that shifts the containing block
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -55,8 +73,17 @@ class PictureTile:
     """
 
     x: float
+    """
+    Offset from owning layer left boundary
+    """
     y: float
+    """
+    Offset from owning layer top boundary
+    """
     picture: str
+    """
+    Base64-encoded snapshot data. (Encoded as a base64 string when passed over JSON)
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -66,29 +93,78 @@ class Layer:
     """
 
     layer_id: LayerId = field(metadata={"cdp_name": "layerId"})
+    """
+    The unique id for this layer.
+    """
     parent_layer_id: LayerId | None = field(
         default=None, metadata={"cdp_name": "parentLayerId"}
     )
+    """
+    The id of parent (not present for root).
+    """
     backend_node_id: dom.BackendNodeId | None = field(
         default=None, metadata={"cdp_name": "backendNodeId"}
     )
+    """
+    The backend id for the node associated with this layer.
+    """
     offset_x: float = field(metadata={"cdp_name": "offsetX"})
+    """
+    Offset from parent layer, X coordinate.
+    """
     offset_y: float = field(metadata={"cdp_name": "offsetY"})
+    """
+    Offset from parent layer, Y coordinate.
+    """
     width: float
+    """
+    Layer width.
+    """
     height: float
+    """
+    Layer height.
+    """
     transform: list[float] | None = None
+    """
+    Transformation matrix for layer, default is identity matrix
+    """
     anchor_x: float | None = field(default=None, metadata={"cdp_name": "anchorX"})
+    """
+    Transform anchor point X, absent if no transform specified
+    """
     anchor_y: float | None = field(default=None, metadata={"cdp_name": "anchorY"})
+    """
+    Transform anchor point Y, absent if no transform specified
+    """
     anchor_z: float | None = field(default=None, metadata={"cdp_name": "anchorZ"})
+    """
+    Transform anchor point Z, absent if no transform specified
+    """
     paint_count: int = field(metadata={"cdp_name": "paintCount"})
+    """
+    Indicates how many time this layer has painted.
+    """
     draws_content: bool = field(metadata={"cdp_name": "drawsContent"})
+    """
+    Indicates whether this layer hosts any content, rather than being used for
+    transform/scrolling purposes only.
+    """
     invisible: bool | None = None
+    """
+    Set if layer is not visible.
+    """
     scroll_rects: list[ScrollRect] | None = field(
         default=None, metadata={"cdp_name": "scrollRects"}
     )
+    """
+    Rectangles scrolling on main thread only.
+    """
     sticky_position_constraint: StickyPositionConstraint | None = field(
         default=None, metadata={"cdp_name": "stickyPositionConstraint"}
     )
+    """
+    Sticky position constraint information
+    """
 
 
 type PaintProfile = list[float]

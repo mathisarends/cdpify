@@ -31,20 +31,50 @@ class LogEntry:
         "recommendation",
         "other",
     ]
+    """
+    Log entry source.
+    """
     level: Literal["verbose", "info", "warning", "error"]
+    """
+    Log entry severity.
+    """
     text: str
+    """
+    Logged text.
+    """
     category: Literal["cors"] | None = None
     timestamp: runtime.Timestamp
+    """
+    Timestamp when this entry was added.
+    """
     url: str | None = None
+    """
+    URL of the resource if known.
+    """
     line_number: int | None = field(default=None, metadata={"cdp_name": "lineNumber"})
+    """
+    Line number in the resource.
+    """
     stack_trace: runtime.StackTrace | None = field(
         default=None, metadata={"cdp_name": "stackTrace"}
     )
+    """
+    JavaScript stack trace.
+    """
     network_request_id: network.RequestId | None = field(
         default=None, metadata={"cdp_name": "networkRequestId"}
     )
+    """
+    Identifier of the network request associated with this entry.
+    """
     worker_id: str | None = field(default=None, metadata={"cdp_name": "workerId"})
+    """
+    Identifier of the worker associated with this entry.
+    """
     args: list[runtime.RemoteObject] | None = None
+    """
+    Call arguments.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -62,4 +92,10 @@ class ViolationSetting:
         "handler",
         "recurringHandler",
     ]
+    """
+    Violation type.
+    """
     threshold: float
+    """
+    Time threshold to trigger upon.
+    """

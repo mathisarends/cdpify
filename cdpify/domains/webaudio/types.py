@@ -81,11 +81,25 @@ class ContextRealtimeData:
     """
 
     current_time: float = field(metadata={"cdp_name": "currentTime"})
+    """
+    The current context time in second in BaseAudioContext.
+    """
     render_capacity: float = field(metadata={"cdp_name": "renderCapacity"})
+    """
+    The time spent on rendering graph divided by render quantum duration, and
+    multiplied by 100. 100 means the audio renderer reached the full capacity and glitch
+    may occur.
+    """
     callback_interval_mean: float = field(metadata={"cdp_name": "callbackIntervalMean"})
+    """
+    A running mean of callback interval.
+    """
     callback_interval_variance: float = field(
         metadata={"cdp_name": "callbackIntervalVariance"}
     )
+    """
+    A running variance of callback interval.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -101,10 +115,19 @@ class BaseAudioContext:
         default=None, metadata={"cdp_name": "realtimeData"}
     )
     callback_buffer_size: float = field(metadata={"cdp_name": "callbackBufferSize"})
+    """
+    Platform-dependent callback buffer size.
+    """
     max_output_channel_count: float = field(
         metadata={"cdp_name": "maxOutputChannelCount"}
     )
+    """
+    Number of output channels supported by audio hardware in use.
+    """
     sample_rate: float = field(metadata={"cdp_name": "sampleRate"})
+    """
+    Context sample rate.
+    """
     render_quantum_size: float = field(metadata={"cdp_name": "renderQuantumSize"})
 
 

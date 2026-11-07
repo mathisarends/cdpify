@@ -22,9 +22,22 @@ class SamplingHeapProfileNode:
     """
 
     call_frame: runtime.CallFrame = field(metadata={"cdp_name": "callFrame"})
+    """
+    Function location.
+    """
     self_size: float = field(metadata={"cdp_name": "selfSize"})
+    """
+    Allocations size in bytes for the node excluding children.
+    """
     id: int
+    """
+    Node id. Ids are unique across all profiles collected between startSampling and
+    stopSampling.
+    """
     children: list[SamplingHeapProfileNode]
+    """
+    Child nodes.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -34,8 +47,18 @@ class SamplingHeapProfileSample:
     """
 
     size: float
+    """
+    Allocation size in bytes attributed to the sample.
+    """
     node_id: int = field(metadata={"cdp_name": "nodeId"})
+    """
+    Id of the corresponding profile tree node.
+    """
     ordinal: float
+    """
+    Time-ordered sample ordinal number. It is unique across all profiles retrieved
+    between startSampling and stopSampling.
+    """
 
 
 @dataclass(kw_only=True, slots=True)

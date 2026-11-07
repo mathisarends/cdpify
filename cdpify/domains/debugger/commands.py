@@ -66,6 +66,9 @@ class ContinueToLocationParams:
     """
 
     location: Location
+    """
+    Location to continue to.
+    """
     target_call_frames: Literal["any", "current"] | None = field(
         default=None, metadata={"cdp_name": "targetCallFrames"}
     )
@@ -81,11 +84,19 @@ class EnableParams:
     max_scripts_cache_size: float | None = field(
         default=None, metadata={"cdp_name": "maxScriptsCacheSize"}
     )
+    """
+    The maximum size in bytes of collected scripts (not referenced by other heap
+    objects) the debugger can hold. Puts no limit if parameter is omitted. Experimental:
+    this API may change or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class EnableResult:
     debugger_id: runtime.UniqueDebuggerId = field(metadata={"cdp_name": "debuggerId"})
+    """
+    Unique identifier of the debugger. Experimental: this API may change or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -95,31 +106,73 @@ class EvaluateOnCallFrameParams:
     """
 
     call_frame_id: CallFrameId = field(metadata={"cdp_name": "callFrameId"})
+    """
+    Call frame identifier to evaluate on.
+    """
     expression: str
+    """
+    Expression to evaluate.
+    """
     object_group: str | None = field(default=None, metadata={"cdp_name": "objectGroup"})
+    """
+    String object group name to put result into (allows rapid releasing resulting
+    object handles using `releaseObjectGroup`).
+    """
     include_command_line_api: bool | None = field(
         default=None, metadata={"cdp_name": "includeCommandLineAPI"}
     )
+    """
+    Specifies whether command line API should be available to the evaluated expression,
+    defaults to false.
+    """
     silent: bool | None = None
+    """
+    In silent mode exceptions thrown during evaluation are not reported and do not
+    pause execution. Overrides `setPauseOnException` state.
+    """
     return_by_value: bool | None = field(
         default=None, metadata={"cdp_name": "returnByValue"}
     )
+    """
+    Whether the result is expected to be a JSON object that should be sent by value.
+    """
     generate_preview: bool | None = field(
         default=None, metadata={"cdp_name": "generatePreview"}
     )
+    """
+    Whether preview should be generated for the result. Experimental: this API may
+    change or be removed.
+    """
     throw_on_side_effect: bool | None = field(
         default=None, metadata={"cdp_name": "throwOnSideEffect"}
     )
+    """
+    Whether to throw an exception if side effect cannot be ruled out during evaluation.
+    """
     timeout: runtime.TimeDelta | None = None
+    """
+    Terminate execution after timing out (number of milliseconds). Experimental: this
+    API may change or be removed.
+    """
     scope_number: int | None = field(default=None, metadata={"cdp_name": "scopeNumber"})
+    """
+    Specifies the scope number to evaluate the expression in (default: 0, innermost
+    scope). Experimental: this API may change or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class EvaluateOnCallFrameResult:
     result: runtime.RemoteObject
+    """
+    Object wrapper for the evaluation result.
+    """
     exception_details: runtime.ExceptionDetails | None = field(
         default=None, metadata={"cdp_name": "exceptionDetails"}
     )
+    """
+    Exception details.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -130,15 +183,28 @@ class GetPossibleBreakpointsParams:
     """
 
     start: Location
+    """
+    Start of range to search possible breakpoint locations in.
+    """
     end: Location | None = None
+    """
+    End of range to search possible breakpoint locations in (excluding). When not
+    specified, end of scripts is used as end of range.
+    """
     restrict_to_function: bool | None = field(
         default=None, metadata={"cdp_name": "restrictToFunction"}
     )
+    """
+    Only consider locations which are in the same (non-nested) function as start.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetPossibleBreakpointsResult:
     locations: list[BreakLocation]
+    """
+    List of the possible breakpoint locations.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -148,27 +214,57 @@ class GetScriptSourceParams:
     """
 
     script_id: runtime.ScriptId = field(metadata={"cdp_name": "scriptId"})
+    """
+    Id of the script to get source for.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetScriptSourceResult:
     script_source: str = field(metadata={"cdp_name": "scriptSource"})
+    """
+    Script source (empty in case of Wasm bytecode).
+    """
     bytecode: str | None = None
+    """
+    Wasm bytecode. (Encoded as a base64 string when passed over JSON)
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class DisassembleWasmModuleParams:
+    """
+    Experimental: this API may change or be removed.
+    """
+
     script_id: runtime.ScriptId = field(metadata={"cdp_name": "scriptId"})
+    """
+    Id of the script to disassemble
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class DisassembleWasmModuleResult:
     stream_id: str | None = field(default=None, metadata={"cdp_name": "streamId"})
+    """
+    For large modules, return a stream from which additional chunks of disassembly can
+    be read successively.
+    """
     total_number_of_lines: int = field(metadata={"cdp_name": "totalNumberOfLines"})
+    """
+    The total number of lines in the disassembly text.
+    """
     function_body_offsets: list[int] = field(
         metadata={"cdp_name": "functionBodyOffsets"}
     )
+    """
+    The offsets of all function bodies, in the format [start1, end1, start2, end2, ...]
+    where all ends are exclusive.
+    """
     chunk: WasmDisassemblyChunk
+    """
+    The first chunk of disassembly.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -177,6 +273,7 @@ class NextWasmDisassemblyChunkParams:
     Disassemble the next chunk of lines for the module corresponding to the stream. If
     disassembly is complete, this API will invalidate the streamId and return an empty
     chunk. Any subsequent calls for the now invalid stream will return errors.
+    Experimental: this API may change or be removed.
     """
 
     stream_id: str = field(metadata={"cdp_name": "streamId"})
@@ -185,26 +282,37 @@ class NextWasmDisassemblyChunkParams:
 @dataclass(kw_only=True, slots=True)
 class NextWasmDisassemblyChunkResult:
     chunk: WasmDisassemblyChunk
+    """
+    The next chunk of disassembly.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetWasmBytecodeParams:
     """
-    This command is deprecated. Use getScriptSource instead.
+    This command is deprecated. Use getScriptSource instead. Deprecated in the Chrome
+    DevTools Protocol.
     """
 
     script_id: runtime.ScriptId = field(metadata={"cdp_name": "scriptId"})
+    """
+    Id of the Wasm script to get source for.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetWasmBytecodeResult:
     bytecode: str
+    """
+    Script source. (Encoded as a base64 string when passed over JSON)
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetStackTraceParams:
     """
-    Returns stack trace with given `stackTraceId`.
+    Returns stack trace with given `stackTraceId`. Experimental: this API may change or
+    be removed.
     """
 
     stack_trace_id: runtime.StackTraceId = field(metadata={"cdp_name": "stackTraceId"})
@@ -217,9 +325,17 @@ class GetStackTraceResult:
 
 @dataclass(kw_only=True, slots=True)
 class PauseOnAsyncCallParams:
+    """
+    Experimental: this API may change or be removed. Deprecated in the Chrome DevTools
+    Protocol.
+    """
+
     parent_stack_trace_id: runtime.StackTraceId = field(
         metadata={"cdp_name": "parentStackTraceId"}
     )
+    """
+    Debugger will pause when async call with given stack trace is started.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -246,18 +362,34 @@ class RestartFrameParams:
     """
 
     call_frame_id: CallFrameId = field(metadata={"cdp_name": "callFrameId"})
+    """
+    Call frame identifier to evaluate on.
+    """
     mode: Literal["StepInto"] | None = None
+    """
+    The `mode` parameter must be present and set to 'StepInto', otherwise
+    `restartFrame` will error out. Experimental: this API may change or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class RestartFrameResult:
     call_frames: list[CallFrame] = field(metadata={"cdp_name": "callFrames"})
+    """
+    New stack trace. Deprecated in the Chrome DevTools Protocol.
+    """
     async_stack_trace: runtime.StackTrace | None = field(
         default=None, metadata={"cdp_name": "asyncStackTrace"}
     )
+    """
+    Async stack trace, if any. Deprecated in the Chrome DevTools Protocol.
+    """
     async_stack_trace_id: runtime.StackTraceId | None = field(
         default=None, metadata={"cdp_name": "asyncStackTraceId"}
     )
+    """
+    Async stack trace, if any. Deprecated in the Chrome DevTools Protocol.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -269,6 +401,13 @@ class ResumeParams:
     terminate_on_resume: bool | None = field(
         default=None, metadata={"cdp_name": "terminateOnResume"}
     )
+    """
+    Set to true to terminate execution upon resuming execution. In contrast to
+    Runtime.terminateExecution, this will allows to execute further JavaScript (i.e. via
+    evaluation) until execution of the paused code is actually resumed, at which point
+    termination is triggered. If execution is currently not paused, this parameter has
+    no effect.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -278,16 +417,31 @@ class SearchInContentParams:
     """
 
     script_id: runtime.ScriptId = field(metadata={"cdp_name": "scriptId"})
+    """
+    Id of the script to search in.
+    """
     query: str
+    """
+    String to search for.
+    """
     case_sensitive: bool | None = field(
         default=None, metadata={"cdp_name": "caseSensitive"}
     )
+    """
+    If true, search is case sensitive.
+    """
     is_regex: bool | None = field(default=None, metadata={"cdp_name": "isRegex"})
+    """
+    If true, treats string parameter as regex.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SearchInContentResult:
     result: list[SearchMatch]
+    """
+    List of search matches.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -297,6 +451,10 @@ class SetAsyncCallStackDepthParams:
     """
 
     max_depth: int = field(metadata={"cdp_name": "maxDepth"})
+    """
+    Maximum depth of async call stacks. Setting to `0` will effectively disable
+    collecting async call stacks (default).
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -305,10 +463,13 @@ class SetBlackboxExecutionContextsParams:
     Replace previous blackbox execution contexts with passed ones. Forces backend to
     skip stepping/pausing in scripts in these execution contexts. VM will try to leave
     blackboxed script by performing 'step in' several times, finally resorting to 'step
-    out' if unsuccessful.
+    out' if unsuccessful. Experimental: this API may change or be removed.
     """
 
     unique_ids: list[str] = field(metadata={"cdp_name": "uniqueIds"})
+    """
+    Array of execution context unique ids for the debugger to ignore.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -317,13 +478,19 @@ class SetBlackboxPatternsParams:
     Replace previous blackbox patterns with passed ones. Forces backend to skip
     stepping/pausing in scripts with url matching one of the patterns. VM will try to
     leave blackboxed script by performing 'step in' several times, finally resorting to
-    'step out' if unsuccessful.
+    'step out' if unsuccessful. Experimental: this API may change or be removed.
     """
 
     patterns: list[str]
+    """
+    Array of regexps that will be used to check script url for blackbox state.
+    """
     skip_anonymous: bool | None = field(
         default=None, metadata={"cdp_name": "skipAnonymous"}
     )
+    """
+    If true, also ignore scripts with no source url.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -332,10 +499,14 @@ class SetBlackboxedRangesParams:
     Makes backend skip steps in the script in blackboxed ranges. VM will try leave
     blacklisted scripts by performing 'step in' several times, finally resorting to
     'step out' if unsuccessful. Positions array contains positions where blackbox state
-    is changed. First interval isn't blackboxed. Array should be sorted.
+    is changed. First interval isn't blackboxed. Array should be sorted. Experimental:
+    this API may change or be removed.
     """
 
     script_id: runtime.ScriptId = field(metadata={"cdp_name": "scriptId"})
+    """
+    Id of the script.
+    """
     positions: list[ScriptPosition]
 
 
@@ -346,13 +517,26 @@ class SetBreakpointParams:
     """
 
     location: Location
+    """
+    Location to set breakpoint in.
+    """
     condition: str | None = None
+    """
+    Expression to use as a breakpoint condition. When specified, debugger will only
+    stop on the breakpoint if this expression evaluates to true.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SetBreakpointResult:
     breakpoint_id: BreakpointId = field(metadata={"cdp_name": "breakpointId"})
+    """
+    Id of the created breakpoint for further reference.
+    """
     actual_location: Location = field(metadata={"cdp_name": "actualLocation"})
+    """
+    Location this breakpoint resolved into.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -364,11 +548,17 @@ class SetInstrumentationBreakpointParams:
     instrumentation: Literal[
         "beforeScriptExecution", "beforeScriptWithSourceMapExecution"
     ]
+    """
+    Instrumentation name.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SetInstrumentationBreakpointResult:
     breakpoint_id: BreakpointId = field(metadata={"cdp_name": "breakpointId"})
+    """
+    Id of the created breakpoint for further reference.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -382,19 +572,45 @@ class SetBreakpointByUrlParams:
     """
 
     line_number: int = field(metadata={"cdp_name": "lineNumber"})
+    """
+    Line number to set breakpoint at.
+    """
     url: str | None = None
+    """
+    URL of the resources to set breakpoint on.
+    """
     url_regex: str | None = field(default=None, metadata={"cdp_name": "urlRegex"})
+    """
+    Regex pattern for the URLs of the resources to set breakpoints on. Either `url` or
+    `urlRegex` must be specified.
+    """
     script_hash: str | None = field(default=None, metadata={"cdp_name": "scriptHash"})
+    """
+    Script hash of the resources to set breakpoint on.
+    """
     column_number: int | None = field(
         default=None, metadata={"cdp_name": "columnNumber"}
     )
+    """
+    Offset in the line to set breakpoint at.
+    """
     condition: str | None = None
+    """
+    Expression to use as a breakpoint condition. When specified, debugger will only
+    stop on the breakpoint if this expression evaluates to true.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SetBreakpointByUrlResult:
     breakpoint_id: BreakpointId = field(metadata={"cdp_name": "breakpointId"})
+    """
+    Id of the created breakpoint for further reference.
+    """
     locations: list[Location]
+    """
+    List of the locations this breakpoint resolved into upon addition.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -402,16 +618,26 @@ class SetBreakpointOnFunctionCallParams:
     """
     Sets JavaScript breakpoint before each call to the given function. If another
     function was created from the same source as a given one, calling it will also
-    trigger the breakpoint.
+    trigger the breakpoint. Experimental: this API may change or be removed.
     """
 
     object_id: runtime.RemoteObjectId = field(metadata={"cdp_name": "objectId"})
+    """
+    Function object id.
+    """
     condition: str | None = None
+    """
+    Expression to use as a breakpoint condition. When specified, debugger will stop on
+    the breakpoint if this expression evaluates to true.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SetBreakpointOnFunctionCallResult:
     breakpoint_id: BreakpointId = field(metadata={"cdp_name": "breakpointId"})
+    """
+    Id of the created breakpoint for further reference.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -421,6 +647,9 @@ class SetBreakpointsActiveParams:
     """
 
     active: bool
+    """
+    New value for breakpoints active state.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -432,30 +661,52 @@ class SetPauseOnExceptionsParams:
     """
 
     state: Literal["none", "caught", "uncaught", "all"]
+    """
+    Pause on exceptions mode.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SetReturnValueParams:
     """
     Changes return value in top frame. Available only at return break position.
+    Experimental: this API may change or be removed.
     """
 
     new_value: runtime.CallArgument = field(metadata={"cdp_name": "newValue"})
+    """
+    New return value.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class SetScriptSourceParams:
     """
     Live edit is no longer supported and this command always fails with a "no longer
-    available" error.
+    available" error. Deprecated in the Chrome DevTools Protocol.
     """
 
     script_id: runtime.ScriptId = field(metadata={"cdp_name": "scriptId"})
+    """
+    Id of the script to edit.
+    """
     script_source: str = field(metadata={"cdp_name": "scriptSource"})
+    """
+    New content of the script.
+    """
     dry_run: bool | None = field(default=None, metadata={"cdp_name": "dryRun"})
+    """
+    If true the change will not actually be applied. Dry run may be used to get result
+    description without actually modifying the code.
+    """
     allow_top_frame_editing: bool | None = field(
         default=None, metadata={"cdp_name": "allowTopFrameEditing"}
     )
+    """
+    If true, then `scriptSource` is allowed to change the function on top of the stack
+    as long as the top-most stack frame is the only activation of that function.
+    Experimental: this API may change or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -463,15 +714,29 @@ class SetScriptSourceResult:
     call_frames: list[CallFrame] | None = field(
         default=None, metadata={"cdp_name": "callFrames"}
     )
+    """
+    New stack trace in case editing has happened while VM was stopped. Deprecated in
+    the Chrome DevTools Protocol.
+    """
     stack_changed: bool | None = field(
         default=None, metadata={"cdp_name": "stackChanged"}
     )
+    """
+    Whether current call stack was modified after applying the changes. Deprecated in
+    the Chrome DevTools Protocol.
+    """
     async_stack_trace: runtime.StackTrace | None = field(
         default=None, metadata={"cdp_name": "asyncStackTrace"}
     )
+    """
+    Async stack trace, if any. Deprecated in the Chrome DevTools Protocol.
+    """
     async_stack_trace_id: runtime.StackTraceId | None = field(
         default=None, metadata={"cdp_name": "asyncStackTraceId"}
     )
+    """
+    Async stack trace, if any. Deprecated in the Chrome DevTools Protocol.
+    """
     status: Literal[
         "Ok",
         "CompileError",
@@ -479,9 +744,17 @@ class SetScriptSourceResult:
         "BlockedByActiveFunction",
         "BlockedByTopLevelEsModuleChange",
     ]
+    """
+    Whether the operation was successful or not. Only `Ok` denotes a successful live
+    edit while the other enum variants denote why the live edit failed. Experimental:
+    this API may change or be removed.
+    """
     exception_details: runtime.ExceptionDetails | None = field(
         default=None, metadata={"cdp_name": "exceptionDetails"}
     )
+    """
+    Exception details if any. Only present when `status` is `CompileError`.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -491,6 +764,9 @@ class SetSkipAllPausesParams:
     """
 
     skip: bool
+    """
+    New value for skip pauses state.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -501,9 +777,22 @@ class SetVariableValueParams:
     """
 
     scope_number: int = field(metadata={"cdp_name": "scopeNumber"})
+    """
+    0-based number of scope as was listed in scope chain. Only 'local', 'closure' and
+    'catch' scope types are allowed. Other scopes could be manipulated manually.
+    """
     variable_name: str = field(metadata={"cdp_name": "variableName"})
+    """
+    Variable name.
+    """
     new_value: runtime.CallArgument = field(metadata={"cdp_name": "newValue"})
+    """
+    New variable value.
+    """
     call_frame_id: CallFrameId = field(metadata={"cdp_name": "callFrameId"})
+    """
+    Id of callframe that holds variable.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -515,9 +804,17 @@ class StepIntoParams:
     break_on_async_call: bool | None = field(
         default=None, metadata={"cdp_name": "breakOnAsyncCall"}
     )
+    """
+    Debugger will pause on the execution of the first async task which was scheduled
+    before next pause. Experimental: this API may change or be removed.
+    """
     skip_list: list[LocationRange] | None = field(
         default=None, metadata={"cdp_name": "skipList"}
     )
+    """
+    The skipList specifies location ranges that should be skipped on step into.
+    Experimental: this API may change or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -529,6 +826,15 @@ class StepOverParams:
     skip_list: list[LocationRange] | None = field(
         default=None, metadata={"cdp_name": "skipList"}
     )
+    """
+    The skipList specifies location ranges that should be skipped on step over.
+    Experimental: this API may change or be removed.
+    """
     enter_ranges: list[LocationRange] | None = field(
         default=None, metadata={"cdp_name": "enterRanges"}
     )
+    """
+    Functions whose source range lies within one of the enterRanges are entered as if
+    by stepInto, even when they are called (directly or indirectly) from a call that is
+    stepped over. Experimental: this API may change or be removed.
+    """

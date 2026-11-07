@@ -29,38 +29,61 @@ class TracingCommand(StrEnum):
 @dataclass(kw_only=True, slots=True)
 class GetCategoriesResult:
     categories: list[str]
+    """
+    A list of supported tracing categories.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class GetTrackEventDescriptorResult:
     descriptor: str
+    """
+    Base64-encoded serialized perfetto.protos.TrackEventDescriptor protobuf message.
+    (Encoded as a base64 string when passed over JSON)
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class RecordClockSyncMarkerParams:
     """
-    Record a clock sync marker in the trace.
+    Record a clock sync marker in the trace. Experimental: this API may change or be
+    removed.
     """
 
     sync_id: str = field(metadata={"cdp_name": "syncId"})
+    """
+    The ID of this clock sync marker
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class RequestMemoryDumpParams:
     """
-    Request a global memory dump.
+    Request a global memory dump. Experimental: this API may change or be removed.
     """
 
     deterministic: bool | None = None
+    """
+    Enables more deterministic results by forcing garbage collection
+    """
     level_of_detail: MemoryDumpLevelOfDetail | None = field(
         default=None, metadata={"cdp_name": "levelOfDetail"}
     )
+    """
+    Specifies level of details in memory dump. Defaults to "detailed".
+    """
 
 
 @dataclass(kw_only=True, slots=True)
 class RequestMemoryDumpResult:
     dump_guid: str = field(metadata={"cdp_name": "dumpGuid"})
+    """
+    GUID of the resulting global memory dump.
+    """
     success: bool
+    """
+    True iff the global memory dump succeeded.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -70,31 +93,77 @@ class StartParams:
     """
 
     categories: str | None = None
+    """
+    Category/tag filter Experimental: this API may change or be removed. Deprecated in
+    the Chrome DevTools Protocol.
+    """
     options: str | None = None
+    """
+    Tracing options Experimental: this API may change or be removed. Deprecated in the
+    Chrome DevTools Protocol.
+    """
     buffer_usage_reporting_interval: float | None = field(
         default=None, metadata={"cdp_name": "bufferUsageReportingInterval"}
     )
+    """
+    If set, the agent will issue bufferUsage events at this interval, specified in
+    milliseconds Experimental: this API may change or be removed.
+    """
     transfer_mode: Literal["ReportEvents", "ReturnAsStream"] | None = field(
         default=None, metadata={"cdp_name": "transferMode"}
     )
+    """
+    Whether to report trace events as series of dataCollected events or to save trace
+    to a stream (defaults to `ReportEvents`).
+    """
     stream_format: StreamFormat | None = field(
         default=None, metadata={"cdp_name": "streamFormat"}
     )
+    """
+    Trace data format to use. This only applies when using `ReturnAsStream` transfer
+    mode (defaults to `json`).
+    """
     stream_compression: StreamCompression | None = field(
         default=None, metadata={"cdp_name": "streamCompression"}
     )
+    """
+    Compression format to use. This only applies when using `ReturnAsStream` transfer
+    mode (defaults to `none`) Experimental: this API may change or be removed.
+    """
     trace_config: TraceConfig | None = field(
         default=None, metadata={"cdp_name": "traceConfig"}
     )
     perfetto_config: str | None = field(
         default=None, metadata={"cdp_name": "perfettoConfig"}
     )
+    """
+    Base64-encoded serialized perfetto.protos.TraceConfig protobuf message When
+    specified, the parameters `categories`, `options`, `traceConfig` are ignored.
+    (Encoded as a base64 string when passed over JSON) Experimental: this API may change
+    or be removed.
+    """
     tracing_backend: TracingBackend | None = field(
         default=None, metadata={"cdp_name": "tracingBackend"}
     )
+    """
+    Backend type (defaults to `auto`) Experimental: this API may change or be removed.
+    """
     screenshot_max_size: int | None = field(
         default=None, metadata={"cdp_name": "screenshotMaxSize"}
     )
+    """
+    Maximum width and height (in pixels) of each captured screenshot. Only used when
+    the `disabled-by-default-devtools.screenshot` category is enabled. Defaults to 500.
+    The combined memory footprint of screenshots (`screenshotMaxSize` *
+    `screenshotMaxSize` * 4 * `screenshotMaxCount`) is clamped to the existing
+    per-session budget. Experimental: this API may change or be removed.
+    """
     screenshot_max_count: int | None = field(
         default=None, metadata={"cdp_name": "screenshotMaxCount"}
     )
+    """
+    Maximum number of screenshots captured during a single tracing session. Only used
+    when the `disabled-by-default-devtools.screenshot` category is enabled. Defaults to
+    450. Clamped together with `screenshotMaxSize` to stay within the per-session
+    screenshot memory budget. Experimental: this API may change or be removed.
+    """
