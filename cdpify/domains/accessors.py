@@ -15,36 +15,36 @@ if TYPE_CHECKING:
     from .animation import Animation
     from .audits import Audits
     from .autofill import Autofill
-    from .backgroundservice import BackgroundService
-    from .bluetoothemulation import BluetoothEmulation
+    from .background_service import BackgroundService
+    from .bluetooth_emulation import BluetoothEmulation
     from .browser import Browser
-    from .cachestorage import CacheStorage
+    from .cache_storage import CacheStorage
     from .cast import Cast
     from .console import Console
-    from .crashreportcontext import CrashReportContext
+    from .crash_report_context import CrashReportContext
     from .css import CSS
     from .debugger import Debugger
-    from .deviceaccess import DeviceAccess
-    from .deviceorientation import DeviceOrientation
-    from .digitalcredentials import DigitalCredentials
+    from .device_access import DeviceAccess
+    from .device_orientation import DeviceOrientation
+    from .digital_credentials import DigitalCredentials
     from .dom import DOM
-    from .domdebugger import DOMDebugger
-    from .domsnapshot import DOMSnapshot
-    from .domstorage import DOMStorage
+    from .dom_debugger import DOMDebugger
+    from .dom_snapshot import DOMSnapshot
+    from .dom_storage import DOMStorage
     from .emulation import Emulation
-    from .eventbreakpoints import EventBreakpoints
+    from .event_breakpoints import EventBreakpoints
     from .extensions import Extensions
-    from .fedcm import FedCm
+    from .fed_cm import FedCm
     from .fetch import Fetch
-    from .filesystem import FileSystem
-    from .findinpage import FindInPage
-    from .headlessexperimental import HeadlessExperimental
-    from .heapprofiler import HeapProfiler
-    from .indexeddb import IndexedDB
+    from .file_system import FileSystem
+    from .find_in_page import FindInPage
+    from .headless_experimental import HeadlessExperimental
+    from .heap_profiler import HeapProfiler
+    from .indexed_db import IndexedDB
     from .input import Input
     from .inspector import Inspector
     from .io import IO
-    from .layertree import LayerTree
+    from .layer_tree import LayerTree
     from .log import Log
     from .media import Media
     from .memory import Memory
@@ -52,23 +52,23 @@ if TYPE_CHECKING:
     from .overlay import Overlay
     from .page import Page
     from .performance import Performance
-    from .performancetimeline import PerformanceTimeline
+    from .performance_timeline import PerformanceTimeline
     from .preload import Preload
     from .profiler import Profiler
     from .pwa import PWA
     from .runtime import Runtime
     from .schema import Schema
     from .security import Security
-    from .serviceworker import ServiceWorker
-    from .smartcardemulation import SmartCardEmulation
+    from .service_worker import ServiceWorker
+    from .smart_card_emulation import SmartCardEmulation
     from .storage import Storage
-    from .systeminfo import SystemInfo
+    from .system_info import SystemInfo
     from .target import Target
     from .tethering import Tethering
     from .tracing import Tracing
-    from .webaudio import WebAudio
-    from .webauthn import WebAuthn
-    from .webmcp import WebMCP
+    from .web_audio import WebAudio
+    from .web_authn import WebAuthn
+    from .web_mcp import WebMCP
 
 
 class DomainAccessors:
@@ -112,13 +112,13 @@ class DomainAccessors:
 
     @cached_property
     def background_service(self) -> BackgroundService:
-        from .backgroundservice import BackgroundService
+        from .background_service import BackgroundService
 
         return BackgroundService(self._executor)
 
     @cached_property
     def bluetooth_emulation(self) -> BluetoothEmulation:
-        from .bluetoothemulation import BluetoothEmulation
+        from .bluetooth_emulation import BluetoothEmulation
 
         return BluetoothEmulation(self._executor)
 
@@ -136,7 +136,7 @@ class DomainAccessors:
 
     @cached_property
     def cache_storage(self) -> CacheStorage:
-        from .cachestorage import CacheStorage
+        from .cache_storage import CacheStorage
 
         return CacheStorage(self._executor)
 
@@ -148,7 +148,7 @@ class DomainAccessors:
 
     @cached_property
     def crash_report_context(self) -> CrashReportContext:
-        from .crashreportcontext import CrashReportContext
+        from .crash_report_context import CrashReportContext
 
         return CrashReportContext(self._executor)
 
@@ -160,37 +160,37 @@ class DomainAccessors:
 
     @cached_property
     def dom_debugger(self) -> DOMDebugger:
-        from .domdebugger import DOMDebugger
+        from .dom_debugger import DOMDebugger
 
         return DOMDebugger(self._executor)
 
     @cached_property
     def dom_snapshot(self) -> DOMSnapshot:
-        from .domsnapshot import DOMSnapshot
+        from .dom_snapshot import DOMSnapshot
 
         return DOMSnapshot(self._executor)
 
     @cached_property
     def dom_storage(self) -> DOMStorage:
-        from .domstorage import DOMStorage
+        from .dom_storage import DOMStorage
 
         return DOMStorage(self._executor)
 
     @cached_property
     def device_access(self) -> DeviceAccess:
-        from .deviceaccess import DeviceAccess
+        from .device_access import DeviceAccess
 
         return DeviceAccess(self._executor)
 
     @cached_property
     def device_orientation(self) -> DeviceOrientation:
-        from .deviceorientation import DeviceOrientation
+        from .device_orientation import DeviceOrientation
 
         return DeviceOrientation(self._executor)
 
     @cached_property
     def digital_credentials(self) -> DigitalCredentials:
-        from .digitalcredentials import DigitalCredentials
+        from .digital_credentials import DigitalCredentials
 
         return DigitalCredentials(self._executor)
 
@@ -202,7 +202,7 @@ class DomainAccessors:
 
     @cached_property
     def event_breakpoints(self) -> EventBreakpoints:
-        from .eventbreakpoints import EventBreakpoints
+        from .event_breakpoints import EventBreakpoints
 
         return EventBreakpoints(self._executor)
 
@@ -214,7 +214,7 @@ class DomainAccessors:
 
     @cached_property
     def fed_cm(self) -> FedCm:
-        from .fedcm import FedCm
+        from .fed_cm import FedCm
 
         return FedCm(self._executor)
 
@@ -226,19 +226,19 @@ class DomainAccessors:
 
     @cached_property
     def file_system(self) -> FileSystem:
-        from .filesystem import FileSystem
+        from .file_system import FileSystem
 
         return FileSystem(self._executor)
 
     @cached_property
     def find_in_page(self) -> FindInPage:
-        from .findinpage import FindInPage
+        from .find_in_page import FindInPage
 
         return FindInPage(self._executor)
 
     @cached_property
     def headless_experimental(self) -> HeadlessExperimental:
-        from .headlessexperimental import HeadlessExperimental
+        from .headless_experimental import HeadlessExperimental
 
         return HeadlessExperimental(self._executor)
 
@@ -250,7 +250,7 @@ class DomainAccessors:
 
     @cached_property
     def indexed_db(self) -> IndexedDB:
-        from .indexeddb import IndexedDB
+        from .indexed_db import IndexedDB
 
         return IndexedDB(self._executor)
 
@@ -268,7 +268,7 @@ class DomainAccessors:
 
     @cached_property
     def layer_tree(self) -> LayerTree:
-        from .layertree import LayerTree
+        from .layer_tree import LayerTree
 
         return LayerTree(self._executor)
 
@@ -322,7 +322,7 @@ class DomainAccessors:
 
     @cached_property
     def performance_timeline(self) -> PerformanceTimeline:
-        from .performancetimeline import PerformanceTimeline
+        from .performance_timeline import PerformanceTimeline
 
         return PerformanceTimeline(self._executor)
 
@@ -340,13 +340,13 @@ class DomainAccessors:
 
     @cached_property
     def service_worker(self) -> ServiceWorker:
-        from .serviceworker import ServiceWorker
+        from .service_worker import ServiceWorker
 
         return ServiceWorker(self._executor)
 
     @cached_property
     def smart_card_emulation(self) -> SmartCardEmulation:
-        from .smartcardemulation import SmartCardEmulation
+        from .smart_card_emulation import SmartCardEmulation
 
         return SmartCardEmulation(self._executor)
 
@@ -358,7 +358,7 @@ class DomainAccessors:
 
     @cached_property
     def system_info(self) -> SystemInfo:
-        from .systeminfo import SystemInfo
+        from .system_info import SystemInfo
 
         return SystemInfo(self._executor)
 
@@ -382,19 +382,19 @@ class DomainAccessors:
 
     @cached_property
     def web_audio(self) -> WebAudio:
-        from .webaudio import WebAudio
+        from .web_audio import WebAudio
 
         return WebAudio(self._executor)
 
     @cached_property
     def web_authn(self) -> WebAuthn:
-        from .webauthn import WebAuthn
+        from .web_authn import WebAuthn
 
         return WebAuthn(self._executor)
 
     @cached_property
     def web_mcp(self) -> WebMCP:
-        from .webmcp import WebMCP
+        from .web_mcp import WebMCP
 
         return WebMCP(self._executor)
 
@@ -412,7 +412,7 @@ class DomainAccessors:
 
     @cached_property
     def heap_profiler(self) -> HeapProfiler:
-        from .heapprofiler import HeapProfiler
+        from .heap_profiler import HeapProfiler
 
         return HeapProfiler(self._executor)
 

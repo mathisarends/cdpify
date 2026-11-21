@@ -13,7 +13,7 @@ import pytest_asyncio
 from cdpify import CdpClient, CDPTimeoutError
 from cdpify.domains.page import LoadEventFiredEvent
 from cdpify.domains.runtime import CallArgument
-from cdpify.error import CDPStreamClosedError
+from cdpify.error import CDPSessionClosedError, CDPStreamClosedError
 from cdpify.transports import websocket as websocket_module
 
 pytestmark = pytest.mark.integration
@@ -123,6 +123,10 @@ async def test_session_events_end_when_chrome_detaches_target(browser) -> None:
             while True:
                 await events.next(timeout=2.0)
 
+    with pytest.raises(CDPSessionClosedError):
+        tab.listen_raw()
+    with pytest.raises(CDPSessionClosedError):
+        await tab.page.enable()
     assert browser.is_connected
 
 

@@ -2,11 +2,11 @@ from cdpify.generator.generators.constants import FUTURE_ANNOTATIONS, HEADER
 from cdpify.generator.generators.context import GenerationContext
 from cdpify.generator.generators.utils import (
     method_docstring,
+    require_unique_names,
     resolve_type,
     to_enum_name,
     to_identifier,
     to_pascal_case,
-    to_snake_case,
 )
 from cdpify.generator.generators.views import FieldView, MethodView
 from cdpify.generator.rendering import render_template
@@ -19,6 +19,7 @@ def generate(domain: Domain) -> str:
         _build_method(command, domain.domain, ctx) for command in domain.commands
     )
 
+    require_unique_names((m.name for m in methods), f"command names in {domain.domain}")
     if any(method.parameters for method in methods):
         ctx.use_typing("Any")
 
@@ -69,7 +70,7 @@ def _build_method(
     params_model = f"{pascal_name}Params" if command.parameters else None
 
     return MethodView(
-        name=to_snake_case(command.name),
+        name=to_identifier(command.name),
         parameters=parameters,
         return_type=return_type,
         command_member=to_enum_name(command.name),

@@ -1,5 +1,10 @@
 from cdpify.generator.generators.constants import HEADER
-from cdpify.generator.generators.utils import to_pascal_case, to_snake_case
+from cdpify.generator.generators.utils import (
+    event_class_name,
+    require_unique_names,
+    to_pascal_case,
+    to_snake_case,
+)
 from cdpify.generator.generators.views import (
     DomainView,
     ImportBlockView,
@@ -19,6 +24,8 @@ def generate(domain: Domain) -> str:
     type_exports = [_exported_name(name) for name in imported_type_names]
     event_exports = [_exported_name(name) for name in event_names]
     all_names = sorted([*type_exports, *command_names, *event_exports, domain_class])
+
+    require_unique_names(all_names, f"exports in {domain.domain}")
 
     lazy_exports = [
         *_lazy_exports("types", imported_type_names),
@@ -53,7 +60,7 @@ def generate_root(domains: list[Domain]) -> str:
         domains=tuple(
             DomainView(
                 name=domain.domain,
-                module=domain.domain.lower(),
+                module=to_snake_case(domain.domain),
                 property_name=to_snake_case(domain.domain),
             )
             for domain in domains
@@ -88,7 +95,7 @@ def _event_names(domain: Domain, type_names: list[str]) -> list[str]:
         enum_name = f"{enum_name} as {enum_name}Name"
 
     names = [enum_name]
-    names.extend(f"{to_pascal_case(event.name)}Event" for event in domain.events)
+    names.extend(event_class_name(event.name) for event in domain.events)
     return sorted(names)
 
 

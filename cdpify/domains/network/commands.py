@@ -49,7 +49,7 @@ class NetworkCommand(StrEnum):
     GET_REQUEST_POST_DATA = "Network.getRequestPostData"
     REPLAY_XHR = "Network.replayXHR"
     SEARCH_IN_RESPONSE_BODY = "Network.searchInResponseBody"
-    SET_BLOCKED_UR_LS = "Network.setBlockedURLs"
+    SET_BLOCKED_URLS = "Network.setBlockedURLs"
     SET_BYPASS_SERVICE_WORKER = "Network.setBypassServiceWorker"
     SET_CACHE_DISABLED = "Network.setCacheDisabled"
     SET_COOKIE = "Network.setCookie"

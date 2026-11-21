@@ -201,7 +201,7 @@ Pass a generated event class to `listen()`. The returned subscription is an
 async iterator of typed events:
 
 ```python
-from cdpify.domains.network.events import RequestWillBeSentEvent
+from cdpify.domains.network import RequestWillBeSentEvent
 
 
 await client.network.enable()
@@ -215,7 +215,7 @@ buffered until you read them. To wait for an event that your own command
 triggers, subscribe first and then send the command:
 
 ```python
-from cdpify.domains.page.events import LoadEventFiredEvent
+from cdpify.domains.page import LoadEventFiredEvent
 
 
 await client.page.enable()
@@ -355,6 +355,11 @@ session ID, while `tab.execute()` is always bound and cannot be overridden:
 await root_client.execute("Page.enable", session_id=session_a)
 await tab.execute("Runtime.evaluate", {"expression": "1 + 1"})
 ```
+
+After Chrome reports a detach, existing session streams drain their buffered events.
+New subscriptions and commands for that session raise `CDPSessionClosedError`
+locally. Session views belong to one connection. After reconnecting, attach
+or bind a session on the new connection.
 
 ## Configuration
 

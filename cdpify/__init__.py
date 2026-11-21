@@ -6,6 +6,7 @@ from .error import (
     CDPDecodeError,
     CDPError,
     CDPEventOverflowError,
+    CDPSessionClosedError,
     CDPStreamClosedError,
     CDPTimeoutError,
 )
@@ -36,6 +37,7 @@ __all__ = [
     "CDPConnectionError",
     "CDPCommandError",
     "CDPTimeoutError",
+    "CDPSessionClosedError",
     "CDPStreamClosedError",
     "CDPDecodeError",
     "CDPEventOverflowError",

@@ -1,6 +1,7 @@
 from collections.abc import Callable
 from dataclasses import dataclass
 
+from cdpify.error import CDPSessionClosedError
 from cdpify.event_queue import EventQueue, OverflowPolicy
 from cdpify.transport import TransportEvent
 
@@ -27,6 +28,7 @@ class EventRouter:
         self._max_queue_size = max_queue_size
         self._overflow: OverflowPolicy = overflow
         self._dispatcher = EventDispatcher()
+        self._detached_sessions: set[str] = set()
         self._buffers: dict[str | None, set[EventQueue[RawCDPEvent]]] = {}
         self._closed = False
 
@@ -38,11 +40,16 @@ class EventRouter:
         """Accept new listeners again, e.g. after a reconnect."""
         self._closed = False
 
+    def ensure_session_open(self, session_id: str) -> None:
+        if self._closed or session_id in self._detached_sessions:
+            raise CDPSessionClosedError(session_id)
+
     def close(self) -> None:
         """End every active listener once its buffered events are consumed."""
         if self._closed:
             return
         self._closed = True
+        self._detached_sessions.clear()
         for buffers in self._buffers.values():
             for buffer in buffers:
                 buffer.finish()
@@ -62,6 +69,7 @@ class EventRouter:
             # The envelope identifies the parent session, if there is one.
             detached_id = event.params.get("sessionId")
             if isinstance(detached_id, str):
+                self._detached_sessions.add(detached_id)
                 for buffer in self._buffers.pop(detached_id, ()):
                     buffer.finish()
                 self._dispatcher.remove_session_handlers(detached_id)
@@ -139,6 +147,8 @@ class EventRouter:
         max_queue_size: int | None,
         overflow: OverflowPolicy | None,
     ) -> EventSubscription[T]:
+        if session_id is not None:
+            self.ensure_session_open(session_id)
         buffer = EventQueue[RawCDPEvent](
             self._max_queue_size if max_queue_size is None else max_queue_size,
             overflow=self._overflow if overflow is None else overflow,

@@ -2,10 +2,10 @@ from cdpify.generator.generators.constants import FUTURE_ANNOTATIONS, HEADER
 from cdpify.generator.generators.context import GenerationContext
 from cdpify.generator.generators.utils import (
     api_description,
+    event_class_name,
     format_docstring,
     resolve_type,
     to_enum_name,
-    to_pascal_case,
 )
 from cdpify.generator.generators.views import (
     EnumMemberView,
@@ -78,7 +78,7 @@ def _build_event_model(
     ctx: GenerationContext,
 ) -> ModelView:
     event_fqn = f"{domain_name}.{event.name}"
-    class_name = f"{to_pascal_case(event.name)}Event"
+    class_name = event_class_name(event.name)
     return ModelView(
         name=class_name,
         docstring=(
