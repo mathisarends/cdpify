@@ -4,6 +4,7 @@ import json
 from unittest.mock import AsyncMock
 
 import pytest
+from websockets.asyncio.server import ServerConnection, serve
 from websockets.exceptions import ConnectionClosedOK
 
 from cdpify.error import (
@@ -243,6 +244,31 @@ async def test_message_loop_skips_malformed_messages(
 
     assert [event.method for event in events] == ["Page.loadEventFired"]
     assert "Dropping malformed CDP message" in caplog.text
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("backend", ["json", "orjson"])
+async def test_websocket_response_preserves_lone_surrogates(
+    monkeypatch: pytest.MonkeyPatch, backend: str
+) -> None:
+    monkeypatch.setattr(
+        websocket_module,
+        "orjson",
+        None if backend == "json" else pytest.importorskip("orjson"),
+    )
+    value = chr(0xD800)
+
+    async def respond(socket: ServerConnection) -> None:
+        command = json.loads(await socket.recv())
+        await socket.send(json.dumps({"id": command["id"], "result": {"value": value}}))
+        await socket.wait_closed()
+
+    async with serve(respond, "127.0.0.1", 0) as server:
+        port = server.sockets[0].getsockname()[1]
+        async with WebSocketTransport(f"ws://127.0.0.1:{port}") as transport:
+            assert await transport.execute("Runtime.evaluate", timeout=2.0) == {
+                "value": value
+            }
 
 
 @pytest.mark.asyncio
