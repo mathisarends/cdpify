@@ -10,6 +10,14 @@ class CDPConnectionError(CDPError):
     """The connection to the browser could not be used or was closed."""
 
 
+class CDPSessionClosedError(CDPConnectionError):
+    """The target session detached or its connection ended."""
+
+    def __init__(self, session_id: str) -> None:
+        self.session_id = session_id
+        super().__init__(f"Session {session_id!r} is closed")
+
+
 class CDPCommandError(CDPError):
     """The browser rejected a command."""
 

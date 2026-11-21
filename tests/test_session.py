@@ -6,7 +6,7 @@ from unittest.mock import AsyncMock, call
 
 import pytest
 
-from cdpify import CdpClient, CdpSession
+from cdpify import CdpClient, CdpSession, CDPSessionClosedError
 from cdpify.transport import TransportEvent
 
 
@@ -167,3 +167,36 @@ async def test_session_listener_filters_other_sessions() -> None:
     assert await next_event == _Event(value=1)
     await stream.aclose()
     await client.disconnect()
+
+
+@pytest.mark.asyncio
+async def test_detached_session_cannot_send_or_subscribe_again() -> None:
+    transport = _Transport()
+    client = CdpClient(transport=transport)
+    tab = client.bind_session("A")
+    domain = tab.page
+    await client._dispatch_event(
+        TransportEvent("Target.detachedFromTarget", {"sessionId": "A"})
+    )
+
+    with pytest.raises(CDPSessionClosedError) as error:
+        tab.listen(_Event)
+    assert error.value.session_id == "A"
+    with pytest.raises(CDPSessionClosedError):
+        client.bind_session("A").listen_raw()
+    with pytest.raises(CDPSessionClosedError):
+        await domain.enable()
+    with pytest.raises(CDPSessionClosedError):
+        await tab.execute("Page.enable")
+    with pytest.raises(CDPSessionClosedError):
+        await client.execute("Page.enable", session_id="A")
+    transport.execute.assert_not_awaited()
+    await client.bind_session("B").page.enable()
+
+    await client.disconnect()
+    async with client:
+        with pytest.raises(CDPSessionClosedError):
+            tab.listen_raw()
+        with pytest.raises(CDPSessionClosedError):
+            await domain.enable()
+        await client.bind_session("A").page.enable()

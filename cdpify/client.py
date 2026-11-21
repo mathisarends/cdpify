@@ -1,5 +1,6 @@
 import asyncio
 import logging
+from functools import partial
 from typing import Any, Literal, Self
 
 from cdpify.domains import DomainAccessors
@@ -51,9 +52,10 @@ class CdpClient(DomainAccessors, EventSource):
         self._executor: BoundCommandExecutor = BoundCommandExecutor(
             transport, default_timeout=default_timeout
         )
-        EventSource.__init__(
-            self, EventRouter(max_queue_size=max_queue_size, overflow=overflow), None
+        self._new_router = partial(
+            EventRouter, max_queue_size=max_queue_size, overflow=overflow
         )
+        EventSource.__init__(self, self._new_router(), None)
         self._connection_lock = asyncio.Lock()
         self._event_loop_task: asyncio.Task[None] | None = None
         self._disconnect_task: asyncio.Task[None] | None = None
@@ -80,7 +82,8 @@ class CdpClient(DomainAccessors, EventSource):
             if self._disconnect_task is not None:
                 await asyncio.shield(self._disconnect_task)
             self._disconnect_task = None
-            self._event_router.open()
+            if self._event_router.is_closed:
+                self._event_router = self._new_router()
             callback_transport = (
                 self._transport
                 if isinstance(self._transport, CallbackTransport)
@@ -139,11 +142,7 @@ class CdpClient(DomainAccessors, EventSource):
     ) -> dict[str, Any]:
         """Execute a low-level command, optionally routed to a target session."""
         executor = (
-            self._executor
-            if session_id is None
-            else BoundCommandExecutor(
-                self._transport, session_id, default_timeout=self._default_timeout
-            )
+            self._executor if session_id is None else self.bind_session(session_id)
         )
         return await executor.execute(
             method=method,
