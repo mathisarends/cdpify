@@ -47,7 +47,7 @@ with the same version and package files.
 
 ## Publish when ready
 
-1. Review the [0.4.0 migration guide](README.md#upgrading-from-040) and the
+1. Review the [0.4.0 migration guide](docs/migration.md#04x--050) and the
    complete 0.5.0 changelog against the changes since `v0.4.0`.
 2. Replace `Unreleased` in the 0.5.0 changelog heading with the actual publication
    date (`YYYY-MM-DD`), remove the release-preparation sentence, and update links
