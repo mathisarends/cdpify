@@ -1,5 +1,5 @@
 import asyncio
-from collections.abc import Awaitable
+from collections.abc import Awaitable, Callable
 from typing import Any, Protocol
 
 from cdpify.error import CDPTimeoutError
@@ -27,9 +27,11 @@ class BoundCommandExecutor:
         session_id: str | None = None,
         *,
         default_timeout: float | None = 30.0,
+        check_session: Callable[[str], None] | None = None,
     ) -> None:
         self._transport = transport
         self._session_id = session_id
+        self._check_session = check_session
         self._default_timeout = default_timeout
 
     @property
@@ -42,6 +44,8 @@ class BoundCommandExecutor:
         params: dict[str, Any] | None = None,
         timeout: float | None | UnsetType = UNSET,
     ) -> dict[str, Any]:
+        if self._check_session is not None and self._session_id is not None:
+            self._check_session(self._session_id)
         request_timeout = self._default_timeout if timeout is UNSET else timeout
         return await _with_timeout(
             method,

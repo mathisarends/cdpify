@@ -356,6 +356,11 @@ await root_client.execute("Page.enable", session_id=session_a)
 await tab.execute("Runtime.evaluate", {"expression": "1 + 1"})
 ```
 
+After Chrome reports a detach, existing session streams drain their buffered events.
+New subscriptions and commands for that session raise `CDPSessionClosedError`
+locally. Session views belong to one connection. After reconnecting, attach
+or bind a session on the new connection.
+
 ## Configuration
 
 ```python
