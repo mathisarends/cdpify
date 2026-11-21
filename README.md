@@ -51,6 +51,8 @@ pip install "cdpify[websocket]"
 Requires Python 3.12+. Add the `orjson` extra for faster JSON
 (`pip install "cdpify[websocket,orjson]"`).
 
+Upgrading from 0.5.x? See the [0.6.0 migration guide](https://github.com/mathisarends/cdpify/blob/main/docs/migration.md#05x--060).
+
 ## Quick start
 
 Start Chrome with remote debugging enabled:
@@ -167,16 +169,17 @@ The docs are a learning path: each level builds on the previous one.
 
 | Level | Guide | You learn |
 | --- | --- | --- |
-| 1 | [First steps](docs/01-first-steps.md) | Connecting, commands, naming, enums, types |
-| 2 | [Events](docs/02-events.md) | Subscriptions, timeouts, scopes, buffering |
-| 3 | [Multiple targets](docs/03-sessions.md) | Attaching to tabs, sessions, concurrency |
-| 4 | [Timeouts and errors](docs/04-timeouts-and-errors.md) | Deadlines, error types, decoding, `UNSET` |
-| 5 | [Configuration and transports](docs/05-configuration-and-transports.md) | All client options, custom transports |
-| ★ | [Cookbook](docs/cookbook.md) | Complete recipes, from screenshots to request interception |
+| 1 | [First steps](https://github.com/mathisarends/cdpify/blob/main/docs/01-first-steps.md) | Connecting, commands, naming, enums, types |
+| 2 | [Events](https://github.com/mathisarends/cdpify/blob/main/docs/02-events.md) | Subscriptions, timeouts, scopes, buffering |
+| 3 | [Multiple targets](https://github.com/mathisarends/cdpify/blob/main/docs/03-sessions.md) | Attaching to tabs, sessions, concurrency |
+| 4 | [Timeouts and errors](https://github.com/mathisarends/cdpify/blob/main/docs/04-timeouts-and-errors.md) | Deadlines, error types, decoding, `UNSET` |
+| 5 | [Configuration and transports](https://github.com/mathisarends/cdpify/blob/main/docs/05-configuration-and-transports.md) | All client options, custom transports |
+| ★ | [Cookbook](https://github.com/mathisarends/cdpify/blob/main/docs/cookbook.md) | Complete recipes, from screenshots to request interception |
 
-Also: the [migration guide](docs/migration.md), the
-[development guide](docs/development.md), runnable [examples](examples) and the
-[changelog](CHANGELOG.md).
+See also the [migration guide](https://github.com/mathisarends/cdpify/blob/main/docs/migration.md),
+[development guide](https://github.com/mathisarends/cdpify/blob/main/docs/development.md),
+runnable [examples](https://github.com/mathisarends/cdpify/tree/main/examples)
+and the [changelog](https://github.com/mathisarends/cdpify/blob/main/CHANGELOG.md).
 
 ## Resources
 

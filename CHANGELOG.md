@@ -2,38 +2,71 @@
 
 All notable changes to this project are documented here.
 
-## [Unreleased]
+## [0.6.0] - Unreleased
+
+See the [migration guide](docs/migration.md#05x--060) before upgrading from 0.5.x.
 
 ### Breaking changes
 
-- Library timeout keywords now include the unit in their names:
-  `timeout_seconds` on command execution and event reads/subscriptions,
-  `default_timeout_seconds` for the client's command budget, and
-  `open_timeout_seconds` / `close_timeout_seconds` for WebSocket connections.
-  Update keyword calls and custom transports to use these names. Timeout values and
-  defaults are unchanged and use seconds. Generated CDP parameters keep their spec names
-  and units (for example, `Runtime.evaluate(timeout=...)` uses milliseconds).
+- Rename library timeout keywords to `timeout_seconds` on raw command execution
+  and event reads and subscriptions, `default_timeout_seconds` for the client
+  command budget, and `open_timeout_seconds` and `close_timeout_seconds` for
+  WebSocket connections. Update custom `Transport.execute()` implementations
+  to accept `timeout_seconds`. Generated CDP parameters keep their protocol
+  names and units. For example, `Runtime.evaluate(timeout=...)` uses milliseconds.
+- `CdpClient.execute()` and `CdpSession.execute()` take only `method` and
+  `params` positionally. Pass `session_id=` and `timeout_seconds=` by keyword.
+- Replace `client.session(session_id)` with `client.bind_session(session_id)`
+  to bind an existing session ID. If you have a target ID, use
+  `await client.attach(target_id)` to attach in flat mode and get a `CdpSession`.
+- New commands and subscriptions on a detached session raise
+  `CDPSessionClosedError`, a subclass of `CDPConnectionError`. After reconnecting,
+  acquire a fresh session and use its domain objects.
+- Generated multiword domain packages match their Python accessors, for example
+  `cdpify.domains.indexed_db`. Rename `network.set_blocked_ur_ls()` to
+  `network.set_blocked_urls()` and `NetworkCommand.SET_BLOCKED_UR_LS` to
+  `SET_BLOCKED_URLS`. Import `LifecycleEvent` in place of `LifecycleEventEvent`.
+  The CDP wire names are unchanged by these Python renames.
+- The bundled protocol removes `Browser.addPrivacySandboxEnrollmentOverride`
+  and its generated method and models, plus four enum members listed in the
+  [migration guide](docs/migration.md#bundled-protocol-changes).
+- The bundled WebMCP spec requires `tool_id` on `Tool` and `RemovedTool`.
+  `ToolInvokedEvent.tool_name` is now optional. Prefer `tool_id` to the
+  deprecated `tool_name` when invoking a tool.
 
-- Multiword domain packages now match their Python accessors, for example
-  `cdpify.domains.indexed_db`. Use `network.set_blocked_urls(...)` and
-  `NetworkCommand.SET_BLOCKED_URLS` for CDP's `Network.setBlockedURLs`.
-  Import `LifecycleEvent` from `cdpify.domains.page` for `Page.lifecycleEvent`.
+### Added
 
-- Replaced `client.session(session_id)` with `client.bind_session(session_id)`.
-  Both calls bind an existing session ID locally. If you have a target ID,
-  use `await client.attach(target_id)` to attach in flat mode and receive a
-  `CdpSession`.
+- `CdpClient.attach(target_id)` attaches to a target in flat mode and returns
+  the bound session in one call.
+- Bundled Chromium CDP revision
+  [r1751165](https://github.com/ChromeDevTools/devtools-protocol/commit/62afb853b4629b6059542166e4eeb2975ce52f58)
+  adds `bluetooth_emulation.simulate_gatt_mtu_change()` and
+  `debugger.get_scope_chain()`. It also adds `check_for_repost` to `page.reload()`,
+  `capture_area` to `page.start_screen_recording()`, and `Tool.output_schema`
+  to WebMCP.
+- Added a step-by-step documentation guide, runnable recipes and a migration
+  guide. The source distribution includes the guides.
 
-- **Breaking change after 0.5.0:** `CdpClient.execute()` and
-  `CdpSession.execute()` now require keyword arguments
-  after `method` and `params`. Migrate `client.execute(method, params, sid, t)`
-  to `client.execute(method, params, session_id=sid, timeout_seconds=t)`, and
-  `session.execute(method, params, t)` to
-  `session.execute(method, params, timeout_seconds=t)`.
+### Fixed
 
-## [0.5.0] - Unreleased
+- Incoming WebSocket JSON containing an escaped lone UTF-16 surrogate now
+  decodes with the standard-library fallback when `orjson` rejects it.
+- Concurrent `connect()` calls no longer leak sockets. A second connection
+  attempt after a successful handshake raises `CDPConnectionError`.
+- Subscriptions scoped to a detached session drain buffered events and then
+  close. Root and all-session subscriptions continue receiving events.
+- `events.next(timeout_seconds=0)` returns an already buffered event without
+  waiting. `.closed` becomes true as soon as a finished subscription drains.
+- `typing.get_type_hints()` resolves cross-domain annotations on generated
+  command methods at runtime.
 
-Release preparation; the publication date will be recorded when 0.5.0 ships.
+### Development
+
+- The generator validates generated names for collisions. CI checks architecture
+  and maintainability with Smelt alongside the existing release checks.
+
+## [0.5.0] - 2026-11-07
+
 See the [migration guide](docs/migration.md#04x--050) before upgrading.
 
 ### Breaking changes

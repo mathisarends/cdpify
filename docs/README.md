@@ -22,7 +22,7 @@ navigation, request blocking and mocking, and multi-tab crawling.
 
 ## Reference material
 
-- [Migration guide](migration.md): breaking changes in 0.5.0 and on `main`.
+- The [migration guide](migration.md) covers breaking changes by version.
 - [Changelog](../CHANGELOG.md): full release notes.
 - [Chrome DevTools Protocol reference](https://chromedevtools.github.io/devtools-protocol/):
   the upstream description of every domain, command and event. Every CDP name
