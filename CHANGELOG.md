@@ -34,7 +34,7 @@ All notable changes to this project are documented here.
 ## [0.5.0] - Unreleased
 
 Release preparation; the publication date will be recorded when 0.5.0 ships.
-See the [migration guide](README.md#upgrading-from-040) before upgrading.
+See the [migration guide](docs/migration.md#04x--050) before upgrading.
 
 ### Breaking changes
 
