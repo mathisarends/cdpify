@@ -4,9 +4,10 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
 from cdpify.codec import _encode_value, decode_cdp
+from cdpify.domains import runtime
 from cdpify.executor import CommandExecutor
 from cdpify.shared.decorators import deprecated
 
@@ -18,9 +19,6 @@ from .commands import (
 from .types import (
     StreamHandle,
 )
-
-if TYPE_CHECKING:
-    from cdpify.domains import runtime
 
 
 class IO:

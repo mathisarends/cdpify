@@ -4,9 +4,10 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
 from cdpify.codec import _encode_value
+from cdpify.domains import dom, page
 from cdpify.executor import CommandExecutor
 
 from .commands import (
@@ -16,9 +17,6 @@ from .types import (
     Address,
     CreditCard,
 )
-
-if TYPE_CHECKING:
-    from cdpify.domains import dom, page
 
 
 class Autofill:

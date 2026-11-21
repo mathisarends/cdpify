@@ -4,9 +4,10 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Literal
+from typing import Any, Literal
 
 from cdpify.codec import _encode_value, decode_cdp
+from cdpify.domains import emulation, network
 from cdpify.executor import CommandExecutor
 from cdpify.shared.decorators import deprecated
 
@@ -50,9 +51,6 @@ from .types import (
     TransitionType,
     Viewport,
 )
-
-if TYPE_CHECKING:
-    from cdpify.domains import emulation, network
 
 
 class Page:

@@ -4,9 +4,10 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
 from cdpify.codec import _encode_value, decode_cdp
+from cdpify.domains import dom, page, runtime
 from cdpify.executor import CommandExecutor
 from cdpify.shared.decorators import deprecated
 
@@ -31,9 +32,6 @@ from .types import (
     SourceOrderConfig,
     WindowControlsOverlayConfig,
 )
-
-if TYPE_CHECKING:
-    from cdpify.domains import dom, page, runtime
 
 
 class Overlay:

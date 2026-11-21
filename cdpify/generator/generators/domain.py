@@ -19,8 +19,6 @@ def generate(domain: Domain) -> str:
         _build_method(command, domain.domain, ctx) for command in domain.commands
     )
 
-    if ctx.cross_domain_modules:
-        ctx.use_typing("TYPE_CHECKING")
     if any(method.parameters for method in methods):
         ctx.use_typing("Any")
 

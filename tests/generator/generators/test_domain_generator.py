@@ -83,7 +83,7 @@ def test_protocol_session_id_keeps_its_natural_name() -> None:
     assert '_params["sessionId"] = session_id' in output
 
 
-def test_cross_domain_param_resolved_via_type_checking() -> None:
+def test_cross_domain_param_module_imports_at_runtime() -> None:
     domain = Domain(
         domain="Animation",
         commands=[
@@ -96,7 +96,7 @@ def test_cross_domain_param_resolved_via_type_checking() -> None:
 
     output = domain_generator.generate(domain)
 
-    assert "if TYPE_CHECKING:" in output
+    assert "TYPE_CHECKING" not in output
     assert "from cdpify.domains import dom" in output
     assert "target: dom.NodeId" in output
 
