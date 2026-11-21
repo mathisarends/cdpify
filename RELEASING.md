@@ -1,8 +1,7 @@
 # Releasing cdpify
 
-Version 0.6.0 is prepared in `pyproject.toml` and `uv.lock`. Its
-[changelog entry](CHANGELOG.md#060---unreleased) stays marked **Unreleased**
-until the publication date is set.
+The [0.6.0 release notes](CHANGELOG.md#060---2026-11-21) document the changes
+since 0.5.0. The package version is set in `pyproject.toml` and `uv.lock`.
 
 ## Validate the release candidate
 
@@ -51,9 +50,9 @@ README also work from the PyPI project description.
 
 1. Review the [0.5.x to 0.6.0 migration guide](docs/migration.md#05x--060) and
    the complete 0.6.0 changelog against the changes since `v0.5.0`.
-2. Replace `Unreleased` in the 0.6.0 changelog heading with the publication
-   date (`YYYY-MM-DD`) and update this checklist's link and release status.
-   Commit the release changes and merge them into `main` after CI passes.
+2. Confirm the changelog heading uses the publication date (`YYYY-MM-DD`)
+   and this checklist links to it. Commit the release changes and merge them
+   into `main` after CI passes.
 3. Rebuild and validate both distributions from that exact commit. Use the
    explicit 0.6.0 filenames so older files in `dist/` are excluded.
 4. Tag the validated commit and push the tag:

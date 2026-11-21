@@ -2,7 +2,7 @@
 
 All notable changes to this project are documented here.
 
-## [0.6.0] - Unreleased
+## [0.6.0] - 2026-11-21
 
 See the [migration guide](docs/migration.md#05x--060) before upgrading from 0.5.x.
 
