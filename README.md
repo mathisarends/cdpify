@@ -1,4 +1,4 @@
-# 🚀 cdpify
+# cdpify
 
 **Fully typed, Pythonic access to the Chrome DevTools Protocol.**
 
