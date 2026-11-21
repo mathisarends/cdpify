@@ -61,6 +61,11 @@ class EventQueue[T]:
     def failed(self) -> bool:
         return self._error is not None
 
+    @property
+    def drained(self) -> bool:
+        """Whether the queue has closed and has no buffered events left."""
+        return self._closed and not self._items
+
     def finish(self, *, discard: bool = False) -> None:
         """Close and wake all readers, optionally releasing buffered events."""
         self._closed = True
