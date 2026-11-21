@@ -4,7 +4,7 @@ import logging
 from _chrome import get_ws_url
 
 from cdpify import CdpClient
-from cdpify.domains.network.events import (
+from cdpify.domains.network import (
     LoadingFailedEvent,
     LoadingFinishedEvent,
     RequestWillBeSentEvent,

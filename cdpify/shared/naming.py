@@ -1,7 +1,8 @@
 import re
 from functools import lru_cache
 
-_CAMEL_PATTERN_1 = re.compile(r"(.)([A-Z][a-z]+)")
+# A trailing plural s belongs to the acronym, as in URLs or IDs.
+_CAMEL_PATTERN_1 = re.compile(r"(.)([A-Z](?!s(?:$|[A-Z_]))[a-z]+)")
 _CAMEL_PATTERN_2 = re.compile(r"([a-z0-9])([A-Z])")
 
 

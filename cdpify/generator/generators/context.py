@@ -2,8 +2,9 @@ import re
 from dataclasses import dataclass, field
 
 from cdpify.generator.schemas import Parameter
+from cdpify.shared.naming import to_snake_case
 
-_CROSS_DOMAIN_PATTERN = re.compile(r"\b([a-z]+)\.([A-Z][a-zA-Z0-9]*)\b")
+_CROSS_DOMAIN_PATTERN = re.compile(r"\b([a-z][a-z0-9_]*)\.([A-Z][a-zA-Z0-9]*)\b")
 
 
 @dataclass
@@ -55,5 +56,5 @@ class GenerationContext:
     @property
     def cross_domain_modules(self) -> tuple[str, ...]:
         return tuple(
-            sorted({ref.split(".")[0].lower() for ref in self.cross_domain_refs})
+            sorted({to_snake_case(ref.split(".")[0]) for ref in self.cross_domain_refs})
         )

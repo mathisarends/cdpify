@@ -467,7 +467,7 @@ class JavascriptDialogOpeningEvent:
 
 
 @dataclass(kw_only=True, slots=True)
-class LifecycleEventEvent:
+class LifecycleEvent:
     """
     Fired for lifecycle events (navigation, load, paint, etc) in the current target
     (including local frames).

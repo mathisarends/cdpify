@@ -35,21 +35,23 @@ def test_domain_accessor_loads_only_its_domain_on_demand() -> None:
         "import sys; from cdpify import CdpClient; "
         "client = CdpClient(transport=object()); client.page; "
         "print('cdpify.domains.page.domain' in sys.modules, "
-        "'cdpify.domains.webaudio.domain' in sys.modules)"
+        "'cdpify.domains.web_audio.domain' in sys.modules)"
     )
 
     assert output == "True False"
 
 
 def test_lazy_names_resolve_through_public_package_paths() -> None:
-    from cdpify.domains import Page
+    from cdpify.domains import DOMStorage, Page
     from cdpify.domains.animation import AnimationType
     from cdpify.domains.animation.types import Animation
+    from cdpify.domains.dom_storage import DOMStorage as DirectDOMStorage
     from cdpify.domains.page import NavigateParams
     from cdpify.domains.page.commands import NavigateParams as DirectNavigateParams
     from cdpify.domains.page.domain import Page as DirectPage
 
     assert Page is DirectPage
+    assert DOMStorage is DirectDOMStorage
     assert NavigateParams is DirectNavigateParams
     assert AnimationType is Animation
 

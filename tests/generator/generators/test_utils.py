@@ -20,6 +20,8 @@ class TestToSnakeCase:
             ("camelCase", "camel_case"),
             ("PascalCase", "pascal_case"),
             ("setSPCTransactionMode", "set_spc_transaction_mode"),
+            ("setBlockedURLs", "set_blocked_urls"),
+            ("getIDsForNode", "get_ids_for_node"),
             ("getDOMNode", "get_dom_node"),
             ("parseHTML", "parse_html"),
             ("AXTree", "ax_tree"),

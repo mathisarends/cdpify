@@ -6,6 +6,11 @@ All notable changes to this project are documented here.
 
 ### Breaking changes
 
+- Multiword domain packages now match their Python accessors, for example
+  `cdpify.domains.indexed_db`. Use `network.set_blocked_urls(...)` and
+  `NetworkCommand.SET_BLOCKED_URLS` for CDP's `Network.setBlockedURLs`.
+  Import `LifecycleEvent` from `cdpify.domains.page` for `Page.lifecycleEvent`.
+
 - Replaced `client.session(session_id)` with `client.bind_session(session_id)`.
   Both calls bind an existing session ID locally. If you have a target ID,
   use `await client.attach(target_id)` to attach in flat mode and receive a

@@ -12,7 +12,9 @@ from cdpify.generator.generators import (
 from cdpify.generator.generators import (
     domain as domain_generator,
 )
+from cdpify.generator.generators.utils import require_unique_names
 from cdpify.generator.schemas import Domain
+from cdpify.shared.naming import to_snake_case
 
 
 def generate_domains(domains: list[Domain], output_dir: Path) -> None:
@@ -22,6 +24,9 @@ def generate_domains(domains: list[Domain], output_dir: Path) -> None:
 
 
 def _render_files(domains: list[Domain]) -> dict[Path, str]:
+    require_unique_names(
+        (to_snake_case(d.domain) for d in domains), "domain module names"
+    )
     files = {
         Path("accessors.py"): accessors.generate(domains),
         Path("__init__.py"): init.generate_root(domains),
@@ -34,7 +39,7 @@ def _render_files(domains: list[Domain]) -> dict[Path, str]:
 
 
 def _render_domain(domain: Domain) -> dict[Path, str]:
-    directory = Path(domain.domain.lower())
+    directory = Path(to_snake_case(domain.domain))
     files = {
         directory / "domain.py": domain_generator.generate(domain),
         directory / "__init__.py": init.generate(domain),

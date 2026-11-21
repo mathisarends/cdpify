@@ -1,3 +1,5 @@
+import pytest
+
 from cdpify.generator.generators import init
 from cdpify.generator.schemas import Domain, Event, TypeDefinition
 
@@ -137,5 +139,12 @@ def test_root_init_resolves_domains_lazily() -> None:
 
     assert "from .accessors import DomainAccessors" in output
     assert "    from .page import Page" in output
-    assert '"Page": (".page", "Page"),' in output
-    assert '"DOMStorage": (".domstorage", "DOMStorage"),' in output
+    assert "    from .dom_storage import DOMStorage" in output
+
+
+def test_event_suffix_collision_is_reported() -> None:
+    domain = Domain(
+        domain="Page", events=[Event(name="lifecycle"), Event(name="lifecycleEvent")]
+    )
+    with pytest.raises(ValueError, match="Duplicate exports in Page: LifecycleEvent"):
+        init.generate(domain)
