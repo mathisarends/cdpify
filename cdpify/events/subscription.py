@@ -20,9 +20,9 @@ class EventSubscription[T]:
             await client.page.navigate(url="https://example.com")
             event = await events.next(timeout=10)
 
-    Iterating with ``async for`` yields events until the subscription is closed or
-    the client disconnects. Leaving the ``async with`` block or calling
-    :meth:`aclose` unsubscribes immediately.
+    Iterating with ``async for`` drains buffered events and ends when the client
+    disconnects or Chrome detaches the subscribed session. Leaving the
+    ``async with`` block or calling :meth:`aclose` unsubscribes immediately.
 
     Listeners for the same incoming event and event type share one decoded
     model. Treat it as read-only, or use ``copy.deepcopy`` before changing it.

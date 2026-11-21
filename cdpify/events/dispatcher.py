@@ -79,6 +79,10 @@ class EventDispatcher:
         else:
             self._session_handlers.pop((event_name, session_id), None)
 
+    def remove_session_handlers(self, session_id: str) -> None:
+        for key in [key for key in self._session_handlers if key[1] == session_id]:
+            del self._session_handlers[key]
+
     async def dispatch(self, method: str, event: RawCDPEvent) -> bool:
         any_handled = False
 

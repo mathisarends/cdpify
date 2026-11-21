@@ -27,7 +27,7 @@ class EventRouter:
         self._max_queue_size = max_queue_size
         self._overflow: OverflowPolicy = overflow
         self._dispatcher = EventDispatcher()
-        self._buffers: set[EventQueue[RawCDPEvent]] = set()
+        self._buffers: dict[str | None, set[EventQueue[RawCDPEvent]]] = {}
         self._closed = False
 
     @property
@@ -43,20 +43,29 @@ class EventRouter:
         if self._closed:
             return
         self._closed = True
-        for buffer in self._buffers:
-            buffer.finish()
+        for buffers in self._buffers.values():
+            for buffer in buffers:
+                buffer.finish()
         self._buffers.clear()
         self._dispatcher = EventDispatcher()
 
     async def dispatch(self, event: TransportEvent) -> bool:
         if self._closed:
             return False
-        return await self._dispatcher.dispatch(
+        handled = await self._dispatcher.dispatch(
             event.method,
             RawCDPEvent(
                 params=event.params, session_id=event.session_id, method=event.method
             ),
         )
+        if event.method == "Target.detachedFromTarget":
+            # The envelope identifies the parent session, if there is one.
+            detached_id = event.params.get("sessionId")
+            if isinstance(detached_id, str):
+                for buffer in self._buffers.pop(detached_id, ()):
+                    buffer.finish()
+                self._dispatcher.remove_session_handlers(detached_id)
+        return handled
 
     def listen[T](
         self,
@@ -140,6 +149,8 @@ class EventRouter:
                 buffer, convert, timeout=timeout, unsubscribe=_do_nothing
             )
 
+        scope = None if all_sessions else session_id
+
         async def handler(event: RawCDPEvent) -> None:
             buffer.push(event)
             if buffer.failed:
@@ -147,7 +158,11 @@ class EventRouter:
 
         def unsubscribe() -> None:
             buffer.finish(discard=True)
-            self._buffers.discard(buffer)
+            buffers = self._buffers.get(scope)
+            if buffers is not None:
+                buffers.discard(buffer)
+                if not buffers:
+                    del self._buffers[scope]
             self._dispatcher.remove_handler(
                 event_name,
                 handler,
@@ -161,7 +176,7 @@ class EventRouter:
             session_id=session_id,
             all_sessions=all_sessions,
         )
-        self._buffers.add(buffer)
+        self._buffers.setdefault(scope, set()).add(buffer)
         return EventSubscription(
             buffer, convert, timeout=timeout, unsubscribe=unsubscribe
         )
