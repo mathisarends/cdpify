@@ -42,6 +42,7 @@ class BluetoothEmulationCommand(StrEnum):
     ADD_DESCRIPTOR = "BluetoothEmulation.addDescriptor"
     REMOVE_DESCRIPTOR = "BluetoothEmulation.removeDescriptor"
     SIMULATE_GATT_DISCONNECTION = "BluetoothEmulation.simulateGATTDisconnection"
+    SIMULATE_GATT_MTU_CHANGE = "BluetoothEmulation.simulateGATTMtuChange"
 
 
 @dataclass(kw_only=True, slots=True)
@@ -232,3 +233,14 @@ class SimulateGATTDisconnectionParams:
     """
 
     address: str
+
+
+@dataclass(kw_only=True, slots=True)
+class SimulateGATTMtuChangeParams:
+    """
+    Simulates the ATT MTU exchange procedure from Bluetooth Core Specification Vol 3
+    Part F 3.4.2 establishing |mtu| for the connection to the peripheral with |address|.
+    """
+
+    address: str
+    mtu: int

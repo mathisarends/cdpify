@@ -96,7 +96,6 @@ class PermissionType(CDPStrEnum):
     SMART_CARD = "smartCard"
     SPEAKER_SELECTION = "speakerSelection"
     STORAGE_ACCESS = "storageAccess"
-    TOP_LEVEL_STORAGE_ACCESS = "topLevelStorageAccess"
     VIDEO_CAPTURE = "videoCapture"
     VR = "vr"
     WAKE_LOCK_SCREEN = "wakeLockScreen"

@@ -54,12 +54,24 @@ class InvocationStatus(CDPStrEnum):
     ERROR = "Error"
 
 
+type ToolId = str
+"""
+Unique identifier of a registered tool. A new identifier is created every time a tool
+is registered, so a tool that is unregistered and then registered again under the same
+name gets a different identifier. Clients should treat it as an opaque string.
+"""
+
+
 @dataclass(kw_only=True, slots=True)
 class Tool:
     """
     Definition of a tool that can be invoked.
     """
 
+    tool_id: ToolId = field(metadata={"cdp_name": "toolId"})
+    """
+    Tool identifier.
+    """
     name: str
     """
     Tool name.
@@ -73,6 +85,12 @@ class Tool:
     )
     """
     Schema for the tool's input parameters.
+    """
+    output_schema: dict[str, Any] | None = field(
+        default=None, metadata={"cdp_name": "outputSchema"}
+    )
+    """
+    Schema for the tool's output structure.
     """
     annotations: Annotation | None = None
     """
@@ -102,6 +120,10 @@ class RemovedTool:
     Definition of a tool that was removed.
     """
 
+    tool_id: ToolId = field(metadata={"cdp_name": "toolId"})
+    """
+    Identifier of the removed tool.
+    """
     name: str
     """
     Tool name.

@@ -70,8 +70,12 @@ class TargetInfo:
     subtype: str | None = None
     """
     Provides additional details for specific target types. For example, for the type of
-    "page", this may be set to "prerender". Experimental: this API may change or be
-    removed.
+    "page", this may be set to "prerender", and for "tab", this may be set to
+    "unloaded". An unloaded tab has a history entry, but no document for it: for
+    example, after the tab was discarded, after session restore without load, or after
+    the renderer crashed. The tab stays unloaded until a new document commits. A new tab
+    that has not navigated is not unloaded. Target.targetInfoChanged reports changes of
+    this value for tabs. Experimental: this API may change or be removed.
     """
     embedder_data: dict[str, Any] | None = field(
         default=None, metadata={"cdp_name": "embedderData"}

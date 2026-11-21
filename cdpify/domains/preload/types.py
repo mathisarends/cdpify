@@ -250,6 +250,8 @@ class PrerenderFinalStatus(CDPStrEnum):
     PRERENDER_HOST_REUSED = "PrerenderHostReused"
     FORM_SUBMIT_WHEN_PRERENDERING = "FormSubmitWhenPrerendering"
     CROSS_DOCUMENT_RESTART = "CrossDocumentRestart"
+    PREFETCH_FAILED_CROSS_ORIGIN_SUBFRAME = "PrefetchFailedCrossOriginSubframe"
+    UNEXPECTED_MAIN_FRAME_NAVIGATION = "UnexpectedMainFrameNavigation"
 
 
 class PreloadingStatus(CDPStrEnum):

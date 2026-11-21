@@ -28,6 +28,7 @@ if TYPE_CHECKING:
         InvocationStatus,
         RemovedTool,
         Tool,
+        ToolId,
     )
 
 __all__ = [
@@ -38,6 +39,7 @@ __all__ = [
     "InvokeToolResult",
     "RemovedTool",
     "Tool",
+    "ToolId",
     "ToolInvokedEvent",
     "ToolRespondedEvent",
     "ToolsAddedEvent",
@@ -57,6 +59,7 @@ __getattr__, __dir__ = lazy_exports(
         "InvokeToolResult": (".commands", "InvokeToolResult"),
         "RemovedTool": (".types", "RemovedTool"),
         "Tool": (".types", "Tool"),
+        "ToolId": (".types", "ToolId"),
         "ToolInvokedEvent": (".events", "ToolInvokedEvent"),
         "ToolRespondedEvent": (".events", "ToolRespondedEvent"),
         "ToolsAddedEvent": (".events", "ToolsAddedEvent"),
