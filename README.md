@@ -1,37 +1,24 @@
 # cdpify
 
-**Fully typed, Pythonic access to the Chrome DevTools Protocol.**
+🚀 **Fully typed, Pythonic access to the Chrome DevTools Protocol.**
 
 The Chrome DevTools Protocol (CDP) is a JSON-over-WebSocket API with hundreds
-of commands and events. Speaking it by hand means stringly-typed method names,
-`camelCase` dictionaries and digging through docs for every field.
+of commands and events. `cdpify` generates a typed Python API from the official
+specification: every command is a method, every parameter a keyword argument,
+every result and event a dataclass, and your editor knows all of them.
 
-`cdpify` generates a typed Python API from the official CDP specification.
-Every command is a method, every parameter a keyword argument, every result
-and event a dataclass, and your editor knows all of them.
-
-<table>
-<tr><th>Raw CDP</th><th>cdpify</th></tr>
-<tr>
-<td>
+**Raw CDP:** hand-built JSON, string keys, untyped results.
 
 ```python
 await ws.send(json.dumps({
     "id": 1,
     "method": "Runtime.evaluate",
-    "params": {
-        "expression": "document.title",
-        "returnByValue": True,
-    },
+    "params": {"expression": "document.title", "returnByValue": True},
 }))
-reply = json.loads(await ws.recv())
-# hope it's the right id, hope the
-# keys are spelled right…
-title = reply["result"]["result"]["value"]
+title = json.loads(await ws.recv())["result"]["result"]["value"]
 ```
 
-</td>
-<td>
+**cdpify:** one typed, autocompleted call.
 
 ```python
 result = await client.runtime.evaluate(
@@ -41,9 +28,7 @@ result = await client.runtime.evaluate(
 title = result.result.value
 ```
 
-</td>
-</tr>
-</table>
+## Why cdpify?
 
 - **Typed end to end.** Arguments, results, events and nested protocol types
   are generated dataclasses, enums and aliases. Autocomplete, hover docs and
