@@ -56,7 +56,7 @@ class EventSubscription[T]:
         """Wait for the next event.
 
         ``timeout`` defaults to the timeout passed to ``listen()``; ``None`` waits
-        forever.
+        forever. Use ``0`` to read only an already buffered event.
 
         Raises:
             TimeoutError: No event arrived within ``timeout`` seconds.
