@@ -1,38 +1,61 @@
 # cdpify
 
-🚀 **An async, typed Python client for the Chrome DevTools Protocol.**
+**Fully typed, Pythonic access to the Chrome DevTools Protocol.**
 
-`cdpify` turns the Chrome DevTools Protocol (CDP) into a Pythonic, IDE-friendly
-API. Commands, results, events, and protocol types are generated from the
-official CDP specifications, so you get autocomplete and typed responses
-without working with raw JSON messages.
+The Chrome DevTools Protocol (CDP) is a JSON-over-WebSocket API with hundreds
+of commands and events. Speaking it by hand means stringly-typed method names,
+`camelCase` dictionaries and digging through docs for every field.
 
-## Contents
+`cdpify` generates a typed Python API from the official CDP specification.
+Every command is a method, every parameter a keyword argument, every result
+and event a dataclass, and your editor knows all of them.
 
-- [Why cdpify?](#why-cdpify)
-- [Installation](#installation)
-- [Upgrading from 0.4.0](#upgrading-from-040)
-- [Quick start](#quick-start)
-- [Supported domains](#supported-domains)
-- [Listening for events](#listening-for-events)
-- [Working with target sessions](#working-with-target-sessions)
-- [Configuration](#configuration)
-- [Development](#development)
-- [Releasing](RELEASING.md)
-- [Resources](#resources)
+<table>
+<tr><th>Raw CDP</th><th>cdpify</th></tr>
+<tr>
+<td>
 
-## Why cdpify?
+```python
+await ws.send(json.dumps({
+    "id": 1,
+    "method": "Runtime.evaluate",
+    "params": {
+        "expression": "document.title",
+        "returnByValue": True,
+    },
+}))
+reply = json.loads(await ws.recv())
+# hope it's the right id, hope the
+# keys are spelled right…
+title = reply["result"]["result"]["value"]
+```
 
-- **Typed by default** — generated models for commands, results, events, and
-  shared protocol types
-- **Complete domain coverage** — access all 59 generated CDP domains through
-  properties such as `client.page`, `client.network`, and `client.runtime`
-- **Async throughout** — transport-neutral core with an optional WebSocket
-  implementation
-- **Typed event streams** — consume CDP events with async iterators
-- **Multi-target support** — use immutable, concurrency-safe session views
-- **Low-level protocol access** — execute any CDP method through `execute()`
-  when needed
+</td>
+<td>
+
+```python
+result = await client.runtime.evaluate(
+    expression="document.title",
+    return_by_value=True,
+)
+title = result.result.value
+```
+
+</td>
+</tr>
+</table>
+
+- **Typed end to end.** Arguments, results, events and nested protocol types
+  are generated dataclasses, enums and aliases. Autocomplete, hover docs and
+  Pyright/mypy checks work out of the box.
+- **Pythonic.** `snake_case` names, keyword arguments, `async with`,
+  `async for`, `StrEnum`s and regular exceptions. `cdpify` converts to and from
+  the `camelCase` wire format for you.
+- **Complete.** All 59 CDP domains, regenerated weekly from upstream Chrome.
+  The spec's descriptions, units and deprecation markers land in the
+  docstrings.
+- **Lean.** No required dependencies; the WebSocket transport and `orjson`
+  speedups are optional extras.
 
 ## Installation
 
@@ -40,59 +63,18 @@ without working with raw JSON messages.
 pip install "cdpify[websocket]"
 ```
 
-Requires Python 3.12 or newer. The WebSocket extra provides the recommended
-default transport used by `CdpClient(url)`. Install `cdpify` without an extra when
-supplying your own `Transport` implementation.
-
-For faster JSON encoding and decoding in the WebSocket transport, install the
-optional `orjson` extra as well:
-
-```bash
-pip install "cdpify[websocket,orjson]"
-```
-
-The transport automatically uses `orjson` when available and otherwise uses
-Python's standard `json` module. Outgoing WebSocket messages remain text frames.
-
-Generated methods expose only CDP parameters. Parameter docstrings preserve
-the spec's units, defaults and experimental/deprecated markers.
-
-Install the generator dependencies only when regenerating protocol modules:
-
-```bash
-pip install "cdpify[generator]"
-```
-
-## Upgrading from 0.4.0
-
-Version 0.5.0 includes breaking changes. Review these before updating:
-
-| Area | Update for 0.5.0 |
-| --- | --- |
-| Error imports | Replace `cdpify.exceptions` with `cdpify.error`, or import errors from `cdpify`. The old module is removed. |
-| Optional `Any` values | Use `UNSET` to omit a value. `None` now sends JSON `null`; ordinary optional scalar fields still omit `None`. |
-| Required response fields | Generated responses and typed events now raise `CDPDecodeError` when required fields are missing. For tolerant manual decoding, use `decode_cdp(Model, payload, strict=False)`. |
-| Command deadlines | Configure `default_timeout` on `CdpClient`, including for custom transports. The budget covers sending and receiving. `WebSocketTransport` no longer accepts `default_timeout`. |
-| Bounded event buffers | Overflow now raises `CDPEventOverflowError`. Set `overflow="drop_oldest"` to keep lossy buffering. The default buffer remains unlimited. |
-| WebSocket compression | Compression now defaults to `None`. Set `compression="deflate"` to enable it. |
-
-Generated methods accept only CDP parameters. For an individual caller deadline,
-wrap the call in `asyncio.timeout(seconds)`; a CDP parameter named `timeout`
-keeps the units and meaning defined by the protocol. The raw `execute()` method
-accepts a client timeout in seconds: omit it to inherit the client default or
-pass `None` to disable that deadline for the call.
-
-See the [0.5.0 changelog](CHANGELOG.md#050---unreleased) for the complete release
-notes, including raw event streams and performance changes.
+Requires Python 3.12+. Add the `orjson` extra for faster JSON
+(`pip install "cdpify[websocket,orjson]"`).
 
 ## Quick start
 
-Start Chrome or Chromium with remote debugging enabled, then obtain a page's
-`webSocketDebuggerUrl` from `http://localhost:9222/json`. Launch with
-`--remote-debugging-port=9222 --user-data-dir=<dedicated-profile-directory>`
-and open a tab first. The scripts in [examples](examples) can launch Chrome
-with these options for you, for example `uv run python examples/navigate.py`
-from a development checkout.
+Start Chrome with remote debugging enabled:
+
+```bash
+chrome --remote-debugging-port=9222 --user-data-dir=/tmp/cdpify-profile
+```
+
+Then connect to a tab and drive it:
 
 ```python
 import asyncio
@@ -100,28 +82,17 @@ import json
 from urllib.request import urlopen
 
 from cdpify import CdpClient
-from cdpify.domains.page import LoadEventFiredEvent
 
 
-def get_websocket_url() -> str:
-    with urlopen("http://localhost:9222/json", timeout=5) as response:
-        return next(
-            target["webSocketDebuggerUrl"]
-            for target in json.load(response)
-            if target.get("type") == "page"
-        )
+def page_url() -> str:
+    with urlopen("http://localhost:9222/json") as response:
+        targets = json.load(response)
+    return next(t["webSocketDebuggerUrl"] for t in targets if t["type"] == "page")
 
 
 async def main() -> None:
-    ws_url = get_websocket_url()
-
-    async with CdpClient(ws_url) as client:
-        await client.page.enable()
-        async with client.listen(LoadEventFiredEvent) as loaded:
-            navigation = await client.page.navigate(url="https://example.com")
-            if navigation.error_text:
-                raise RuntimeError(navigation.error_text)
-            await loaded.next(timeout=10)
+    async with CdpClient(page_url()) as client:
+        await client.page.navigate(url="https://example.com")
 
         result = await client.runtime.evaluate(
             expression="document.title",
@@ -133,440 +104,99 @@ async def main() -> None:
 asyncio.run(main())
 ```
 
-Domains are available as lazy properties on `CdpClient`. Parameters use
-Python's `snake_case`; `cdpify` handles conversion to and from CDP's wire format.
+## Core API at a glance
 
-Named protocol enums use `StrEnum`, so typed code can use constants such as
-`ResourceType.FETCH` or `CookieOperation.SET_COOKIE`. Decoded responses and
-events contain enum members, including in nested models and lists:
+Almost everything you do with `cdpify` uses these few building blocks:
 
-```python
-from cdpify.domains.network import LoadingFailedEvent, NetworkEvent, ResourceType
+| You want to… | API |
+| --- | --- |
+| Connect | `async with CdpClient(ws_url) as client:` |
+| Send a command | `await client.<domain>.<command>(**params)`, e.g. `client.page.navigate(url=...)` |
+| Wait for one event | `async with client.listen(Event) as sub:` … `await sub.next(timeout=10)` |
+| Stream events | `async for event in client.listen(Event):` |
+| Control another tab | `tab = await client.attach(target_id)`, then `tab.page`, `tab.listen(...)` |
+| Limit how long a call may take | `async with asyncio.timeout(5):` |
+| Call something not in the spec | `await client.execute("Domain.method", {...})` |
 
-async for event in client.listen(LoadingFailedEvent):
-    assert event.__cdp_event__ is NetworkEvent.LOADING_FAILED
-    if event.type is ResourceType.FETCH:
-        print(event.error_text)
-```
+### Commands
 
-Enum members work as strings and expose the original protocol value through
-`.value`. Unknown values from newer Chrome versions are preserved as members
-of the same enum without changing its declared constants or iteration.
-Anonymous enum annotations such as `Literal["jpeg", "png"]` still accept direct
-strings. Open string fields, including EventSource's server-defined
-`event_name`, remain strings.
-
-## Supported domains
-
-The generated client currently includes all 59 domains from the bundled CDP
-specifications. Each domain is available as a lazy property on `CdpClient` and
-`CdpSession`:
-
-| CDP domain | Python accessor | CDP domain | Python accessor |
-| --- | --- | --- | --- |
-| `Accessibility` | `client.accessibility` | `IndexedDB` | `client.indexed_db` |
-| `Ads` | `client.ads` | `Input` | `client.input` |
-| `Animation` | `client.animation` | `Inspector` | `client.inspector` |
-| `Audits` | `client.audits` | `IO` | `client.io` |
-| `Autofill` | `client.autofill` | `LayerTree` | `client.layer_tree` |
-| `BackgroundService` | `client.background_service` | `Log` | `client.log` |
-| `BluetoothEmulation` | `client.bluetooth_emulation` | `Media` | `client.media` |
-| `Browser` | `client.browser` | `Memory` | `client.memory` |
-| `CacheStorage` | `client.cache_storage` | `Network` | `client.network` |
-| `Cast` | `client.cast` | `Overlay` | `client.overlay` |
-| `Console` | `client.console` | `Page` | `client.page` |
-| `CrashReportContext` | `client.crash_report_context` | `Performance` | `client.performance` |
-| `CSS` | `client.css` | `PerformanceTimeline` | `client.performance_timeline` |
-| `Debugger` | `client.debugger` | `Preload` | `client.preload` |
-| `DeviceAccess` | `client.device_access` | `Profiler` | `client.profiler` |
-| `DeviceOrientation` | `client.device_orientation` | `PWA` | `client.pwa` |
-| `DigitalCredentials` | `client.digital_credentials` | `Runtime` | `client.runtime` |
-| `DOM` | `client.dom` | `Schema` | `client.schema` |
-| `DOMDebugger` | `client.dom_debugger` | `Security` | `client.security` |
-| `DOMSnapshot` | `client.dom_snapshot` | `ServiceWorker` | `client.service_worker` |
-| `DOMStorage` | `client.dom_storage` | `SmartCardEmulation` | `client.smart_card_emulation` |
-| `Emulation` | `client.emulation` | `Storage` | `client.storage` |
-| `EventBreakpoints` | `client.event_breakpoints` | `SystemInfo` | `client.system_info` |
-| `Extensions` | `client.extensions` | `Target` | `client.target` |
-| `FedCm` | `client.fed_cm` | `Tethering` | `client.tethering` |
-| `Fetch` | `client.fetch` | `Tracing` | `client.tracing` |
-| `FileSystem` | `client.file_system` | `WebAudio` | `client.web_audio` |
-| `FindInPage` | `client.find_in_page` | `WebAuthn` | `client.web_authn` |
-| `HeadlessExperimental` | `client.headless_experimental` | `WebMCP` | `client.web_mcp` |
-| `HeapProfiler` | `client.heap_profiler` |  |  |
-
-## Listening for events
-
-Pass a generated event class to `listen()`. The returned subscription is an
-async iterator of typed events:
+Domains are properties, commands are methods, results are dataclasses:
 
 ```python
-from cdpify.domains.network import RequestWillBeSentEvent
-
-
-await client.network.enable()
-
-async for event in client.listen(RequestWillBeSentEvent):
-    print(event.request.method, event.request.url)
+document = await client.dom.get_document()
+heading = await client.dom.query_selector(node_id=document.root.node_id, selector="h1")
+html = await client.dom.get_outer_html(node_id=heading.node_id)
+print(html.outer_html)
 ```
 
-The subscription is registered as soon as `listen()` is called, and events are
-buffered until you read them. To wait for an event that your own command
-triggers, subscribe first and then send the command:
+### Events
+
+Subscribe with a generated event class and iterate. Subscriptions buffer from
+the moment they are created, so subscribe first and then trigger the event:
 
 ```python
 from cdpify.domains.page import LoadEventFiredEvent
 
-
 await client.page.enable()
-async with client.listen(LoadEventFiredEvent) as events:
+async with client.listen(LoadEventFiredEvent) as loaded:
     await client.page.navigate(url="https://example.com")
-    await events.next(timeout=10)
+    await loaded.next(timeout=10)
 ```
-
-Leaving the `async with` block unsubscribes. A stream also ends when the client
-disconnects; `events.next()` then raises `CDPStreamClosedError`. The optional
-`timeout` on `listen()` limits how long each read waits and raises
-`TimeoutError` when it expires.
-
-`client.listen()` yields only events from the root connection. A session view
-applies the same rule to its bound target:
 
 ```python
-tab = client.bind_session("session-id")
+from cdpify.domains.network import ResponseReceivedEvent
 
-async for event in tab.listen(RequestWillBeSentEvent):
-    # This stream contains events from this session only.
-    print(event.request.url)
+await client.network.enable()
+async for event in client.listen(ResponseReceivedEvent):
+    print(event.response.status, event.response.url)
 ```
 
-To observe the root connection and all attached sessions together, use
-`listen_all()`. Routing metadata is returned separately from the generated CDP
-event model:
+### Sessions
+
+Connect to the browser once and drive many targets concurrently:
 
 ```python
-async for received in client.listen_all(RequestWillBeSentEvent):
-    print(received.session_id, received.value.request.url)
+target = await client.target.create_target(url="https://example.org")
+tab = await client.attach(target.target_id)
+
+await tab.page.enable()
+shot = await tab.page.capture_screenshot(format="png")
 ```
 
-`received.session_id` is `None` for a root event. Generated event dataclasses
-contain only fields defined by the CDP specification, plus their CDP name in
-`__cdp_event__`. To listen with your own dataclass, pass the name explicitly:
-`client.listen(MyEvent, event_name="Page.loadEventFired")`.
+### Errors
 
-An incoming event is decoded once per event class, when the first listener
-reads it. Matching `listen()`, `CdpSession.listen()`, and `listen_all()`
-subscriptions share that model (`received.value` for `listen_all()`). Treat
-event data as read-only: changing a shared model also changes what other
-listeners see. Make a deep copy when you need your own mutable instance:
+Failures are ordinary exceptions:
 
 ```python
-from copy import deepcopy
+from cdpify import CDPCommandError
 
-owned_event = deepcopy(event)
+try:
+    await client.dom.query_selector(node_id=-1, selector="h1")
+except CDPCommandError as error:
+    print(error.method, error.code, error.message)
 ```
 
-Different incoming messages and different event classes have separate cached
-models. Unread events are not decoded. A cache is released when the last
-subscription has read or discarded the incoming event.
-
-### Limiting buffered events
-
-Set `max_queue_size` on `CdpClient` to limit each listener's buffer. The default,
-`0`, is unlimited. A bounded buffer defaults to `overflow="error"`: if it fills,
-that subscription ends and its next read raises `CDPEventOverflowError`. Other
-subscriptions and command responses continue normally. This makes event loss
-explicit for protocols such as `Fetch.requestPaused` that require a response.
-
-For a stream where loss is acceptable, select `overflow="drop_oldest"`:
-
-```python
-client = CdpClient(ws_url, max_queue_size=256, overflow="drop_oldest")
-
-async with client:
-    async with client.listen(RequestWillBeSentEvent, max_queue_size=32) as events:
-        event = await events.next(timeout=10)
-        print(events.dropped_events)
-```
-
-The same options apply to `listen_all()`, `CdpSession.listen()` and raw streams.
-Each listener can override both the limit and overflow policy. Passing `0`
-disables its limit. `events.dropped_events` counts discarded events. Disconnect
-drains healthy buffers; explicit closure and overflow errors release them.
-
-### Raw events
-
-Use raw subscriptions for events outside the generated spec, or to inspect wire
-parameter dictionaries without constructing typed models:
-
-```python
-async with tab.listen_raw("Future.event") as events:
-    event = await events.next(timeout=5)
-    print(event.method, event.session_id, event.params)
-```
-
-`client.listen_raw()` covers the root, `tab.listen_raw()` one session, and
-`client.listen_all_raw()` every scope. Omitting the method matches every event
-in that scope. Subscriptions register immediately and share the same lifetime,
-buffering and read-only data rules as typed streams.
-
-## Working with target sessions
-
-Use `await client.attach(target_id)` to attach to a target in flat mode and
-get a `CdpSession`. Its commands and event subscriptions use the returned
-session ID.
-
-```python
-from cdpify import CdpClient
-
-
-async with CdpClient(browser_ws_url) as root_client:
-    tab = await root_client.attach("target-id")
-
-    await tab.page.enable()
-    await tab.runtime.evaluate(expression="console.log('Hello from CDP')")
-```
-
-If you already have session IDs, for example from `Target.attachedToTarget`
-events, use `client.bind_session(session_id)`. This creates a local view without
-sending a command.
-Each view can be used independently from concurrent tasks.
-
-```python
-import asyncio
-
-
-tab_a = root_client.bind_session(session_a)
-tab_b = root_client.bind_session(session_b)
-
-await asyncio.gather(
-    tab_a.runtime.evaluate(expression="document.title"),
-    tab_b.runtime.evaluate(expression="document.title"),
-)
-```
-
-Session routing is transport metadata, not a generated command parameter.
-Generated methods therefore never accept an additional routing `session_id`.
-A real `sessionId` declared by the CDP specification remains a normal typed
-parameter. For low-level access, `root_client.execute()` optionally accepts a
-session ID, while `tab.execute()` is always bound and cannot be overridden:
-
-```python
-await root_client.execute("Page.enable", session_id=session_a)
-await tab.execute("Runtime.evaluate", {"expression": "1 + 1"})
-```
-
-After Chrome reports a detach, existing session streams drain their buffered events.
-New subscriptions and commands for that session raise `CDPSessionClosedError`
-locally. Session views belong to one connection. After reconnecting, attach
-or bind a session on the new connection.
-
-## Configuration
-
-```python
-client = CdpClient(
-    url="ws://localhost:9222/devtools/browser/...",
-    additional_headers={"Authorization": "Bearer token"},
-    max_frame_size=100 * 1024 * 1024,
-    default_timeout=30.0,
-    max_queue_size=256,
-    overflow="error",
-    compression=None,
-    open_timeout=10.0,
-    close_timeout=10.0,
-)
-```
-
-WebSocket compression is off by default to reduce local CPU work and latency.
-Set `compression="deflate"` when saving network bandwidth is preferable.
-`additional_headers`, `max_frame_size`, `compression`, `open_timeout` and
-`close_timeout` configure the URL-based WebSocket transport. Supplied custom
-transports own their connection settings.
-
-### Timeouts
-
-`default_timeout` is a total command budget in seconds, including sending and
-waiting for the response. It applies to root commands and session commands,
-including custom transports. `None` disables the default.
-
-For one call, or a group of calls, use Python's normal timeout context:
-
-```python
-async with asyncio.timeout(2):
-    result = await client.runtime.evaluate(expression="1 + 1")
-```
-
-A client deadline raises `CDPTimeoutError`; a shorter outer `asyncio.timeout()`
-raises the built-in `TimeoutError`. Both release the pending local request.
-Cancelling the wait does not automatically cancel work in Chrome.
-
-CDP parameters retain the spec's units. For example, `Runtime.evaluate(timeout=...)`
-limits execution inside Chrome in **milliseconds**; it is not the client budget.
-For raw commands, only `method` and `params` can be positional. Use
-`client.execute(method, params, session_id=sid, timeout=seconds)` or
-`session.execute(method, params, timeout=seconds)`. Omit `timeout` to inherit
-the client default or pass `timeout=None` to disable the deadline for that call.
-
-### Custom transports
-
-For another transport protocol, implement the exported `Transport` protocol
-and inject it directly:
-
-```python
-from cdpify import CdpClient
-
-client = CdpClient(transport=my_transport)
-```
-
-Custom transports can optionally implement `CallbackTransport` from
-`cdpify.transport` to deliver events directly to the client. The default
-WebSocket transport uses this path to avoid an intermediate event queue.
-Transports that implement only `Transport.events()` continue to work.
-
-When using `WebSocketTransport.events()` directly, its `max_queue_size` option
-sets the limit on its transport buffer with the same overflow policies. A
-client-supplied custom transport manages its own transport buffer limits.
-`WebSocketTransport` has no default command timeout; standalone calls can pass
-`execute(timeout=seconds)`. In the `Transport` contract, `timeout=None` means no
-deadline and cancellation releases resources associated with that request.
-
-For methods not covered by the generated API, use the low-level escape hatch:
-
-```python
-result = await client.execute(
-    "Runtime.evaluate",
-    {"expression": "1 + 1", "returnByValue": True},
-)
-```
-
-### Generated type aliases
-
-Generated aliases such as `FrameId`, `NodeId`, and `TargetFilter` use Python's
-`type` statement. Use them in annotations and pass ordinary Python values:
-
-```python
-from cdpify.domains.page import FrameId
-
-frame_id: FrameId = "F1"
-```
-
-Aliases are not constructors or runtime classes. Use `"F1"` directly rather
-than `FrameId("F1")`, and `isinstance(frame_id, str)` for a runtime check.
-
-### When Chrome deviates from the spec
-
-Library error classes are available from `cdpify.error` and the root package:
-
-```python
-from cdpify.error import CDPCommandError, CDPDecodeError
-```
-
-Missing required fields raise `CDPDecodeError` with `model_type`,
-`missing_fields` and the enclosing wire-field `path`. Unknown fields are ignored
-and future enum values remain supported. Decoding checks required field
-presence; it does not perform full schema validation of primitive values.
-
-For a deliberately tolerant decode, use `decode_cdp(Model, payload, strict=False)`.
-This fills missing required fields with `None` and logs a warning, including
-nested models. When necessary, fetch the raw result with `execute()` and decode
-it explicitly with this policy.
-
-### Omitted values and JSON null
-
-Optional scalar parameters still use `None` to mean omitted. Optional `Any`
-fields use `UNSET` because JSON null is itself a valid value:
-
-```python
-from cdpify import UNSET, encode_cdp
-from cdpify.domains.runtime import CallArgument
-
-assert encode_cdp(CallArgument()) == {}
-assert encode_cdp(CallArgument(value=None)) == {"value": None}
-assert CallArgument().value is UNSET
-```
-
-Deprecated CDP commands still work but emit a `DeprecationWarning`. Use
-Python's warning filters to silence them or turn them into errors:
-
-```python
-import warnings
-
-warnings.filterwarnings(
-    "ignore", category=DeprecationWarning, message=r"\w+\.\w+ is deprecated"
-)
-```
-
-## Development
-
-Install the project and its development dependencies with
-[uv](https://docs.astral.sh/uv/):
-
-```bash
-uv sync --dev
-uv run pytest
-uv run ruff check . --exclude cdpify/domains
-uv run ruff format --check . --exclude cdpify/domains
-uv run pyright
-uv run python scripts/check_generated.py
-```
-
-Use `uv sync --dev --extra orjson` and `uv run --extra orjson pytest` to include
-the optional backend. CI installs this extra and tests both JSON backends on
-Ubuntu, Windows, and macOS with Python 3.12, 3.13, and 3.14.
-
-Run real Chrome coverage with `uv run --extra orjson pytest -m integration`.
-These tests launch an isolated headless browser. Set `CHROME_PATH` to select its
-executable. Integration tests are excluded from the default unit-test run.
-
-CI also checks the complete library and a public API sample with Pyright,
-verifies generated-code drift, and runs the integration suite against Chrome.
-Regenerate from the bundled specs with `uv run python scripts/check_generated.py --write`.
-
-Run reproducible microbenchmarks with:
-
-```bash
-uv run python benchmarks/runtime.py
-uv run --extra orjson python benchmarks/runtime.py --page-url ws://localhost:9222/devtools/page/...
-```
-
-Output is JSON with environment metadata and timings for encoding, decoding,
-typed calls and dispatch to several listener counts. An optional page endpoint
-adds real small-message and 1-MiB round trips, including p50 and p95 latency.
-The large case sends and receives a seeded Base64 payload. Add
-`--compression deflate` to compare compression on the same machine; installing
-or omitting the `orjson` extra selects the JSON backend. Timings are diagnostic
-and are not used as flaky CI pass/fail thresholds.
-
-To download the latest protocol definitions and regenerate all domain clients:
-
-```bash
-uv run python -m cdpify.generator
-```
-
-Generate only selected domains by repeating `--domain`:
-
-```bash
-uv run python -m cdpify.generator --domain Page --domain Runtime --output-dir build/selected-domains
-```
-
-Generation replaces the entire output directory, including for selected domains.
-Use a separate `--output-dir` for partial generation to keep the full bundled
-client intact. Selected domains may also reference types from other domains.
-
-Use `--spec-dir` and `--output-dir` to override where downloaded specifications
-and generated modules are written.
-
-The generated output lives in `cdpify/domains/` and should not be edited by
-hand. The repository also refreshes the upstream specification automatically
-once a week and opens a pull request when generated code changes.
+## Documentation
+
+The docs are a learning path: each level builds on the previous one.
+
+| Level | Guide | You learn |
+| --- | --- | --- |
+| 1 | [First steps](docs/01-first-steps.md) | Connecting, commands, naming, enums, types |
+| 2 | [Events](docs/02-events.md) | Subscriptions, timeouts, scopes, buffering |
+| 3 | [Multiple targets](docs/03-sessions.md) | Attaching to tabs, sessions, concurrency |
+| 4 | [Timeouts and errors](docs/04-timeouts-and-errors.md) | Deadlines, error types, decoding, `UNSET` |
+| 5 | [Configuration and transports](docs/05-configuration-and-transports.md) | All client options, custom transports |
+| ★ | [Cookbook](docs/cookbook.md) | Complete recipes, from screenshots to request interception |
+
+Also: the [migration guide](docs/migration.md), the
+[development guide](docs/development.md), runnable [examples](examples) and the
+[changelog](CHANGELOG.md).
 
 ## Resources
 
-- [Chrome DevTools Protocol documentation](https://chromedevtools.github.io/devtools-protocol/)
-- [Chrome DevTools Protocol repository](https://github.com/ChromeDevTools/devtools-protocol)
-- [Examples](examples)
-- [Changelog and migration notes](CHANGELOG.md)
-- [Release checklist](RELEASING.md)
+- [Chrome DevTools Protocol reference](https://chromedevtools.github.io/devtools-protocol/)
+- [CDP specification repository](https://github.com/ChromeDevTools/devtools-protocol)
 
 The code-generation approach was inspired by
 [`cdp-use`](https://github.com/browser-use/cdp-use).
