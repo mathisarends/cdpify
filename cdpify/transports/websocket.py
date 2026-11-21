@@ -113,27 +113,6 @@ class WebSocketTransport:
             task = self._start_shutdown(stop_message_loop=True)
         await asyncio.shield(task)
 
-    def _start_shutdown(self, *, stop_message_loop: bool) -> asyncio.Task[None]:
-        if self._shutdown_task is None:
-            self._is_shutting_down = True
-            self._shutdown_task = asyncio.create_task(
-                self._shutdown(stop_message_loop=stop_message_loop)
-            )
-        return self._shutdown_task
-
-    async def _shutdown(self, *, stop_message_loop: bool) -> None:
-        logger.info("Disconnecting...")
-
-        try:
-            if stop_message_loop:
-                await self._stop_message_loop()
-            self._cancel_pending_requests()
-            await self._close_websocket()
-        finally:
-            await self._finish_event_stream()
-
-        logger.info("Disconnected")
-
     async def execute(
         self,
         method: str,
@@ -164,16 +143,6 @@ class WebSocketTransport:
                 # waiting. Observe that failure even if sending raises first.
                 future.exception()
 
-    async def _send_and_receive(
-        self,
-        message_id: int,
-        method: str,
-        message: dict[str, Any],
-        future: asyncio.Future[dict[str, Any]],
-    ) -> dict[str, Any]:
-        await self._send(message_id, method, message)
-        return await self._await_response(message_id, method, future)
-
     async def events(self) -> AsyncIterator[TransportEvent]:
         if self._event_handler is not None:
             raise RuntimeError("Events are being delivered to the event handler")
@@ -183,6 +152,16 @@ class WebSocketTransport:
             if event is None:
                 return
             yield event
+
+    async def _send_and_receive(
+        self,
+        message_id: int,
+        method: str,
+        message: dict[str, Any],
+        future: asyncio.Future[dict[str, Any]],
+    ) -> dict[str, Any]:
+        await self._send(message_id, method, message)
+        return await self._await_response(message_id, method, future)
 
     async def _run_message_loop(self) -> None:
         connection = self._ws
@@ -250,6 +229,27 @@ class WebSocketTransport:
             await self._event_handler(event)
         else:
             self._event_queue.push(event)
+
+    def _start_shutdown(self, *, stop_message_loop: bool) -> asyncio.Task[None]:
+        if self._shutdown_task is None:
+            self._is_shutting_down = True
+            self._shutdown_task = asyncio.create_task(
+                self._shutdown(stop_message_loop=stop_message_loop)
+            )
+        return self._shutdown_task
+
+    async def _shutdown(self, *, stop_message_loop: bool) -> None:
+        logger.info("Disconnecting...")
+
+        try:
+            if stop_message_loop:
+                await self._stop_message_loop()
+            self._cancel_pending_requests()
+            await self._close_websocket()
+        finally:
+            await self._finish_event_stream()
+
+        logger.info("Disconnected")
 
     async def _stop_message_loop(self) -> None:
         task = self._message_loop_task

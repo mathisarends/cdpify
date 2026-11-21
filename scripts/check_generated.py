@@ -8,7 +8,7 @@ from cdpify.generator.generator import generate_domains
 from cdpify.generator.schemas import CDPSpecs, ProtocolSpec
 
 
-def main() -> None:
+def _main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--write", action="store_true")
     args = parser.parse_args()
@@ -55,4 +55,4 @@ def _sources(directory: Path) -> dict[Path, bytes]:
 
 
 if __name__ == "__main__":
-    main()
+    _main()

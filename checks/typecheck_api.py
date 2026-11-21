@@ -7,7 +7,7 @@ from cdpify.domains.network import RequestWillBeSentEvent
 from cdpify.domains.runtime import CallArgument, EvaluateResult
 
 
-async def usage(client: CdpClient) -> None:
+async def _check_public_api(client: CdpClient) -> None:
     result = await client.runtime.evaluate(expression="1 + 1", return_by_value=True)
     assert_type(result, EvaluateResult)
     assert_type(

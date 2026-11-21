@@ -22,8 +22,10 @@ examples/                    runnable example scripts
 tests/                       unit tests; tests/integration needs Chrome
 ```
 
-`cdpify/domains/` is generated. Never edit it by hand; change the generator
-or its templates and regenerate.
+`cdpify/domains/` is generated from the spec and templates. Its dataclasses
+use keyword-only constructors and slots, and their fields are mutable. Event
+listeners can share a decoded model, so copy it before editing. Smelt requires
+frozen, slotted dataclasses in the hand-written code it checks.
 
 ## Setup
 

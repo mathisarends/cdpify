@@ -18,9 +18,6 @@ class GenerationContext:
         self._local_type_refs: set[str] = set()
         self._typing_names: set[str] = set()
 
-    def use_typing(self, name: str) -> None:
-        self._typing_names.add(name)
-
     def track_type_string(self, type_str: str) -> None:
         if "Any" in type_str:
             self.use_typing("Any")
@@ -28,6 +25,9 @@ class GenerationContext:
             self.use_typing("Literal")
         for domain, type_name in _CROSS_DOMAIN_PATTERN.findall(type_str):
             self._cross_domain_refs.add(f"{domain}.{type_name}")
+
+    def use_typing(self, name: str) -> None:
+        self._typing_names.add(name)
 
     def scan_param(self, param: Parameter) -> None:
         self.scan_ref(param.ref)

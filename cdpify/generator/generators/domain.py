@@ -1,9 +1,9 @@
+from cdpify.generator.generators.annotations import resolve_type
 from cdpify.generator.generators.constants import FUTURE_ANNOTATIONS, HEADER
 from cdpify.generator.generators.context import GenerationContext
-from cdpify.generator.generators.utils import (
-    method_docstring,
+from cdpify.generator.generators.docstrings import method_docstring
+from cdpify.generator.generators.names import (
     require_unique_names,
-    resolve_type,
     to_enum_name,
     to_identifier,
     to_pascal_case,

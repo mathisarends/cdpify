@@ -55,6 +55,13 @@ class CdpClient(DomainAccessors, EventSource):
         self._event_loop_task: asyncio.Task[None] | None = None
         self._disconnect_task: asyncio.Task[None] | None = None
 
+    async def __aenter__(self) -> Self:
+        await self.connect()
+        return self
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb) -> None:
+        await self.disconnect()
+
     @property
     def transport(self) -> Transport:
         return self._transport
@@ -62,13 +69,6 @@ class CdpClient(DomainAccessors, EventSource):
     @property
     def is_connected(self) -> bool:
         return self._transport.is_connected
-
-    async def __aenter__(self) -> Self:
-        await self.connect()
-        return self
-
-    async def __aexit__(self, exc_type, exc_val, exc_tb) -> None:
-        await self.disconnect()
 
     async def connect(self) -> None:
         async with self._connection_lock:
@@ -103,15 +103,6 @@ class CdpClient(DomainAccessors, EventSource):
                 self._disconnect_task = asyncio.create_task(self._disconnect())
             task = self._disconnect_task
         await asyncio.shield(task)
-
-    async def _disconnect(self) -> None:
-        await self._stop_event_loop()
-        try:
-            await self._transport.disconnect()
-        finally:
-            self._event_router.close()
-            if isinstance(self._transport, CallbackTransport):
-                self._transport.set_event_handler(None)
 
     async def attach(self, target_id: str) -> CdpSession:
         """Attach to a target in flat mode and return its bound session."""
@@ -183,6 +174,15 @@ class CdpClient(DomainAccessors, EventSource):
             max_queue_size=max_queue_size,
             overflow=overflow,
         )
+
+    async def _disconnect(self) -> None:
+        await self._stop_event_loop()
+        try:
+            await self._transport.disconnect()
+        finally:
+            self._event_router.close()
+            if isinstance(self._transport, CallbackTransport):
+                self._transport.set_event_handler(None)
 
     async def _run_event_loop(self) -> None:
         try:

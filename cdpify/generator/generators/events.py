@@ -1,12 +1,8 @@
+from cdpify.generator.generators.annotations import resolve_type
 from cdpify.generator.generators.constants import FUTURE_ANNOTATIONS, HEADER
 from cdpify.generator.generators.context import GenerationContext
-from cdpify.generator.generators.utils import (
-    api_description,
-    event_class_name,
-    format_docstring,
-    resolve_type,
-    to_enum_name,
-)
+from cdpify.generator.generators.docstrings import api_description, format_docstring
+from cdpify.generator.generators.names import event_class_name, to_enum_name
 from cdpify.generator.generators.views import (
     EnumMemberView,
     FieldView,
@@ -66,7 +62,7 @@ def _build_models(
     ctx: GenerationContext,
 ) -> list[ModelView]:
     return [
-        _build_event_model(event, domain.domain, aliases, ctx)
+        _build_event_model(event, domain.domain, aliases=aliases, ctx=ctx)
         for event in domain.events
     ]
 
@@ -74,6 +70,7 @@ def _build_models(
 def _build_event_model(
     event: Event,
     domain_name: str,
+    *,
     aliases: dict[str, str],
     ctx: GenerationContext,
 ) -> ModelView:
@@ -93,7 +90,7 @@ def _build_event_model(
             or None
         ),
         fields=tuple(
-            _build_field_view(param, event_fqn, aliases, ctx)
+            _build_field_view(param, event_fqn, aliases=aliases, ctx=ctx)
             for param in event.parameters
         ),
         event_member=to_enum_name(event.name),
@@ -103,6 +100,7 @@ def _build_event_model(
 def _build_field_view(
     param: Parameter,
     event_fqn: str,
+    *,
     aliases: dict[str, str],
     ctx: GenerationContext,
 ) -> FieldView:

@@ -12,7 +12,7 @@ from cdpify.generator.generators import (
 from cdpify.generator.generators import (
     domain as domain_generator,
 )
-from cdpify.generator.generators.utils import require_unique_names
+from cdpify.generator.generators.names import require_unique_names
 from cdpify.generator.schemas import Domain
 from cdpify.shared.naming import to_snake_case
 

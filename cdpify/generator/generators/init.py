@@ -1,9 +1,8 @@
 from cdpify.generator.generators.constants import HEADER
-from cdpify.generator.generators.utils import (
+from cdpify.generator.generators.names import (
     event_class_name,
     require_unique_names,
     to_pascal_case,
-    to_snake_case,
 )
 from cdpify.generator.generators.views import (
     DomainView,
@@ -12,6 +11,7 @@ from cdpify.generator.generators.views import (
 )
 from cdpify.generator.rendering import render_template
 from cdpify.generator.schemas import Domain
+from cdpify.shared.naming import to_snake_case
 
 
 def generate(domain: Domain) -> str:

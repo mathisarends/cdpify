@@ -2,7 +2,7 @@
 
 import importlib
 import pkgutil
-from dataclasses import dataclass, field, fields, is_dataclass
+from dataclasses import fields, is_dataclass
 
 import pytest
 
@@ -20,11 +20,6 @@ from cdpify.domains.network import (
 from cdpify.domains.page import LifecycleEvent
 from cdpify.domains.target.commands import SetDiscoverTargetsParams
 from cdpify.domains.target.types import FilterEntry
-
-
-@dataclass(kw_only=True, slots=True)
-class _Sample:
-    value: int = field(metadata={"cdp_name": "value"})
 
 
 class TestGeneratedModels:
@@ -92,12 +87,14 @@ class TestGeneratedModels:
         assert params.filter == [FilterEntry(type="page", exclude=False)]
         assert encode_cdp(params) == payload
 
-    def test_models_are_mutable_and_slotted(self) -> None:
-        model = _Sample(value=1)
+    def test_generated_models_are_keyword_only_mutable_and_slotted(self) -> None:
+        with pytest.raises(TypeError):
+            GetOuterHTMLParams(7)
 
-        assert not hasattr(model, "__dict__")
-        model.value = 2
-        assert model.value == 2
+        params = GetOuterHTMLParams(backend_node_id=7)
+        assert not hasattr(params, "__dict__")
+        params.backend_node_id = 8
+        assert params.backend_node_id == 8
 
 
 class TestAcronymFieldNames:

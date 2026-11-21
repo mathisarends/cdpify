@@ -2,11 +2,8 @@ from collections.abc import Iterable, Iterator
 from dataclasses import dataclass, replace
 from typing import Self
 
-from cdpify.generator.generators.utils import (
-    api_description,
-    format_docstring,
-    to_identifier,
-)
+from cdpify.generator.generators.docstrings import api_description, format_docstring
+from cdpify.generator.generators.names import to_identifier
 from cdpify.generator.schemas import Parameter
 
 

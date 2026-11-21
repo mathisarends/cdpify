@@ -94,14 +94,6 @@ class CDPDecodeError(CDPError):
         return type(self)(self.model_type, self.missing_fields, path=(name, *self.path))
 
 
-_DEPRECATED_NAMES = {
-    "CDPException": CDPError,
-    "CDPConnectionException": CDPConnectionError,
-    "CDPCommandException": CDPCommandError,
-    "CDPTimeoutException": CDPTimeoutError,
-}
-
-
 def deprecated_exception(name: str) -> type[CDPError] | None:
     """Return the replacement for a deprecated exception name, with a warning."""
     replacement = _DEPRECATED_NAMES.get(name)
@@ -122,6 +114,14 @@ def exception_getattr(module_name: str) -> Callable[[str], type[CDPError]]:
         return replacement
 
     return __getattr__
+
+
+_DEPRECATED_NAMES = {
+    "CDPException": CDPError,
+    "CDPConnectionException": CDPConnectionError,
+    "CDPCommandException": CDPCommandError,
+    "CDPTimeoutException": CDPTimeoutError,
+}
 
 
 __getattr__ = exception_getattr(__name__)

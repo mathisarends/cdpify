@@ -5,7 +5,7 @@ from typing import Any
 LazyExports = Mapping[str, tuple[str, str]]
 
 
-def lazy_exports(
+def lazy_exports(  # smelt: ignore[VIS009] -- Used by generated domains.
     package: str,
     exports: LazyExports,
 ) -> tuple[Callable[[str], Any], Callable[[], list[str]]]:

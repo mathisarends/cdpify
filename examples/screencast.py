@@ -13,14 +13,7 @@ logging.basicConfig(
 )
 
 
-async def save_frame(frame_data: str, frame_number: int, output_dir: Path) -> None:
-    image_bytes = base64.b64decode(frame_data)
-    output_path = output_dir / f"frame_{frame_number:04d}.jpg"
-    output_path.write_bytes(image_bytes)
-    print(f"✓ Saved frame {frame_number}")
-
-
-async def main():
+async def _main():
     output_dir = Path("screencast_frames")
     output_dir.mkdir(exist_ok=True)
 
@@ -49,9 +42,9 @@ async def main():
 
                 await client.page.screencast_frame_ack(session_id=event.session_id)
 
-                await save_frame(event.data, frame_count, output_dir)
+                await _save_frame(event.data, frame_count, output_dir)
         except asyncio.CancelledError:
-            # Ctrl+C cancels the main task; KeyboardInterrupt only reaches
+            # Ctrl+C cancels the _main task; KeyboardInterrupt only reaches
             # the caller of asyncio.run().
             print("\n⏹️  Stopping...")
             raise
@@ -61,8 +54,15 @@ async def main():
             print(f"📹 Recorded {frame_count} frames to {output_dir.absolute()}")
 
 
+async def _save_frame(frame_data: str, frame_number: int, output_dir: Path) -> None:
+    image_bytes = base64.b64decode(frame_data)
+    output_path = output_dir / f"frame_{frame_number:04d}.jpg"
+    output_path.write_bytes(image_bytes)
+    print(f"✓ Saved frame {frame_number}")
+
+
 if __name__ == "__main__":
     try:
-        asyncio.run(main())
+        asyncio.run(_main())
     except KeyboardInterrupt:
         print("\n✅ Done!")

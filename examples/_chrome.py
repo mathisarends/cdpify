@@ -9,11 +9,26 @@ from pathlib import Path
 from urllib.error import URLError
 from urllib.request import urlopen
 
-DEBUG_PORT = 9222
-_DEBUG_PORT_POLL_SECONDS = 0.2
-PROFILE_DIR = Path(tempfile.gettempdir()) / "cdpify-chrome-profile"
+__all__ = ["get_ws_url"]
 
-CHROME_CANDIDATES = [
+_DEBUG_PORT = 9222
+_DEBUG_PORT_POLL_SECONDS = 0.2
+_PROFILE_DIR = Path(tempfile.gettempdir()) / "cdpify-chrome-profile"
+
+
+def get_ws_url(start_url: str = "about:blank") -> str:
+    _ensure_chrome_running(start_url=start_url)
+
+    with urlopen(f"http://localhost:{_DEBUG_PORT}/json") as response:
+        pages = json.load(response)
+
+    if not pages:
+        raise RuntimeError("No pages found even though Chrome is running.")
+
+    return pages[0]["webSocketDebuggerUrl"]
+
+
+_CHROME_CANDIDATES = [
     r"C:\Program Files\Google\Chrome\Application\chrome.exe",
     r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe",
     "google-chrome",
@@ -21,24 +36,7 @@ CHROME_CANDIDATES = [
 ]
 
 
-def _find_chrome() -> str:
-    for candidate in CHROME_CANDIDATES:
-        if Path(candidate).exists() or shutil.which(candidate):
-            return candidate
-    raise RuntimeError(
-        "Chrome executable not found. Set CHROME_CANDIDATES in _chrome.py."
-    )
-
-
-def _is_debug_port_open() -> bool:
-    try:
-        with urlopen(f"http://localhost:{DEBUG_PORT}/json/version", timeout=1):
-            return True
-    except URLError:
-        return False
-
-
-def ensure_chrome_running(
+def _ensure_chrome_running(
     timeout_seconds: float = 10.0, start_url: str = "about:blank"
 ) -> None:
     """Start Chrome with remote debugging enabled, unless it's already running.
@@ -51,14 +49,14 @@ def ensure_chrome_running(
     if _is_debug_port_open():
         return
 
-    PROFILE_DIR.mkdir(parents=True, exist_ok=True)
+    _PROFILE_DIR.mkdir(parents=True, exist_ok=True)
     chrome = _find_chrome()
 
     subprocess.Popen(
         [
             chrome,
-            f"--remote-debugging-port={DEBUG_PORT}",
-            f"--user-data-dir={PROFILE_DIR}",
+            f"--remote-debugging-port={_DEBUG_PORT}",
+            f"--user-data-dir={_PROFILE_DIR}",
             "--no-first-run",
             "--no-default-browser-check",
             start_url,
@@ -76,13 +74,18 @@ def ensure_chrome_running(
     raise RuntimeError(f"Chrome did not open the debug port within {timeout_seconds}s")
 
 
-def get_ws_url(start_url: str = "about:blank") -> str:
-    ensure_chrome_running(start_url=start_url)
+def _find_chrome() -> str:
+    for candidate in _CHROME_CANDIDATES:
+        if Path(candidate).exists() or shutil.which(candidate):
+            return candidate
+    raise RuntimeError(
+        "Chrome executable not found. Set _CHROME_CANDIDATES in _chrome.py."
+    )
 
-    with urlopen(f"http://localhost:{DEBUG_PORT}/json") as response:
-        pages = json.load(response)
 
-    if not pages:
-        raise RuntimeError("No pages found even though Chrome is running.")
-
-    return pages[0]["webSocketDebuggerUrl"]
+def _is_debug_port_open() -> bool:
+    try:
+        with urlopen(f"http://localhost:{_DEBUG_PORT}/json/version", timeout=1):
+            return True
+    except URLError:
+        return False

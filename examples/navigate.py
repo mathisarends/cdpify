@@ -5,7 +5,7 @@ from _chrome import get_ws_url
 from cdpify import CdpClient
 
 
-async def test_basic():
+async def _main():
     print("=== Test 1: Basic Navigation ===")
 
     ws_url = get_ws_url()
@@ -18,4 +18,4 @@ async def test_basic():
 
 
 if __name__ == "__main__":
-    asyncio.run(test_basic())
+    asyncio.run(_main())

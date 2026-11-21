@@ -42,6 +42,26 @@ class EventSubscription[T]:
         self._ended = False
         self._unsubscribe = weakref.finalize(self, unsubscribe)
 
+    def __aiter__(self) -> Self:
+        return self
+
+    async def __anext__(self) -> T:
+        event = await self._receive(self._timeout_seconds)
+        if event is None:
+            raise StopAsyncIteration
+        return self._convert(event)
+
+    async def __aenter__(self) -> Self:
+        return self
+
+    async def __aexit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: TracebackType | None,
+    ) -> None:
+        await self.aclose()
+
     @property
     def closed(self) -> bool:
         """Whether the stream has ended and no further events will be returned."""
@@ -76,26 +96,6 @@ class EventSubscription[T]:
         self._ended = True
         self._unsubscribe()
         self._buffer.finish(discard=True)
-
-    def __aiter__(self) -> Self:
-        return self
-
-    async def __anext__(self) -> T:
-        event = await self._receive(self._timeout_seconds)
-        if event is None:
-            raise StopAsyncIteration
-        return self._convert(event)
-
-    async def __aenter__(self) -> Self:
-        return self
-
-    async def __aexit__(
-        self,
-        exc_type: type[BaseException] | None,
-        exc_val: BaseException | None,
-        exc_tb: TracebackType | None,
-    ) -> None:
-        await self.aclose()
 
     async def _receive(self, timeout_seconds: float | None) -> RawCDPEvent | None:
         if self._ended:

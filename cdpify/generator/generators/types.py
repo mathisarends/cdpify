@@ -1,12 +1,8 @@
+from cdpify.generator.generators.annotations import map_cdp_type, resolve_type
 from cdpify.generator.generators.constants import FUTURE_ANNOTATIONS, HEADER
 from cdpify.generator.generators.context import GenerationContext
-from cdpify.generator.generators.utils import (
-    api_description,
-    format_docstring,
-    map_cdp_type,
-    resolve_type,
-    to_enum_name,
-)
+from cdpify.generator.generators.docstrings import api_description, format_docstring
+from cdpify.generator.generators.names import to_enum_name
 from cdpify.generator.generators.views import (
     EnumMemberView,
     FieldView,
