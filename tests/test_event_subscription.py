@@ -81,6 +81,25 @@ async def test_next_raises_timeout_error_without_events() -> None:
 
 
 @pytest.mark.asyncio
+async def test_zero_timeout_reads_buffered_events_or_reports_empty_queue() -> None:
+    router = EventRouter()
+    events = router.listen(_Event, session_id=None)
+    with pytest.raises(TimeoutError):
+        await events.next(timeout=0)
+
+    await router.dispatch(_event(1))
+    assert await events.next(timeout=0) == _Event(1)
+    with pytest.raises(TimeoutError):
+        await events.next(timeout=0)
+
+    await router.dispatch(_event(2))
+    router.close()
+    assert await events.next(timeout=0) == _Event(2)
+    with pytest.raises(CDPStreamClosedError):
+        await events.next(timeout=0)
+
+
+@pytest.mark.asyncio
 async def test_next_uses_listen_timeout_by_default() -> None:
     router = EventRouter()
     events = router.listen(_Event, session_id=None, timeout=0.01)
