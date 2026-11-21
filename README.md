@@ -399,8 +399,10 @@ Cancelling the wait does not automatically cancel work in Chrome.
 
 CDP parameters retain the spec's units. For example, `Runtime.evaluate(timeout=...)`
 limits execution inside Chrome in **milliseconds**; it is not the client budget.
-The raw `execute()` escape hatch also accepts `timeout=seconds`: omit it to
-inherit the client default or pass `None` to disable the deadline for that call.
+For raw commands, only `method` and `params` can be positional. Use
+`client.execute(method, params, session_id=sid, timeout=seconds)` or
+`session.execute(method, params, timeout=seconds)`. Omit `timeout` to inherit
+the client default or pass `timeout=None` to disable the deadline for that call.
 
 ### Custom transports
 

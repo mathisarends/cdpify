@@ -3,6 +3,15 @@
 All notable changes to this project are documented here.
 Breaking changes are listed first in each release.
 
+## [Unreleased]
+
+### Breaking changes
+
+- `CdpClient.execute()` and `CdpSession.execute()` now require keyword arguments
+  after `method` and `params`. Migrate `client.execute(method, params, sid, t)`
+  to `client.execute(method, params, session_id=sid, timeout=t)`, and
+  `session.execute(method, params, t)` to `session.execute(method, params, timeout=t)`.
+
 ## [0.5.0] - Unreleased
 
 Release preparation; the publication date will be recorded when 0.5.0 ships.

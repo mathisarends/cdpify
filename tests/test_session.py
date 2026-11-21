@@ -76,6 +76,24 @@ async def test_generated_commands_are_bound_to_session() -> None:
 
 
 @pytest.mark.asyncio
+async def test_raw_execute_requires_keywords_after_params() -> None:
+    transport = _Transport()
+    client = CdpClient(transport=transport)  # type: ignore[arg-type]
+    session = client.session("session-1")
+
+    with pytest.raises(TypeError):
+        await client.execute("Page.enable", {}, None)  # type: ignore[call-arg]
+    with pytest.raises(TypeError):
+        await session.execute("Page.enable", {}, None)  # type: ignore[call-arg]
+    transport.execute.assert_not_called()
+
+    await client.execute("Page.enable", {}, session_id="session-1", timeout=None)
+    await session.execute("Page.enable", {}, timeout=None)
+    routed = call(method="Page.enable", params={}, session_id="session-1", timeout=None)
+    assert transport.execute.await_args_list == [routed, routed]
+
+
+@pytest.mark.asyncio
 async def test_low_level_execute_cannot_override_bound_session() -> None:
     transport = _Transport()
     session = CdpClient(transport=transport).session("session-2")  # type: ignore[arg-type]
