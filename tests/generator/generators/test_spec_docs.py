@@ -99,4 +99,10 @@ def test_spec_descriptions_cannot_break_generated_python_literals() -> None:
         ],
     )
     for source in (types.generate(domain), commands.generate(domain), generate(domain)):
-        ast.parse(source)
+        tree = ast.parse(source)
+        assert any(
+            isinstance(node, ast.Constant)
+            and isinstance(node.value, str)
+            and text in node.value
+            for node in ast.walk(tree)
+        )

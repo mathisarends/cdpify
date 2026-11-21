@@ -111,7 +111,7 @@ await tab.execute("Runtime.evaluate", {"expression": "1 + 1"})
 
 ## Timeouts
 
-Sessions inherit the client's `default_timeout`. See
+Sessions inherit the client's `default_timeout_seconds`. See
 [Timeouts and errors](04-timeouts-and-errors.md#timeouts).
 
 ## Next

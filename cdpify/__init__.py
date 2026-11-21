@@ -9,7 +9,12 @@ from .error import (
     CDPSessionClosedError,
     CDPStreamClosedError,
     CDPTimeoutError,
-    deprecated_exception,
+)
+from .error import (
+    deprecated_exception as deprecated_exception,  # smelt: ignore[VIS008] -- Legacy API
+)
+from .error import (
+    exception_getattr as _exception_getattr,
 )
 from .event_queue import OverflowPolicy
 from .events import EventSubscription, ReceivedEvent
@@ -42,8 +47,4 @@ __all__ = [
 ]
 
 
-def __getattr__(name: str) -> type[CDPError]:
-    replacement = deprecated_exception(name)
-    if replacement is None:
-        raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
-    return replacement
+__getattr__ = _exception_getattr(__name__)

@@ -67,7 +67,7 @@ async def screenshot(client: CdpClient, url: str, path: str) -> None:
     await client.page.enable()
     async with client.listen(LoadEventFiredEvent) as loaded:
         await client.page.navigate(url=url)
-        await loaded.next(timeout=15)
+        await loaded.next(timeout_seconds=15)
 
     shot = await client.page.capture_screenshot(
         format="png",
@@ -149,9 +149,9 @@ result and bounds the whole operation:
 from cdpify.domains.page import LoadEventFiredEvent
 
 
-async def goto(client: CdpClient, url: str, timeout: float = 30) -> None:
+async def goto(client: CdpClient, url: str, timeout_seconds: float = 30) -> None:
     await client.page.enable()
-    async with asyncio.timeout(timeout):
+    async with asyncio.timeout(timeout_seconds):
         async with client.listen(LoadEventFiredEvent) as loaded:
             navigation = await client.page.navigate(url=url)
             if navigation.error_text:
@@ -179,7 +179,7 @@ async def console_messages(client: CdpClient, expression: str) -> list[str]:
         await client.runtime.evaluate(expression=expression)
         while True:
             try:
-                event = await events.next(timeout=0.5)
+                event = await events.next(timeout_seconds=0.5)
             except TimeoutError:
                 break
             text = " ".join(
@@ -239,7 +239,7 @@ async def record_traffic(client: CdpClient, url: str) -> list[Entry]:
     try:
         async with client.listen(LoadEventFiredEvent) as loaded:
             await client.page.navigate(url=url)
-            await loaded.next(timeout=30)
+            await loaded.next(timeout_seconds=30)
         await asyncio.sleep(1)  # give late requests a moment
     finally:
         for task in tasks:
@@ -265,7 +265,7 @@ async def page_title(tab: CdpSession, url: str) -> str:
     await tab.page.enable()
     async with tab.listen(LoadEventFiredEvent) as loaded:
         await tab.page.navigate(url=url)
-        await loaded.next(timeout=30)
+        await loaded.next(timeout_seconds=30)
     result = await tab.runtime.evaluate(
         expression="document.title", return_by_value=True
     )
@@ -393,7 +393,7 @@ class FakeTransport:
         method: str,
         params: dict[str, Any] | None = None,
         session_id: str | None = None,
-        timeout: float | None = None,
+        timeout_seconds: float | None = None,
     ) -> dict[str, Any]:
         self.sent.append((method, params))
         return self.responses.get(method, {})

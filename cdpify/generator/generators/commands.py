@@ -1,21 +1,18 @@
-from cdpify.generator.generators.constants import FUTURE_ANNOTATIONS, HEADER
-from cdpify.generator.generators.context import GenerationContext
-from cdpify.generator.generators.utils import (
-    api_description,
-    format_docstring,
-    resolve_type,
-    to_enum_name,
-    to_identifier,
-    to_pascal_case,
-)
-from cdpify.generator.generators.views import (
+from cdpify.generator.rendering import render_template
+from cdpify.generator.schemas import Command, Domain, Parameter
+
+from .annotations import resolve_type
+from .constants import FUTURE_ANNOTATIONS, HEADER
+from .context import GenerationContext
+from .docstrings import api_description, format_docstring
+from .names import to_enum_name, to_pascal_case
+from .views import (
     EnumMemberView,
     FieldView,
     ModelView,
     dataclass_import,
+    model_fields,
 )
-from cdpify.generator.rendering import render_template
-from cdpify.generator.schemas import Command, Domain, Parameter
 
 
 def generate(domain: Domain) -> str:
@@ -24,6 +21,7 @@ def generate(domain: Domain) -> str:
         _scan_command(command, ctx)
 
     models = tuple(_build_models(domain.commands, ctx))
+    uses_unset = any(field.uses_unset for field in model_fields(models))
     # Cross-domain imports must remain runtime imports so that
     # `get_type_hints()` (used by decode_cdp) can resolve forward
     # references like `dom.Rect`. `from __future__ import annotations`
@@ -34,7 +32,7 @@ def generate(domain: Domain) -> str:
         header=HEADER,
         future_annotations=FUTURE_ANNOTATIONS,
         typing_names=ctx.sorted_typing_names,
-        local_type_names=tuple(name for name, _ in ctx.sorted_local_types()),
+        local_type_names=ctx.local_import_names(),
         cross_domain_modules=ctx.cross_domain_modules,
         domain_name=domain.domain,
         command_members=tuple(
@@ -45,7 +43,7 @@ def generate(domain: Domain) -> str:
             for command in domain.commands
         ),
         models=models,
-        uses_unset=any(f.uses_unset for m in models for f in m.fields),
+        uses_unset=uses_unset,
         dataclass_import=dataclass_import(models),
     )
 
@@ -93,15 +91,6 @@ def _build_result_model(command: Command, ctx: GenerationContext) -> ModelView:
 
 
 def _build_field_view(param: Parameter, ctx: GenerationContext) -> FieldView:
-    field_name = to_identifier(param.name)
     py_type = resolve_type(param)
     ctx.track_type_string(py_type)
-    return FieldView(
-        field_name,
-        py_type,
-        optional=param.optional,
-        cdp_name=param.name,
-        description=param.description,
-        experimental=param.experimental,
-        deprecated=param.deprecated,
-    )
+    return FieldView.from_parameter(param, py_type)

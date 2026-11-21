@@ -1,20 +1,21 @@
 import shutil
 from pathlib import Path
 
-from cdpify.generator.formatting import format_python_tree
-from cdpify.generator.generators import (
+from cdpify.shared.naming import to_snake_case
+
+from .formatting import format_python_tree
+from .generators import (
     accessors,
     commands,
     events,
     init,
     types,
 )
-from cdpify.generator.generators import (
+from .generators import (
     domain as domain_generator,
 )
-from cdpify.generator.generators.utils import require_unique_names
-from cdpify.generator.schemas import Domain
-from cdpify.shared.naming import to_snake_case
+from .generators.names import require_unique_names
+from .schemas import Domain
 
 
 def generate_domains(domains: list[Domain], output_dir: Path) -> None:

@@ -1,5 +1,4 @@
 import asyncio
-import builtins
 from collections.abc import AsyncIterator
 from dataclasses import dataclass, field
 from typing import Any, ClassVar
@@ -29,14 +28,14 @@ class _FakeTransport:
         method: str,
         params: dict[str, Any] | None = None,
         session_id: str | None = None,
-        timeout: float | None = None,
+        timeout_seconds: float | None = None,
     ) -> dict[str, Any]:
         self.executions.append(
             {
                 "method": method,
                 "params": params,
                 "session_id": session_id,
-                "timeout": timeout,
+                "timeout_seconds": timeout_seconds,
             }
         )
         return self.result
@@ -67,22 +66,6 @@ def test_requires_url_or_transport() -> None:
 def test_rejects_url_and_transport_together() -> None:
     with pytest.raises(TypeError, match="either url or transport"):
         CdpClient("ws://example", transport=_FakeTransport())
-
-
-def test_default_transport_has_actionable_optional_dependency_error(
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    original_import = builtins.__import__
-
-    def blocked_import(name: str, *args: object, **kwargs: object):
-        if name == "cdpify.transports.websocket":
-            raise ModuleNotFoundError(name="websockets")
-        return original_import(name, *args, **kwargs)
-
-    monkeypatch.setattr(builtins, "__import__", blocked_import)
-
-    with pytest.raises(RuntimeError, match=r"cdpify\[websocket\]"):
-        CdpClient("ws://example")
 
 
 def test_domain_clients_are_cached() -> None:
@@ -151,7 +134,7 @@ async def test_execute_delegates_to_transport() -> None:
         "Runtime.evaluate",
         {"expression": "6 * 7"},
         session_id="S1",
-        timeout=2.0,
+        timeout_seconds=2.0,
     )
 
     assert result == {"value": 42}
@@ -160,7 +143,7 @@ async def test_execute_delegates_to_transport() -> None:
             "method": "Runtime.evaluate",
             "params": {"expression": "6 * 7"},
             "session_id": "S1",
-            "timeout": None,
+            "timeout_seconds": None,
         }
     ]
 
@@ -177,7 +160,7 @@ async def test_generated_domain_uses_transport_execute() -> None:
             "method": "Tracing.end",
             "params": None,
             "session_id": None,
-            "timeout": None,
+            "timeout_seconds": None,
         }
     ]
 
@@ -192,7 +175,6 @@ async def test_connect_and_disconnect_manage_transport() -> None:
 
     await client.disconnect()
     assert client.is_connected is False
-    assert client._event_loop_task is None
 
 
 @pytest.mark.asyncio
@@ -200,7 +182,7 @@ async def test_listen_yields_only_typed_root_events() -> None:
     transport = _FakeTransport()
     client = CdpClient(transport=transport)
     await client.connect()
-    stream = client.listen(_EventModel, timeout=1.0)
+    stream = client.listen(_EventModel, timeout_seconds=1.0)
 
     next_event_task = asyncio.create_task(anext(stream))
     await asyncio.sleep(0)
@@ -212,7 +194,7 @@ async def test_listen_yields_only_typed_root_events() -> None:
         )
     )
     transport.emit(TransportEvent(method="Test.event", params={"value": 7}))
-    event = await next_event_task
+    event = await asyncio.wait_for(next_event_task, timeout=1.0)
 
     assert event.value == 7
 
@@ -225,7 +207,7 @@ async def test_listen_all_preserves_session_metadata_in_envelope() -> None:
     transport = _FakeTransport()
     client = CdpClient(transport=transport)
     await client.connect()
-    stream = client.listen_all(_EventModel, timeout=1.0)
+    stream = client.listen_all(_EventModel, timeout_seconds=1.0)
 
     next_event_task = asyncio.create_task(anext(stream))
     await asyncio.sleep(0)
@@ -236,7 +218,7 @@ async def test_listen_all_preserves_session_metadata_in_envelope() -> None:
             session_id="S1",
         )
     )
-    received = await next_event_task
+    received = await asyncio.wait_for(next_event_task, timeout=1.0)
 
     assert received.value == _EventModel(value=7)
     assert received.session_id == "S1"
@@ -255,7 +237,7 @@ async def test_listen_ends_when_transport_stream_ends() -> None:
     await asyncio.sleep(0)
 
     transport.emit(TransportEvent(method="Test.event", params={"value": 1}))
-    first = await next_event_task
+    first = await asyncio.wait_for(next_event_task, timeout=1.0)
     await transport.disconnect()
     remaining = [event async for event in stream]
 
@@ -304,6 +286,28 @@ async def test_listen_receives_events_emitted_before_first_read() -> None:
         transport.emit(TransportEvent(method="Test.event", params={"value": 3}))
         await asyncio.sleep(0.01)
 
-        assert await events.next(timeout=1.0) == _EventModel(value=3)
+        assert await events.next(timeout_seconds=1.0) == _EventModel(value=3)
 
     await client.disconnect()
+
+
+@pytest.mark.asyncio
+async def test_raw_listeners_preserve_scope_method_and_wire_names() -> None:
+    transport = _FakeTransport()
+    async with CdpClient(transport=transport) as client:
+        root = client.listen_raw("Future.event")
+        tab = client.bind_session("S1").listen_raw()
+        all_events = client.listen_all_raw()
+        messages = [
+            TransportEvent("Future.event", {"wireName": 1}),
+            TransportEvent("Another.event", {"wireName": 2}, "S1"),
+            TransportEvent("Future.event", {"wireName": 3}, "S2"),
+        ]
+        for event in messages:
+            transport.emit(event)
+        await transport.disconnect()
+
+        async with asyncio.timeout(2):
+            assert [e async for e in root] == messages[:1]
+            assert [e async for e in tab] == messages[1:2]
+            assert [e async for e in all_events] == messages

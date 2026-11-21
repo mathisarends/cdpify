@@ -1,21 +1,18 @@
-from cdpify.generator.generators.constants import FUTURE_ANNOTATIONS, HEADER
-from cdpify.generator.generators.context import GenerationContext
-from cdpify.generator.generators.utils import (
-    api_description,
-    format_docstring,
-    map_cdp_type,
-    resolve_type,
-    to_enum_name,
-    to_identifier,
-)
-from cdpify.generator.generators.views import (
+from cdpify.generator.rendering import render_template
+from cdpify.generator.schemas import Domain, Parameter, TypeDefinition
+
+from .annotations import map_cdp_type, resolve_type
+from .constants import FUTURE_ANNOTATIONS, HEADER
+from .context import GenerationContext
+from .docstrings import api_description, format_docstring
+from .names import to_enum_name
+from .views import (
     EnumMemberView,
     FieldView,
     TypeDefinitionView,
     dataclass_import,
+    model_fields,
 )
-from cdpify.generator.rendering import render_template
-from cdpify.generator.schemas import Domain, Parameter, TypeDefinition
 
 _OPTIONAL_OVERRIDES: dict[str, set[str]] = {
     "DocumentSnapshot": {"documentURL", "baseURL"},
@@ -26,6 +23,8 @@ _OPTIONAL_OVERRIDES: dict[str, set[str]] = {
 def generate(domain: Domain) -> str:
     ctx = GenerationContext()
     definitions = tuple(_build_type_view(type_def, ctx) for type_def in domain.types)
+    uses_unset = any(field.uses_unset for field in model_fields(definitions))
+    has_enums = any(definition.kind == "enum" for definition in definitions)
     return render_template(
         "types.py.jinja2",
         header=HEADER,
@@ -33,8 +32,8 @@ def generate(domain: Domain) -> str:
         typing_names=ctx.sorted_typing_names,
         cross_domain_modules=ctx.cross_domain_modules,
         definitions=definitions,
-        has_enums=any(definition.kind == "enum" for definition in definitions),
-        uses_unset=any(f.uses_unset for m in definitions for f in m.fields),
+        has_enums=has_enums,
+        uses_unset=uses_unset,
         dataclass_import=dataclass_import(definitions),
     )
 
@@ -105,24 +104,15 @@ def _build_alias_view(
 def _build_field_view(
     param: Parameter, type_id: str, ctx: GenerationContext
 ) -> FieldView:
-    field_name = to_identifier(param.name)
     py_type = resolve_type(param)
 
-    if param.ref and "." in param.ref:
-        ctx.cross_domain_refs.add(param.ref)
+    ctx.scan_ref(param.ref)
     ctx.track_type_string(py_type)
 
-    is_optional = param.optional or param.name in _OPTIONAL_OVERRIDES.get(
-        type_id, set()
-    )
-    return FieldView(
-        field_name,
+    return FieldView.from_parameter(
+        param,
         py_type,
-        optional=is_optional,
-        cdp_name=param.name,
-        description=param.description,
-        experimental=param.experimental,
-        deprecated=param.deprecated,
+        force_optional=param.name in _OPTIONAL_OVERRIDES.get(type_id, ()),
     )
 
 

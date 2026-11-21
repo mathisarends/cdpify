@@ -22,7 +22,7 @@ An `EventSubscription` supports three ways of reading:
 | Usage | Behavior |
 | --- | --- |
 | `async for event in sub` | Yields events until the stream ends, then stops normally. |
-| `await sub.next(timeout=...)` | Returns one event. Raises `TimeoutError` if none arrives in time, `CDPStreamClosedError` if the stream has ended. |
+| `await sub.next(timeout_seconds=...)` | Returns one event. Raises `TimeoutError` if none arrives in time, `CDPStreamClosedError` if the stream has ended. |
 | `async with sub:` | Unsubscribes when the block exits. Combine with either of the above. |
 
 Further members:
@@ -44,7 +44,7 @@ from cdpify.domains.page import LoadEventFiredEvent
 await client.page.enable()
 async with client.listen(LoadEventFiredEvent) as loaded:
     await client.page.navigate(url="https://example.com")
-    await loaded.next(timeout=10)
+    await loaded.next(timeout_seconds=10)
 ```
 
 Subscribing after `navigate()` returns would race the browser and could miss
@@ -52,12 +52,12 @@ the event.
 
 ## Timeouts
 
-`listen(..., timeout=seconds)` sets a default deadline for every read from that
-subscription. `next(timeout=...)` overrides it for a single read:
+`listen(..., timeout_seconds=seconds)` sets a default deadline for every read from that
+subscription. `next(timeout_seconds=...)` overrides it for a single read:
 
 | `next()` argument | Meaning |
 | --- | --- |
-| omitted | Use the `timeout` given to `listen()` (default: wait forever). |
+| omitted | Use the `timeout_seconds` given to `listen()` (default: wait forever). |
 | `None` | Wait forever. |
 | `0` | Return an already buffered event, or raise `TimeoutError` immediately. |
 | `seconds` | Wait up to that long. |
@@ -172,7 +172,7 @@ client = CdpClient(ws_url, max_queue_size=256, overflow="drop_oldest")
 
 async with client:
     async with client.listen(RequestWillBeSentEvent, max_queue_size=32) as events:
-        event = await events.next(timeout=10)
+        event = await events.next(timeout_seconds=10)
         print(events.dropped_events)
 ```
 
@@ -190,7 +190,7 @@ events missing from the generated spec, or to inspect the wire data:
 
 ```python
 async with tab.listen_raw("Future.event") as events:
-    event = await events.next(timeout=5)
+    event = await events.next(timeout_seconds=5)
     print(event.method, event.session_id, event.params)
 ```
 

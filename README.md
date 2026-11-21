@@ -97,7 +97,7 @@ Almost everything you do with `cdpify` uses these few building blocks:
 | --- | --- |
 | Connect | `async with CdpClient(ws_url) as client:` |
 | Send a command | `await client.<domain>.<command>(**params)`, e.g. `client.page.navigate(url=...)` |
-| Wait for one event | `async with client.listen(Event) as sub:` … `await sub.next(timeout=10)` |
+| Wait for one event | `async with client.listen(Event) as sub:` … `await sub.next(timeout_seconds=10)` |
 | Stream events | `async for event in client.listen(Event):` |
 | Control another tab | `tab = await client.attach(target_id)`, then `tab.page`, `tab.listen(...)` |
 | Limit how long a call may take | `async with asyncio.timeout(5):` |
@@ -125,7 +125,7 @@ from cdpify.domains.page import LoadEventFiredEvent
 await client.page.enable()
 async with client.listen(LoadEventFiredEvent) as loaded:
     await client.page.navigate(url="https://example.com")
-    await loaded.next(timeout=10)
+    await loaded.next(timeout_seconds=10)
 ```
 
 ```python

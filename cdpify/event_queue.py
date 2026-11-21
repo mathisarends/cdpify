@@ -2,9 +2,18 @@ import asyncio
 from collections import deque
 from typing import Literal
 
-from cdpify.error import CDPEventOverflowError
+from .error import CDPEventOverflowError
 
 type OverflowPolicy = Literal["error", "drop_oldest"]
+
+
+def validate_queue_options(max_queue_size: int, *, overflow: OverflowPolicy) -> None:
+    if not isinstance(max_queue_size, int):
+        raise TypeError("max_queue_size must be an integer")
+    if max_queue_size < 0:
+        raise ValueError("max_queue_size must be non-negative")
+    if overflow not in ("error", "drop_oldest"):
+        raise ValueError('overflow must be "error" or "drop_oldest"')
 
 
 class EventQueue[T]:
@@ -28,12 +37,7 @@ class EventQueue[T]:
     def __init__(
         self, max_queue_size: int = 0, *, overflow: OverflowPolicy = "error"
     ) -> None:
-        if not isinstance(max_queue_size, int):
-            raise TypeError("max_queue_size must be an integer")
-        if max_queue_size < 0:
-            raise ValueError("max_queue_size must be non-negative")
-        if overflow not in ("error", "drop_oldest"):
-            raise ValueError('overflow must be "error" or "drop_oldest"')
+        validate_queue_options(max_queue_size, overflow=overflow)
         self._items: deque[T] = deque()
         self._ready = asyncio.Event()
         self._closed = False
@@ -73,13 +77,13 @@ class EventQueue[T]:
             self._items.clear()
         self._ready.set()
 
-    async def get(self, timeout: float | None = None) -> T | None:
+    async def get(self, timeout_seconds: float | None = None) -> T | None:
         """Read the next event, or None after closure; raise TimeoutError on timeout."""
-        if timeout is None or self._ready.is_set():
+        if timeout_seconds is None or self._ready.is_set():
             return await self._receive()
-        if timeout <= 0:
+        if timeout_seconds <= 0:
             raise TimeoutError
-        return await asyncio.wait_for(self._receive(), timeout=timeout)
+        return await asyncio.wait_for(self._receive(), timeout=timeout_seconds)
 
     async def _receive(self) -> T | None:
         while not self._items:

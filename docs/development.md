@@ -22,8 +22,10 @@ examples/                    runnable example scripts
 tests/                       unit tests; tests/integration needs Chrome
 ```
 
-`cdpify/domains/` is generated. Never edit it by hand; change the generator
-or its templates and regenerate.
+`cdpify/domains/` is generated from the spec and templates. Its dataclasses
+use keyword-only constructors and slots, and their fields are mutable. Event
+listeners can share a decoded model, so copy it before editing. Smelt requires
+frozen, slotted dataclasses in the hand-written code it checks.
 
 ## Setup
 
@@ -41,6 +43,7 @@ uv run pytest                                          # unit tests
 uv run ruff check . --exclude cdpify/domains           # lint
 uv run ruff format --check . --exclude cdpify/domains  # formatting
 uv run pyright                                         # type checks
+uv run smelt check --fail-on warning --show-hints       # architecture and code quality
 uv run python scripts/check_generated.py               # generated-code drift
 ```
 
@@ -61,8 +64,12 @@ Set `CHROME_PATH` if Chrome or Chromium is not found automatically.
 
 CI runs the unit tests with both JSON backends on Ubuntu, Windows and macOS
 with Python 3.12, 3.13 and 3.14, plus Pyright on the library and the public API
-sample, the generated-code drift check and the integration suite against
-Chrome.
+sample, Smelt on hand-written code and tests, the generated-code drift check
+and the integration suite against Chrome.
+
+Use a single-dot relative import within a package, such as
+`from .schemas import Domain` in the generator. Imports outside the current
+package use an absolute path. Repository YAML files use the `.yaml` extension.
 
 ## Code generation
 

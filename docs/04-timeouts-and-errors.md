@@ -8,12 +8,12 @@ every call and what `cdpify` raises when something goes wrong.
 ### The client default
 
 Every command has a total time budget, covering sending the request and
-waiting for its response. It comes from `CdpClient(default_timeout=...)`, which
+waiting for its response. It comes from `CdpClient(default_timeout_seconds=...)`, which
 defaults to **30 seconds** and applies to the root client and all sessions,
 whatever the transport:
 
 ```python
-client = CdpClient(ws_url, default_timeout=10.0)  # None disables it
+client = CdpClient(ws_url, default_timeout_seconds=10.0)  # None disables it
 ```
 
 When it expires, `cdpify` raises `CDPTimeoutError`.
@@ -40,12 +40,12 @@ Either way the pending request is released locally. Cancelling the wait does
 
 ### Raw commands
 
-`execute()` takes a client-side `timeout` in seconds as a keyword argument:
+`execute()` takes a client-side `timeout_seconds` as a keyword argument:
 
 ```python
-await client.execute("Page.reload", timeout=5)
-await client.execute("Page.reload", timeout=None)  # no deadline for this call
-await client.execute("Page.reload")                # inherit default_timeout
+await client.execute("Page.reload", timeout_seconds=5)
+await client.execute("Page.reload", timeout_seconds=None)  # no deadline for this call
+await client.execute("Page.reload")                # inherit default_timeout_seconds
 ```
 
 ### CDP `timeout` parameters are different

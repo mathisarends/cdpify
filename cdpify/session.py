@@ -1,11 +1,10 @@
 from typing import Any
 
-from cdpify.domains import DomainAccessors
-from cdpify.events import EventRouter
-from cdpify.events.source import EventSource
-from cdpify.executor import BoundCommandExecutor
-from cdpify.transport import Transport
-from cdpify.unset import UNSET, UnsetType
+from .domains import DomainAccessors
+from .events import EventRouter, EventSource
+from .executor import BoundCommandExecutor
+from .transport import Transport
+from .unset import UNSET, UnsetType
 
 
 class CdpSession(DomainAccessors, EventSource):
@@ -17,7 +16,7 @@ class CdpSession(DomainAccessors, EventSource):
         event_router: EventRouter,
         session_id: str,
         *,
-        default_timeout: float | None = 30.0,
+        default_timeout_seconds: float | None = 30.0,
     ) -> None:
         if not session_id:
             raise ValueError("session_id must not be empty")
@@ -27,7 +26,7 @@ class CdpSession(DomainAccessors, EventSource):
         self._executor: BoundCommandExecutor = BoundCommandExecutor(
             transport,
             session_id,
-            default_timeout=default_timeout,
+            default_timeout_seconds=default_timeout_seconds,
             check_session=event_router.ensure_session_open,
         )
 
@@ -40,10 +39,10 @@ class CdpSession(DomainAccessors, EventSource):
         method: str,
         params: dict[str, Any] | None = None,
         *,
-        timeout: float | None | UnsetType = UNSET,
+        timeout_seconds: float | None | UnsetType = UNSET,
     ) -> dict[str, Any]:
         return await self._executor.execute(
             method=method,
             params=params,
-            timeout=timeout,
+            timeout_seconds=timeout_seconds,
         )

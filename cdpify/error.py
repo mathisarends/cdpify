@@ -1,4 +1,7 @@
+from __future__ import annotations
+
 import warnings
+from collections.abc import Callable
 from typing import Any, Self
 
 
@@ -87,16 +90,8 @@ class CDPDecodeError(CDPError):
             f"at {location}: missing required fields {', '.join(missing_fields)}"
         )
 
-    def _prepend(self, name: str) -> "CDPDecodeError":
+    def _prepend(self, name: str) -> CDPDecodeError:
         return type(self)(self.model_type, self.missing_fields, path=(name, *self.path))
-
-
-_DEPRECATED_NAMES = {
-    "CDPException": CDPError,
-    "CDPConnectionException": CDPConnectionError,
-    "CDPCommandException": CDPCommandError,
-    "CDPTimeoutException": CDPTimeoutError,
-}
 
 
 def deprecated_exception(name: str) -> type[CDPError] | None:
@@ -111,8 +106,22 @@ def deprecated_exception(name: str) -> type[CDPError] | None:
     return replacement
 
 
-def __getattr__(name: str) -> type[CDPError]:
-    replacement = deprecated_exception(name)
-    if replacement is None:
-        raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
-    return replacement
+def exception_getattr(module_name: str) -> Callable[[str], type[CDPError]]:
+    def __getattr__(name: str) -> type[CDPError]:
+        replacement = deprecated_exception(name)
+        if replacement is None:
+            raise AttributeError(f"module {module_name!r} has no attribute {name!r}")
+        return replacement
+
+    return __getattr__
+
+
+_DEPRECATED_NAMES = {
+    "CDPException": CDPError,
+    "CDPConnectionException": CDPConnectionError,
+    "CDPCommandException": CDPCommandError,
+    "CDPTimeoutException": CDPTimeoutError,
+}
+
+
+__getattr__ = exception_getattr(__name__)

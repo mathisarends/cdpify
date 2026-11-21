@@ -1,6 +1,6 @@
 import pytest
 
-from cdpify.events.dispatcher import EventDispatcher, RawCDPEvent
+from cdpify.events import EventDispatcher, RawCDPEvent
 
 
 @pytest.mark.asyncio

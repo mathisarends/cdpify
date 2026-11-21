@@ -1,0 +1,146 @@
+version: 2
+project:
+  root_packages: [cdpify, benchmarks, checks, examples, scripts]
+  source_roots: ["."]
+  test_roots: [tests]
+  exclude:
+    - path: build/**
+      reason: Local setuptools build artifacts duplicate the packaged sources.
+    - path: cdpify/domains/**
+      reason: Generated from the bundled CDP specs and verified by scripts/check_generated.py.
+
+architecture:
+  packages:
+    events:
+      match: cdpify.events
+      public: ["."]
+    transports:
+      match: cdpify.transports
+      public: [".", websocket]
+    domain-renderers:
+      match: cdpify.generator.generators
+      public: [".", accessors, annotations, commands, context, docstrings, domain, events, init, names, types]
+  import_graph:
+    # Excluded generated imports resolve to their nearest analyzed package.
+    # Check cycles between layers at that level of resolution.
+    cycles: [layers]
+    type_checking_cycles: ignore
+  layers:
+    client:
+      modules: [cdpify]
+      may_depend_on: [runtime, websocket, shared]
+      third_party: {default: deny}
+    runtime:
+      modules: [cdpify.codec, cdpify.error, cdpify.events, cdpify.event_queue, cdpify.executor, cdpify.transport, cdpify.unset]
+      may_depend_on: [shared]
+      third_party: {default: deny}
+    websocket:
+      modules: [cdpify.transports]
+      may_depend_on: [runtime, shared]
+      third_party: {default: deny, allow: [websockets, orjson]}
+    shared:
+      modules: [cdpify.shared]
+      third_party: {default: deny}
+    generator:
+      modules: [cdpify.generator]
+      may_depend_on: [renderers, schema, shared]
+      third_party: {default: deny}
+    renderers:
+      modules: [cdpify.generator.generators]
+      may_depend_on: [templates, schema, shared]
+      third_party: {default: deny}
+    templates:
+      modules: [cdpify.generator.rendering]
+      third_party: {default: deny, allow: [jinja2]}
+    schema:
+      modules: [cdpify.generator.schemas]
+      third_party: {default: deny, allow: [pydantic]}
+    tooling:
+      modules: [benchmarks, checks, examples]
+      may_depend_on: [client, runtime]
+      # The example scripts import their sibling _chrome module by its script-local name.
+      third_party: {default: deny, allow: [_chrome]}
+    generation-check:
+      modules: [scripts]
+      may_depend_on: [generator, schema]
+      third_party: {default: deny}
+
+style:
+  imports: {style: relative, max_relative_level: 1}
+  file_naming: {yaml_extension: yaml}
+  type_dispatch: {style: match}
+  forbidden_names: [helpers, misc, utils]
+  dataclass_options: [frozen, slots]
+  reexports: all
+  str_enum_values: explicit
+  overrides:
+    generator:
+      match: cdpify.generator
+      rules:
+        complexity/excess-comprehension-loops: warning
+        complexity/excess-positional-parameters: {severity: warning, max: 3}
+
+rules:
+  architecture/uncovered-source: error
+  architecture/layer-boundary: error
+  architecture/forbidden-third-party-import: error
+  architecture/shared-imports-feature: error
+  architecture/import-cycle: error
+  architecture/non-public-module-import: error
+  architecture/missing-required-module: error
+  imports/prefer-package-import: warning
+  imports/forbidden-import-style: error
+  imports/excess-module-imports: {severity: hint, max: 10}
+  layout/definition-order: error
+  layout/file-name-convention: error
+  layout/forbidden-module-name: error
+  layout/misplaced-static-helper: hint
+  layout/callee-before-caller: warning
+  layout/misplaced-private-constant: warning
+  layout/misplaced-module-logger: warning
+  visibility/internal-public-member: warning
+  visibility/internal-public-module-symbol: warning
+  visibility/internal-public-attribute: warning
+  visibility/test-only-public-function: warning
+  visibility/test-only-public-attribute: warning
+  visibility/foreign-private-access: error
+  visibility/reexport-convention: warning
+  visibility/redundant-private-delegate: hint
+  complexity/duplicate-function: error
+  complexity/forbidden-nested-conditional: error
+  complexity/excess-positional-parameters: {severity: warning, max: 4}
+  complexity/inline-call-argument: warning
+  complexity/excess-attribute-depth: hint
+  complexity/excess-constructor-decisions: warning
+  typing/implicit-optional-default: warning
+  typing/deprecated-async-contextmanager-return: warning
+  typing/duplicate-literal-type: warning
+  typing/prefer-deferred-annotations: warning
+  typing/prefer-inline-type-parameters: warning
+  typing/anonymous-tuple-type: warning
+  modeling/dataclass-field-mutation: warning
+  modeling/missing-dataclass-option: warning
+  modeling/duplicate-class-name: warning
+  modeling/implicit-duration-unit: error
+  modeling/mutable-field-in-frozen-dataclass: warning
+  modeling/str-enum-value-convention: warning
+  modeling/redundant-str-enum-value: hint
+  modeling/forbidden-base-class-affix: error
+  modeling/prefer-str-enum-discriminator: hint
+  modeling/parallel-record-fields: hint
+  idioms/bundled-instance-assignment: error
+  idioms/prefer-match-type-dispatch: hint
+  idioms/redundant-name-alias: warning
+  idioms/missing-interface-docstring: warning
+  idioms/missing-broad-except-reason: warning
+  idioms/duplicate-narrowing-assert: warning
+  idioms/loop-invariant-collection: warning
+  tests/private-access: error
+  tests/string-patch-target: error
+  tests/excess-patches: {severity: error, max: 2}
+  tests/missing-outcome-check: warning
+  tests/vacuous-assertion: error
+  tests/unbounded-wait: warning
+  tests/missing-await-assertion: warning
+  tests/independent-case-loop: hint
+  tests/nondeterministic-data: warning

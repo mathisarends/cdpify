@@ -10,15 +10,15 @@ from websockets.asyncio.client import ClientConnection, connect
 
 from cdpify.error import CDPCommandError, CDPConnectionError
 from cdpify.event_queue import EventQueue, OverflowPolicy
-from cdpify.executor import _with_timeout
+from cdpify.executor import with_command_timeout
 from cdpify.transport import EventHandler, TransportEvent
+
+logger = logging.getLogger(__name__)
 
 try:
     import orjson
 except ModuleNotFoundError:
     orjson = None
-
-logger = logging.getLogger(__name__)
 
 
 class WebSocketTransport:
@@ -31,8 +31,8 @@ class WebSocketTransport:
         max_queue_size: int = 0,
         overflow: OverflowPolicy = "error",
         compression: Literal["deflate"] | None = None,
-        open_timeout: float | None = 10.0,
-        close_timeout: float | None = 10.0,
+        open_timeout_seconds: float | None = 10.0,
+        close_timeout_seconds: float | None = 10.0,
     ) -> None:
         self.url = url
         self._additional_headers = additional_headers
@@ -40,8 +40,8 @@ class WebSocketTransport:
         self._max_queue_size = max_queue_size
         self._overflow: OverflowPolicy = overflow
         self._compression = compression
-        self._open_timeout = open_timeout
-        self._close_timeout = close_timeout
+        self._open_timeout_seconds = open_timeout_seconds
+        self._close_timeout_seconds = close_timeout_seconds
 
         self._connection_lock = asyncio.Lock()
         self._ws: ClientConnection | None = None
@@ -92,8 +92,8 @@ class WebSocketTransport:
                     max_size=self._max_frame_size,
                     additional_headers=self._additional_headers,
                     compression=self._compression,
-                    open_timeout=self._open_timeout,
-                    close_timeout=self._close_timeout,
+                    open_timeout=self._open_timeout_seconds,
+                    close_timeout=self._close_timeout_seconds,
                 )
             except Exception as error:
                 raise CDPConnectionError(f"Connection failed: {error}") from error
@@ -113,33 +113,12 @@ class WebSocketTransport:
             task = self._start_shutdown(stop_message_loop=True)
         await asyncio.shield(task)
 
-    def _start_shutdown(self, *, stop_message_loop: bool) -> asyncio.Task[None]:
-        if self._shutdown_task is None:
-            self._is_shutting_down = True
-            self._shutdown_task = asyncio.create_task(
-                self._shutdown(stop_message_loop=stop_message_loop)
-            )
-        return self._shutdown_task
-
-    async def _shutdown(self, *, stop_message_loop: bool) -> None:
-        logger.info("Disconnecting...")
-
-        try:
-            if stop_message_loop:
-                await self._stop_message_loop()
-            self._cancel_pending_requests()
-            await self._close_websocket()
-        finally:
-            await self._finish_event_stream()
-
-        logger.info("Disconnected")
-
     async def execute(
         self,
         method: str,
         params: dict[str, Any] | None = None,
         session_id: str | None = None,
-        timeout: float | None = None,
+        timeout_seconds: float | None = None,
     ) -> dict[str, Any]:
         if not self.is_connected or self._is_shutting_down:
             raise CDPConnectionError("Not connected")
@@ -150,9 +129,9 @@ class WebSocketTransport:
         future = _create_pending_request(self._pending_requests, message_id)
 
         try:
-            return await _with_timeout(
+            return await with_command_timeout(
                 method,
-                timeout,
+                timeout_seconds,
                 self._send_and_receive(message_id, method, message, future),
             )
         finally:
@@ -164,16 +143,6 @@ class WebSocketTransport:
                 # waiting. Observe that failure even if sending raises first.
                 future.exception()
 
-    async def _send_and_receive(
-        self,
-        message_id: int,
-        method: str,
-        message: dict[str, Any],
-        future: asyncio.Future[dict[str, Any]],
-    ) -> dict[str, Any]:
-        await self._send(message_id, method, message)
-        return await self._await_response(message_id, method, future)
-
     async def events(self) -> AsyncIterator[TransportEvent]:
         if self._event_handler is not None:
             raise RuntimeError("Events are being delivered to the event handler")
@@ -183,6 +152,16 @@ class WebSocketTransport:
             if event is None:
                 return
             yield event
+
+    async def _send_and_receive(
+        self,
+        message_id: int,
+        method: str,
+        message: dict[str, Any],
+        future: asyncio.Future[dict[str, Any]],
+    ) -> dict[str, Any]:
+        await self._send(message_id, method, message)
+        return await self._await_response(message_id, method, future)
 
     async def _run_message_loop(self) -> None:
         connection = self._ws
@@ -197,6 +176,7 @@ class WebSocketTransport:
                 try:
                     await self._process_message(raw_message)
                 except Exception:
+                    # Drop failures from parsing or handling a single message.
                     logger.exception(
                         "Dropping malformed CDP message: %.200r", raw_message
                     )
@@ -206,6 +186,7 @@ class WebSocketTransport:
             logger.debug("Message loop cancelled")
             raise
         except Exception:
+            # Receive failures end the stream and enter the common cleanup path.
             logger.exception("Message loop error")
         finally:
             if not self._is_shutting_down:
@@ -249,6 +230,27 @@ class WebSocketTransport:
         else:
             self._event_queue.push(event)
 
+    def _start_shutdown(self, *, stop_message_loop: bool) -> asyncio.Task[None]:
+        if self._shutdown_task is None:
+            self._is_shutting_down = True
+            self._shutdown_task = asyncio.create_task(
+                self._shutdown(stop_message_loop=stop_message_loop)
+            )
+        return self._shutdown_task
+
+    async def _shutdown(self, *, stop_message_loop: bool) -> None:
+        logger.info("Disconnecting...")
+
+        try:
+            if stop_message_loop:
+                await self._stop_message_loop()
+            self._cancel_pending_requests()
+            await self._close_websocket()
+        finally:
+            await self._finish_event_stream()
+
+        logger.info("Disconnected")
+
     async def _stop_message_loop(self) -> None:
         task = self._message_loop_task
         if task and not task.done() and task is not asyncio.current_task():
@@ -271,6 +273,7 @@ class WebSocketTransport:
             try:
                 await self._ws.close()
             except Exception as error:
+                # A failing socket close must still release local resources.
                 logger.debug("Websocket close error: %s", error)
             finally:
                 self._ws = None

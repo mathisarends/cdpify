@@ -6,27 +6,53 @@ from cdpify.generator import __main__ as cli
 from cdpify.generator.schemas import CDPSpecs, Domain
 
 
-def test_selects_all_domains_when_none_are_requested(
-    sample_protocol_spec,
-) -> None:
-    specs = CDPSpecs(browser=sample_protocol_spec, js=sample_protocol_spec)
-
-    assert cli._select_domains(specs, None) == specs.all_domains
-
-
-def test_selects_requested_domains_in_order(sample_protocol_spec) -> None:
-    specs = CDPSpecs(browser=sample_protocol_spec, js=sample_protocol_spec)
-
-    selected = cli._select_domains(specs, ["Sample", "Sample"])
-
-    assert [domain.domain for domain in selected] == ["Sample"]
+@pytest.fixture
+def downloaded_specs(monkeypatch, sample_protocol_spec) -> CDPSpecs:
+    js = sample_protocol_spec.model_copy(update={"domains": [Domain(domain="Other")]})
+    specs = CDPSpecs(browser=sample_protocol_spec, js=js)
+    monkeypatch.setattr(cli, "download_specs", lambda _: specs)
+    return specs
 
 
-def test_rejects_unknown_domains(sample_protocol_spec) -> None:
-    specs = CDPSpecs(browser=sample_protocol_spec, js=sample_protocol_spec)
+@pytest.mark.parametrize(
+    ("selection", "expected"),
+    [
+        ([], ["Sample", "Other"]),
+        (
+            ["--domain", "Other", "--domain", "Sample", "--domain", "Other"],
+            ["Other", "Sample"],
+        ),
+    ],
+)
+def test_cli_selects_domains(
+    monkeypatch, downloaded_specs, tmp_path, selection, expected
+):
+    selected = []
+    monkeypatch.setattr(
+        cli, "generate_domains", lambda domains, _: selected.extend(domains)
+    )
 
-    with pytest.raises(ValueError, match="Unknown CDP domain.*Missing"):
-        cli._select_domains(specs, ["Missing"])
+    cli.main(["--spec-dir", str(tmp_path), *selection])
+
+    assert [domain.domain for domain in selected] == expected
+
+
+def test_cli_rejects_unknown_domains(downloaded_specs, tmp_path, capsys):
+    with pytest.raises(SystemExit) as error:
+        cli.main(
+            [
+                "--domain",
+                "Missing",
+                "--spec-dir",
+                str(tmp_path),
+                "--output-dir",
+                str(tmp_path / "output"),
+            ]
+        )
+
+    assert error.value.code == 2
+    assert "Unknown CDP domain(s): Missing" in capsys.readouterr().err
+    assert not (tmp_path / "output").exists()
 
 
 def test_main_passes_explicit_paths_and_selection(

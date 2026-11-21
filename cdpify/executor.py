@@ -2,9 +2,9 @@ import asyncio
 from collections.abc import Awaitable, Callable
 from typing import Any, Protocol
 
-from cdpify.error import CDPTimeoutError
-from cdpify.transport import Transport
-from cdpify.unset import UNSET, UnsetType
+from .error import CDPTimeoutError
+from .transport import Transport
+from .unset import UNSET, UnsetType
 
 
 class CommandExecutor(Protocol):
@@ -14,8 +14,10 @@ class CommandExecutor(Protocol):
         self,
         method: str,
         params: dict[str, Any] | None = None,
-        timeout: float | None = None,
-    ) -> dict[str, Any]: ...
+        timeout_seconds: float | None = None,
+    ) -> dict[str, Any]:
+        """Send a command with a deadline in seconds and return its wire result."""
+        ...
 
 
 class BoundCommandExecutor:
@@ -26,13 +28,13 @@ class BoundCommandExecutor:
         transport: Transport,
         session_id: str | None = None,
         *,
-        default_timeout: float | None = 30.0,
+        default_timeout_seconds: float | None = 30.0,
         check_session: Callable[[str], None] | None = None,
     ) -> None:
         self._transport = transport
         self._session_id = session_id
         self._check_session = check_session
-        self._default_timeout = default_timeout
+        self._default_timeout_seconds = default_timeout_seconds
 
     @property
     def session_id(self) -> str | None:
@@ -42,31 +44,36 @@ class BoundCommandExecutor:
         self,
         method: str,
         params: dict[str, Any] | None = None,
-        timeout: float | None | UnsetType = UNSET,
+        timeout_seconds: float | None | UnsetType = UNSET,
     ) -> dict[str, Any]:
         if self._check_session is not None and self._session_id is not None:
             self._check_session(self._session_id)
-        request_timeout = self._default_timeout if timeout is UNSET else timeout
-        return await _with_timeout(
+        request_timeout_seconds = (
+            self._default_timeout_seconds
+            if timeout_seconds is UNSET
+            else timeout_seconds
+        )
+        return await with_command_timeout(
             method,
-            request_timeout,
+            request_timeout_seconds,
             self._transport.execute(
                 method=method,
                 params=params,
                 session_id=self._session_id,
                 # The client owns this deadline. Disable a second transport
                 # timer; standalone transport callers can still set a budget.
-                timeout=None,
+                timeout_seconds=None,
             ),
         )
 
 
-async def _with_timeout[T](
-    method: str, timeout: float | None, operation: Awaitable[T]
+async def with_command_timeout[T](
+    method: str, timeout_seconds: float | None, operation: Awaitable[T]
 ) -> T:
-    if timeout is None:
+    """Translate expiry of this command's deadline to CDPTimeoutError."""
+    if timeout_seconds is None:
         return await operation
-    deadline = asyncio.timeout(timeout)
+    deadline = asyncio.timeout(timeout_seconds)
     try:
         async with deadline:
             return await operation
@@ -75,4 +82,4 @@ async def _with_timeout[T](
         # caller. Only translate expiration of this particular deadline.
         if not deadline.expired():
             raise
-        raise CDPTimeoutError(f"{method} timed out after {timeout}s") from None
+        raise CDPTimeoutError(f"{method} timed out after {timeout_seconds}s") from None

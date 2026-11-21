@@ -5,7 +5,7 @@ import pytest
 import cdpify
 from cdpify import error
 from cdpify.error import CDPCommandError, CDPTimeoutError
-from cdpify.shared.decorators import _Deprecated, deprecated
+from cdpify.shared.decorators import deprecated
 
 
 def test_command_error_from_empty_response_uses_defaults() -> None:
@@ -51,16 +51,8 @@ def test_old_exception_names_are_deprecated_aliases(
     assert alias is getattr(error, new_name)
 
 
-_IMPLEMENTATIONS = pytest.mark.parametrize(
-    "deprecated_impl", [deprecated, _Deprecated], ids=["active", "fallback"]
-)
-
-
-@_IMPLEMENTATIONS
-def test_deprecated_function_warns_at_call_site(
-    deprecated_impl: type[_Deprecated],
-) -> None:
-    @deprecated_impl("old_fn is deprecated")
+def test_deprecated_function_warns_at_call_site() -> None:
+    @deprecated("old_fn is deprecated")
     def old_fn(value: int) -> int:
         return value + 1
 
@@ -72,12 +64,9 @@ def test_deprecated_function_warns_at_call_site(
     assert old_fn.__deprecated__ == "old_fn is deprecated"
 
 
-@_IMPLEMENTATIONS
 @pytest.mark.asyncio
-async def test_deprecated_coroutine_function_stays_awaitable(
-    deprecated_impl: type[_Deprecated],
-) -> None:
-    @deprecated_impl("old_async_fn is deprecated")
+async def test_deprecated_coroutine_function_stays_awaitable() -> None:
+    @deprecated("old_async_fn is deprecated")
     async def old_async_fn(value: int) -> int:
         return value + 2
 
@@ -90,4 +79,4 @@ async def test_deprecated_coroutine_function_stays_awaitable(
 
 def test_deprecated_requires_a_message() -> None:
     with pytest.raises(TypeError):
-        _Deprecated(lambda: None)  # type: ignore[arg-type]
+        deprecated(lambda: None)  # type: ignore[arg-type]

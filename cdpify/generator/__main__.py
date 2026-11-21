@@ -2,9 +2,11 @@ import argparse
 from collections.abc import Sequence
 from pathlib import Path
 
-from cdpify.generator.downloader import download_specs
-from cdpify.generator.generator import generate_domains
-from cdpify.generator.schemas import CDPSpecs, Domain
+from .downloader import download_specs
+from .generator import generate_domains
+from .schemas import CDPSpecs, Domain
+
+__all__ = ["main"]
 
 _PROJECT_ROOT = Path(__file__).parents[2]
 _DEFAULT_SPEC_DIR = _PROJECT_ROOT / "specs"

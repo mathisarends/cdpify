@@ -9,15 +9,15 @@ it.
 client = CdpClient(
     "ws://localhost:9222/devtools/browser/...",
     # Commands and events
-    default_timeout=30.0,       # total budget per command in seconds; None disables
+    default_timeout_seconds=30.0,       # total budget per command in seconds; None disables
     max_queue_size=0,           # per-listener event buffer; 0 = unlimited
     overflow="error",           # or "drop_oldest"
     # WebSocket transport
     additional_headers={"Authorization": "Bearer token"},
     max_frame_size=100 * 1024 * 1024,
     compression=None,           # or "deflate"
-    open_timeout=10.0,
-    close_timeout=10.0,
+    open_timeout_seconds=10.0,
+    close_timeout_seconds=10.0,
 )
 ```
 
@@ -25,14 +25,14 @@ client = CdpClient(
 | --- | --- | --- |
 | `url` | (required unless `transport`) | WebSocket URL of a page or the browser |
 | `transport` | `None` | A custom [`Transport`](#custom-transports). Mutually exclusive with `url`. |
-| `default_timeout` | `30.0` | Total budget per command in seconds, for every transport. See [Timeouts](04-timeouts-and-errors.md#timeouts). |
+| `default_timeout_seconds` | `30.0` | Total budget per command in seconds, for every transport. See [Timeouts](04-timeouts-and-errors.md#timeouts). |
 | `max_queue_size` | `0` | Buffer limit per event listener. `0` is unlimited. See [Events](02-events.md#limiting-buffered-events). |
 | `overflow` | `"error"` | What a full buffer does: end that stream with an error, or `"drop_oldest"` |
 | `additional_headers` | `None` | Extra HTTP headers for the WebSocket handshake |
 | `max_frame_size` | 100 MiB | Largest accepted incoming frame, in bytes. Raise it for large screenshots or response bodies. |
 | `compression` | `None` | `"deflate"` enables WebSocket compression |
-| `open_timeout` | `10.0` | Seconds allowed for the opening handshake |
-| `close_timeout` | `10.0` | Seconds allowed for the closing handshake |
+| `open_timeout_seconds` | `10.0` | Seconds allowed for the opening handshake |
+| `close_timeout_seconds` | `10.0` | Seconds allowed for the closing handshake |
 
 The last five options configure the built-in WebSocket transport and only
 apply when you pass `url`. A custom transport manages its own connection
@@ -103,7 +103,7 @@ transport = WebSocketTransport(ws_url, compression="deflate")
 await transport.connect()
 try:
     result = await transport.execute(
-        "Runtime.evaluate", {"expression": "1 + 1"}, timeout=5
+        "Runtime.evaluate", {"expression": "1 + 1"}, timeout_seconds=5
     )
 finally:
     await transport.disconnect()
@@ -137,7 +137,7 @@ class MyTransport:
         method: str,
         params: dict[str, Any] | None = None,
         session_id: str | None = None,
-        timeout: float | None = None,
+        timeout_seconds: float | None = None,
     ) -> dict[str, Any]: ...
 
     def events(self) -> AsyncIterator[TransportEvent]: ...
@@ -151,7 +151,7 @@ The contract:
 - `execute()` sends one command, routed to `session_id` if given, and returns
   the response's `result` dictionary. Raise `CDPCommandError` for CDP error
   responses.
-- `timeout` is a total budget in seconds; `None` means no deadline.
+- `timeout_seconds` is the total budget. Pass `None` to disable the deadline.
   `CdpClient` enforces its own deadline and passes `None`, so your transport
   must let the outer cancellation propagate and release that request's
   resources when cancelled.

@@ -83,7 +83,7 @@ async def main() -> None:
             navigation = await client.page.navigate(url="https://example.com")
             if navigation.error_text:
                 raise RuntimeError(navigation.error_text)
-            await loaded.next(timeout=10)
+            await loaded.next(timeout_seconds=10)
 
         result = await client.runtime.evaluate(
             expression="document.title",

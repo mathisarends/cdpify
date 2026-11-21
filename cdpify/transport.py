@@ -6,26 +6,30 @@ from typing import Any, Protocol, runtime_checkable
 @dataclass(frozen=True, slots=True)
 class TransportEvent:
     method: str
-    params: dict[str, Any]
+    params: dict[str, Any]  # smelt: ignore[MOD011] -- Original wire payload by API.
     session_id: str | None = None
 
 
 class Transport(Protocol):
     @property
-    def is_connected(self) -> bool: ...
+    def is_connected(self) -> bool:
+        """Whether the connection can accept commands."""
+        ...
 
-    async def connect(self) -> None: ...
+    async def connect(self) -> None:
+        """Open the connection before the caller sends commands."""
 
-    async def disconnect(self) -> None: ...
+    async def disconnect(self) -> None:
+        """Close the connection and release outstanding requests and event readers."""
 
     async def execute(
         self,
         method: str,
         params: dict[str, Any] | None = None,
         session_id: str | None = None,
-        timeout: float | None = None,
+        timeout_seconds: float | None = None,
     ) -> dict[str, Any]:
-        """Send and await a command; timeout is a total budget in seconds.
+        """Send and await a command within the total budget in seconds.
 
         None disables the transport deadline. CdpClient owns its deadline and
         passes None here, avoiding duplicate timers. Custom transports must

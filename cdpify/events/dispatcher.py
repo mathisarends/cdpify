@@ -11,10 +11,10 @@ _NOT_DECODED = object()
 
 @dataclass(frozen=True, slots=True)
 class RawCDPEvent:
-    params: dict[str, Any]
+    params: dict[str, Any]  # smelt: ignore[MOD011] -- Original wire payload by API.
     session_id: str | None = None
     method: str = ""
-    _decoded: dict[type, Any] = field(
+    _decoded: dict[type, Any] = field(  # smelt: ignore[MOD011] -- Lazy decode cache.
         default_factory=dict, init=False, repr=False, compare=False
     )
 
@@ -32,14 +32,13 @@ class RawCDPEvent:
 
 
 _EventHandler = Callable[[RawCDPEvent], Awaitable[None]]
+type _HandlersByEvent = dict[str | None, list[_EventHandler]]
 
 
 class EventDispatcher:
     def __init__(self) -> None:
-        self._session_handlers: dict[
-            tuple[str | None, str | None], list[_EventHandler]
-        ] = {}
-        self._all_session_handlers: dict[str | None, list[_EventHandler]] = {}
+        self._handlers_by_session: dict[str | None, _HandlersByEvent] = {}
+        self._all_session_handlers: _HandlersByEvent = {}
 
     def add_handler(
         self,
@@ -49,12 +48,11 @@ class EventDispatcher:
         session_id: str | None = None,
         all_sessions: bool = False,
     ) -> None:
-        handlers = self._handlers_for(
-            event_name,
-            session_id=session_id,
-            all_sessions=all_sessions,
-        )
-        handlers.append(handler)
+        if all_sessions:
+            handlers_by_event = self._all_session_handlers
+        else:
+            handlers_by_event = self._handlers_by_session.setdefault(session_id, {})
+        handlers_by_event.setdefault(event_name, []).append(handler)
 
     def remove_handler(
         self,
@@ -64,34 +62,42 @@ class EventDispatcher:
         session_id: str | None = None,
         all_sessions: bool = False,
     ) -> None:
-        if all_sessions:
-            handlers = self._all_session_handlers.get(event_name, [])
-        else:
-            handlers = self._session_handlers.get((event_name, session_id), [])
+        handlers_by_event = (
+            self._all_session_handlers
+            if all_sessions
+            else self._handlers_by_session.get(session_id)
+        )
+        if handlers_by_event is None:
+            return
+
+        handlers = handlers_by_event.get(event_name)
+        if handlers is None:
+            return
 
         if handler in handlers:
             handlers.remove(handler)
-        if handlers:
-            return
-
-        if all_sessions:
-            self._all_session_handlers.pop(event_name, None)
-        else:
-            self._session_handlers.pop((event_name, session_id), None)
+        if not handlers:
+            del handlers_by_event[event_name]
+            if not all_sessions and not handlers_by_event:
+                del self._handlers_by_session[session_id]
 
     def remove_session_handlers(self, session_id: str) -> None:
-        for key in [key for key in self._session_handlers if key[1] == session_id]:
-            del self._session_handlers[key]
+        self._handlers_by_session.pop(session_id, None)
 
     async def dispatch(self, method: str, event: RawCDPEvent) -> bool:
         any_handled = False
 
+        session_handlers = self._handlers_by_session.get(event.session_id)
         handler_groups = (
-            self._session_handlers.get((method, event.session_id), []),
-            self._session_handlers.get((None, event.session_id), []),
-            self._all_session_handlers.get(method, []),
-            self._all_session_handlers.get(None, []),
+            self._all_session_handlers.get(method, ()),
+            self._all_session_handlers.get(None, ()),
         )
+        if session_handlers is not None:
+            handler_groups = (
+                session_handlers.get(method, ()),
+                session_handlers.get(None, ()),
+                *handler_groups,
+            )
         for handlers in handler_groups:
             for handler in tuple(handlers):
                 if await _invoke_handler(handler, event):
@@ -99,22 +105,12 @@ class EventDispatcher:
 
         return any_handled
 
-    def _handlers_for(
-        self,
-        event_name: str | None,
-        *,
-        session_id: str | None,
-        all_sessions: bool,
-    ) -> list[_EventHandler]:
-        if all_sessions:
-            return self._all_session_handlers.setdefault(event_name, [])
-        return self._session_handlers.setdefault((event_name, session_id), [])
-
 
 async def _invoke_handler(handler: _EventHandler, event: RawCDPEvent) -> bool:
     try:
         await handler(event)
         return True
     except Exception:
+        # A failing user handler must not block delivery to other listeners.
         logger.exception("Event handler %r failed", handler)
         return False

@@ -1,12 +1,13 @@
 from dataclasses import dataclass, field
 from typing import Any
+from unittest.mock import Mock
 
 import pytest
 
-from cdpify import UNSET, CDPDecodeError, UnsetType
+from cdpify import UNSET, CDPDecodeError, UnsetType, codec
 from cdpify import decode_cdp as public_decode_cdp
 from cdpify import encode_cdp as public_encode_cdp
-from cdpify.codec import _compile_model, decode_cdp, encode_cdp
+from cdpify.codec import decode_cdp, encode_cdp
 
 
 @dataclass
@@ -114,24 +115,24 @@ def test_ignores_unknown_wire_fields() -> None:
     assert model.child == _Child(child_value=3)
 
 
-def test_model_plan_is_cached_per_type() -> None:
-    _compile_model.cache_clear()
+def test_decode_reuses_resolved_field_types(monkeypatch: pytest.MonkeyPatch) -> None:
+    @dataclass
+    class Sample:
+        value: int
 
-    decode_cdp(_Parent, {"child": {"childValue": 1}})
-    first = _compile_model.cache_info()
-    decode_cdp(_Parent, {"child": {"childValue": 2}})
-    second = _compile_model.cache_info()
+    resolve = Mock(wraps=codec.get_type_hints)
+    monkeypatch.setattr(codec, "get_type_hints", resolve)
 
-    assert second.misses == first.misses
-    assert second.hits > first.hits
+    assert decode_cdp(Sample, {"value": 1}) == Sample(1)
+    assert decode_cdp(Sample, {"value": 2}) == Sample(2)
+    resolve.assert_called_once_with(Sample)
 
 
 def test_deserialization_falls_back_when_get_type_hints_fails(monkeypatch) -> None:
     def _raise_type_hints(_: type) -> dict[str, Any]:
         raise RuntimeError("boom")
 
-    _compile_model.cache_clear()
-    monkeypatch.setattr("cdpify.codec.get_type_hints", _raise_type_hints)
+    monkeypatch.setattr(codec, "get_type_hints", _raise_type_hints)
 
     model = decode_cdp(_StringHintsModel, {"value": 1, "known": 2})
 
@@ -139,23 +140,19 @@ def test_deserialization_falls_back_when_get_type_hints_fails(monkeypatch) -> No
     assert model.known == 2
 
 
-def test_deserialization_keeps_raw_values_when_annotations_cannot_resolve(
-    monkeypatch,
+def test_deserialization_resolves_other_fields_when_one_annotation_fails(
+    caplog: pytest.LogCaptureFixture,
 ) -> None:
-    def _raise_type_hints(_: type) -> dict[str, Any]:
-        raise RuntimeError("boom")
+    model = decode_cdp(
+        _UnresolvableHint,
+        {"value": {"raw": True}, "known": {"childValue": 2}},
+    )
 
-    def _raise_eval(_: str, __: dict[str, Any]) -> Any:
-        raise NameError("unknown")
-
-    _compile_model.cache_clear()
-    monkeypatch.setattr("cdpify.codec.get_type_hints", _raise_type_hints)
-    monkeypatch.setattr("builtins.eval", _raise_eval)
-
-    model = decode_cdp(_StringHintsModel, {"value": 1, "known": 2})
-
-    assert model.value == 1
-    assert model.known == 2
+    assert model.value == {"raw": True}
+    assert model.known == _Child(child_value=2)
+    assert (
+        "Cannot resolve type 'DoesNotExist' of _UnresolvableHint.value" in caplog.text
+    )
 
 
 def test_rejects_non_dataclass_types() -> None:
@@ -198,25 +195,15 @@ def test_decodes_recursive_models() -> None:
     assert model == _Recursive(name="a", parent=_Recursive(name="b"))
 
 
-def test_primitive_fields_need_no_decoder() -> None:
-    plan = _compile_model(_Parent)
+def test_primitive_list_values_are_reused_during_decoding() -> None:
+    values = [1, 2]
+    model = decode_cdp(_Parent, {"child": {"childValue": 3}, "values": values})
 
-    decoders = {field_plan.name: field_plan.decoder for field_plan in plan.fields}
-    assert decoders["values"] is None
-    assert decoders["child"] is not None
+    assert model.values is values
+    assert model.child == _Child(child_value=3)
 
 
 @dataclass
 class _UnresolvableHint:
     value: "DoesNotExist" = field(metadata={"cdp_name": "value"})  # noqa: F821
-
-
-def test_warns_when_a_field_type_cannot_be_resolved(
-    caplog: pytest.LogCaptureFixture,
-) -> None:
-    model = decode_cdp(_UnresolvableHint, {"value": {"raw": True}})
-
-    assert model.value == {"raw": True}
-    assert "Cannot resolve type 'DoesNotExist' of _UnresolvableHint.value" in (
-        caplog.text
-    )
+    known: "_Child | None" = None

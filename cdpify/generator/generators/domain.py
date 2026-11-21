@@ -1,16 +1,17 @@
-from cdpify.generator.generators.constants import FUTURE_ANNOTATIONS, HEADER
-from cdpify.generator.generators.context import GenerationContext
-from cdpify.generator.generators.utils import (
-    method_docstring,
+from cdpify.generator.rendering import render_template
+from cdpify.generator.schemas import Command, Domain, Parameter
+
+from .annotations import resolve_type
+from .constants import FUTURE_ANNOTATIONS, HEADER
+from .context import GenerationContext
+from .docstrings import method_docstring
+from .names import (
     require_unique_names,
-    resolve_type,
     to_enum_name,
     to_identifier,
     to_pascal_case,
 )
-from cdpify.generator.generators.views import FieldView, MethodView
-from cdpify.generator.rendering import render_template
-from cdpify.generator.schemas import Command, Domain, Parameter
+from .views import FieldView, MethodView
 
 
 def generate(domain: Domain) -> str:
@@ -23,15 +24,17 @@ def generate(domain: Domain) -> str:
     if any(method.parameters for method in methods):
         ctx.use_typing("Any")
 
+    uses_unset = any(method.uses_unset for method in methods)
+    has_deprecated = any(command.deprecated for command in domain.commands)
     return render_template(
         "domain.py.jinja2",
         header=HEADER,
         future_annotations=FUTURE_ANNOTATIONS,
         typing_names=ctx.sorted_typing_names,
-        uses_unset=any(p.uses_unset for m in methods for p in m.parameters),
-        has_deprecated=any(command.deprecated for command in domain.commands),
+        uses_unset=uses_unset,
+        has_deprecated=has_deprecated,
         command_imports=_command_imports(domain),
-        local_type_names=tuple(name for name, _ in ctx.sorted_local_types()),
+        local_type_names=ctx.local_import_names(),
         cross_domain_modules=ctx.cross_domain_modules,
         domain_name=domain.domain,
         methods=methods,

@@ -1,15 +1,14 @@
 import pytest
 
-from cdpify.generator.generators.utils import (
-    format_docstring,
-    map_cdp_type,
-    resolve_type,
+from cdpify.generator.generators.annotations import map_cdp_type, resolve_type
+from cdpify.generator.generators.docstrings import format_docstring
+from cdpify.generator.generators.names import (
     to_enum_name,
     to_identifier,
     to_pascal_case,
-    to_snake_case,
 )
 from cdpify.generator.schemas import Parameter
+from cdpify.shared.naming import to_snake_case
 
 
 class TestToSnakeCase:
@@ -124,8 +123,7 @@ class TestFormatDocstring:
 
     def test_respects_indent(self) -> None:
         result = format_docstring("Hi.", indent=4)
-        for line in result.splitlines():
-            assert line.startswith("    ")
+        assert result.splitlines() == ['    """', "    Hi.", '    """']
 
     def test_wraps_long_text(self) -> None:
         text = " ".join(["word"] * 50)

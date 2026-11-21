@@ -3,15 +3,14 @@ import logging
 from functools import partial
 from typing import Any, Literal, Self
 
-from cdpify.domains import DomainAccessors
-from cdpify.error import CDPConnectionError
-from cdpify.event_queue import OverflowPolicy
-from cdpify.events import EventRouter, EventSubscription, ReceivedEvent
-from cdpify.events.source import EventSource
-from cdpify.executor import BoundCommandExecutor
-from cdpify.session import CdpSession
-from cdpify.transport import CallbackTransport, Transport, TransportEvent
-from cdpify.unset import UNSET, UnsetType
+from .domains import DomainAccessors
+from .error import CDPConnectionError
+from .event_queue import OverflowPolicy
+from .events import EventRouter, EventSource, EventSubscription, ReceivedEvent
+from .executor import BoundCommandExecutor
+from .session import CdpSession
+from .transport import CallbackTransport, Transport, TransportEvent
+from .unset import UNSET, UnsetType
 
 logger = logging.getLogger(__name__)
 
@@ -24,33 +23,29 @@ class CdpClient(DomainAccessors, EventSource):
         transport: Transport | None = None,
         additional_headers: dict[str, str] | None = None,
         max_frame_size: int = 100 * 1024 * 1024,
-        default_timeout: float | None = 30.0,
+        default_timeout_seconds: float | None = 30.0,
         max_queue_size: int = 0,
         overflow: OverflowPolicy = "error",
         compression: Literal["deflate"] | None = None,
-        open_timeout: float | None = 10.0,
-        close_timeout: float | None = 10.0,
+        open_timeout_seconds: float | None = 10.0,
+        close_timeout_seconds: float | None = 10.0,
     ) -> None:
-        if transport is not None and url is not None:
-            raise TypeError("Pass either url or transport, not both")
-        if transport is None:
-            if url is None:
-                raise TypeError("CdpClient requires either url or transport")
-            transport = _create_websocket_transport(
-                url,
-                additional_headers=additional_headers,
-                max_frame_size=max_frame_size,
-                max_queue_size=max_queue_size,
-                overflow=overflow,
-                compression=compression,
-                open_timeout=open_timeout,
-                close_timeout=close_timeout,
-            )
+        transport = _resolve_transport(
+            url,
+            transport=transport,
+            additional_headers=additional_headers,
+            max_frame_size=max_frame_size,
+            max_queue_size=max_queue_size,
+            overflow=overflow,
+            compression=compression,
+            open_timeout_seconds=open_timeout_seconds,
+            close_timeout_seconds=close_timeout_seconds,
+        )
 
         self._transport = transport
-        self._default_timeout = default_timeout
+        self._default_timeout_seconds = default_timeout_seconds
         self._executor: BoundCommandExecutor = BoundCommandExecutor(
-            transport, default_timeout=default_timeout
+            transport, default_timeout_seconds=default_timeout_seconds
         )
         self._new_router = partial(
             EventRouter, max_queue_size=max_queue_size, overflow=overflow
@@ -60,6 +55,13 @@ class CdpClient(DomainAccessors, EventSource):
         self._event_loop_task: asyncio.Task[None] | None = None
         self._disconnect_task: asyncio.Task[None] | None = None
 
+    async def __aenter__(self) -> Self:
+        await self.connect()
+        return self
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb) -> None:
+        await self.disconnect()
+
     @property
     def transport(self) -> Transport:
         return self._transport
@@ -67,13 +69,6 @@ class CdpClient(DomainAccessors, EventSource):
     @property
     def is_connected(self) -> bool:
         return self._transport.is_connected
-
-    async def __aenter__(self) -> Self:
-        await self.connect()
-        return self
-
-    async def __aexit__(self, exc_type, exc_val, exc_tb) -> None:
-        await self.disconnect()
 
     async def connect(self) -> None:
         async with self._connection_lock:
@@ -109,15 +104,6 @@ class CdpClient(DomainAccessors, EventSource):
             task = self._disconnect_task
         await asyncio.shield(task)
 
-    async def _disconnect(self) -> None:
-        await self._stop_event_loop()
-        try:
-            await self._transport.disconnect()
-        finally:
-            self._event_router.close()
-            if isinstance(self._transport, CallbackTransport):
-                self._transport.set_event_handler(None)
-
     async def attach(self, target_id: str) -> CdpSession:
         """Attach to a target in flat mode and return its bound session."""
         attached = await self.target.attach_to_target(target_id=target_id, flatten=True)
@@ -129,7 +115,7 @@ class CdpClient(DomainAccessors, EventSource):
             self._transport,
             self._event_router,
             session_id,
-            default_timeout=self._default_timeout,
+            default_timeout_seconds=self._default_timeout_seconds,
         )
 
     async def execute(
@@ -138,7 +124,7 @@ class CdpClient(DomainAccessors, EventSource):
         params: dict[str, Any] | None = None,
         *,
         session_id: str | None = None,
-        timeout: float | None | UnsetType = UNSET,
+        timeout_seconds: float | None | UnsetType = UNSET,
     ) -> dict[str, Any]:
         """Execute a low-level command, optionally routed to a target session."""
         executor = (
@@ -147,14 +133,14 @@ class CdpClient(DomainAccessors, EventSource):
         return await executor.execute(
             method=method,
             params=params,
-            timeout=timeout,
+            timeout_seconds=timeout_seconds,
         )
 
     def listen_all[T](
         self,
         event_type: type[T],
         *,
-        timeout: float | None = None,
+        timeout_seconds: float | None = None,
         event_name: str | None = None,
         max_queue_size: int | None = None,
         overflow: OverflowPolicy | None = None,
@@ -165,7 +151,7 @@ class CdpClient(DomainAccessors, EventSource):
         """
         return self._event_router.listen_all(
             event_type,
-            timeout=timeout,
+            timeout_seconds=timeout_seconds,
             event_name=event_name,
             max_queue_size=max_queue_size,
             overflow=overflow,
@@ -175,7 +161,7 @@ class CdpClient(DomainAccessors, EventSource):
         self,
         method: str | None = None,
         *,
-        timeout: float | None = None,
+        timeout_seconds: float | None = None,
         max_queue_size: int | None = None,
         overflow: OverflowPolicy | None = None,
     ) -> EventSubscription[TransportEvent]:
@@ -184,10 +170,19 @@ class CdpClient(DomainAccessors, EventSource):
             method,
             session_id=None,
             all_sessions=True,
-            timeout=timeout,
+            timeout_seconds=timeout_seconds,
             max_queue_size=max_queue_size,
             overflow=overflow,
         )
+
+    async def _disconnect(self) -> None:
+        await self._stop_event_loop()
+        try:
+            await self._transport.disconnect()
+        finally:
+            self._event_router.close()
+            if isinstance(self._transport, CallbackTransport):
+                self._transport.set_event_handler(None)
 
     async def _run_event_loop(self) -> None:
         try:
@@ -196,6 +191,7 @@ class CdpClient(DomainAccessors, EventSource):
         except asyncio.CancelledError:
             raise
         except Exception:
+            # Custom transports can raise arbitrary errors while iterating.
             logger.exception("Transport event loop error")
         finally:
             self._event_router.close()
@@ -220,19 +216,27 @@ class CdpClient(DomainAccessors, EventSource):
         self._event_loop_task = None
 
 
-def _create_websocket_transport(
-    url: str,
+def _resolve_transport(
+    url: str | None,
     *,
+    transport: Transport | None,
     additional_headers: dict[str, str] | None,
     max_frame_size: int,
     max_queue_size: int,
     overflow: OverflowPolicy,
     compression: Literal["deflate"] | None,
-    open_timeout: float | None,
-    close_timeout: float | None,
+    open_timeout_seconds: float | None,
+    close_timeout_seconds: float | None,
 ) -> Transport:
+    if transport is not None:
+        if url is not None:
+            raise TypeError("Pass either url or transport, not both")
+        return transport
+    if url is None:
+        raise TypeError("CdpClient requires either url or transport")
+
     try:
-        from cdpify.transports.websocket import WebSocketTransport
+        from .transports.websocket import WebSocketTransport
     except ModuleNotFoundError as error:
         if error.name == "websockets":
             raise RuntimeError(
@@ -247,6 +251,6 @@ def _create_websocket_transport(
         max_queue_size=max_queue_size,
         overflow=overflow,
         compression=compression,
-        open_timeout=open_timeout,
-        close_timeout=close_timeout,
+        open_timeout_seconds=open_timeout_seconds,
+        close_timeout_seconds=close_timeout_seconds,
     )

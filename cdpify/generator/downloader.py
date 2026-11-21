@@ -3,12 +3,7 @@ from pathlib import Path
 from typing import Any, cast
 from urllib.request import urlopen
 
-from cdpify.generator.schemas import CDPSpecs, ProtocolSpec
-
-_BASE_URL = (
-    "https://raw.githubusercontent.com/"
-    "ChromeDevTools/devtools-protocol/refs/heads/master/json"
-)
+from .schemas import CDPSpecs, ProtocolSpec
 
 
 def download_specs(destination: Path) -> CDPSpecs:
@@ -22,6 +17,12 @@ def download_specs(destination: Path) -> CDPSpecs:
         browser=ProtocolSpec.model_validate(browser),
         js=ProtocolSpec.model_validate(js),
     )
+
+
+_BASE_URL = (
+    "https://raw.githubusercontent.com/"
+    "ChromeDevTools/devtools-protocol/refs/heads/master/json"
+)
 
 
 def _fetch(filename: str, destination: Path) -> dict[str, Any]:
