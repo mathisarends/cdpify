@@ -146,6 +146,38 @@ async def test_listen_all_wraps_events_with_session_id() -> None:
     assert received.session_id == "S1"
 
 
+@pytest.mark.asyncio
+async def test_detaching_session_ends_only_its_subscriptions_after_drain() -> None:
+    router = EventRouter()
+    detached = router.listen(_Event, session_id="child")
+    waiting = router.listen_raw("Test.waiting", session_id="child")
+    parent = router.listen_raw("Target.detachedFromTarget", session_id="parent")
+    parent_events = router.listen(_Event, session_id="parent")
+    root = router.listen(_Event, session_id=None)
+    all_events = router.listen_all(_Event)
+    await router.dispatch(_event(1, session_id="child"))
+    reader = asyncio.create_task(anext(waiting, None))
+    await asyncio.sleep(0)
+
+    notification = TransportEvent(
+        "Target.detachedFromTarget", {"sessionId": "child"}, session_id="parent"
+    )
+    await router.dispatch(notification)
+
+    assert await parent.next(timeout=1.0) == notification
+    assert await asyncio.wait_for(reader, timeout=1.0) is None
+    assert await detached.next(timeout=1.0) == _Event(1)
+    with pytest.raises(CDPStreamClosedError):
+        await detached.next(timeout=1.0)
+
+    await router.dispatch(_event(2))
+    await router.dispatch(_event(3, session_id="parent"))
+    assert await root.next(timeout=1.0) == _Event(2)
+    assert await parent_events.next(timeout=1.0) == _Event(3)
+    assert (await all_events.next(timeout=1.0)).session_id == "child"
+    assert (await all_events.next(timeout=1.0)).value == _Event(2)
+
+
 @dataclass
 class _UnnamedEvent:
     value: int
