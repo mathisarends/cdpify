@@ -329,7 +329,7 @@ async with CdpClient(browser_ws_url) as root_client:
 
 If you already have session IDs, for example from `Target.attachedToTarget`
 events, use `client.bind_session(session_id)`. This creates a local view without
-sending a command. The existing `client.session(session_id)` is an alias.
+sending a command.
 Each view can be used independently from concurrent tasks.
 
 ```python

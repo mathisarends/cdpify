@@ -123,10 +123,6 @@ class CdpClient(DomainAccessors, EventSource):
             default_timeout=self._default_timeout,
         )
 
-    def session(self, session_id: str) -> CdpSession:
-        """Compatibility alias for bind_session."""
-        return self.bind_session(session_id)
-
     async def execute(
         self,
         method: str,

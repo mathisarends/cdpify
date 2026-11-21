@@ -1,7 +1,15 @@
 # Changelog
 
 All notable changes to this project are documented here.
-Breaking changes are listed first in each release.
+
+## [Unreleased]
+
+### Breaking changes
+
+- Replaced `client.session(session_id)` with `client.bind_session(session_id)`.
+  Both calls bind an existing session ID locally. If you have a target ID,
+  use `await client.attach(target_id)` to attach in flat mode and receive a
+  `CdpSession`.
 
 ## [0.5.0] - Unreleased
 
