@@ -57,7 +57,7 @@ async def test_none_explicitly_disables_default_and_cancellation_is_preserved() 
     assert not task.done()
     task.cancel()
     with pytest.raises(asyncio.CancelledError):
-        await task
+        await asyncio.wait_for(task, timeout=1.0)
     assert transport.cancelled
     assert transport.timeout is None
 

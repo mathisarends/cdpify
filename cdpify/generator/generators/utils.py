@@ -101,9 +101,15 @@ def method_docstring(command: "Command") -> str:
         deprecated=command.deprecated,
     )
     lines = format_docstring(description, indent=8).splitlines()
-    documented = [
-        p for p in command.parameters if p.description or p.experimental or p.deprecated
-    ]
+    documented = []
+    for param in command.parameters:
+        text = api_description(
+            param.description,
+            experimental=param.experimental,
+            deprecated=param.deprecated,
+        )
+        if text:
+            documented.append((param, _escape_docstring(text)))
     if not documented:
         return "\n".join(lines)
     if not lines:
@@ -112,14 +118,7 @@ def method_docstring(command: "Command") -> str:
     if description:
         lines.append("")
     lines.append("        Args:")
-    for param in documented:
-        text = _escape_docstring(
-            api_description(
-                param.description,
-                experimental=param.experimental,
-                deprecated=param.deprecated,
-            )
-        )
+    for param, text in documented:
         prefix = f"            {to_identifier(param.name)}: "
         lines.extend(
             textwrap.wrap(

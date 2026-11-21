@@ -1,7 +1,13 @@
-from collections.abc import Iterable
+from collections.abc import Iterable, Iterator
 from dataclasses import dataclass, replace
+from typing import Self
 
-from cdpify.generator.generators.utils import api_description, format_docstring
+from cdpify.generator.generators.utils import (
+    api_description,
+    format_docstring,
+    to_identifier,
+)
+from cdpify.generator.schemas import Parameter
 
 
 @dataclass(frozen=True, slots=True)
@@ -14,6 +20,20 @@ class FieldView:
     description: str | None = None
     experimental: bool = False
     deprecated: bool = False
+
+    @classmethod
+    def from_parameter(
+        cls, param: Parameter, annotation: str, *, force_optional: bool = False
+    ) -> Self:
+        return cls(
+            name=to_identifier(param.name),
+            annotation=annotation,
+            optional=param.optional or force_optional,
+            cdp_name=param.name,
+            description=param.description,
+            experimental=param.experimental,
+            deprecated=param.deprecated,
+        )
 
     @property
     def docstring(self) -> str:
@@ -106,6 +126,10 @@ class MethodView:
     result_model: str | None = None
 
     @property
+    def uses_unset(self) -> bool:
+        return any(param.uses_unset for param in self.parameters)
+
+    @property
     def wire_params_name(self) -> str:
         name = "_params"
         names = {p.name for p in self.parameters}
@@ -142,7 +166,14 @@ class LazyExportView:
     attribute: str
 
 
+def model_fields(
+    models: Iterable[ModelView | TypeDefinitionView],
+) -> Iterator[FieldView]:
+    for model in models:
+        yield from model.fields
+
+
 def dataclass_import(models: Iterable[ModelView | TypeDefinitionView]) -> str:
     """Import ``field`` only when a generated declaration uses it."""
-    uses_field = any(f.needs_field for model in models for f in model.fields)
+    uses_field = any(field.needs_field for field in model_fields(models))
     return f"from dataclasses import dataclass{', field' if uses_field else ''}"

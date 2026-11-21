@@ -428,7 +428,7 @@ async def test_disconnect_during_send_handles_error_without_future_leak() -> Non
         await asyncio.wait_for(socket.sending.wait(), timeout=1.0)
         await transport.disconnect()
         with pytest.raises(CDPConnectionError):
-            await command
+            await asyncio.wait_for(command, timeout=1.0)
         del command
         gc.collect()
         await asyncio.sleep(0)

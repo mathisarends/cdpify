@@ -11,10 +11,10 @@ _NOT_DECODED = object()
 
 @dataclass(frozen=True, slots=True)
 class RawCDPEvent:
-    params: dict[str, Any]
+    params: dict[str, Any]  # smelt: ignore[MOD011] -- Original wire payload by API.
     session_id: str | None = None
     method: str = ""
-    _decoded: dict[type, Any] = field(
+    _decoded: dict[type, Any] = field(  # smelt: ignore[MOD011] -- Lazy decode cache.
         default_factory=dict, init=False, repr=False, compare=False
     )
 

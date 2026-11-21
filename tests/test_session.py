@@ -164,6 +164,6 @@ async def test_session_listener_filters_other_sessions() -> None:
     transport.emit(TransportEvent("Test.event", {"value": 2}, session_id="B"))
     transport.emit(TransportEvent("Test.event", {"value": 1}, session_id="A"))
 
-    assert await next_event == _Event(value=1)
+    assert await asyncio.wait_for(next_event, timeout=1.0) == _Event(value=1)
     await stream.aclose()
     await client.disconnect()

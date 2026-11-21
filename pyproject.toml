@@ -43,6 +43,7 @@ dev = [
     "ruff>=0.14.10",
     "websockets>=15.0.1",
     "pyright>=1.1.414",
+    "smelt-cli==0.14.0",
 ]
 
 [tool.setuptools.package-data]

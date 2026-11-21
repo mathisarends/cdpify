@@ -5,7 +5,6 @@ from cdpify.generator.generators.utils import (
     format_docstring,
     resolve_type,
     to_enum_name,
-    to_identifier,
     to_pascal_case,
 )
 from cdpify.generator.generators.views import (
@@ -13,6 +12,7 @@ from cdpify.generator.generators.views import (
     FieldView,
     ModelView,
     dataclass_import,
+    model_fields,
 )
 from cdpify.generator.rendering import render_template
 from cdpify.generator.schemas import Domain, Event, Parameter
@@ -36,10 +36,7 @@ def generate(domain: Domain) -> str:
         header=HEADER,
         future_annotations=FUTURE_ANNOTATIONS,
         typing_names=tuple(sorted({*ctx.sorted_typing_names, "ClassVar"})),
-        local_type_names=tuple(
-            f"{name} as {alias}" if alias else name
-            for name, alias in ctx.sorted_local_types(aliases)
-        ),
+        local_type_names=ctx.local_import_names(aliases),
         cross_domain_modules=ctx.cross_domain_modules,
         domain_name=domain.domain,
         event_members=tuple(
@@ -50,7 +47,7 @@ def generate(domain: Domain) -> str:
             for event in domain.events
         ),
         models=models,
-        uses_unset=any(f.uses_unset for m in models for f in m.fields),
+        uses_unset=any(field.uses_unset for field in model_fields(models)),
         dataclass_import=dataclass_import(models),
     )
 
@@ -108,19 +105,12 @@ def _build_field_view(
     aliases: dict[str, str],
     ctx: GenerationContext,
 ) -> FieldView:
-    field_name = to_identifier(param.name)
-    py_type = aliases.get(resolve_type(param), resolve_type(param))
+    annotation = resolve_type(param)
+    py_type = aliases.get(annotation, annotation)
     ctx.track_type_string(py_type)
 
-    is_optional = param.optional or param.name in _OPTIONAL_OVERRIDES.get(
-        event_fqn, set()
-    )
-    return FieldView(
-        field_name,
+    return FieldView.from_parameter(
+        param,
         py_type,
-        optional=is_optional,
-        cdp_name=param.name,
-        description=param.description,
-        experimental=param.experimental,
-        deprecated=param.deprecated,
+        force_optional=param.name in _OPTIONAL_OVERRIDES.get(event_fqn, ()),
     )

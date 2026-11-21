@@ -264,7 +264,7 @@ async def test_timed_out_or_cancelled_read_does_not_lose_next_event() -> None:
     await asyncio.sleep(0)
     reader.cancel()
     with pytest.raises(asyncio.CancelledError):
-        await reader
+        await asyncio.wait_for(reader, timeout=1.0)
 
     await router.dispatch(_event(3))
 

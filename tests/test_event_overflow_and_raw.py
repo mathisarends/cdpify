@@ -101,7 +101,7 @@ async def test_raw_subscription_close_wakes_waiting_reader() -> None:
     task = asyncio.create_task(anext(events, None))
     await asyncio.sleep(0)
     await events.aclose()
-    assert await task is None
+    assert await asyncio.wait_for(task, timeout=1.0) is None
 
 
 def test_invalid_overflow_policy_is_rejected() -> None:

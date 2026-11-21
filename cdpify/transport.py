@@ -6,7 +6,7 @@ from typing import Any, Protocol, runtime_checkable
 @dataclass(frozen=True, slots=True)
 class TransportEvent:
     method: str
-    params: dict[str, Any]
+    params: dict[str, Any]  # smelt: ignore[MOD011] -- Original wire payload by API.
     session_id: str | None = None
 
 

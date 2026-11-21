@@ -14,6 +14,7 @@ def _run_isolated(code: str) -> str:
     result = subprocess.run(
         [sys.executable, "-c", code],
         cwd=_PROJECT_ROOT,
+        timeout=30,
         check=True,
         capture_output=True,
         text=True,

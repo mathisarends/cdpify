@@ -52,6 +52,14 @@ class GenerationContext:
         aliases = aliases or {}
         return tuple((name, aliases.get(name)) for name in sorted(self.local_type_refs))
 
+    def local_import_names(
+        self, aliases: dict[str, str] | None = None
+    ) -> tuple[str, ...]:
+        names = []
+        for name, alias in self.sorted_local_types(aliases):
+            names.append(f"{name} as {alias}" if alias else name)
+        return tuple(names)
+
     @property
     def cross_domain_modules(self) -> tuple[str, ...]:
         return tuple(

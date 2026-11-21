@@ -11,10 +11,7 @@ from cdpify.generator.schemas import Domain
 
 def generate(domain: Domain) -> str:
     type_names = [type_def.id for type_def in domain.types]
-    imported_type_names = [
-        f"{name} as {name}Type" if name == domain.domain else name
-        for name in type_names
-    ]
+    imported_type_names = [_type_import(name, domain.domain) for name in type_names]
     command_names = _command_names(domain)
     event_names = _event_names(domain, type_names)
     domain_class = domain.domain
@@ -62,6 +59,10 @@ def generate_root(domains: list[Domain]) -> str:
             for domain in domains
         ),
     )
+
+
+def _type_import(name: str, domain_class: str) -> str:
+    return f"{name} as {name}Type" if name == domain_class else name
 
 
 def _command_names(domain: Domain) -> list[str]:

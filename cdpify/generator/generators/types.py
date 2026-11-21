@@ -6,13 +6,13 @@ from cdpify.generator.generators.utils import (
     map_cdp_type,
     resolve_type,
     to_enum_name,
-    to_identifier,
 )
 from cdpify.generator.generators.views import (
     EnumMemberView,
     FieldView,
     TypeDefinitionView,
     dataclass_import,
+    model_fields,
 )
 from cdpify.generator.rendering import render_template
 from cdpify.generator.schemas import Domain, Parameter, TypeDefinition
@@ -34,7 +34,7 @@ def generate(domain: Domain) -> str:
         cross_domain_modules=ctx.cross_domain_modules,
         definitions=definitions,
         has_enums=any(definition.kind == "enum" for definition in definitions),
-        uses_unset=any(f.uses_unset for m in definitions for f in m.fields),
+        uses_unset=any(field.uses_unset for field in model_fields(definitions)),
         dataclass_import=dataclass_import(definitions),
     )
 
@@ -105,24 +105,16 @@ def _build_alias_view(
 def _build_field_view(
     param: Parameter, type_id: str, ctx: GenerationContext
 ) -> FieldView:
-    field_name = to_identifier(param.name)
     py_type = resolve_type(param)
 
     if param.ref and "." in param.ref:
         ctx.cross_domain_refs.add(param.ref)
     ctx.track_type_string(py_type)
 
-    is_optional = param.optional or param.name in _OPTIONAL_OVERRIDES.get(
-        type_id, set()
-    )
-    return FieldView(
-        field_name,
+    return FieldView.from_parameter(
+        param,
         py_type,
-        optional=is_optional,
-        cdp_name=param.name,
-        description=param.description,
-        experimental=param.experimental,
-        deprecated=param.deprecated,
+        force_optional=param.name in _OPTIONAL_OVERRIDES.get(type_id, ()),
     )
 
 

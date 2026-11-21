@@ -1,0 +1,70 @@
+version: 2
+project:
+  root_packages: [cdpify, benchmarks, checks, examples, scripts]
+  source_roots: ["."]
+  test_roots: [tests]
+  exclude:
+    - path: build/**
+      reason: Local setuptools build artifacts duplicate the packaged sources.
+    - path: cdpify/domains/**
+      reason: Generated from the bundled CDP specs and verified by scripts/check_generated.py.
+
+architecture:
+  import_graph:
+    # Excluded generated imports resolve to their nearest analyzed package.
+    # Check cycles between layers at that level of resolution.
+    cycles: [layers]
+    type_checking_cycles: ignore
+  layers:
+    client:
+      modules: [cdpify]
+      may_depend_on: [runtime, websocket, shared]
+      third_party: {default: deny}
+    runtime:
+      modules: [cdpify.codec, cdpify.error, cdpify.events, cdpify.event_queue, cdpify.executor, cdpify.transport, cdpify.unset]
+      may_depend_on: [shared]
+      third_party: {default: deny}
+    websocket:
+      modules: [cdpify.transports]
+      may_depend_on: [runtime, shared]
+      third_party: {default: deny, allow: [websockets, orjson]}
+    shared:
+      modules: [cdpify.shared]
+      third_party: {default: deny}
+    generator:
+      modules: [cdpify.generator]
+      may_depend_on: [renderers, schema, shared]
+      third_party: {default: deny}
+    renderers:
+      modules: [cdpify.generator.generators, cdpify.generator.rendering]
+      may_depend_on: [schema, shared]
+      third_party: {default: deny, allow: [jinja2]}
+    schema:
+      modules: [cdpify.generator.schemas]
+      third_party: {default: deny, allow: [pydantic]}
+    tooling:
+      modules: [benchmarks, checks, examples, scripts]
+      may_depend_on: [client, runtime, websocket, shared, generator, schema]
+
+style:
+  overrides:
+    generator:
+      match: cdpify.generator
+      rules:
+        complexity/excess-comprehension-loops: warning
+
+rules:
+  architecture/uncovered-source: error
+  architecture/layer-boundary: error
+  architecture/forbidden-third-party-import: error
+  architecture/shared-imports-feature: error
+  architecture/import-cycle: error
+  complexity/duplicate-function: error
+  complexity/forbidden-nested-conditional: error
+  complexity/excess-positional-parameters: {severity: warning, max: 4}
+  typing/implicit-optional-default: warning
+  modeling/mutable-field-in-frozen-dataclass: warning
+  idioms/loop-invariant-collection: warning
+  tests/vacuous-assertion: error
+  tests/unbounded-wait: warning
+  tests/missing-await-assertion: warning

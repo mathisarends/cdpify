@@ -1,11 +1,11 @@
 import logging
 import sys
-from collections.abc import Callable
+from collections.abc import Callable, Mapping
 from contextvars import ContextVar
 from dataclasses import MISSING, dataclass, fields, is_dataclass
 from enum import StrEnum
 from functools import cache
-from types import UnionType
+from types import MappingProxyType, UnionType
 from typing import Any, TypeAliasType, Union, get_args, get_origin, get_type_hints
 
 from cdpify.error import CDPDecodeError
@@ -36,7 +36,7 @@ class _FieldPlan:
 @dataclass(frozen=True, slots=True)
 class _ModelPlan:
     fields: tuple[_FieldPlan, ...]
-    decodable_fields: dict[str, _FieldPlan]
+    decodable_fields: Mapping[str, _FieldPlan]
     required_names: frozenset[str]
 
 
@@ -133,11 +133,13 @@ def _compile_model(model_type: type) -> _ModelPlan:
     )
     return _ModelPlan(
         fields=field_plans,
-        decodable_fields={
-            field_plan.cdp_name: field_plan
-            for field_plan in field_plans
-            if field_plan.wire_enabled and field_plan.init
-        },
+        decodable_fields=MappingProxyType(
+            {
+                field_plan.cdp_name: field_plan
+                for field_plan in field_plans
+                if field_plan.wire_enabled and field_plan.init
+            }
+        ),
         required_names=frozenset(
             field_plan.name
             for field_plan in field_plans

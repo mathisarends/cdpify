@@ -108,6 +108,7 @@ def test_core_package_imports_without_optional_dependencies() -> None:
             f"import sys; {blocked_modules}; import cdpify",
         ],
         cwd=_PROJECT_ROOT,
+        timeout=30,
         check=True,
     )
 

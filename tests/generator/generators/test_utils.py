@@ -122,8 +122,7 @@ class TestFormatDocstring:
 
     def test_respects_indent(self) -> None:
         result = format_docstring("Hi.", indent=4)
-        for line in result.splitlines():
-            assert line.startswith("    ")
+        assert result.splitlines() == ['    """', "    Hi.", '    """']
 
     def test_wraps_long_text(self) -> None:
         text = " ".join(["word"] * 50)

@@ -212,7 +212,7 @@ async def test_listen_yields_only_typed_root_events() -> None:
         )
     )
     transport.emit(TransportEvent(method="Test.event", params={"value": 7}))
-    event = await next_event_task
+    event = await asyncio.wait_for(next_event_task, timeout=1.0)
 
     assert event.value == 7
 
@@ -236,7 +236,7 @@ async def test_listen_all_preserves_session_metadata_in_envelope() -> None:
             session_id="S1",
         )
     )
-    received = await next_event_task
+    received = await asyncio.wait_for(next_event_task, timeout=1.0)
 
     assert received.value == _EventModel(value=7)
     assert received.session_id == "S1"
@@ -255,7 +255,7 @@ async def test_listen_ends_when_transport_stream_ends() -> None:
     await asyncio.sleep(0)
 
     transport.emit(TransportEvent(method="Test.event", params={"value": 1}))
-    first = await next_event_task
+    first = await asyncio.wait_for(next_event_task, timeout=1.0)
     await transport.disconnect()
     remaining = [event async for event in stream]
 

@@ -210,13 +210,15 @@ async def test_disconnect_waits_for_shared_cleanup(
         if cancel_waiter:
             first.cancel()
             with pytest.raises(asyncio.CancelledError):
-                await first
+                await asyncio.wait_for(first, timeout=1.0)
             assert not second.done()
     finally:
         socket.finish_close.set()
-        await asyncio.gather(first, second, return_exceptions=True)
+        await asyncio.wait_for(
+            asyncio.gather(first, second, return_exceptions=True), timeout=5.0
+        )
 
-    await second
+    await asyncio.wait_for(second, timeout=1.0)
     assert not client.is_connected
     assert socket.close_calls == 1
     with pytest.raises(CDPStreamClosedError):
