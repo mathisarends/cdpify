@@ -109,14 +109,23 @@ class CdpClient(DomainAccessors, EventSource):
             if isinstance(self._transport, CallbackTransport):
                 self._transport.set_event_handler(None)
 
-    def session(self, session_id: str) -> CdpSession:
-        """Create an immutable domain view bound to ``session_id``."""
+    async def attach(self, target_id: str) -> CdpSession:
+        """Attach to a target in flat mode and return its bound session."""
+        attached = await self.target.attach_to_target(target_id=target_id, flatten=True)
+        return self.bind_session(attached.session_id)
+
+    def bind_session(self, session_id: str) -> CdpSession:
+        """Bind to an existing session ID locally, without sending a command."""
         return CdpSession(
             self._transport,
             self._event_router,
             session_id,
             default_timeout=self._default_timeout,
         )
+
+    def session(self, session_id: str) -> CdpSession:
+        """Compatibility alias for bind_session."""
+        return self.bind_session(session_id)
 
     async def execute(
         self,

@@ -41,10 +41,32 @@ class _Transport:
         self._events.put_nowait(event)
 
 
-def test_client_creates_immutable_session_view() -> None:
-    client = CdpClient(transport=_Transport())  # type: ignore[arg-type]
+@pytest.mark.asyncio
+async def test_attach_requests_flat_session_and_routes_commands() -> None:
+    transport = _Transport()
+    transport.execute.return_value = {"sessionId": "session-1"}
+    client = CdpClient(transport=transport)  # type: ignore[arg-type]
 
-    session = client.session("session-1")
+    session = await client.attach("target-1")
+    await session.page.enable()
+
+    assert transport.execute.await_args_list == [
+        call(
+            method="Target.attachToTarget",
+            params={"targetId": "target-1", "flatten": True},
+            session_id=None,
+            timeout=None,
+        ),
+        call(method="Page.enable", params={}, session_id="session-1", timeout=None),
+    ]
+
+
+def test_client_creates_immutable_session_view() -> None:
+    transport = _Transport()
+    client = CdpClient(transport=transport)  # type: ignore[arg-type]
+
+    session = client.bind_session("session-1")
+    transport.execute.assert_not_called()
 
     assert isinstance(session, CdpSession)
     assert session.session_id == "session-1"

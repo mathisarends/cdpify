@@ -233,7 +233,7 @@ disconnects; `events.next()` then raises `CDPStreamClosedError`. The optional
 applies the same rule to its bound target:
 
 ```python
-tab = client.session("session-id")
+tab = client.bind_session("session-id")
 
 async for event in tab.listen(RequestWillBeSentEvent):
     # This stream contains events from this session only.
@@ -312,34 +312,32 @@ buffering and read-only data rules as typed streams.
 
 ## Working with target sessions
 
-Attach to a target in flat mode and create an immutable session view with
-`client.session()`. Every generated command on that view is routed to the bound
-session:
+Use `await client.attach(target_id)` to attach to a target in flat mode and
+get a `CdpSession`. Its commands and event subscriptions use the returned
+session ID.
 
 ```python
 from cdpify import CdpClient
 
 
 async with CdpClient(browser_ws_url) as root_client:
-    attached = await root_client.target.attach_to_target(
-        target_id="target-id",
-        flatten=True,
-    )
-    tab = root_client.session(attached.session_id)
+    tab = await root_client.attach("target-id")
 
     await tab.page.enable()
     await tab.runtime.evaluate(expression="console.log('Hello from CDP')")
 ```
 
-There is no mutable "active session". Create one view per attached target and
-use them safely from concurrent tasks:
+If you already have session IDs, for example from `Target.attachedToTarget`
+events, use `client.bind_session(session_id)`. This creates a local view without
+sending a command. The existing `client.session(session_id)` is an alias.
+Each view can be used independently from concurrent tasks.
 
 ```python
 import asyncio
 
 
-tab_a = root_client.session(session_a)
-tab_b = root_client.session(session_b)
+tab_a = root_client.bind_session(session_a)
+tab_b = root_client.bind_session(session_b)
 
 await asyncio.gather(
     tab_a.runtime.evaluate(expression="document.title"),
