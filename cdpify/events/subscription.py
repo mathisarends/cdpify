@@ -45,7 +45,7 @@ class EventSubscription[T]:
     @property
     def closed(self) -> bool:
         """Whether the stream has ended and no further events will be returned."""
-        return self._ended or self._buffer.failed
+        return self._ended or self._buffer.drained
 
     @property
     def dropped_events(self) -> int:

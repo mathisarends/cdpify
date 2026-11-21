@@ -269,6 +269,7 @@ async def test_listen_ends_on_client_disconnect() -> None:
     transport = _FakeTransport()
     client = CdpClient(transport=transport)
     await client.connect()
+    events = client.listen_raw()
 
     async def consume() -> list[_EventModel]:
         return [event async for event in client.listen(_EventModel)]
@@ -277,6 +278,7 @@ async def test_listen_ends_on_client_disconnect() -> None:
     await asyncio.sleep(0)
     await client.disconnect()
 
+    assert events.closed
     assert await asyncio.wait_for(consumer, timeout=1.0) == []
 
 

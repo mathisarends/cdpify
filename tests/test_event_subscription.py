@@ -116,7 +116,9 @@ async def test_router_close_drains_buffered_events_then_ends() -> None:
 
     router.close()
 
-    assert [event async for event in events] == [_Event(value=1)]
+    assert not events.closed
+    assert await events.next() == _Event(value=1)
+    assert events.closed
     with pytest.raises(CDPStreamClosedError):
         await events.next()
 
