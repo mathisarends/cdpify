@@ -7,6 +7,15 @@ from cdpify.error import CDPEventOverflowError
 type OverflowPolicy = Literal["error", "drop_oldest"]
 
 
+def validate_queue_options(max_queue_size: int, *, overflow: OverflowPolicy) -> None:
+    if not isinstance(max_queue_size, int):
+        raise TypeError("max_queue_size must be an integer")
+    if max_queue_size < 0:
+        raise ValueError("max_queue_size must be non-negative")
+    if overflow not in ("error", "drop_oldest"):
+        raise ValueError('overflow must be "error" or "drop_oldest"')
+
+
 class EventQueue[T]:
     """A non-blocking event buffer with an explicit overflow policy.
 
@@ -28,12 +37,7 @@ class EventQueue[T]:
     def __init__(
         self, max_queue_size: int = 0, *, overflow: OverflowPolicy = "error"
     ) -> None:
-        if not isinstance(max_queue_size, int):
-            raise TypeError("max_queue_size must be an integer")
-        if max_queue_size < 0:
-            raise ValueError("max_queue_size must be non-negative")
-        if overflow not in ("error", "drop_oldest"):
-            raise ValueError('overflow must be "error" or "drop_oldest"')
+        validate_queue_options(max_queue_size, overflow=overflow)
         self._items: deque[T] = deque()
         self._ready = asyncio.Event()
         self._closed = False

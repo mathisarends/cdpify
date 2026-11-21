@@ -2,7 +2,7 @@ from collections.abc import Callable
 from dataclasses import dataclass
 
 from cdpify.error import CDPSessionClosedError
-from cdpify.event_queue import EventQueue, OverflowPolicy
+from cdpify.event_queue import EventQueue, OverflowPolicy, validate_queue_options
 from cdpify.transport import TransportEvent
 
 from .dispatcher import EventDispatcher, RawCDPEvent
@@ -24,7 +24,7 @@ class EventRouter:
         self, *, max_queue_size: int = 0, overflow: OverflowPolicy = "error"
     ) -> None:
         # Validate the default even when no listeners are registered yet.
-        EventQueue(max_queue_size, overflow=overflow)
+        validate_queue_options(max_queue_size, overflow=overflow)
         self._max_queue_size = max_queue_size
         self._overflow: OverflowPolicy = overflow
         self._dispatcher = EventDispatcher()

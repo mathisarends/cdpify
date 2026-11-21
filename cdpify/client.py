@@ -30,21 +30,17 @@ class CdpClient(DomainAccessors, EventSource):
         open_timeout_seconds: float | None = 10.0,
         close_timeout_seconds: float | None = 10.0,
     ) -> None:
-        if transport is not None and url is not None:
-            raise TypeError("Pass either url or transport, not both")
-        if transport is None:
-            if url is None:
-                raise TypeError("CdpClient requires either url or transport")
-            transport = _create_websocket_transport(
-                url,
-                additional_headers=additional_headers,
-                max_frame_size=max_frame_size,
-                max_queue_size=max_queue_size,
-                overflow=overflow,
-                compression=compression,
-                open_timeout_seconds=open_timeout_seconds,
-                close_timeout_seconds=close_timeout_seconds,
-            )
+        transport = _resolve_transport(
+            url,
+            transport=transport,
+            additional_headers=additional_headers,
+            max_frame_size=max_frame_size,
+            max_queue_size=max_queue_size,
+            overflow=overflow,
+            compression=compression,
+            open_timeout_seconds=open_timeout_seconds,
+            close_timeout_seconds=close_timeout_seconds,
+        )
 
         self._transport = transport
         self._default_timeout_seconds = default_timeout_seconds
@@ -220,9 +216,10 @@ class CdpClient(DomainAccessors, EventSource):
         self._event_loop_task = None
 
 
-def _create_websocket_transport(
-    url: str,
+def _resolve_transport(
+    url: str | None,
     *,
+    transport: Transport | None,
     additional_headers: dict[str, str] | None,
     max_frame_size: int,
     max_queue_size: int,
@@ -231,6 +228,13 @@ def _create_websocket_transport(
     open_timeout_seconds: float | None,
     close_timeout_seconds: float | None,
 ) -> Transport:
+    if transport is not None:
+        if url is not None:
+            raise TypeError("Pass either url or transport, not both")
+        return transport
+    if url is None:
+        raise TypeError("CdpClient requires either url or transport")
+
     try:
         from cdpify.transports.websocket import WebSocketTransport
     except ModuleNotFoundError as error:

@@ -78,11 +78,13 @@ rules:
   complexity/forbidden-nested-conditional: error
   complexity/excess-positional-parameters: {severity: warning, max: 4}
   complexity/inline-call-argument: warning
+  complexity/excess-constructor-decisions: hint
   typing/implicit-optional-default: warning
   typing/deprecated-async-contextmanager-return: warning
   typing/duplicate-literal-type: warning
   typing/prefer-deferred-annotations: warning
   typing/prefer-inline-type-parameters: warning
+  typing/anonymous-tuple-type: warning
   modeling/dataclass-field-mutation: warning
   modeling/missing-dataclass-option: warning
   modeling/duplicate-class-name: warning
@@ -100,4 +102,5 @@ rules:
   tests/vacuous-assertion: error
   tests/unbounded-wait: warning
   tests/missing-await-assertion: warning
+  tests/independent-case-loop: hint
   tests/nondeterministic-data: warning
