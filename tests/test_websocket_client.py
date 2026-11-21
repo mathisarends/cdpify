@@ -7,6 +7,7 @@ from unittest.mock import AsyncMock
 import pytest
 from websockets.asyncio.server import ServerConnection, serve
 from websockets.exceptions import ConnectionClosedOK
+from websockets.http11 import Request
 
 from cdpify import CdpClient
 from cdpify.error import CDPConnectionError, CDPStreamClosedError
@@ -91,6 +92,56 @@ async def test_browser_closure_ends_listeners_and_client_can_reconnect() -> None
                 with pytest.raises(CDPStreamClosedError):
                     await events.next(timeout=2.0)
             assert [event async for event in events] == []
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("direct_transport", [False, True])
+async def test_overlapping_connects_open_only_one_socket(
+    direct_transport: bool,
+) -> None:
+    handshake_started = asyncio.Event()
+    finish_handshake = asyncio.Event()
+    second_started = asyncio.Event()
+    sockets: list[ServerConnection] = []
+
+    async def hold_handshake(socket: ServerConnection, request: Request) -> None:
+        handshake_started.set()
+        await finish_handshake.wait()
+
+    async def hold_connection(socket: ServerConnection) -> None:
+        sockets.append(socket)
+        await socket.wait_closed()
+
+    async with serve(
+        hold_connection, "127.0.0.1", 0, process_request=hold_handshake
+    ) as server:
+        port = server.sockets[0].getsockname()[1]
+        client = CdpClient(f"ws://127.0.0.1:{port}")
+        connection = client.transport if direct_transport else client
+
+        async def connect_again() -> None:
+            second_started.set()
+            await connection.connect()
+
+        first = asyncio.create_task(connection.connect())
+        try:
+            await asyncio.wait_for(handshake_started.wait(), timeout=5.0)
+            second = asyncio.create_task(connect_again())
+            await asyncio.wait_for(second_started.wait(), timeout=5.0)
+        finally:
+            finish_handshake.set()
+
+        first_result, second_result = await asyncio.gather(
+            first, second, return_exceptions=True
+        )
+        await connection.disconnect()
+
+        assert first_result is None
+        assert isinstance(second_result, CDPConnectionError)
+        assert str(second_result) == "Already connected"
+        assert len(sockets) == 1
+        await asyncio.wait_for(sockets[0].wait_closed(), timeout=5.0)
+        assert not server.connections
 
 
 @pytest.mark.asyncio

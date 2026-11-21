@@ -43,6 +43,7 @@ class WebSocketTransport:
         self._open_timeout = open_timeout
         self._close_timeout = close_timeout
 
+        self._connection_lock = asyncio.Lock()
         self._ws: ClientConnection | None = None
         self._message_ids = itertools.count()
         self._pending_requests: dict[int, asyncio.Future[dict[str, Any]]] = {}
@@ -78,34 +79,39 @@ class WebSocketTransport:
         await self.disconnect()
 
     async def connect(self) -> None:
-        if self._shutdown_task is not None:
-            await asyncio.shield(self._shutdown_task)
-        if self.is_connected:
-            raise CDPConnectionError("Already connected")
+        async with self._connection_lock:
+            if self._shutdown_task is not None:
+                await asyncio.shield(self._shutdown_task)
+            if self.is_connected:
+                raise CDPConnectionError("Already connected")
 
-        logger.info("Connecting to %s", self.url)
-        try:
-            self._ws = await connect(
-                self.url,
-                max_size=self._max_frame_size,
-                additional_headers=self._additional_headers,
-                compression=self._compression,
-                open_timeout=self._open_timeout,
-                close_timeout=self._close_timeout,
+            logger.info("Connecting to %s", self.url)
+            try:
+                self._ws = await connect(
+                    self.url,
+                    max_size=self._max_frame_size,
+                    additional_headers=self._additional_headers,
+                    compression=self._compression,
+                    open_timeout=self._open_timeout,
+                    close_timeout=self._close_timeout,
+                )
+            except Exception as error:
+                raise CDPConnectionError(f"Connection failed: {error}") from error
+
+            self._is_shutting_down = False
+            self._shutdown_task = None
+            self._event_queue = EventQueue(
+                self._max_queue_size, overflow=self._overflow
             )
-        except Exception as error:
-            raise CDPConnectionError(f"Connection failed: {error}") from error
-
-        self._is_shutting_down = False
-        self._shutdown_task = None
-        self._event_queue = EventQueue(self._max_queue_size, overflow=self._overflow)
-        self._event_stream_closed = False
-        self._message_loop_task = asyncio.create_task(self._run_message_loop())
-        logger.info("Connected")
+            self._event_stream_closed = False
+            self._message_loop_task = asyncio.create_task(self._run_message_loop())
+            logger.info("Connected")
 
     async def disconnect(self) -> None:
         """Wait for shared cleanup, even if another caller or the peer started it."""
-        await asyncio.shield(self._start_shutdown(stop_message_loop=True))
+        async with self._connection_lock:
+            task = self._start_shutdown(stop_message_loop=True)
+        await asyncio.shield(task)
 
     def _start_shutdown(self, *, stop_message_loop: bool) -> asyncio.Task[None]:
         if self._shutdown_task is None:

@@ -54,6 +54,7 @@ class CdpClient(DomainAccessors, EventSource):
         EventSource.__init__(
             self, EventRouter(max_queue_size=max_queue_size, overflow=overflow), None
         )
+        self._connection_lock = asyncio.Lock()
         self._event_loop_task: asyncio.Task[None] | None = None
         self._disconnect_task: asyncio.Task[None] | None = None
 
@@ -73,32 +74,37 @@ class CdpClient(DomainAccessors, EventSource):
         await self.disconnect()
 
     async def connect(self) -> None:
-        if self.is_connected:
-            raise CDPConnectionError("Already connected")
-        if self._disconnect_task is not None:
-            await asyncio.shield(self._disconnect_task)
-        self._disconnect_task = None
-        self._event_router.open()
-        callback_transport = (
-            self._transport if isinstance(self._transport, CallbackTransport) else None
-        )
-        if callback_transport is not None:
-            callback_transport.set_event_handler(self._dispatch_event)
-        try:
-            await self._transport.connect()
-        except BaseException:
-            self._event_router.close()
+        async with self._connection_lock:
+            if self.is_connected:
+                raise CDPConnectionError("Already connected")
+            if self._disconnect_task is not None:
+                await asyncio.shield(self._disconnect_task)
+            self._disconnect_task = None
+            self._event_router.open()
+            callback_transport = (
+                self._transport
+                if isinstance(self._transport, CallbackTransport)
+                else None
+            )
             if callback_transport is not None:
-                callback_transport.set_event_handler(None)
-            raise
-        if callback_transport is None:
-            self._event_loop_task = asyncio.create_task(self._run_event_loop())
+                callback_transport.set_event_handler(self._dispatch_event)
+            try:
+                await self._transport.connect()
+            except BaseException:
+                self._event_router.close()
+                if callback_transport is not None:
+                    callback_transport.set_event_handler(None)
+                raise
+            if callback_transport is None:
+                self._event_loop_task = asyncio.create_task(self._run_event_loop())
 
     async def disconnect(self) -> None:
         """Close once; cancellation of a waiter does not interrupt cleanup."""
-        if self._disconnect_task is None:
-            self._disconnect_task = asyncio.create_task(self._disconnect())
-        await asyncio.shield(self._disconnect_task)
+        async with self._connection_lock:
+            if self._disconnect_task is None:
+                self._disconnect_task = asyncio.create_task(self._disconnect())
+            task = self._disconnect_task
+        await asyncio.shield(task)
 
     async def _disconnect(self) -> None:
         await self._stop_event_loop()
