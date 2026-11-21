@@ -4,9 +4,10 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
 from cdpify.codec import _encode_value, decode_cdp
+from cdpify.domains import storage
 from cdpify.executor import CommandExecutor
 
 from .commands import (
@@ -19,9 +20,6 @@ from .types import (
     CacheId,
     Header,
 )
-
-if TYPE_CHECKING:
-    from cdpify.domains import storage
 
 
 class CacheStorage:

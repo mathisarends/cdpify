@@ -4,9 +4,10 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
 from cdpify.codec import _encode_value, decode_cdp
+from cdpify.domains import emulation, page
 from cdpify.executor import CommandExecutor
 from cdpify.shared.decorators import deprecated
 
@@ -43,9 +44,6 @@ from .types import (
     RequestId,
     TimeSinceEpoch,
 )
-
-if TYPE_CHECKING:
-    from cdpify.domains import emulation, page
 
 
 class Network:

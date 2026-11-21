@@ -26,9 +26,7 @@ from .types import (
 )
 {% endif %}
 {% if cross_domain_modules %}
-
-if TYPE_CHECKING:
-    from cdpify.domains import {{ cross_domain_modules | join(", ") }}
+{{ cross_domain_modules | map("prefix_domain_import") | join("\n") }}
 {% endif %}
 
 class {{ domain_name }}:

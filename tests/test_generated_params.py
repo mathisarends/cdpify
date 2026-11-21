@@ -1,10 +1,17 @@
 from dataclasses import fields
+from typing import get_type_hints
 
 import pytest
 
 from cdpify import encode_cdp
+from cdpify.domains.network import LoaderId
+from cdpify.domains.page import Page
 from cdpify.domains.runtime import CallArgument, CallFunctionOnParams, EvaluateParams
 from cdpify.domains.runtime.domain import Runtime
+
+
+def test_generated_method_type_hints_resolve_cross_domain_types() -> None:
+    assert get_type_hints(Page.reload)["loader_id"] == LoaderId | None
 
 
 @pytest.mark.asyncio
