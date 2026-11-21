@@ -28,7 +28,7 @@ async def test_client_deadline_enforces_custom_transports(scope) -> None:
         if scope == "root":
             await client.runtime.enable()
         elif scope == "session":
-            await client.session("S1").runtime.enable()
+            await client.bind_session("S1").runtime.enable()
         else:
             await client.execute(
                 "Runtime.enable", session_id="S1" if scope == "raw_session" else None

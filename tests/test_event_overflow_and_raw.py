@@ -55,7 +55,7 @@ async def test_subscription_can_override_client_overflow_policy() -> None:
 async def test_raw_listeners_preserve_scope_method_and_wire_names() -> None:
     client = CdpClient("ws://unused")
     root = client.listen_raw("Future.event")
-    tab = client.session("S1").listen_raw()
+    tab = client.bind_session("S1").listen_raw()
     all_events = client.listen_all_raw()
     messages = [
         TransportEvent("Future.event", {"wireName": 1}),

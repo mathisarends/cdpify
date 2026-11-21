@@ -41,10 +41,32 @@ class _Transport:
         self._events.put_nowait(event)
 
 
-def test_client_creates_immutable_session_view() -> None:
-    client = CdpClient(transport=_Transport())  # type: ignore[arg-type]
+@pytest.mark.asyncio
+async def test_attach_requests_flat_session_and_routes_commands() -> None:
+    transport = _Transport()
+    transport.execute.return_value = {"sessionId": "session-1"}
+    client = CdpClient(transport=transport)  # type: ignore[arg-type]
 
-    session = client.session("session-1")
+    session = await client.attach("target-1")
+    await session.page.enable()
+
+    assert transport.execute.await_args_list == [
+        call(
+            method="Target.attachToTarget",
+            params={"targetId": "target-1", "flatten": True},
+            session_id=None,
+            timeout=None,
+        ),
+        call(method="Page.enable", params={}, session_id="session-1", timeout=None),
+    ]
+
+
+def test_client_creates_immutable_session_view() -> None:
+    transport = _Transport()
+    client = CdpClient(transport=transport)  # type: ignore[arg-type]
+
+    session = client.bind_session("session-1")
+    transport.execute.assert_not_called()
 
     assert isinstance(session, CdpSession)
     assert session.session_id == "session-1"
@@ -57,13 +79,13 @@ def test_rejects_empty_session_id() -> None:
     client = CdpClient(transport=_Transport())  # type: ignore[arg-type]
 
     with pytest.raises(ValueError, match="must not be empty"):
-        client.session("")
+        client.bind_session("")
 
 
 @pytest.mark.asyncio
 async def test_generated_commands_are_bound_to_session() -> None:
     transport = _Transport()
-    session = CdpClient(transport=transport).session("session-2")  # type: ignore[arg-type]
+    session = CdpClient(transport=transport).bind_session("session-2")  # type: ignore[arg-type]
 
     await session.page.enable()
 
@@ -78,7 +100,7 @@ async def test_generated_commands_are_bound_to_session() -> None:
 @pytest.mark.asyncio
 async def test_low_level_execute_cannot_override_bound_session() -> None:
     transport = _Transport()
-    session = CdpClient(transport=transport).session("session-2")  # type: ignore[arg-type]
+    session = CdpClient(transport=transport).bind_session("session-2")  # type: ignore[arg-type]
 
     await session.execute("Runtime.evaluate", {"expression": "1 + 1"})
 
@@ -99,8 +121,8 @@ async def test_low_level_execute_cannot_override_bound_session() -> None:
 async def test_sessions_are_safe_to_use_concurrently() -> None:
     transport = _Transport()
     client = CdpClient(transport=transport)  # type: ignore[arg-type]
-    session_a = client.session("A")
-    session_b = client.session("B")
+    session_a = client.bind_session("A")
+    session_b = client.bind_session("B")
 
     await asyncio.gather(
         session_a.page.enable(),
@@ -131,7 +153,7 @@ async def test_session_listener_filters_other_sessions() -> None:
     transport = _Transport()
     client = CdpClient(transport=transport)  # type: ignore[arg-type]
     await client.connect()
-    stream = client.session("A").listen(_Event, timeout=1.0)
+    stream = client.bind_session("A").listen(_Event, timeout=1.0)
     next_event = asyncio.create_task(anext(stream))
     await asyncio.sleep(0)
 

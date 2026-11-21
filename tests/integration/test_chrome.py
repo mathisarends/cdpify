@@ -76,10 +76,7 @@ async def browser(browser_url):
 
 async def page(client):
     target = await client.target.create_target(url="about:blank")
-    attached = await client.target.attach_to_target(
-        target_id=target.target_id, flatten=True
-    )
-    return client.session(attached.session_id)
+    return await client.attach(target.target_id)
 
 
 @pytest.mark.asyncio

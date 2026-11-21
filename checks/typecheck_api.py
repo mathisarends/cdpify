@@ -18,7 +18,7 @@ async def usage(client: CdpClient) -> None:
         assert_type(received, ReceivedEvent[RequestWillBeSentEvent])
         assert_type(received.value.request.url, str)
     assert_type(
-        await client.session("S1").runtime.evaluate(expression="1"), EvaluateResult
+        await client.bind_session("S1").runtime.evaluate(expression="1"), EvaluateResult
     )
     assert_type(client.listen_raw(), EventSubscription[TransportEvent])
     assert_type(client.listen_all_raw(), EventSubscription[TransportEvent])

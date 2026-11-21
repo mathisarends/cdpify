@@ -47,7 +47,7 @@ async def test_websocket_client_routes_bursts_without_blocking_responses() -> No
         ) as client:
             assert client.transport._ws.protocol.extensions == []
             root_events = client.listen(_Event)
-            session_events = client.session("S1").listen(_Event, max_queue_size=1)
+            session_events = client.bind_session("S1").listen(_Event, max_queue_size=1)
             all_events = client.listen_all(_Event, max_queue_size=0)
 
             result = await client.execute("Test.command", timeout=2.0)
