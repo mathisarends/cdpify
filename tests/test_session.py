@@ -89,12 +89,9 @@ async def test_generated_commands_are_bound_to_session() -> None:
 
     await session.page.enable()
 
-    transport.execute.assert_awaited_once_with(
-        method="Page.enable",
-        params={},
-        session_id="session-2",
-        timeout=None,
-    )
+    assert transport.execute.await_args_list == [
+        call(method="Page.enable", params={}, session_id="session-2", timeout=None)
+    ]
 
 
 @pytest.mark.asyncio
@@ -133,6 +130,7 @@ async def test_sessions_are_safe_to_use_concurrently() -> None:
         session_b.page.enable(),
     )
 
+    assert transport.execute.await_count == 2
     transport.execute.assert_has_awaits(
         [
             call(

@@ -10,15 +10,15 @@ from websockets.asyncio.client import ClientConnection, connect
 
 from cdpify.error import CDPCommandError, CDPConnectionError
 from cdpify.event_queue import EventQueue, OverflowPolicy
-from cdpify.executor import _with_timeout
+from cdpify.executor import with_command_timeout
 from cdpify.transport import EventHandler, TransportEvent
+
+logger = logging.getLogger(__name__)
 
 try:
     import orjson
 except ModuleNotFoundError:
     orjson = None
-
-logger = logging.getLogger(__name__)
 
 
 class WebSocketTransport:
@@ -150,7 +150,7 @@ class WebSocketTransport:
         future = _create_pending_request(self._pending_requests, message_id)
 
         try:
-            return await _with_timeout(
+            return await with_command_timeout(
                 method,
                 timeout,
                 self._send_and_receive(message_id, method, message, future),
@@ -197,6 +197,7 @@ class WebSocketTransport:
                 try:
                     await self._process_message(raw_message)
                 except Exception:
+                    # Drop failures from parsing or handling a single message.
                     logger.exception(
                         "Dropping malformed CDP message: %.200r", raw_message
                     )
@@ -206,6 +207,7 @@ class WebSocketTransport:
             logger.debug("Message loop cancelled")
             raise
         except Exception:
+            # Receive failures end the stream and enter the common cleanup path.
             logger.exception("Message loop error")
         finally:
             if not self._is_shutting_down:
@@ -271,6 +273,7 @@ class WebSocketTransport:
             try:
                 await self._ws.close()
             except Exception as error:
+                # A failing socket close must still release local resources.
                 logger.debug("Websocket close error: %s", error)
             finally:
                 self._ws = None

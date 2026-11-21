@@ -31,6 +31,7 @@ def generate(domain: Domain) -> str:
     aliases = _aliases_for(domain, ctx)
     models = tuple(_build_models(domain, aliases, ctx))
 
+    uses_unset = any(field.uses_unset for field in model_fields(models))
     return render_template(
         "events.py.jinja2",
         header=HEADER,
@@ -47,14 +48,14 @@ def generate(domain: Domain) -> str:
             for event in domain.events
         ),
         models=models,
-        uses_unset=any(field.uses_unset for field in model_fields(models)),
+        uses_unset=uses_unset,
         dataclass_import=dataclass_import(models),
     )
 
 
 def _aliases_for(domain: Domain, ctx: GenerationContext) -> dict[str, str]:
     enum_name = f"{domain.domain}Event"
-    if enum_name in ctx.local_type_refs:
+    if ctx.references_local_type(enum_name):
         return {enum_name: f"{enum_name}Type"}
     return {}
 

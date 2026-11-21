@@ -5,8 +5,7 @@ from typing import Any, Literal, Self
 from cdpify.domains import DomainAccessors
 from cdpify.error import CDPConnectionError
 from cdpify.event_queue import OverflowPolicy
-from cdpify.events import EventRouter, EventSubscription, ReceivedEvent
-from cdpify.events.source import EventSource
+from cdpify.events import EventRouter, EventSource, EventSubscription, ReceivedEvent
 from cdpify.executor import BoundCommandExecutor
 from cdpify.session import CdpSession
 from cdpify.transport import CallbackTransport, Transport, TransportEvent
@@ -197,6 +196,7 @@ class CdpClient(DomainAccessors, EventSource):
         except asyncio.CancelledError:
             raise
         except Exception:
+            # Custom transports can raise arbitrary errors while iterating.
             logger.exception("Transport event loop error")
         finally:
             self._event_router.close()

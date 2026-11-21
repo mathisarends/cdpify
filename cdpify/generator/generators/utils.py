@@ -78,10 +78,6 @@ def format_docstring(text: str, indent: int = 4) -> str:
     return "\n".join(result)
 
 
-def _escape_docstring(text: str) -> str:
-    return text.replace("\\", "\\\\").replace('"""', '\\"\\"\\"')
-
-
 def api_description(
     description: str | None, *, experimental: bool = False, deprecated: bool = False
 ) -> str:
@@ -93,7 +89,7 @@ def api_description(
     return " ".join(parts)
 
 
-def method_docstring(command: "Command") -> str:
+def method_docstring(command: Command) -> str:
     """Preserve parameter descriptions and units in IDE method documentation."""
     description = api_description(
         command.description,
@@ -132,6 +128,10 @@ def method_docstring(command: "Command") -> str:
         )
     lines.append('        """')
     return "\n".join(lines)
+
+
+def _escape_docstring(text: str) -> str:
+    return text.replace("\\", "\\\\").replace('"""', '\\"\\"\\"')
 
 
 def _get_base_type(param: Parameter) -> str:

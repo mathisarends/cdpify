@@ -26,6 +26,8 @@ _OPTIONAL_OVERRIDES: dict[str, set[str]] = {
 def generate(domain: Domain) -> str:
     ctx = GenerationContext()
     definitions = tuple(_build_type_view(type_def, ctx) for type_def in domain.types)
+    uses_unset = any(field.uses_unset for field in model_fields(definitions))
+    has_enums = any(definition.kind == "enum" for definition in definitions)
     return render_template(
         "types.py.jinja2",
         header=HEADER,
@@ -33,8 +35,8 @@ def generate(domain: Domain) -> str:
         typing_names=ctx.sorted_typing_names,
         cross_domain_modules=ctx.cross_domain_modules,
         definitions=definitions,
-        has_enums=any(definition.kind == "enum" for definition in definitions),
-        uses_unset=any(field.uses_unset for field in model_fields(definitions)),
+        has_enums=has_enums,
+        uses_unset=uses_unset,
         dataclass_import=dataclass_import(definitions),
     )
 
@@ -107,8 +109,7 @@ def _build_field_view(
 ) -> FieldView:
     py_type = resolve_type(param)
 
-    if param.ref and "." in param.ref:
-        ctx.cross_domain_refs.add(param.ref)
+    ctx.scan_ref(param.ref)
     ctx.track_type_string(py_type)
 
     return FieldView.from_parameter(

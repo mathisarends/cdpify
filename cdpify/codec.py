@@ -131,15 +131,14 @@ def _compile_model(model_type: type) -> _ModelPlan:
         )
         for model_field in fields(model_type)
     )
+    decodable_fields = {
+        field_plan.cdp_name: field_plan
+        for field_plan in field_plans
+        if field_plan.wire_enabled and field_plan.init
+    }
     return _ModelPlan(
         fields=field_plans,
-        decodable_fields=MappingProxyType(
-            {
-                field_plan.cdp_name: field_plan
-                for field_plan in field_plans
-                if field_plan.wire_enabled and field_plan.init
-            }
-        ),
+        decodable_fields=MappingProxyType(decodable_fields),
         required_names=frozenset(
             field_plan.name
             for field_plan in field_plans
@@ -152,6 +151,8 @@ def _resolve_field_types(model_type: type) -> dict[str, Any]:
     try:
         return get_type_hints(model_type)
     except Exception:
+        # A single broken forward reference is enough to fail get_type_hints.
+        # Try each field separately so the other nested types still decode.
         pass
 
     module = sys.modules.get(model_type.__module__)
@@ -166,6 +167,7 @@ def _resolve_field_types(model_type: type) -> dict[str, Any]:
         try:
             resolved[model_field.name] = eval(annotation, globalns)
         except Exception as error:
+            # Evaluating user model annotations can raise arbitrary errors.
             logger.warning(
                 "Cannot resolve type %r of %s.%s (%s); nested values stay raw",
                 annotation,

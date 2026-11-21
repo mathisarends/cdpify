@@ -24,6 +24,7 @@ def generate(domain: Domain) -> str:
         _scan_command(command, ctx)
 
     models = tuple(_build_models(domain.commands, ctx))
+    uses_unset = any(field.uses_unset for field in model_fields(models))
     # Cross-domain imports must remain runtime imports so that
     # `get_type_hints()` (used by decode_cdp) can resolve forward
     # references like `dom.Rect`. `from __future__ import annotations`
@@ -45,7 +46,7 @@ def generate(domain: Domain) -> str:
             for command in domain.commands
         ),
         models=models,
-        uses_unset=any(field.uses_unset for field in model_fields(models)),
+        uses_unset=uses_unset,
         dataclass_import=dataclass_import(models),
     )
 

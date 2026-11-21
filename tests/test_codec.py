@@ -3,7 +3,7 @@ from typing import Any
 
 import pytest
 
-from cdpify import UNSET, CDPDecodeError, UnsetType
+from cdpify import UNSET, CDPDecodeError, UnsetType, codec
 from cdpify import decode_cdp as public_decode_cdp
 from cdpify import encode_cdp as public_encode_cdp
 from cdpify.codec import _compile_model, decode_cdp, encode_cdp
@@ -131,7 +131,7 @@ def test_deserialization_falls_back_when_get_type_hints_fails(monkeypatch) -> No
         raise RuntimeError("boom")
 
     _compile_model.cache_clear()
-    monkeypatch.setattr("cdpify.codec.get_type_hints", _raise_type_hints)
+    monkeypatch.setattr(codec, "get_type_hints", _raise_type_hints)
 
     model = decode_cdp(_StringHintsModel, {"value": 1, "known": 2})
 
@@ -139,23 +139,14 @@ def test_deserialization_falls_back_when_get_type_hints_fails(monkeypatch) -> No
     assert model.known == 2
 
 
-def test_deserialization_keeps_raw_values_when_annotations_cannot_resolve(
-    monkeypatch,
-) -> None:
-    def _raise_type_hints(_: type) -> dict[str, Any]:
-        raise RuntimeError("boom")
+def test_deserialization_resolves_other_fields_when_one_annotation_fails() -> None:
+    model = decode_cdp(
+        _UnresolvableHint,
+        {"value": {"raw": True}, "known": {"childValue": 2}},
+    )
 
-    def _raise_eval(_: str, __: dict[str, Any]) -> Any:
-        raise NameError("unknown")
-
-    _compile_model.cache_clear()
-    monkeypatch.setattr("cdpify.codec.get_type_hints", _raise_type_hints)
-    monkeypatch.setattr("builtins.eval", _raise_eval)
-
-    model = decode_cdp(_StringHintsModel, {"value": 1, "known": 2})
-
-    assert model.value == 1
-    assert model.known == 2
+    assert model.value == {"raw": True}
+    assert model.known == _Child(child_value=2)
 
 
 def test_rejects_non_dataclass_types() -> None:
@@ -209,11 +200,13 @@ def test_primitive_fields_need_no_decoder() -> None:
 @dataclass
 class _UnresolvableHint:
     value: "DoesNotExist" = field(metadata={"cdp_name": "value"})  # noqa: F821
+    known: "_Child | None" = None
 
 
 def test_warns_when_a_field_type_cannot_be_resolved(
     caplog: pytest.LogCaptureFixture,
 ) -> None:
+    _compile_model.cache_clear()
     model = decode_cdp(_UnresolvableHint, {"value": {"raw": True}})
 
     assert model.value == {"raw": True}

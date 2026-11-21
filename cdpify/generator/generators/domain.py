@@ -22,13 +22,15 @@ def generate(domain: Domain) -> str:
     if any(method.parameters for method in methods):
         ctx.use_typing("Any")
 
+    uses_unset = any(method.uses_unset for method in methods)
+    has_deprecated = any(command.deprecated for command in domain.commands)
     return render_template(
         "domain.py.jinja2",
         header=HEADER,
         future_annotations=FUTURE_ANNOTATIONS,
         typing_names=ctx.sorted_typing_names,
-        uses_unset=any(method.uses_unset for method in methods),
-        has_deprecated=any(command.deprecated for command in domain.commands),
+        uses_unset=uses_unset,
+        has_deprecated=has_deprecated,
         command_imports=_command_imports(domain),
         local_type_names=ctx.local_import_names(),
         cross_domain_modules=ctx.cross_domain_modules,

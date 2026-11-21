@@ -15,7 +15,9 @@ class CommandExecutor(Protocol):
         method: str,
         params: dict[str, Any] | None = None,
         timeout: float | None = None,
-    ) -> dict[str, Any]: ...
+    ) -> dict[str, Any]:
+        """Send a command with a deadline in seconds and return its wire result."""
+        ...
 
 
 class BoundCommandExecutor:
@@ -43,7 +45,7 @@ class BoundCommandExecutor:
         timeout: float | None | UnsetType = UNSET,
     ) -> dict[str, Any]:
         request_timeout = self._default_timeout if timeout is UNSET else timeout
-        return await _with_timeout(
+        return await with_command_timeout(
             method,
             request_timeout,
             self._transport.execute(
@@ -57,9 +59,10 @@ class BoundCommandExecutor:
         )
 
 
-async def _with_timeout[T](
+async def with_command_timeout[T](
     method: str, timeout: float | None, operation: Awaitable[T]
 ) -> T:
+    """Translate expiry of this command's deadline to CDPTimeoutError."""
     if timeout is None:
         return await operation
     deadline = asyncio.timeout(timeout)

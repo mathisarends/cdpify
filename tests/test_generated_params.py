@@ -36,12 +36,15 @@ def test_generated_method_type_hints_resolve_cross_domain_types() -> None:
     ],
 )
 async def test_generated_wire_params_match_public_params_models(params, method) -> None:
+    sent = []
+
     class Executor:
         async def execute(self, *, method, params):
-            assert params == encode_cdp(expected)
+            sent.append(params)
             return {"result": {"type": "undefined"}}
 
-    expected = params
     await getattr(Runtime(Executor()), method)(
         **{f.name: getattr(params, f.name) for f in fields(params)}
     )
+
+    assert sent == [encode_cdp(params)]

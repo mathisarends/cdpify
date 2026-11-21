@@ -101,16 +101,21 @@ def test_core_package_imports_without_optional_dependencies() -> None:
     blocked_modules = "; ".join(
         f"sys.modules[{package!r}] = None" for package in sorted(optional_packages)
     )
-    subprocess.run(
+    imported = subprocess.run(
         [
             sys.executable,
             "-c",
-            f"import sys; {blocked_modules}; import cdpify",
+            f"import sys; {blocked_modules}; from cdpify import CdpClient; "
+            "print(CdpClient.__name__)",
         ],
         cwd=_PROJECT_ROOT,
         timeout=30,
         check=True,
+        capture_output=True,
+        text=True,
     )
+
+    assert imported.stdout.strip() == "CdpClient"
 
 
 def _imported_names(source_path: Path) -> set[str]:

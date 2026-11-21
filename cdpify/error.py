@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import warnings
 from collections.abc import Callable
 from typing import Any, Self
@@ -80,7 +82,7 @@ class CDPDecodeError(CDPError):
             f"at {location}: missing required fields {', '.join(missing_fields)}"
         )
 
-    def _prepend(self, name: str) -> "CDPDecodeError":
+    def _prepend(self, name: str) -> CDPDecodeError:
         return type(self)(self.model_type, self.missing_fields, path=(name, *self.path))
 
 

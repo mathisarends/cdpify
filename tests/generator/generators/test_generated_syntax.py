@@ -16,7 +16,7 @@ from cdpify.generator.schemas import Command, Domain, Parameter, TypeDefinition
         ("__init__.py", init.generate),
     ],
 )
-def test_generated_domain_modules_compile(
+def test_generated_modules_compile(  # smelt: ignore[TST006] -- Syntax smoke test.
     filename: str,
     render: Callable[[Domain], str],
     simple_domain: Domain,

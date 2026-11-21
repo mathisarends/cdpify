@@ -12,11 +12,15 @@ class TransportEvent:
 
 class Transport(Protocol):
     @property
-    def is_connected(self) -> bool: ...
+    def is_connected(self) -> bool:
+        """Whether the connection can accept commands."""
+        ...
 
-    async def connect(self) -> None: ...
+    async def connect(self) -> None:
+        """Open the connection before the caller sends commands."""
 
-    async def disconnect(self) -> None: ...
+    async def disconnect(self) -> None:
+        """Close the connection and release outstanding requests and event readers."""
 
     async def execute(
         self,

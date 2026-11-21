@@ -116,5 +116,6 @@ async def _invoke_handler(handler: _EventHandler, event: RawCDPEvent) -> bool:
         await handler(event)
         return True
     except Exception:
+        # A failing user handler must not block delivery to other listeners.
         logger.exception("Event handler %r failed", handler)
         return False

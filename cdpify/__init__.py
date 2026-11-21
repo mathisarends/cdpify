@@ -10,7 +10,7 @@ from .error import (
     CDPTimeoutError,
 )
 from .error import (
-    deprecated_exception as deprecated_exception,
+    deprecated_exception as deprecated_exception,  # smelt: ignore[VIS008] -- Legacy API
 )
 from .error import (
     exception_getattr as _exception_getattr,

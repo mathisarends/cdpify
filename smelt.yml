@@ -10,6 +10,10 @@ project:
       reason: Generated from the bundled CDP specs and verified by scripts/check_generated.py.
 
 architecture:
+  packages:
+    events:
+      match: cdpify.events
+      public: ["."]
   import_graph:
     # Excluded generated imports resolve to their nearest analyzed package.
     # Check cycles between layers at that level of resolution.
@@ -47,11 +51,15 @@ architecture:
       may_depend_on: [client, runtime, websocket, shared, generator, schema]
 
 style:
+  dataclass_options: [frozen, slots]
+  reexports: all
+  str_enum_values: explicit
   overrides:
     generator:
       match: cdpify.generator
       rules:
         complexity/excess-comprehension-loops: warning
+        layout/definition-order: error
 
 rules:
   architecture/uncovered-source: error
@@ -59,12 +67,35 @@ rules:
   architecture/forbidden-third-party-import: error
   architecture/shared-imports-feature: error
   architecture/import-cycle: error
+  architecture/non-public-module-import: error
+  architecture/missing-required-module: error
+  imports/prefer-package-import: warning
+  layout/misplaced-private-constant: warning
+  layout/misplaced-module-logger: warning
+  visibility/foreign-private-access: error
+  visibility/reexport-convention: warning
   complexity/duplicate-function: error
   complexity/forbidden-nested-conditional: error
   complexity/excess-positional-parameters: {severity: warning, max: 4}
+  complexity/inline-call-argument: warning
   typing/implicit-optional-default: warning
+  typing/deprecated-async-contextmanager-return: warning
+  typing/duplicate-literal-type: warning
+  typing/prefer-deferred-annotations: warning
+  typing/prefer-inline-type-parameters: warning
+  modeling/dataclass-field-mutation: warning
+  modeling/missing-dataclass-option: warning
+  modeling/duplicate-class-name: warning
   modeling/mutable-field-in-frozen-dataclass: warning
+  modeling/str-enum-value-convention: warning
+  idioms/bundled-instance-assignment: error
+  idioms/missing-interface-docstring: warning
+  idioms/missing-broad-except-reason: warning
+  idioms/duplicate-narrowing-assert: warning
   idioms/loop-invariant-collection: warning
+  tests/string-patch-target: error
+  tests/missing-outcome-check: warning
   tests/vacuous-assertion: error
   tests/unbounded-wait: warning
   tests/missing-await-assertion: warning
+  tests/nondeterministic-data: warning

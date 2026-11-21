@@ -1,8 +1,7 @@
 from typing import Any
 
 from cdpify.domains import DomainAccessors
-from cdpify.events import EventRouter
-from cdpify.events.source import EventSource
+from cdpify.events import EventRouter, EventSource
 from cdpify.executor import BoundCommandExecutor
 from cdpify.transport import Transport
 from cdpify.unset import UNSET, UnsetType

@@ -4,11 +4,10 @@ import weakref
 from copy import deepcopy
 from dataclasses import dataclass
 from typing import ClassVar
-from unittest.mock import Mock
+from unittest.mock import Mock, create_autospec
 
 import pytest
 
-from cdpify.codec import decode_cdp
 from cdpify.error import CDPStreamClosedError
 from cdpify.events import EventRouter
 from cdpify.transport import TransportEvent
@@ -288,26 +287,32 @@ async def test_reopening_router_keeps_old_subscriptions_closed() -> None:
     assert [event.value async for event in new_events] == [3]
 
 
+def _observe_construction(monkeypatch: pytest.MonkeyPatch, event_type: type) -> Mock:
+    original_init = event_type.__init__
+    construct = create_autospec(original_init, side_effect=original_init)
+    monkeypatch.setattr(event_type, "__init__", construct)
+    return construct
+
+
 @pytest.mark.asyncio
 @pytest.mark.parametrize("session_id", [None, "S1"])
 async def test_matching_listeners_decode_once_and_share_model(
     monkeypatch: pytest.MonkeyPatch, session_id: str | None
 ) -> None:
-    decode = Mock(wraps=decode_cdp)
-    monkeypatch.setattr("cdpify.events.dispatcher.decode_cdp", decode)
+    construct = _observe_construction(monkeypatch, _Event)
     router = EventRouter()
     first = router.listen(_Event, session_id=session_id)
     second = router.listen(_Event, session_id=session_id)
     all_events = router.listen_all(_Event)
     await router.dispatch(_event(1, session_id=session_id))
-    decode.assert_not_called()
+    construct.assert_not_called()
 
     shared = await first.next(timeout=1.0)
     assert await second.next(timeout=1.0) is shared
     received = await all_events.next(timeout=1.0)
     assert received.value is shared
     assert received.session_id == session_id
-    decode.assert_called_once_with(_Event, {"value": 1})
+    construct.assert_called_once_with(shared, value=1)
 
     owned = deepcopy(shared)
     owned.value = 99
@@ -321,8 +326,8 @@ async def test_matching_listeners_decode_once_and_share_model(
 async def test_decode_cache_is_scoped_to_each_event_and_target_type(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    decode = Mock(wraps=decode_cdp)
-    monkeypatch.setattr("cdpify.events.dispatcher.decode_cdp", decode)
+    construct = _observe_construction(monkeypatch, _Event)
+    construct_custom = _observe_construction(monkeypatch, _UnnamedEvent)
     router = EventRouter()
     events = router.listen(_Event, session_id=None)
     duplicates = router.listen(_Event, session_id=None)
@@ -338,9 +343,10 @@ async def test_decode_cache_is_scoped_to_each_event_and_target_type(
     assert first is copies[0]
     assert second is copies[1]
     assert first is not second
+    assert construct.call_count == 2
+    assert construct_custom.call_count == 2
     assert [first, second] == [_Event(1), _Event(2)]
     assert other_types == [_UnnamedEvent(1), _UnnamedEvent(2)]
-    assert decode.call_count == 4
 
 
 @pytest.mark.asyncio
