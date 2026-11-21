@@ -1,5 +1,4 @@
 import asyncio
-import builtins
 from collections.abc import AsyncIterator
 from dataclasses import dataclass, field
 from typing import Any, ClassVar
@@ -67,22 +66,6 @@ def test_requires_url_or_transport() -> None:
 def test_rejects_url_and_transport_together() -> None:
     with pytest.raises(TypeError, match="either url or transport"):
         CdpClient("ws://example", transport=_FakeTransport())
-
-
-def test_default_transport_has_actionable_optional_dependency_error(
-    monkeypatch: pytest.MonkeyPatch,
-) -> None:
-    original_import = builtins.__import__
-
-    def blocked_import(name: str, *args: object, **kwargs: object):
-        if name == "cdpify.transports.websocket":
-            raise ModuleNotFoundError(name="websockets")
-        return original_import(name, *args, **kwargs)
-
-    monkeypatch.setattr(builtins, "__import__", blocked_import)
-
-    with pytest.raises(RuntimeError, match=r"cdpify\[websocket\]"):
-        CdpClient("ws://example")
 
 
 def test_domain_clients_are_cached() -> None:

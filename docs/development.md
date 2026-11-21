@@ -67,6 +67,10 @@ with Python 3.12, 3.13 and 3.14, plus Pyright on the library and the public API
 sample, Smelt on hand-written code and tests, the generated-code drift check
 and the integration suite against Chrome.
 
+Use a single-dot relative import within a package, such as
+`from .schemas import Domain` in the generator. Imports outside the current
+package use an absolute path. Repository YAML files use the `.yaml` extension.
+
 ## Code generation
 
 `cdpify.generator` turns the CDP JSON specification into the packages under

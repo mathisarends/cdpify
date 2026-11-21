@@ -1,10 +1,10 @@
 from typing import Any
 
-from cdpify.domains import DomainAccessors
-from cdpify.events import EventRouter, EventSource
-from cdpify.executor import BoundCommandExecutor
-from cdpify.transport import Transport
-from cdpify.unset import UNSET, UnsetType
+from .domains import DomainAccessors
+from .events import EventRouter, EventSource
+from .executor import BoundCommandExecutor
+from .transport import Transport
+from .unset import UNSET, UnsetType
 
 
 class CdpSession(DomainAccessors, EventSource):

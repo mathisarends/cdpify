@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Downloads the latest CDP protocol spec and regenerates cdpify/domains.
-# Used by .github/workflows/update-cdp-spec.yml to open a PR when the
+# Used by .github/workflows/update-cdp-spec.yaml to open a PR when the
 # upstream spec changed. Can also be run locally: ./scripts/update_cdp_spec.sh
 set -euo pipefail
 

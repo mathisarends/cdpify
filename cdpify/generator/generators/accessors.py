@@ -1,8 +1,9 @@
-from cdpify.generator.generators.constants import HEADER
-from cdpify.generator.generators.views import DomainView
 from cdpify.generator.rendering import render_template
 from cdpify.generator.schemas import Domain
 from cdpify.shared.naming import to_snake_case
+
+from .constants import HEADER
+from .views import DomainView
 
 
 def generate(domains: list[Domain]) -> str:

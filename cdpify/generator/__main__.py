@@ -2,9 +2,9 @@ import argparse
 from collections.abc import Sequence
 from pathlib import Path
 
-from cdpify.generator.downloader import download_specs
-from cdpify.generator.generator import generate_domains
-from cdpify.generator.schemas import CDPSpecs, Domain
+from .downloader import download_specs
+from .generator import generate_domains
+from .schemas import CDPSpecs, Domain
 
 __all__ = ["main"]
 

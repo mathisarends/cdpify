@@ -1,16 +1,17 @@
-from cdpify.generator.generators.annotations import resolve_type
-from cdpify.generator.generators.constants import FUTURE_ANNOTATIONS, HEADER
-from cdpify.generator.generators.context import GenerationContext
-from cdpify.generator.generators.docstrings import method_docstring
-from cdpify.generator.generators.names import (
+from cdpify.generator.rendering import render_template
+from cdpify.generator.schemas import Command, Domain, Parameter
+
+from .annotations import resolve_type
+from .constants import FUTURE_ANNOTATIONS, HEADER
+from .context import GenerationContext
+from .docstrings import method_docstring
+from .names import (
     require_unique_names,
     to_enum_name,
     to_identifier,
     to_pascal_case,
 )
-from cdpify.generator.generators.views import FieldView, MethodView
-from cdpify.generator.rendering import render_template
-from cdpify.generator.schemas import Command, Domain, Parameter
+from .views import FieldView, MethodView
 
 
 def generate(domain: Domain) -> str:

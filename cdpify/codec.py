@@ -8,8 +8,8 @@ from functools import cache
 from types import MappingProxyType, UnionType
 from typing import Any, TypeAliasType, Union, get_args, get_origin, get_type_hints
 
-from cdpify.error import CDPDecodeError
-from cdpify.unset import UNSET
+from .error import CDPDecodeError
+from .unset import UNSET
 
 logger = logging.getLogger(__name__)
 

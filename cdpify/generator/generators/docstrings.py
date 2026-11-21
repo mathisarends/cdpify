@@ -2,8 +2,9 @@
 
 import textwrap
 
-from cdpify.generator.generators.names import to_identifier
 from cdpify.generator.schemas import Command
+
+from .names import to_identifier
 
 
 def method_docstring(command: Command) -> str:

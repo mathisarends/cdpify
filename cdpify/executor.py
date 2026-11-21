@@ -2,9 +2,9 @@ import asyncio
 from collections.abc import Awaitable, Callable
 from typing import Any, Protocol
 
-from cdpify.error import CDPTimeoutError
-from cdpify.transport import Transport
-from cdpify.unset import UNSET, UnsetType
+from .error import CDPTimeoutError
+from .transport import Transport
+from .unset import UNSET, UnsetType
 
 
 class CommandExecutor(Protocol):

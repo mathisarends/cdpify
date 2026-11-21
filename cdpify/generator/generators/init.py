@@ -1,17 +1,18 @@
-from cdpify.generator.generators.constants import HEADER
-from cdpify.generator.generators.names import (
+from cdpify.generator.rendering import render_template
+from cdpify.generator.schemas import Domain
+from cdpify.shared.naming import to_snake_case
+
+from .constants import HEADER
+from .names import (
     event_class_name,
     require_unique_names,
     to_pascal_case,
 )
-from cdpify.generator.generators.views import (
+from .views import (
     DomainView,
     ImportBlockView,
     LazyExportView,
 )
-from cdpify.generator.rendering import render_template
-from cdpify.generator.schemas import Domain
-from cdpify.shared.naming import to_snake_case
 
 
 def generate(domain: Domain) -> str:

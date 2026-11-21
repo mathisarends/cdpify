@@ -1,17 +1,18 @@
-from cdpify.generator.generators.annotations import map_cdp_type, resolve_type
-from cdpify.generator.generators.constants import FUTURE_ANNOTATIONS, HEADER
-from cdpify.generator.generators.context import GenerationContext
-from cdpify.generator.generators.docstrings import api_description, format_docstring
-from cdpify.generator.generators.names import to_enum_name
-from cdpify.generator.generators.views import (
+from cdpify.generator.rendering import render_template
+from cdpify.generator.schemas import Domain, Parameter, TypeDefinition
+
+from .annotations import map_cdp_type, resolve_type
+from .constants import FUTURE_ANNOTATIONS, HEADER
+from .context import GenerationContext
+from .docstrings import api_description, format_docstring
+from .names import to_enum_name
+from .views import (
     EnumMemberView,
     FieldView,
     TypeDefinitionView,
     dataclass_import,
     model_fields,
 )
-from cdpify.generator.rendering import render_template
-from cdpify.generator.schemas import Domain, Parameter, TypeDefinition
 
 _OPTIONAL_OVERRIDES: dict[str, set[str]] = {
     "DocumentSnapshot": {"documentURL", "baseURL"},

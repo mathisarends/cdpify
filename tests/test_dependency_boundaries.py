@@ -2,6 +2,7 @@ import ast
 import subprocess
 import sys
 import tomllib
+from importlib.util import resolve_name
 from pathlib import Path
 
 _PROJECT_ROOT = Path(__file__).parents[1]
@@ -118,14 +119,38 @@ def test_core_package_imports_without_optional_dependencies() -> None:
     assert imported.stdout.strip() == "CdpClient"
 
 
+def test_default_transport_has_actionable_optional_dependency_error() -> None:
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-c",
+            "import sys; sys.modules['websockets'] = None; "
+            "from cdpify import CdpClient; CdpClient('ws://example')",
+        ],
+        cwd=_PROJECT_ROOT,
+        timeout=30,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+
+    assert result.returncode == 1
+    assert result.stderr.rstrip().endswith(
+        "RuntimeError: The default WebSocket transport requires cdpify[websocket]"
+    )
+
+
 def _imported_names(source_path: Path) -> set[str]:
     tree = ast.parse(source_path.read_text(encoding="utf-8"))
+    package = ".".join(source_path.parent.relative_to(_PROJECT_ROOT).parts)
     imported_names: set[str] = set()
 
     for node in ast.walk(tree):
         if isinstance(node, ast.Import):
             imported_names.update(alias.name for alias in node.names)
-        elif isinstance(node, ast.ImportFrom) and node.module:
-            imported_names.add(node.module)
+        elif isinstance(node, ast.ImportFrom):
+            module = resolve_name("." * node.level + (node.module or ""), package)
+            imported_names.add(module)
+            imported_names.update(f"{module}.{alias.name}" for alias in node.names)
 
     return imported_names

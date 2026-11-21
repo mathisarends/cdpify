@@ -1,17 +1,18 @@
-from cdpify.generator.generators.annotations import resolve_type
-from cdpify.generator.generators.constants import FUTURE_ANNOTATIONS, HEADER
-from cdpify.generator.generators.context import GenerationContext
-from cdpify.generator.generators.docstrings import api_description, format_docstring
-from cdpify.generator.generators.names import event_class_name, to_enum_name
-from cdpify.generator.generators.views import (
+from cdpify.generator.rendering import render_template
+from cdpify.generator.schemas import Domain, Event, Parameter
+
+from .annotations import resolve_type
+from .constants import FUTURE_ANNOTATIONS, HEADER
+from .context import GenerationContext
+from .docstrings import api_description, format_docstring
+from .names import event_class_name, to_enum_name
+from .views import (
     EnumMemberView,
     FieldView,
     ModelView,
     dataclass_import,
     model_fields,
 )
-from cdpify.generator.rendering import render_template
-from cdpify.generator.schemas import Domain, Event, Parameter
 
 _OPTIONAL_OVERRIDES: dict[str, set[str]] = {
     "Network.requestWillBeSent": {"documentURL"},

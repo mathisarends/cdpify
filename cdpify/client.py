@@ -3,14 +3,14 @@ import logging
 from functools import partial
 from typing import Any, Literal, Self
 
-from cdpify.domains import DomainAccessors
-from cdpify.error import CDPConnectionError
-from cdpify.event_queue import OverflowPolicy
-from cdpify.events import EventRouter, EventSource, EventSubscription, ReceivedEvent
-from cdpify.executor import BoundCommandExecutor
-from cdpify.session import CdpSession
-from cdpify.transport import CallbackTransport, Transport, TransportEvent
-from cdpify.unset import UNSET, UnsetType
+from .domains import DomainAccessors
+from .error import CDPConnectionError
+from .event_queue import OverflowPolicy
+from .events import EventRouter, EventSource, EventSubscription, ReceivedEvent
+from .executor import BoundCommandExecutor
+from .session import CdpSession
+from .transport import CallbackTransport, Transport, TransportEvent
+from .unset import UNSET, UnsetType
 
 logger = logging.getLogger(__name__)
 
@@ -236,7 +236,7 @@ def _resolve_transport(
         raise TypeError("CdpClient requires either url or transport")
 
     try:
-        from cdpify.transports.websocket import WebSocketTransport
+        from .transports.websocket import WebSocketTransport
     except ModuleNotFoundError as error:
         if error.name == "websockets":
             raise RuntimeError(
