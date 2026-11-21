@@ -1,8 +1,7 @@
 # Releasing cdpify
 
-Version 0.5.0 is prepared in `pyproject.toml` and `uv.lock`. Its
-[changelog entry](CHANGELOG.md#050---unreleased) remains marked **Unreleased**
-until publication. Release preparation does not publish a package or create a tag.
+The [0.6.0 release notes](CHANGELOG.md#060---2026-11-21) document the changes
+since 0.5.0. The package version is set in `pyproject.toml` and `uv.lock`.
 
 ## Validate the release candidate
 
@@ -13,6 +12,7 @@ uv sync --dev --extra orjson --locked
 uv run --extra orjson pytest
 uv run ruff check . --exclude cdpify/domains
 uv run ruff format --check . --exclude cdpify/domains
+uv run --locked smelt check --fail-on warning --show-hints
 uv run --extra orjson pyright
 uv run python scripts/check_generated.py
 uv run --extra orjson pytest -m integration -v
@@ -34,7 +34,7 @@ Build both distributions and validate their package metadata:
 
 ```bash
 uv build
-uvx twine check dist/cdpify-0.5.0-py3-none-any.whl dist/cdpify-0.5.0.tar.gz
+uvx twine check --strict dist/cdpify-0.6.0-py3-none-any.whl dist/cdpify-0.6.0.tar.gz
 ```
 
 Smoke-test the wheel from outside the source checkout in a clean environment.
@@ -43,34 +43,34 @@ domains import, and that the wheel contains `cdpify/py.typed` and the generator'
 `templates/*.jinja2` files. Install the `websocket` extra for a real connection
 and the `generator` extra when testing generation. Check the source distribution
 too: it must include the README, changelog and this checklist, and build a wheel
-with the same version and package files.
+with the same version and package files. Verify the documentation links in the
+README also work from the PyPI project description.
 
 ## Publish when ready
 
-1. Review the [0.4.0 migration guide](docs/migration.md#04x--050) and the
-   complete 0.5.0 changelog against the changes since `v0.4.0`.
-2. Replace `Unreleased` in the 0.5.0 changelog heading with the actual publication
-   date (`YYYY-MM-DD`), remove the release-preparation sentence, and update links
-   to that heading and the release-status paragraph in this checklist. Commit
-   the release changes and merge them into `main` after CI passes.
+1. Review the [0.5.x to 0.6.0 migration guide](docs/migration.md#05x--060) and
+   the complete 0.6.0 changelog against the changes since `v0.5.0`.
+2. Confirm the changelog heading uses the publication date (`YYYY-MM-DD`)
+   and this checklist links to it. Commit the release changes and merge them
+   into `main` after CI passes.
 3. Rebuild and validate both distributions from that exact commit. Use the
-   explicit 0.5.0 filenames so older files in `dist/` are excluded.
+   explicit 0.6.0 filenames so older files in `dist/` are excluded.
 4. Tag the validated commit and push the tag:
 
    ```bash
-   git tag -a v0.5.0 -m "Release 0.5.0"
-   git push origin v0.5.0
+   git tag -a v0.6.0 -m "Release 0.6.0"
+   git push origin v0.6.0
    ```
 
 5. Publish the artifacts using the project's PyPI credentials:
 
    ```bash
-   uv publish dist/cdpify-0.5.0-py3-none-any.whl dist/cdpify-0.5.0.tar.gz
+   uv publish dist/cdpify-0.6.0-py3-none-any.whl dist/cdpify-0.6.0.tar.gz
    ```
 
-6. Create a GitHub release for `v0.5.0` using the changelog's 0.5.0 section as
+6. Create a GitHub release for `v0.6.0` using the changelog's 0.6.0 section as
    release notes, with breaking changes first. Verify the installed version
-   from PyPI in a clean environment with `pip install "cdpify[websocket]==0.5.0"`.
+   from PyPI in a clean environment with `pip install "cdpify[websocket]==0.6.0"`.
 
 The repository currently has CI and weekly spec-update workflows; neither
 publishes to PyPI. Pushing a tag alone does not publish the package.
