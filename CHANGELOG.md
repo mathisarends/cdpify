@@ -6,6 +6,14 @@ All notable changes to this project are documented here.
 
 ### Breaking changes
 
+- Library timeout keywords now include the unit in their names:
+  `timeout_seconds` on command execution and event reads/subscriptions,
+  `default_timeout_seconds` for the client's command budget, and
+  `open_timeout_seconds` / `close_timeout_seconds` for WebSocket connections.
+  Update keyword calls and custom transports to use these names. Timeout values and
+  defaults are unchanged and use seconds. Generated CDP parameters keep their spec names
+  and units (for example, `Runtime.evaluate(timeout=...)` uses milliseconds).
+
 - Multiword domain packages now match their Python accessors, for example
   `cdpify.domains.indexed_db`. Use `network.set_blocked_urls(...)` and
   `NetworkCommand.SET_BLOCKED_URLS` for CDP's `Network.setBlockedURLs`.
@@ -19,8 +27,9 @@ All notable changes to this project are documented here.
 - **Breaking change after 0.5.0:** `CdpClient.execute()` and
   `CdpSession.execute()` now require keyword arguments
   after `method` and `params`. Migrate `client.execute(method, params, sid, t)`
-  to `client.execute(method, params, session_id=sid, timeout=t)`, and
-  `session.execute(method, params, t)` to `session.execute(method, params, timeout=t)`.
+  to `client.execute(method, params, session_id=sid, timeout_seconds=t)`, and
+  `session.execute(method, params, t)` to
+  `session.execute(method, params, timeout_seconds=t)`.
 
 ## [0.5.0] - Unreleased
 

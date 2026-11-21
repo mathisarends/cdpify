@@ -86,6 +86,7 @@ rules:
   modeling/dataclass-field-mutation: warning
   modeling/missing-dataclass-option: warning
   modeling/duplicate-class-name: warning
+  modeling/implicit-duration-unit: error
   modeling/mutable-field-in-frozen-dataclass: warning
   modeling/str-enum-value-convention: warning
   idioms/bundled-instance-assignment: error
@@ -93,6 +94,7 @@ rules:
   idioms/missing-broad-except-reason: warning
   idioms/duplicate-narrowing-assert: warning
   idioms/loop-invariant-collection: warning
+  tests/private-access: error
   tests/string-patch-target: error
   tests/missing-outcome-check: warning
   tests/vacuous-assertion: error

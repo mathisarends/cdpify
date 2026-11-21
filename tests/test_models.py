@@ -2,12 +2,11 @@
 
 import importlib
 import pkgutil
-from dataclasses import dataclass, field, is_dataclass
+from dataclasses import dataclass, field, fields, is_dataclass
 
 import pytest
 
-from cdpify import domains
-from cdpify.codec import _compile_model, decode_cdp, encode_cdp
+from cdpify import decode_cdp, domains, encode_cdp
 from cdpify.domains.accessibility import AXNode
 from cdpify.domains.dom.commands import GetOuterHTMLParams
 from cdpify.domains.network import (
@@ -139,7 +138,12 @@ def test_every_generated_model_has_resolvable_field_types(
     models = _generated_models()
 
     for model in models:
-        _compile_model(model)
+        payload = {
+            member.metadata.get("cdp_name", member.name): None
+            for member in fields(model)
+            if member.init and member.metadata.get("cdp", True)
+        }
+        assert type(decode_cdp(model, payload)) is model
 
     assert len(models) > 1000
     assert "Cannot resolve type" not in caplog.text

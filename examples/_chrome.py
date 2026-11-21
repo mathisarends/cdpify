@@ -10,6 +10,7 @@ from urllib.error import URLError
 from urllib.request import urlopen
 
 DEBUG_PORT = 9222
+_DEBUG_PORT_POLL_SECONDS = 0.2
 PROFILE_DIR = Path(tempfile.gettempdir()) / "cdpify-chrome-profile"
 
 CHROME_CANDIDATES = [
@@ -38,7 +39,7 @@ def _is_debug_port_open() -> bool:
 
 
 def ensure_chrome_running(
-    timeout: float = 10.0, start_url: str = "about:blank"
+    timeout_seconds: float = 10.0, start_url: str = "about:blank"
 ) -> None:
     """Start Chrome with remote debugging enabled, unless it's already running.
 
@@ -66,13 +67,13 @@ def ensure_chrome_running(
         stderr=subprocess.DEVNULL,
     )
 
-    deadline = time.monotonic() + timeout
+    deadline = time.monotonic() + timeout_seconds
     while time.monotonic() < deadline:
         if _is_debug_port_open():
             return
-        time.sleep(0.2)
+        time.sleep(_DEBUG_PORT_POLL_SECONDS)
 
-    raise RuntimeError(f"Chrome did not open the debug port within {timeout}s")
+    raise RuntimeError(f"Chrome did not open the debug port within {timeout_seconds}s")
 
 
 def get_ws_url(start_url: str = "about:blank") -> str:

@@ -80,7 +80,7 @@ class EventRouter:
         event_type: type[T],
         *,
         session_id: str | None,
-        timeout: float | None = None,
+        timeout_seconds: float | None = None,
         event_name: str | None = None,
         max_queue_size: int | None = None,
         overflow: OverflowPolicy | None = None,
@@ -89,7 +89,7 @@ class EventRouter:
             _resolve_event_name(event_type, event_name),
             lambda event: event.decode(event_type),
             session_id=session_id,
-            timeout=timeout,
+            timeout_seconds=timeout_seconds,
             max_queue_size=max_queue_size,
             overflow=overflow,
         )
@@ -98,7 +98,7 @@ class EventRouter:
         self,
         event_type: type[T],
         *,
-        timeout: float | None = None,
+        timeout_seconds: float | None = None,
         event_name: str | None = None,
         max_queue_size: int | None = None,
         overflow: OverflowPolicy | None = None,
@@ -110,7 +110,7 @@ class EventRouter:
                 session_id=event.session_id,
             ),
             all_sessions=True,
-            timeout=timeout,
+            timeout_seconds=timeout_seconds,
             max_queue_size=max_queue_size,
             overflow=overflow,
         )
@@ -121,7 +121,7 @@ class EventRouter:
         *,
         session_id: str | None,
         all_sessions: bool = False,
-        timeout: float | None = None,
+        timeout_seconds: float | None = None,
         max_queue_size: int | None = None,
         overflow: OverflowPolicy | None = None,
     ) -> EventSubscription[TransportEvent]:
@@ -131,7 +131,7 @@ class EventRouter:
             lambda event: TransportEvent(event.method, event.params, event.session_id),
             session_id=session_id,
             all_sessions=all_sessions,
-            timeout=timeout,
+            timeout_seconds=timeout_seconds,
             max_queue_size=max_queue_size,
             overflow=overflow,
         )
@@ -143,7 +143,7 @@ class EventRouter:
         *,
         session_id: str | None = None,
         all_sessions: bool = False,
-        timeout: float | None,
+        timeout_seconds: float | None,
         max_queue_size: int | None,
         overflow: OverflowPolicy | None,
     ) -> EventSubscription[T]:
@@ -156,7 +156,10 @@ class EventRouter:
         if self._closed:
             buffer.finish()
             return EventSubscription(
-                buffer, convert, timeout=timeout, unsubscribe=_do_nothing
+                buffer,
+                convert,
+                timeout_seconds=timeout_seconds,
+                unsubscribe=_do_nothing,
             )
 
         scope = None if all_sessions else session_id
@@ -188,7 +191,7 @@ class EventRouter:
         )
         self._buffers.setdefault(scope, set()).add(buffer)
         return EventSubscription(
-            buffer, convert, timeout=timeout, unsubscribe=unsubscribe
+            buffer, convert, timeout_seconds=timeout_seconds, unsubscribe=unsubscribe
         )
 
 

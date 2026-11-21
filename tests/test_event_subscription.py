@@ -45,7 +45,7 @@ async def test_generated_enum_event_marker_routes_wire_strings() -> None:
             is True
         )
 
-        event = await events.next(timeout=1.0)
+        event = await events.next(timeout_seconds=1.0)
         assert event.type is ResourceType.FETCH
 
 
@@ -56,7 +56,7 @@ async def test_events_before_first_read_are_buffered() -> None:
 
     await router.dispatch(_event(1))
 
-    assert await events.next(timeout=1.0) == _Event(value=1)
+    assert await events.next(timeout_seconds=1.0) == _Event(value=1)
 
 
 @pytest.mark.asyncio
@@ -76,7 +76,7 @@ async def test_next_raises_timeout_error_without_events() -> None:
     events = router.listen(_Event, session_id=None)
 
     with pytest.raises(TimeoutError):
-        await events.next(timeout=0.01)
+        await events.next(timeout_seconds=0.01)
 
 
 @pytest.mark.asyncio
@@ -84,24 +84,24 @@ async def test_zero_timeout_reads_buffered_events_or_reports_empty_queue() -> No
     router = EventRouter()
     events = router.listen(_Event, session_id=None)
     with pytest.raises(TimeoutError):
-        await events.next(timeout=0)
+        await events.next(timeout_seconds=0)
 
     await router.dispatch(_event(1))
-    assert await events.next(timeout=0) == _Event(1)
+    assert await events.next(timeout_seconds=0) == _Event(1)
     with pytest.raises(TimeoutError):
-        await events.next(timeout=0)
+        await events.next(timeout_seconds=0)
 
     await router.dispatch(_event(2))
     router.close()
-    assert await events.next(timeout=0) == _Event(2)
+    assert await events.next(timeout_seconds=0) == _Event(2)
     with pytest.raises(CDPStreamClosedError):
-        await events.next(timeout=0)
+        await events.next(timeout_seconds=0)
 
 
 @pytest.mark.asyncio
 async def test_next_uses_listen_timeout_by_default() -> None:
     router = EventRouter()
-    events = router.listen(_Event, session_id=None, timeout=0.01)
+    events = router.listen(_Event, session_id=None, timeout_seconds=0.01)
 
     with pytest.raises(TimeoutError):
         await events.next()
@@ -160,7 +160,7 @@ async def test_listen_all_wraps_events_with_session_id() -> None:
     events = router.listen_all(_Event)
 
     await router.dispatch(_event(1, session_id="S1"))
-    received = await events.next(timeout=1.0)
+    received = await events.next(timeout_seconds=1.0)
 
     assert received.value == _Event(value=1)
     assert received.session_id == "S1"
@@ -184,18 +184,18 @@ async def test_detaching_session_ends_only_its_subscriptions_after_drain() -> No
     )
     await router.dispatch(notification)
 
-    assert await parent.next(timeout=1.0) == notification
+    assert await parent.next(timeout_seconds=1.0) == notification
     assert await asyncio.wait_for(reader, timeout=1.0) is None
-    assert await detached.next(timeout=1.0) == _Event(1)
+    assert await detached.next(timeout_seconds=1.0) == _Event(1)
     with pytest.raises(CDPStreamClosedError):
-        await detached.next(timeout=1.0)
+        await detached.next(timeout_seconds=1.0)
 
     await router.dispatch(_event(2))
     await router.dispatch(_event(3, session_id="parent"))
-    assert await root.next(timeout=1.0) == _Event(2)
-    assert await parent_events.next(timeout=1.0) == _Event(3)
-    assert (await all_events.next(timeout=1.0)).session_id == "child"
-    assert (await all_events.next(timeout=1.0)).value == _Event(2)
+    assert await root.next(timeout_seconds=1.0) == _Event(2)
+    assert await parent_events.next(timeout_seconds=1.0) == _Event(3)
+    assert (await all_events.next(timeout_seconds=1.0)).session_id == "child"
+    assert (await all_events.next(timeout_seconds=1.0)).value == _Event(2)
 
 
 @dataclass
@@ -217,7 +217,7 @@ async def test_event_name_overrides_cdp_event() -> None:
 
     await router.dispatch(TransportEvent("Custom.event", {"value": 5}))
 
-    assert await events.next(timeout=1.0) == _UnnamedEvent(value=5)
+    assert await events.next(timeout_seconds=1.0) == _UnnamedEvent(value=5)
 
 
 @pytest.mark.asyncio
@@ -258,7 +258,7 @@ async def test_timed_out_or_cancelled_read_does_not_lose_next_event() -> None:
     router = EventRouter(max_queue_size=1)
     events = router.listen(_Event, session_id=None)
     with pytest.raises(TimeoutError):
-        await events.next(timeout=0.01)
+        await events.next(timeout_seconds=0.01)
     reader = asyncio.create_task(events.next())
     await asyncio.sleep(0)
     reader.cancel()
@@ -267,7 +267,7 @@ async def test_timed_out_or_cancelled_read_does_not_lose_next_event() -> None:
 
     await router.dispatch(_event(3))
 
-    assert await events.next(timeout=1.0) == _Event(3)
+    assert await events.next(timeout_seconds=1.0) == _Event(3)
     await events.aclose()
 
 
@@ -307,9 +307,9 @@ async def test_matching_listeners_decode_once_and_share_model(
     await router.dispatch(_event(1, session_id=session_id))
     construct.assert_not_called()
 
-    shared = await first.next(timeout=1.0)
-    assert await second.next(timeout=1.0) is shared
-    received = await all_events.next(timeout=1.0)
+    shared = await first.next(timeout_seconds=1.0)
+    assert await second.next(timeout_seconds=1.0) is shared
+    received = await all_events.next(timeout_seconds=1.0)
     assert received.value is shared
     assert received.session_id == session_id
     construct.assert_called_once_with(shared, value=1)
@@ -356,10 +356,10 @@ async def test_shared_event_mutations_are_visible_to_other_listeners() -> None:
     second = router.listen(_Event, session_id=None)
     await router.dispatch(_event(1))
 
-    shared = await first.next(timeout=1.0)
+    shared = await first.next(timeout_seconds=1.0)
     shared.value = 99
 
-    assert (await second.next(timeout=1.0)).value == 99
+    assert (await second.next(timeout_seconds=1.0)).value == 99
     await first.aclose()
     await second.aclose()
 
@@ -370,7 +370,7 @@ async def test_decode_cache_is_released_when_remaining_listener_closes() -> None
     first = router.listen(_Event, session_id=None)
     slow = router.listen(_Event, session_id=None)
     await router.dispatch(_event(1))
-    model = await first.next(timeout=1.0)
+    model = await first.next(timeout_seconds=1.0)
     reference = weakref.ref(model)
     del model
     await first.aclose()

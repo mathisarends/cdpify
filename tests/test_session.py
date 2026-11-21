@@ -7,6 +7,7 @@ from unittest.mock import AsyncMock, call
 import pytest
 
 from cdpify import CdpClient, CdpSession, CDPSessionClosedError
+from cdpify.error import CDPStreamClosedError
 from cdpify.transport import TransportEvent
 
 
@@ -55,9 +56,14 @@ async def test_attach_requests_flat_session_and_routes_commands() -> None:
             method="Target.attachToTarget",
             params={"targetId": "target-1", "flatten": True},
             session_id=None,
-            timeout=None,
+            timeout_seconds=None,
         ),
-        call(method="Page.enable", params={}, session_id="session-1", timeout=None),
+        call(
+            method="Page.enable",
+            params={},
+            session_id="session-1",
+            timeout_seconds=None,
+        ),
     ]
 
 
@@ -90,7 +96,12 @@ async def test_generated_commands_are_bound_to_session() -> None:
     await session.page.enable()
 
     assert transport.execute.await_args_list == [
-        call(method="Page.enable", params={}, session_id="session-2", timeout=None)
+        call(
+            method="Page.enable",
+            params={},
+            session_id="session-2",
+            timeout_seconds=None,
+        )
     ]
 
 
@@ -103,13 +114,15 @@ async def test_low_level_execute_cannot_override_bound_session() -> None:
         await session.execute("Page.enable", {}, None)  # type: ignore[call-arg]
     transport.execute.assert_not_called()
 
-    await session.execute("Runtime.evaluate", {"expression": "1 + 1"}, timeout=None)
+    await session.execute(
+        "Runtime.evaluate", {"expression": "1 + 1"}, timeout_seconds=None
+    )
 
     transport.execute.assert_awaited_once_with(
         method="Runtime.evaluate",
         params={"expression": "1 + 1"},
         session_id="session-2",
-        timeout=None,
+        timeout_seconds=None,
     )
     with pytest.raises(TypeError):
         await session.execute(  # type: ignore[call-arg]
@@ -137,13 +150,13 @@ async def test_sessions_are_safe_to_use_concurrently() -> None:
                 method="Page.enable",
                 params={},
                 session_id="A",
-                timeout=None,
+                timeout_seconds=None,
             ),
             call(
                 method="Page.enable",
                 params={},
                 session_id="B",
-                timeout=None,
+                timeout_seconds=None,
             ),
         ],
         any_order=True,
@@ -155,7 +168,7 @@ async def test_session_listener_filters_other_sessions() -> None:
     transport = _Transport()
     client = CdpClient(transport=transport)  # type: ignore[arg-type]
     await client.connect()
-    stream = client.bind_session("A").listen(_Event, timeout=1.0)
+    stream = client.bind_session("A").listen(_Event, timeout_seconds=1.0)
     next_event = asyncio.create_task(anext(stream))
     await asyncio.sleep(0)
 
@@ -171,27 +184,28 @@ async def test_session_listener_filters_other_sessions() -> None:
 async def test_detached_session_cannot_send_or_subscribe_again() -> None:
     transport = _Transport()
     client = CdpClient(transport=transport)
-    tab = client.bind_session("A")
-    domain = tab.page
-    await client._dispatch_event(
-        TransportEvent("Target.detachedFromTarget", {"sessionId": "A"})
-    )
+    async with client:
+        tab = client.bind_session("A")
+        domain = tab.page
+        events = tab.listen_raw()
+        transport.emit(TransportEvent("Target.detachedFromTarget", {"sessionId": "A"}))
+        with pytest.raises(CDPStreamClosedError):
+            await events.next(timeout_seconds=1.0)
 
-    with pytest.raises(CDPSessionClosedError) as error:
-        tab.listen(_Event)
-    assert error.value.session_id == "A"
-    with pytest.raises(CDPSessionClosedError):
-        client.bind_session("A").listen_raw()
-    with pytest.raises(CDPSessionClosedError):
-        await domain.enable()
-    with pytest.raises(CDPSessionClosedError):
-        await tab.execute("Page.enable")
-    with pytest.raises(CDPSessionClosedError):
-        await client.execute("Page.enable", session_id="A")
-    transport.execute.assert_not_awaited()
-    await client.bind_session("B").page.enable()
+        with pytest.raises(CDPSessionClosedError) as error:
+            tab.listen(_Event)
+        assert error.value.session_id == "A"
+        with pytest.raises(CDPSessionClosedError):
+            client.bind_session("A").listen_raw()
+        with pytest.raises(CDPSessionClosedError):
+            await domain.enable()
+        with pytest.raises(CDPSessionClosedError):
+            await tab.execute("Page.enable")
+        with pytest.raises(CDPSessionClosedError):
+            await client.execute("Page.enable", session_id="A")
+        transport.execute.assert_not_awaited()
+        await client.bind_session("B").page.enable()
 
-    await client.disconnect()
     async with client:
         with pytest.raises(CDPSessionClosedError):
             tab.listen_raw()

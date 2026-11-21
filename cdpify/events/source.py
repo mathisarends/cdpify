@@ -16,7 +16,7 @@ class EventSource:
         self,
         event_type: type[T],
         *,
-        timeout: float | None = None,
+        timeout_seconds: float | None = None,
         event_name: str | None = None,
         max_queue_size: int | None = None,
         overflow: OverflowPolicy | None = None,
@@ -24,7 +24,7 @@ class EventSource:
         """Subscribe to events from this connection or bound session only.
 
         Pass a generated event class such as ``RequestWillBeSentEvent`` or a
-        custom dataclass with ``event_name``. ``timeout`` limits each read.
+        custom dataclass with ``event_name``. ``timeout_seconds`` limits each read.
         ``max_queue_size`` overrides the client's default for this subscription;
         zero is unlimited. Full buffers terminate the stream with
         CDPEventOverflowError by default. Explicit overflow="drop_oldest"
@@ -36,7 +36,7 @@ class EventSource:
         return self._event_router.listen(
             event_type,
             session_id=self._session_id,
-            timeout=timeout,
+            timeout_seconds=timeout_seconds,
             event_name=event_name,
             max_queue_size=max_queue_size,
             overflow=overflow,
@@ -46,7 +46,7 @@ class EventSource:
         self,
         method: str | None = None,
         *,
-        timeout: float | None = None,
+        timeout_seconds: float | None = None,
         max_queue_size: int | None = None,
         overflow: OverflowPolicy | None = None,
     ) -> EventSubscription[TransportEvent]:
@@ -59,7 +59,7 @@ class EventSource:
         return self._event_router.listen_raw(
             method,
             session_id=self._session_id,
-            timeout=timeout,
+            timeout_seconds=timeout_seconds,
             max_queue_size=max_queue_size,
             overflow=overflow,
         )

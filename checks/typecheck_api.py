@@ -14,7 +14,7 @@ async def usage(client: CdpClient) -> None:
         client.listen(RequestWillBeSentEvent), EventSubscription[RequestWillBeSentEvent]
     )
     async with client.listen_all(RequestWillBeSentEvent) as events:
-        received = await events.next(timeout=1)
+        received = await events.next(timeout_seconds=1)
         assert_type(received, ReceivedEvent[RequestWillBeSentEvent])
         assert_type(received.value.request.url, str)
     session_result = await client.bind_session("S1").runtime.evaluate(expression="1")

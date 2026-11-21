@@ -31,8 +31,8 @@ class WebSocketTransport:
         max_queue_size: int = 0,
         overflow: OverflowPolicy = "error",
         compression: Literal["deflate"] | None = None,
-        open_timeout: float | None = 10.0,
-        close_timeout: float | None = 10.0,
+        open_timeout_seconds: float | None = 10.0,
+        close_timeout_seconds: float | None = 10.0,
     ) -> None:
         self.url = url
         self._additional_headers = additional_headers
@@ -40,8 +40,8 @@ class WebSocketTransport:
         self._max_queue_size = max_queue_size
         self._overflow: OverflowPolicy = overflow
         self._compression = compression
-        self._open_timeout = open_timeout
-        self._close_timeout = close_timeout
+        self._open_timeout_seconds = open_timeout_seconds
+        self._close_timeout_seconds = close_timeout_seconds
 
         self._connection_lock = asyncio.Lock()
         self._ws: ClientConnection | None = None
@@ -92,8 +92,8 @@ class WebSocketTransport:
                     max_size=self._max_frame_size,
                     additional_headers=self._additional_headers,
                     compression=self._compression,
-                    open_timeout=self._open_timeout,
-                    close_timeout=self._close_timeout,
+                    open_timeout=self._open_timeout_seconds,
+                    close_timeout=self._close_timeout_seconds,
                 )
             except Exception as error:
                 raise CDPConnectionError(f"Connection failed: {error}") from error
@@ -139,7 +139,7 @@ class WebSocketTransport:
         method: str,
         params: dict[str, Any] | None = None,
         session_id: str | None = None,
-        timeout: float | None = None,
+        timeout_seconds: float | None = None,
     ) -> dict[str, Any]:
         if not self.is_connected or self._is_shutting_down:
             raise CDPConnectionError("Not connected")
@@ -152,7 +152,7 @@ class WebSocketTransport:
         try:
             return await with_command_timeout(
                 method,
-                timeout,
+                timeout_seconds,
                 self._send_and_receive(message_id, method, message, future),
             )
         finally:

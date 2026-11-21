@@ -72,7 +72,7 @@ Version 0.5.0 includes breaking changes. Review these before updating:
 | Error imports | Replace `cdpify.exceptions` with `cdpify.error`, or import errors from `cdpify`. The old module is removed. |
 | Optional `Any` values | Use `UNSET` to omit a value. `None` now sends JSON `null`; ordinary optional scalar fields still omit `None`. |
 | Required response fields | Generated responses and typed events now raise `CDPDecodeError` when required fields are missing. For tolerant manual decoding, use `decode_cdp(Model, payload, strict=False)`. |
-| Command deadlines | Configure `default_timeout` on `CdpClient`, including for custom transports. The budget covers sending and receiving. `WebSocketTransport` no longer accepts `default_timeout`. |
+| Command deadlines | Configure `default_timeout_seconds` on `CdpClient`, including for custom transports. The budget covers sending and receiving. `WebSocketTransport` takes its command budget per call. |
 | Bounded event buffers | Overflow now raises `CDPEventOverflowError`. Set `overflow="drop_oldest"` to keep lossy buffering. The default buffer remains unlimited. |
 | WebSocket compression | Compression now defaults to `None`. Set `compression="deflate"` to enable it. |
 
@@ -121,7 +121,7 @@ async def main() -> None:
             navigation = await client.page.navigate(url="https://example.com")
             if navigation.error_text:
                 raise RuntimeError(navigation.error_text)
-            await loaded.next(timeout=10)
+            await loaded.next(timeout_seconds=10)
 
         result = await client.runtime.evaluate(
             expression="document.title",
@@ -221,12 +221,12 @@ from cdpify.domains.page import LoadEventFiredEvent
 await client.page.enable()
 async with client.listen(LoadEventFiredEvent) as events:
     await client.page.navigate(url="https://example.com")
-    await events.next(timeout=10)
+    await events.next(timeout_seconds=10)
 ```
 
 Leaving the `async with` block unsubscribes. A stream also ends when the client
 disconnects; `events.next()` then raises `CDPStreamClosedError`. The optional
-`timeout` on `listen()` limits how long each read waits and raises
+`timeout_seconds` on `listen()` limits how long each read waits and raises
 `TimeoutError` when it expires.
 
 `client.listen()` yields only events from the root connection. A session view
@@ -285,7 +285,7 @@ client = CdpClient(ws_url, max_queue_size=256, overflow="drop_oldest")
 
 async with client:
     async with client.listen(RequestWillBeSentEvent, max_queue_size=32) as events:
-        event = await events.next(timeout=10)
+        event = await events.next(timeout_seconds=10)
         print(events.dropped_events)
 ```
 
@@ -301,7 +301,7 @@ parameter dictionaries without constructing typed models:
 
 ```python
 async with tab.listen_raw("Future.event") as events:
-    event = await events.next(timeout=5)
+    event = await events.next(timeout_seconds=5)
     print(event.method, event.session_id, event.params)
 ```
 
@@ -368,26 +368,26 @@ client = CdpClient(
     url="ws://localhost:9222/devtools/browser/...",
     additional_headers={"Authorization": "Bearer token"},
     max_frame_size=100 * 1024 * 1024,
-    default_timeout=30.0,
+    default_timeout_seconds=30.0,
     max_queue_size=256,
     overflow="error",
     compression=None,
-    open_timeout=10.0,
-    close_timeout=10.0,
+    open_timeout_seconds=10.0,
+    close_timeout_seconds=10.0,
 )
 ```
 
 WebSocket compression is off by default to reduce local CPU work and latency.
 Set `compression="deflate"` when saving network bandwidth is preferable.
-`additional_headers`, `max_frame_size`, `compression`, `open_timeout` and
-`close_timeout` configure the URL-based WebSocket transport. Supplied custom
+`additional_headers`, `max_frame_size`, `compression`, `open_timeout_seconds` and
+`close_timeout_seconds` configure the URL-based WebSocket transport. Custom
 transports own their connection settings.
 
 ### Timeouts
 
-`default_timeout` is a total command budget in seconds, including sending and
-waiting for the response. It applies to root commands and session commands,
-including custom transports. `None` disables the default.
+`default_timeout_seconds` is the total budget for sending a command and waiting
+for its response. It applies to root commands and session commands, including
+custom transports. `None` disables the default.
 
 For one call, or a group of calls, use Python's normal timeout context:
 
@@ -403,9 +403,10 @@ Cancelling the wait does not automatically cancel work in Chrome.
 CDP parameters retain the spec's units. For example, `Runtime.evaluate(timeout=...)`
 limits execution inside Chrome in **milliseconds**; it is not the client budget.
 For raw commands, only `method` and `params` can be positional. Use
-`client.execute(method, params, session_id=sid, timeout=seconds)` or
-`session.execute(method, params, timeout=seconds)`. Omit `timeout` to inherit
-the client default or pass `timeout=None` to disable the deadline for that call.
+`client.execute(method, params, session_id=sid, timeout_seconds=seconds)` or
+`session.execute(method, params, timeout_seconds=seconds)`. Omit the timeout
+keyword to inherit the client default or pass `timeout_seconds=None` to disable
+the deadline for that call.
 
 ### Custom transports
 
@@ -427,8 +428,9 @@ When using `WebSocketTransport.events()` directly, its `max_queue_size` option
 sets the limit on its transport buffer with the same overflow policies. A
 client-supplied custom transport manages its own transport buffer limits.
 `WebSocketTransport` has no default command timeout; standalone calls can pass
-`execute(timeout=seconds)`. In the `Transport` contract, `timeout=None` means no
-deadline and cancellation releases resources associated with that request.
+`execute(timeout_seconds=seconds)`. In the `Transport` contract,
+`timeout_seconds=None` means no deadline. Cancellation releases the resources
+associated with the request.
 
 For methods not covered by the generated API, use the low-level escape hatch:
 

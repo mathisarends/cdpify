@@ -9,10 +9,10 @@ from cdpify.executor import BoundCommandExecutor
 class SlowTransport:
     def __init__(self) -> None:
         self.cancelled = False
-        self.timeout = None
+        self.timeout_seconds = None
 
-    async def execute(self, method, params=None, session_id=None, timeout=None):
-        self.timeout = timeout
+    async def execute(self, method, params=None, session_id=None, timeout_seconds=None):
+        self.timeout_seconds = timeout_seconds
         try:
             await asyncio.Event().wait()
         finally:
@@ -23,7 +23,7 @@ class SlowTransport:
 @pytest.mark.parametrize("scope", ["root", "session", "raw", "raw_session"])
 async def test_client_deadline_enforces_custom_transports(scope) -> None:
     transport = SlowTransport()
-    client = CdpClient(transport=transport, default_timeout=0.01)
+    client = CdpClient(transport=transport, default_timeout_seconds=0.01)
     with pytest.raises(CDPTimeoutError):
         if scope == "root":
             await client.runtime.enable()
@@ -34,13 +34,13 @@ async def test_client_deadline_enforces_custom_transports(scope) -> None:
                 "Runtime.enable", session_id="S1" if scope == "raw_session" else None
             )
     assert transport.cancelled
-    assert transport.timeout is None
+    assert transport.timeout_seconds is None
 
 
 @pytest.mark.asyncio
 async def test_outer_timeout_preserves_builtin_exception_and_cleans_request() -> None:
     transport = SlowTransport()
-    executor = BoundCommandExecutor(transport, default_timeout=30)
+    executor = BoundCommandExecutor(transport, default_timeout_seconds=30)
     with pytest.raises(TimeoutError) as error:
         async with asyncio.timeout(0.01):
             await executor.execute("Runtime.enable")
@@ -51,15 +51,15 @@ async def test_outer_timeout_preserves_builtin_exception_and_cleans_request() ->
 @pytest.mark.asyncio
 async def test_none_explicitly_disables_default_and_cancellation_is_preserved() -> None:
     transport = SlowTransport()
-    executor = BoundCommandExecutor(transport, default_timeout=0.001)
-    task = asyncio.create_task(executor.execute("Runtime.enable", timeout=None))
+    executor = BoundCommandExecutor(transport, default_timeout_seconds=0.001)
+    task = asyncio.create_task(executor.execute("Runtime.enable", timeout_seconds=None))
     await asyncio.sleep(0.01)
     assert not task.done()
     task.cancel()
     with pytest.raises(asyncio.CancelledError):
         await asyncio.wait_for(task, timeout=1.0)
     assert transport.cancelled
-    assert transport.timeout is None
+    assert transport.timeout_seconds is None
 
 
 @pytest.mark.asyncio

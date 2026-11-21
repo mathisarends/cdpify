@@ -22,8 +22,21 @@ class _Event:
 
 
 @pytest.mark.asyncio
-async def test_websocket_client_routes_bursts_without_blocking_responses() -> None:
+@pytest.mark.parametrize("compression", [None, "deflate"])
+async def test_websocket_client_routes_bursts_without_blocking_responses(
+    compression,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    unexpected_iterator = AsyncMock(
+        side_effect=AssertionError("Expected callback delivery")
+    )
+    monkeypatch.setattr(
+        websocket_module.WebSocketTransport, "events", unexpected_iterator
+    )
+    negotiated = []
+
     async def respond(socket: ServerConnection) -> None:
+        negotiated.append(socket.response.headers.get("Sec-WebSocket-Extensions"))
         raw_command = await socket.recv()
         assert isinstance(raw_command, str)
         command = json.loads(raw_command)
@@ -44,17 +57,23 @@ async def test_websocket_client_routes_bursts_without_blocking_responses() -> No
     async with serve(respond, "127.0.0.1", 0) as server:
         port = server.sockets[0].getsockname()[1]
         async with CdpClient(
-            f"ws://127.0.0.1:{port}", max_queue_size=2, overflow="drop_oldest"
+            f"ws://127.0.0.1:{port}",
+            max_queue_size=2,
+            overflow="drop_oldest",
+            compression=compression,
         ) as client:
-            assert client.transport._ws.protocol.extensions == []
             root_events = client.listen(_Event)
             session_events = client.bind_session("S1").listen(_Event, max_queue_size=1)
             all_events = client.listen_all(_Event, max_queue_size=0)
 
-            result = await client.execute("Test.command", timeout=2.0)
+            result = await client.execute("Test.command", timeout_seconds=2.0)
 
             assert result == {"ok": True}
-            assert client._event_loop_task is None
+            unexpected_iterator.assert_not_called()
+            if compression is None:
+                assert negotiated == [None]
+            else:
+                assert negotiated[0].startswith("permessage-deflate")
             assert root_events.dropped_events == 3
             assert session_events.dropped_events == 4
             assert all_events.dropped_events == 0
@@ -87,10 +106,10 @@ async def test_browser_closure_ends_listeners_and_client_can_reconnect() -> None
         for expected in (1, 2):
             async with client:
                 events = client.listen(_Event)
-                await client.execute("Test.command", timeout=2.0)
-                assert await events.next(timeout=2.0) == _Event(expected)
+                await client.execute("Test.command", timeout_seconds=2.0)
+                assert await events.next(timeout_seconds=2.0) == _Event(expected)
                 with pytest.raises(CDPStreamClosedError):
-                    await events.next(timeout=2.0)
+                    await events.next(timeout_seconds=2.0)
             assert [event async for event in events] == []
 
 
@@ -161,7 +180,7 @@ async def test_failed_callback_connection_closes_existing_subscriptions(
         await client.connect()
 
     with pytest.raises(CDPStreamClosedError):
-        await events.next(timeout=1.0)
+        await events.next(timeout_seconds=1.0)
     await asyncio.wait_for(client.disconnect(), timeout=1.0)
 
 
@@ -206,7 +225,7 @@ async def test_disconnect_waits_for_shared_cleanup(
         assert not first.done()
         assert not second.done()
         with pytest.raises(CDPConnectionError):
-            await client.execute("Runtime.evaluate", timeout=0.01)
+            await client.execute("Runtime.evaluate", timeout_seconds=0.01)
         if cancel_waiter:
             first.cancel()
             with pytest.raises(asyncio.CancelledError):
@@ -222,5 +241,5 @@ async def test_disconnect_waits_for_shared_cleanup(
     assert not client.is_connected
     assert socket.close_calls == 1
     with pytest.raises(CDPStreamClosedError):
-        await events.next(timeout=1.0)
+        await events.next(timeout_seconds=1.0)
     await client.disconnect()

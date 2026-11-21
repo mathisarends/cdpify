@@ -73,13 +73,13 @@ class EventQueue[T]:
             self._items.clear()
         self._ready.set()
 
-    async def get(self, timeout: float | None = None) -> T | None:
+    async def get(self, timeout_seconds: float | None = None) -> T | None:
         """Read the next event, or None after closure; raise TimeoutError on timeout."""
-        if timeout is None or self._ready.is_set():
+        if timeout_seconds is None or self._ready.is_set():
             return await self._receive()
-        if timeout <= 0:
+        if timeout_seconds <= 0:
             raise TimeoutError
-        return await asyncio.wait_for(self._receive(), timeout=timeout)
+        return await asyncio.wait_for(self._receive(), timeout=timeout_seconds)
 
     async def _receive(self) -> T | None:
         while not self._items:

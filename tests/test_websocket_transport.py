@@ -12,125 +12,84 @@ from cdpify.error import (
     CDPConnectionError,
     CDPTimeoutError,
 )
+from cdpify.transport import TransportEvent
 from cdpify.transports import websocket as websocket_module
-from cdpify.transports.websocket import (
-    WebSocketTransport,
-    _build_message,
-    _create_pending_request,
-)
+from cdpify.transports.websocket import WebSocketTransport
 
 
 class _FakeWebSocket:
     def __init__(self) -> None:
-        self.sent_messages: list[str | bytes] = []
-        self.sent_text: list[bool | None] = []
+        self.sent: asyncio.Queue[tuple[str | bytes, bool | None]] = asyncio.Queue()
+        self.incoming: asyncio.Queue[bytes] = asyncio.Queue()
         self.closed = False
 
     async def send(self, payload: str | bytes, *, text: bool | None = None) -> None:
-        self.sent_messages.append(payload)
-        self.sent_text.append(text)
+        self.sent.put_nowait((payload, text))
+
+    async def recv(self, decode=None) -> bytes:
+        assert decode is False
+        return await self.incoming.get()
 
     async def close(self) -> None:
         self.closed = True
 
-
-def test_builds_cdp_message() -> None:
-    assert _build_message(3, "Page.enable", None, "S1") == {
-        "id": 3,
-        "method": "Page.enable",
-        "params": {},
-        "sessionId": "S1",
-    }
+    def receive(self, message: dict) -> None:
+        self.incoming.put_nowait(json.dumps(message).encode())
 
 
-@pytest.mark.asyncio
-async def test_creates_and_registers_pending_request() -> None:
-    pending: dict[int, asyncio.Future[dict[str, object]]] = {}
+class _ScriptedWebSocket(_FakeWebSocket):
+    def __init__(self, messages: list[str]) -> None:
+        super().__init__()
+        self._messages = iter(messages)
+        self.exhausted = asyncio.Event()
 
-    future = _create_pending_request(pending, 3)
+    async def recv(self, decode=None) -> bytes:
+        assert decode is False
+        message = next(self._messages, None)
+        if message is None:
+            self.exhausted.set()
+            raise ConnectionClosedOK(None, None)
+        return message.encode()
 
-    assert pending == {3: future}
 
-
-@pytest.mark.asyncio
-async def test_await_response_returns_result() -> None:
-    transport = WebSocketTransport("ws://example")
-    future = _create_pending_request(transport._pending_requests, 1)
-
-    transport._handle_response({"id": 1, "result": {"ok": True}})
-    result = await transport._await_response(1, "Page.enable", future)
-
-    assert result == {"ok": True}
+@pytest.fixture
+def socket(monkeypatch: pytest.MonkeyPatch) -> _FakeWebSocket:
+    connection = _FakeWebSocket()
+    monkeypatch.setattr(websocket_module, "connect", AsyncMock(return_value=connection))
+    return connection
 
 
 @pytest.mark.asyncio
-async def test_await_response_raises_command_error_with_method() -> None:
-    transport = WebSocketTransport("ws://example")
-    future = _create_pending_request(transport._pending_requests, 2)
-
-    transport._handle_response({"id": 2, "error": {"code": 9, "message": "failed"}})
-
-    with pytest.raises(CDPCommandError) as error_info:
-        await transport._await_response(2, "Page.enable", future)
-
-    assert error_info.value.method == "Page.enable"
-    assert error_info.value.code == 9
-    assert str(error_info.value) == "Page.enable failed with CDP error 9: failed"
-
-
-@pytest.mark.asyncio
-async def test_process_message_exposes_transport_event() -> None:
-    transport = WebSocketTransport("ws://example")
-
-    await transport._process_message(
-        json.dumps(
-            {
-                "method": "Runtime.consoleAPICalled",
-                "params": {"value": 1},
-                "sessionId": "S1",
-            }
-        )
-    )
-    event = await anext(transport.events())
-
-    assert event.method == "Runtime.consoleAPICalled"
-    assert event.params == {"value": 1}
-    assert event.session_id == "S1"
-
-
-@pytest.mark.asyncio
-async def test_send_serializes_payload_as_json() -> None:
-    transport = WebSocketTransport("ws://example")
-    transport._ws = _FakeWebSocket()  # type: ignore[assignment]
-
-    await transport._send(
-        3,
-        "Page.enable",
-        {"id": 3, "method": "Page.enable", "params": {}},
-    )
-
-    payload = transport._ws.sent_messages[0]  # type: ignore[union-attr]
-    assert transport._ws.sent_text == [True]
-    assert json.loads(payload) == {"id": 3, "method": "Page.enable", "params": {}}
-
-
-@pytest.mark.asyncio
-async def test_execute_timeout_includes_sending_and_cleans_pending_requests() -> None:
-    transport = WebSocketTransport("ws://example")
-    transport._ws = _FakeWebSocket()  # type: ignore[assignment]
+async def test_execute_timeout_includes_sending_and_can_recover(
+    socket: _FakeWebSocket,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    original_send = socket.send
     cancelled = asyncio.Event()
 
-    async def blocked_send(*args) -> None:
+    async def blocked_send(payload, *, text=None) -> None:
+        await original_send(payload, text=text)
         try:
             await asyncio.Event().wait()
         finally:
             cancelled.set()
 
-    transport._send = blocked_send  # type: ignore[method-assign]
-    with pytest.raises(CDPTimeoutError):
-        await transport.execute("Runtime.enable", timeout=0.01)
-    assert cancelled.is_set()
-    assert transport._pending_requests == {}
+    async with WebSocketTransport("ws://example") as transport:
+        with monkeypatch.context() as patch:
+            patch.setattr(socket, "send", blocked_send)
+            with pytest.raises(CDPTimeoutError):
+                await transport.execute("Runtime.enable", timeout_seconds=0.02)
+        assert cancelled.is_set()
+
+        expired_payload, _ = socket.sent.get_nowait()
+        expired_id = json.loads(expired_payload)["id"]
+        command = asyncio.create_task(transport.execute("Page.enable"))
+        payload, _ = await asyncio.wait_for(socket.sent.get(), timeout=1.0)
+        active_id = json.loads(payload)["id"]
+
+        socket.receive({"id": expired_id, "result": {"expired": True}})
+        socket.receive({"id": active_id, "result": {"ok": True}})
+        assert await asyncio.wait_for(command, timeout=1.0) == {"ok": True}
 
 
 @pytest.mark.asyncio
@@ -142,58 +101,47 @@ async def test_execute_requires_connection() -> None:
 
 
 @pytest.mark.asyncio
-async def test_execute_removes_pending_request_after_failure() -> None:
-    transport = WebSocketTransport("ws://example")
-    transport._ws = _FakeWebSocket()  # type: ignore[assignment]
-    transport._send = AsyncMock()  # type: ignore[method-assign]
-    transport._await_response = AsyncMock(  # type: ignore[method-assign]
-        side_effect=CDPTimeoutError("timeout")
-    )
-
-    with pytest.raises(CDPTimeoutError):
-        await transport.execute("Runtime.enable")
-
-    assert transport._pending_requests == {}
-
-
-@pytest.mark.asyncio
-async def test_disconnect_cancels_pending_requests_and_closes_websocket() -> None:
-    transport = WebSocketTransport("ws://example")
-    websocket = _FakeWebSocket()
-    transport._ws = websocket  # type: ignore[assignment]
-    pending = _create_pending_request(transport._pending_requests, 1)
-    transport._message_loop_task = asyncio.create_task(asyncio.sleep(10))
-
-    await transport.disconnect()
-
-    assert websocket.closed is True
-    assert transport.is_connected is False
-    with pytest.raises(CDPConnectionError):
-        await pending
-
-
-@pytest.mark.asyncio
-async def test_process_message_warns_for_unknown_payload(
-    caplog: pytest.LogCaptureFixture,
+async def test_execute_raises_command_error_and_connection_stays_usable(
+    socket: _FakeWebSocket,
 ) -> None:
-    transport = WebSocketTransport("ws://example")
+    async with WebSocketTransport("ws://example") as transport:
+        command = asyncio.create_task(transport.execute("Page.enable"))
+        payload, _ = await asyncio.wait_for(socket.sent.get(), timeout=1.0)
+        request = json.loads(payload)
+        assert request["params"] == {}
+        socket.receive(
+            {
+                "id": request["id"],
+                "error": {"code": 9, "message": "failed"},
+            }
+        )
 
-    with caplog.at_level("WARNING"):
-        await transport._process_message(json.dumps({"foo": "bar"}))
+        with pytest.raises(CDPCommandError) as error:
+            await asyncio.wait_for(command, timeout=1.0)
+        assert error.value.method == "Page.enable"
+        assert error.value.code == 9
+        assert str(error.value) == "Page.enable failed with CDP error 9: failed"
 
-    assert "Unknown CDP message format" in caplog.text
+        following = asyncio.create_task(transport.execute("Page.enable"))
+        payload, _ = await asyncio.wait_for(socket.sent.get(), timeout=1.0)
+        socket.receive({"id": json.loads(payload)["id"], "result": {"ok": True}})
+        assert await asyncio.wait_for(following, timeout=1.0) == {"ok": True}
 
 
-class _ScriptedWebSocket(_FakeWebSocket):
-    def __init__(self, messages: list[str]) -> None:
-        super().__init__()
-        self._messages = messages
+@pytest.mark.asyncio
+async def test_disconnect_fails_waiting_commands_and_closes_socket(
+    socket: _FakeWebSocket,
+) -> None:
+    async with WebSocketTransport("ws://example") as transport:
+        command = asyncio.create_task(transport.execute("Page.enable"))
+        await asyncio.wait_for(socket.sent.get(), timeout=1.0)
 
-    async def recv(self, decode=None):
-        assert decode is False
-        if not self._messages:
-            raise ConnectionClosedOK(None, None)
-        return self._messages.pop(0).encode()
+        await transport.disconnect()
+
+        assert socket.closed
+        assert not transport.is_connected
+        with pytest.raises(CDPConnectionError, match="Disconnected"):
+            await asyncio.wait_for(command, timeout=1.0)
 
 
 @pytest.mark.asyncio
@@ -203,7 +151,10 @@ async def test_client_forwards_explicit_connection_options(monkeypatch) -> None:
     dial = AsyncMock(return_value=_ScriptedWebSocket([]))
     monkeypatch.setattr(websocket_module, "connect", dial)
     client = CdpClient(
-        "ws://example", compression="deflate", open_timeout=4, close_timeout=3
+        "ws://example",
+        compression="deflate",
+        open_timeout_seconds=4,
+        close_timeout_seconds=3,
     )
     await client.connect()
     dial.assert_awaited_once_with(
@@ -229,21 +180,24 @@ async def test_message_loop_skips_malformed_messages(
         "orjson",
         None if backend == "json" else pytest.importorskip("orjson"),
     )
-    transport = WebSocketTransport("ws://example")
-    transport._ws = _ScriptedWebSocket(  # type: ignore[assignment]
+    socket = _ScriptedWebSocket(
         [
             "not json",
             "null",
-            json.dumps({"method": "Page.loadEventFired", "params": {}}),
+            '{"foo": "bar"}',
+            '{"method": "Page.loadEventFired", "params": {}}',
         ]
     )
+    monkeypatch.setattr(websocket_module, "connect", AsyncMock(return_value=socket))
 
-    with caplog.at_level("ERROR"):
-        await transport._run_message_loop()
-    events = [event async for event in transport.events()]
+    with caplog.at_level("WARNING"):
+        async with WebSocketTransport("ws://example") as transport:
+            async with asyncio.timeout(2):
+                events = [event async for event in transport.events()]
 
     assert [event.method for event in events] == ["Page.loadEventFired"]
     assert "Dropping malformed CDP message" in caplog.text
+    assert "Unknown CDP message format" in caplog.text
 
 
 @pytest.mark.asyncio
@@ -266,42 +220,51 @@ async def test_websocket_response_preserves_lone_surrogates(
     async with serve(respond, "127.0.0.1", 0) as server:
         port = server.sockets[0].getsockname()[1]
         async with WebSocketTransport(f"ws://127.0.0.1:{port}") as transport:
-            assert await transport.execute("Runtime.evaluate", timeout=2.0) == {
+            assert await transport.execute("Runtime.evaluate", timeout_seconds=2.0) == {
                 "value": value
             }
 
 
 @pytest.mark.asyncio
-async def test_event_without_params_has_empty_params() -> None:
-    transport = WebSocketTransport("ws://example")
-    transport._ws = _ScriptedWebSocket(  # type: ignore[assignment]
+async def test_event_without_params_has_empty_params(monkeypatch) -> None:
+    socket = _ScriptedWebSocket(
         [
-            json.dumps({"method": "Page.loadEventFired", "params": None}),
-            json.dumps({"method": "Page.domContentEventFired"}),
+            '{"method": "Page.loadEventFired", "params": null}',
+            '{"method": "Page.domContentEventFired"}',
         ]
     )
-
-    await transport._run_message_loop()
-    events = [event async for event in transport.events()]
+    monkeypatch.setattr(websocket_module, "connect", AsyncMock(return_value=socket))
+    async with WebSocketTransport("ws://example") as transport:
+        async with asyncio.timeout(2):
+            events = [event async for event in transport.events()]
 
     assert [event.params for event in events] == [{}, {}]
 
 
 @pytest.mark.asyncio
-async def test_bounded_transport_drains_latest_events_on_disconnect() -> None:
-    transport = WebSocketTransport(
-        "ws://example", max_queue_size=2, overflow="drop_oldest"
-    )
-    for value in range(5):
-        await transport._process_message(
+async def test_bounded_transport_drains_latest_events_on_disconnect(
+    monkeypatch,
+) -> None:
+    socket = _ScriptedWebSocket(
+        [
             json.dumps({"method": "Test.event", "params": {"value": value}})
-        )
+            for value in range(5)
+        ]
+    )
+    monkeypatch.setattr(websocket_module, "connect", AsyncMock(return_value=socket))
+    async with WebSocketTransport(
+        "ws://example", max_queue_size=2, overflow="drop_oldest"
+    ) as transport:
+        await asyncio.wait_for(socket.exhausted.wait(), timeout=1.0)
+        await transport.disconnect()
+        await transport.disconnect()
 
-    await transport.disconnect()
-    await transport.disconnect()
-
-    assert [event.params["value"] async for event in transport.events()] == [3, 4]
-    assert transport.dropped_events == 3
+        async with asyncio.timeout(2):
+            assert [event.params["value"] async for event in transport.events()] == [
+                3,
+                4,
+            ]
+        assert transport.dropped_events == 3
 
 
 @pytest.mark.asyncio
@@ -318,46 +281,62 @@ async def test_disconnect_wakes_transport_reader() -> None:
 @pytest.mark.asyncio
 @pytest.mark.parametrize("backend", ["json", "orjson"])
 async def test_json_backends_send_text_and_decode_events_and_responses(
-    monkeypatch: pytest.MonkeyPatch, backend: str
+    monkeypatch: pytest.MonkeyPatch,
+    backend: str,
+    socket: _FakeWebSocket,
 ) -> None:
     monkeypatch.setattr(
         websocket_module,
         "orjson",
         None if backend == "json" else pytest.importorskip("orjson"),
     )
-    transport = WebSocketTransport("ws://example")
-    socket = _FakeWebSocket()
-    transport._ws = socket  # type: ignore[assignment]
-    payload = {"id": 1, "method": "Test.command", "params": {"text": "Grüße 🌍"}}
+    value = "Grüße 🌍"
+    async with WebSocketTransport("ws://example") as transport:
+        task = asyncio.create_task(
+            transport.execute("Test.command", {"text": value}, session_id="S1")
+        )
+        payload, text = await asyncio.wait_for(socket.sent.get(), timeout=1.0)
+        assert isinstance(payload, bytes if backend == "orjson" else str)
+        assert text is True
+        request = json.loads(payload)
+        assert isinstance(request["id"], int)
+        assert request == {
+            "id": request["id"],
+            "method": "Test.command",
+            "params": {"text": value},
+            "sessionId": "S1",
+        }
+        socket.receive({"id": request["id"], "result": {"ok": True}})
+        socket.receive(
+            {
+                "method": "Test.event",
+                "sessionId": "S1",
+                "params": {"text": value},
+            }
+        )
 
-    await transport._send(1, "Test.command", payload)
-    assert isinstance(socket.sent_messages[0], bytes if backend == "orjson" else str)
-    assert socket.sent_text == [True]
-    assert json.loads(socket.sent_messages[0]) == payload
-    pending = _create_pending_request(transport._pending_requests, 1)
-    await transport._process_message(b'{"id":1,"result":{"ok":true}}')
-    assert await transport._await_response(1, "Test.command", pending) == {"ok": True}
-    await transport._process_message(
-        json.dumps({"method": "Test.event", "params": {"text": "Grüße 🌍"}}).encode()
-    )
-    assert (await anext(transport.events())).params == {"text": "Grüße 🌍"}
-    await transport.disconnect()
+        assert await asyncio.wait_for(task, timeout=1.0) == {"ok": True}
+        event = await asyncio.wait_for(anext(transport.events()), timeout=1.0)
+        assert event == TransportEvent("Test.event", {"text": value}, "S1")
 
 
 @pytest.mark.asyncio
-async def test_callback_stream_closes_once_and_excludes_iterator() -> None:
+async def test_callback_stream_closes_once_and_excludes_iterator(monkeypatch) -> None:
+    socket = _ScriptedWebSocket(['{"method":"Test.event"}'])
+    monkeypatch.setattr(websocket_module, "connect", AsyncMock(return_value=socket))
     transport = WebSocketTransport("ws://example")
     handler = AsyncMock()
     transport.set_event_handler(handler)
-    await transport._process_message('{"method":"Test.event"}')
-    with pytest.raises(RuntimeError, match="event handler"):
-        await anext(transport.events())
 
-    await transport.disconnect()
-    await transport.disconnect()
+    async with transport:
+        with pytest.raises(RuntimeError, match="event handler"):
+            await anext(transport.events())
+
+        await asyncio.wait_for(socket.exhausted.wait(), timeout=1.0)
+        await transport.disconnect()
 
     assert [call.args[0] for call in handler.await_args_list] == [
-        websocket_module.TransportEvent("Test.event", {}),
+        TransportEvent("Test.event", {}),
         None,
     ]
 
@@ -392,6 +371,7 @@ async def test_reconnect_resets_buffer_without_migrating_old_readers(
     assert (await anext(old_events)).params == {"value": 2}
     assert transport.dropped_events == 1
 
+    await transport.disconnect()
     await transport.connect()
 
     assert transport.dropped_events == 0
@@ -401,7 +381,9 @@ async def test_reconnect_resets_buffer_without_migrating_old_readers(
 
 
 @pytest.mark.asyncio
-async def test_disconnect_during_send_handles_error_without_future_leak() -> None:
+async def test_disconnect_during_send_handles_error_without_future_leak(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     class SendingSocket(_FakeWebSocket):
         def __init__(self) -> None:
             super().__init__()
@@ -422,7 +404,8 @@ async def test_disconnect_during_send_handles_error_without_future_leak() -> Non
     loop.set_exception_handler(lambda loop, context: errors.append(context))
     transport = WebSocketTransport("ws://example")
     socket = SendingSocket()
-    transport._ws = socket  # type: ignore[assignment]
+    monkeypatch.setattr(websocket_module, "connect", AsyncMock(return_value=socket))
+    await transport.connect()
     command = asyncio.create_task(transport.execute("Runtime.evaluate"))
     try:
         await asyncio.wait_for(socket.sending.wait(), timeout=1.0)
@@ -432,7 +415,7 @@ async def test_disconnect_during_send_handles_error_without_future_leak() -> Non
         del command
         gc.collect()
         await asyncio.sleep(0)
-        assert transport._pending_requests == {}
+        assert not transport.is_connected
         assert errors == []
     finally:
         loop.set_exception_handler(previous_handler)

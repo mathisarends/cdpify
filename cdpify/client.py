@@ -23,12 +23,12 @@ class CdpClient(DomainAccessors, EventSource):
         transport: Transport | None = None,
         additional_headers: dict[str, str] | None = None,
         max_frame_size: int = 100 * 1024 * 1024,
-        default_timeout: float | None = 30.0,
+        default_timeout_seconds: float | None = 30.0,
         max_queue_size: int = 0,
         overflow: OverflowPolicy = "error",
         compression: Literal["deflate"] | None = None,
-        open_timeout: float | None = 10.0,
-        close_timeout: float | None = 10.0,
+        open_timeout_seconds: float | None = 10.0,
+        close_timeout_seconds: float | None = 10.0,
     ) -> None:
         if transport is not None and url is not None:
             raise TypeError("Pass either url or transport, not both")
@@ -42,14 +42,14 @@ class CdpClient(DomainAccessors, EventSource):
                 max_queue_size=max_queue_size,
                 overflow=overflow,
                 compression=compression,
-                open_timeout=open_timeout,
-                close_timeout=close_timeout,
+                open_timeout_seconds=open_timeout_seconds,
+                close_timeout_seconds=close_timeout_seconds,
             )
 
         self._transport = transport
-        self._default_timeout = default_timeout
+        self._default_timeout_seconds = default_timeout_seconds
         self._executor: BoundCommandExecutor = BoundCommandExecutor(
-            transport, default_timeout=default_timeout
+            transport, default_timeout_seconds=default_timeout_seconds
         )
         self._new_router = partial(
             EventRouter, max_queue_size=max_queue_size, overflow=overflow
@@ -128,7 +128,7 @@ class CdpClient(DomainAccessors, EventSource):
             self._transport,
             self._event_router,
             session_id,
-            default_timeout=self._default_timeout,
+            default_timeout_seconds=self._default_timeout_seconds,
         )
 
     async def execute(
@@ -137,7 +137,7 @@ class CdpClient(DomainAccessors, EventSource):
         params: dict[str, Any] | None = None,
         *,
         session_id: str | None = None,
-        timeout: float | None | UnsetType = UNSET,
+        timeout_seconds: float | None | UnsetType = UNSET,
     ) -> dict[str, Any]:
         """Execute a low-level command, optionally routed to a target session."""
         executor = (
@@ -146,14 +146,14 @@ class CdpClient(DomainAccessors, EventSource):
         return await executor.execute(
             method=method,
             params=params,
-            timeout=timeout,
+            timeout_seconds=timeout_seconds,
         )
 
     def listen_all[T](
         self,
         event_type: type[T],
         *,
-        timeout: float | None = None,
+        timeout_seconds: float | None = None,
         event_name: str | None = None,
         max_queue_size: int | None = None,
         overflow: OverflowPolicy | None = None,
@@ -164,7 +164,7 @@ class CdpClient(DomainAccessors, EventSource):
         """
         return self._event_router.listen_all(
             event_type,
-            timeout=timeout,
+            timeout_seconds=timeout_seconds,
             event_name=event_name,
             max_queue_size=max_queue_size,
             overflow=overflow,
@@ -174,7 +174,7 @@ class CdpClient(DomainAccessors, EventSource):
         self,
         method: str | None = None,
         *,
-        timeout: float | None = None,
+        timeout_seconds: float | None = None,
         max_queue_size: int | None = None,
         overflow: OverflowPolicy | None = None,
     ) -> EventSubscription[TransportEvent]:
@@ -183,7 +183,7 @@ class CdpClient(DomainAccessors, EventSource):
             method,
             session_id=None,
             all_sessions=True,
-            timeout=timeout,
+            timeout_seconds=timeout_seconds,
             max_queue_size=max_queue_size,
             overflow=overflow,
         )
@@ -228,8 +228,8 @@ def _create_websocket_transport(
     max_queue_size: int,
     overflow: OverflowPolicy,
     compression: Literal["deflate"] | None,
-    open_timeout: float | None,
-    close_timeout: float | None,
+    open_timeout_seconds: float | None,
+    close_timeout_seconds: float | None,
 ) -> Transport:
     try:
         from cdpify.transports.websocket import WebSocketTransport
@@ -247,6 +247,6 @@ def _create_websocket_transport(
         max_queue_size=max_queue_size,
         overflow=overflow,
         compression=compression,
-        open_timeout=open_timeout,
-        close_timeout=close_timeout,
+        open_timeout_seconds=open_timeout_seconds,
+        close_timeout_seconds=close_timeout_seconds,
     )
