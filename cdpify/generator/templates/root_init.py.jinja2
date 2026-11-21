@@ -3,6 +3,7 @@
 from typing import TYPE_CHECKING
 
 from cdpify.shared.lazy import lazy_exports
+from cdpify.shared.naming import to_snake_case
 
 from .accessors import DomainAccessors
 
@@ -18,9 +19,5 @@ __all__ = [
 
 __getattr__, __dir__ = lazy_exports(
     __name__,
-    {
-{% for domain in domains %}
-        "{{ domain.name }}": (".{{ domain.module }}", "{{ domain.name }}"),
-{% endfor %}
-    },
+    {name: (f".{to_snake_case(name)}", name) for name in __all__ if name != "DomainAccessors"},
 )

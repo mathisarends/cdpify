@@ -6,7 +6,7 @@ from pathlib import Path
 from _chrome import get_ws_url
 
 from cdpify import CdpClient
-from cdpify.domains.page.events import ScreencastFrameEvent
+from cdpify.domains.page import ScreencastFrameEvent
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"

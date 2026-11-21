@@ -5,6 +5,7 @@
 from typing import TYPE_CHECKING
 
 from cdpify.shared.lazy import lazy_exports
+from cdpify.shared.naming import to_snake_case
 
 from .accessors import DomainAccessors
 
@@ -14,36 +15,36 @@ if TYPE_CHECKING:
     from .animation import Animation
     from .audits import Audits
     from .autofill import Autofill
-    from .backgroundservice import BackgroundService
-    from .bluetoothemulation import BluetoothEmulation
+    from .background_service import BackgroundService
+    from .bluetooth_emulation import BluetoothEmulation
     from .browser import Browser
-    from .cachestorage import CacheStorage
+    from .cache_storage import CacheStorage
     from .cast import Cast
     from .console import Console
-    from .crashreportcontext import CrashReportContext
+    from .crash_report_context import CrashReportContext
     from .css import CSS
     from .debugger import Debugger
-    from .deviceaccess import DeviceAccess
-    from .deviceorientation import DeviceOrientation
-    from .digitalcredentials import DigitalCredentials
+    from .device_access import DeviceAccess
+    from .device_orientation import DeviceOrientation
+    from .digital_credentials import DigitalCredentials
     from .dom import DOM
-    from .domdebugger import DOMDebugger
-    from .domsnapshot import DOMSnapshot
-    from .domstorage import DOMStorage
+    from .dom_debugger import DOMDebugger
+    from .dom_snapshot import DOMSnapshot
+    from .dom_storage import DOMStorage
     from .emulation import Emulation
-    from .eventbreakpoints import EventBreakpoints
+    from .event_breakpoints import EventBreakpoints
     from .extensions import Extensions
-    from .fedcm import FedCm
+    from .fed_cm import FedCm
     from .fetch import Fetch
-    from .filesystem import FileSystem
-    from .findinpage import FindInPage
-    from .headlessexperimental import HeadlessExperimental
-    from .heapprofiler import HeapProfiler
-    from .indexeddb import IndexedDB
+    from .file_system import FileSystem
+    from .find_in_page import FindInPage
+    from .headless_experimental import HeadlessExperimental
+    from .heap_profiler import HeapProfiler
+    from .indexed_db import IndexedDB
     from .input import Input
     from .inspector import Inspector
     from .io import IO
-    from .layertree import LayerTree
+    from .layer_tree import LayerTree
     from .log import Log
     from .media import Media
     from .memory import Memory
@@ -51,23 +52,23 @@ if TYPE_CHECKING:
     from .overlay import Overlay
     from .page import Page
     from .performance import Performance
-    from .performancetimeline import PerformanceTimeline
+    from .performance_timeline import PerformanceTimeline
     from .preload import Preload
     from .profiler import Profiler
     from .pwa import PWA
     from .runtime import Runtime
     from .schema import Schema
     from .security import Security
-    from .serviceworker import ServiceWorker
-    from .smartcardemulation import SmartCardEmulation
+    from .service_worker import ServiceWorker
+    from .smart_card_emulation import SmartCardEmulation
     from .storage import Storage
-    from .systeminfo import SystemInfo
+    from .system_info import SystemInfo
     from .target import Target
     from .tethering import Tethering
     from .tracing import Tracing
-    from .webaudio import WebAudio
-    from .webauthn import WebAuthn
-    from .webmcp import WebMCP
+    from .web_audio import WebAudio
+    from .web_authn import WebAuthn
+    from .web_mcp import WebMCP
 
 __all__ = [
     "DomainAccessors",
@@ -135,64 +136,8 @@ __all__ = [
 __getattr__, __dir__ = lazy_exports(
     __name__,
     {
-        "Accessibility": (".accessibility", "Accessibility"),
-        "Ads": (".ads", "Ads"),
-        "Animation": (".animation", "Animation"),
-        "Audits": (".audits", "Audits"),
-        "Autofill": (".autofill", "Autofill"),
-        "BackgroundService": (".backgroundservice", "BackgroundService"),
-        "BluetoothEmulation": (".bluetoothemulation", "BluetoothEmulation"),
-        "Browser": (".browser", "Browser"),
-        "CSS": (".css", "CSS"),
-        "CacheStorage": (".cachestorage", "CacheStorage"),
-        "Cast": (".cast", "Cast"),
-        "CrashReportContext": (".crashreportcontext", "CrashReportContext"),
-        "DOM": (".dom", "DOM"),
-        "DOMDebugger": (".domdebugger", "DOMDebugger"),
-        "DOMSnapshot": (".domsnapshot", "DOMSnapshot"),
-        "DOMStorage": (".domstorage", "DOMStorage"),
-        "DeviceAccess": (".deviceaccess", "DeviceAccess"),
-        "DeviceOrientation": (".deviceorientation", "DeviceOrientation"),
-        "DigitalCredentials": (".digitalcredentials", "DigitalCredentials"),
-        "Emulation": (".emulation", "Emulation"),
-        "EventBreakpoints": (".eventbreakpoints", "EventBreakpoints"),
-        "Extensions": (".extensions", "Extensions"),
-        "FedCm": (".fedcm", "FedCm"),
-        "Fetch": (".fetch", "Fetch"),
-        "FileSystem": (".filesystem", "FileSystem"),
-        "FindInPage": (".findinpage", "FindInPage"),
-        "HeadlessExperimental": (".headlessexperimental", "HeadlessExperimental"),
-        "IO": (".io", "IO"),
-        "IndexedDB": (".indexeddb", "IndexedDB"),
-        "Input": (".input", "Input"),
-        "Inspector": (".inspector", "Inspector"),
-        "LayerTree": (".layertree", "LayerTree"),
-        "Log": (".log", "Log"),
-        "Media": (".media", "Media"),
-        "Memory": (".memory", "Memory"),
-        "Network": (".network", "Network"),
-        "Overlay": (".overlay", "Overlay"),
-        "PWA": (".pwa", "PWA"),
-        "Page": (".page", "Page"),
-        "Performance": (".performance", "Performance"),
-        "PerformanceTimeline": (".performancetimeline", "PerformanceTimeline"),
-        "Preload": (".preload", "Preload"),
-        "Security": (".security", "Security"),
-        "ServiceWorker": (".serviceworker", "ServiceWorker"),
-        "SmartCardEmulation": (".smartcardemulation", "SmartCardEmulation"),
-        "Storage": (".storage", "Storage"),
-        "SystemInfo": (".systeminfo", "SystemInfo"),
-        "Target": (".target", "Target"),
-        "Tethering": (".tethering", "Tethering"),
-        "Tracing": (".tracing", "Tracing"),
-        "WebAudio": (".webaudio", "WebAudio"),
-        "WebAuthn": (".webauthn", "WebAuthn"),
-        "WebMCP": (".webmcp", "WebMCP"),
-        "Console": (".console", "Console"),
-        "Debugger": (".debugger", "Debugger"),
-        "HeapProfiler": (".heapprofiler", "HeapProfiler"),
-        "Profiler": (".profiler", "Profiler"),
-        "Runtime": (".runtime", "Runtime"),
-        "Schema": (".schema", "Schema"),
+        name: (f".{to_snake_case(name)}", name)
+        for name in __all__
+        if name != "DomainAccessors"
     },
 )

@@ -1,6 +1,8 @@
 import keyword
 import re
 import textwrap
+from collections import Counter
+from collections.abc import Iterable
 
 from cdpify.generator.schemas import Command, Parameter
 from cdpify.shared.naming import to_snake_case
@@ -20,6 +22,16 @@ def to_pascal_case(name: str) -> str:
         return name
 
     return name[0].upper() + name[1:]
+
+
+def require_unique_names(names: Iterable[str], scope: str) -> None:
+    duplicates = sorted(name for name, count in Counter(names).items() if count > 1)
+    if duplicates:
+        raise ValueError(f"Duplicate {scope}: {', '.join(duplicates)}")
+
+
+def event_class_name(name: str) -> str:
+    return to_pascal_case(name).removesuffix("Event") + "Event"
 
 
 def to_identifier(name: str) -> str:
@@ -42,7 +54,7 @@ def to_enum_name(name: str) -> str:
 def resolve_type(param: Parameter) -> str:
     if param.ref and "." in param.ref:
         domain, type_name = param.ref.split(".", 1)
-        return f"{domain.lower()}.{type_name}"
+        return f"{to_snake_case(domain)}.{type_name}"
     return map_cdp_type(param)
 
 
@@ -166,7 +178,7 @@ def _get_array_item_type(item_spec: dict) -> str:
         ref = item_spec["$ref"]
         if "." in ref:
             parts = ref.split(".")
-            return f"{parts[0].lower()}.{parts[1]}"
+            return f"{to_snake_case(parts[0])}.{parts[1]}"
         return ref
 
     if "type" in item_spec:

@@ -18,7 +18,7 @@ from cdpify.domains.network import (
     NetworkEvent,
     ResourceType,
 )
-from cdpify.domains.page.events import LifecycleEventEvent
+from cdpify.domains.page import LifecycleEvent
 from cdpify.domains.target.commands import SetDiscoverTargetsParams
 from cdpify.domains.target.types import FilterEntry
 
@@ -75,8 +75,9 @@ class TestGeneratedModels:
             "name": "networkIdle",
             "timestamp": 12.5,
         }
-        event = decode_cdp(LifecycleEventEvent, payload)
+        event = decode_cdp(LifecycleEvent, payload)
 
+        assert event.__cdp_event__ == "Page.lifecycleEvent"
         assert event.name == "networkIdle"
         assert event.frame_id == "F1"
         assert event.loader_id == "L1"

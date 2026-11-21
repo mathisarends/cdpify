@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-from cdpify.domains import dom, domdebugger, page
+from cdpify.domains import dom, dom_debugger, page
 
 
 @dataclass(kw_only=True, slots=True)
@@ -138,7 +138,7 @@ class DOMNode:
     click event listeners attached via JavaScript as well as anchor tags that naturally
     navigate when clicked.
     """
-    event_listeners: list[domdebugger.EventListener] | None = field(
+    event_listeners: list[dom_debugger.EventListener] | None = field(
         default=None, metadata={"cdp_name": "eventListeners"}
     )
     """

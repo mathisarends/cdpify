@@ -12,7 +12,7 @@ def generate(domains: list[Domain]) -> str:
         domains=tuple(
             DomainView(
                 name=domain.domain,
-                module=domain.domain.lower(),
+                module=to_snake_case(domain.domain),
                 property_name=to_snake_case(domain.domain),
             )
             for domain in domains

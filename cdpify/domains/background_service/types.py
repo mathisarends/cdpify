@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-from cdpify.domains import network, serviceworker
+from cdpify.domains import network, service_worker
 from cdpify.shared.enums import CDPStrEnum
 
 
@@ -44,7 +44,7 @@ class BackgroundServiceEvent:
     """
     The origin this event belongs to.
     """
-    service_worker_registration_id: serviceworker.RegistrationID = field(
+    service_worker_registration_id: service_worker.RegistrationID = field(
         metadata={"cdp_name": "serviceWorkerRegistrationId"}
     )
     """

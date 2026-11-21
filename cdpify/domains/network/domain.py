@@ -528,7 +528,7 @@ class Network:
         )
         return decode_cdp(SearchInResponseBodyResult, result)
 
-    async def set_blocked_ur_ls(
+    async def set_blocked_urls(
         self,
         *,
         url_patterns: list[BlockPattern] | None = None,
@@ -551,7 +551,7 @@ class Network:
             _params["urls"] = _encode_value(urls)
 
         await self._executor.execute(
-            method=NetworkCommand.SET_BLOCKED_UR_LS,
+            method=NetworkCommand.SET_BLOCKED_URLS,
             params=_params,
         )
 
