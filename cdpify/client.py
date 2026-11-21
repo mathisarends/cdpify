@@ -127,6 +127,7 @@ class CdpClient(DomainAccessors, EventSource):
         self,
         method: str,
         params: dict[str, Any] | None = None,
+        *,
         session_id: str | None = None,
         timeout: float | None | UnsetType = UNSET,
     ) -> dict[str, Any]:

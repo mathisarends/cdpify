@@ -36,6 +36,7 @@ class CdpSession(DomainAccessors, EventSource):
         self,
         method: str,
         params: dict[str, Any] | None = None,
+        *,
         timeout: float | None | UnsetType = UNSET,
     ) -> dict[str, Any]:
         return await self._executor.execute(

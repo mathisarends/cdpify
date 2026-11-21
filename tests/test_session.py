@@ -102,7 +102,11 @@ async def test_low_level_execute_cannot_override_bound_session() -> None:
     transport = _Transport()
     session = CdpClient(transport=transport).bind_session("session-2")  # type: ignore[arg-type]
 
-    await session.execute("Runtime.evaluate", {"expression": "1 + 1"})
+    with pytest.raises(TypeError):
+        await session.execute("Page.enable", {}, None)  # type: ignore[call-arg]
+    transport.execute.assert_not_called()
+
+    await session.execute("Runtime.evaluate", {"expression": "1 + 1"}, timeout=None)
 
     transport.execute.assert_awaited_once_with(
         method="Runtime.evaluate",

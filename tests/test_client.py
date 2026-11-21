@@ -143,6 +143,10 @@ async def test_execute_delegates_to_transport() -> None:
     transport.result = {"value": 42}
     client = CdpClient(transport=transport)
 
+    with pytest.raises(TypeError):
+        await client.execute("Page.enable", {}, None)  # type: ignore[call-arg]
+    assert transport.executions == []
+
     result = await client.execute(
         "Runtime.evaluate",
         {"expression": "6 * 7"},
