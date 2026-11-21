@@ -1,6 +1,6 @@
-# cdpify
+# 🚀 cdpify
 
-🚀 **Fully typed, Pythonic access to the Chrome DevTools Protocol.**
+**Fully typed, Pythonic access to the Chrome DevTools Protocol.**
 
 The Chrome DevTools Protocol (CDP) is a JSON-over-WebSocket API with hundreds
 of commands and events. `cdpify` generates a typed Python API from the official
