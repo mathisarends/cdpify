@@ -208,7 +208,14 @@ class WebSocketTransport:
                 await asyncio.shield(self._start_shutdown(stop_message_loop=False))
 
     async def _process_message(self, raw: str | bytes) -> None:
-        message = orjson.loads(raw) if orjson is not None else json.loads(raw)
+        if orjson is None:
+            message = json.loads(raw)
+        else:
+            try:
+                message = orjson.loads(raw)
+            except orjson.JSONDecodeError:
+                # Chrome can send escaped lone UTF-16 surrogates from JS strings.
+                message = json.loads(raw)
 
         if "id" in message:
             self._handle_response(message)
