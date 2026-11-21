@@ -2215,12 +2215,15 @@
             "NonPhrasingContentOptionChild",
             "InteractiveContentOptionChild",
             "InteractiveContentLegendChild",
-            "InteractiveContentSummaryDescendant"
+            "InteractiveContentSummaryDescendant",
+            "AnchorMenuDescendant",
+            "InteractiveContentMenuDescendant",
+            "TextMenuDescendant"
           ]
         },
         {
           "id": "ElementAccessibilityIssueDetails",
-          "description": "This issue warns about errors in the select or summary element content model.",
+          "description": "This issue warns about errors in the select, summary, or menu element content model.",
           "type": "object",
           "properties": [
             {
@@ -3601,6 +3604,20 @@
               "type": "string"
             }
           ]
+        },
+        {
+          "name": "simulateGATTMtuChange",
+          "description": "Simulates the ATT MTU exchange procedure from Bluetooth Core Specification\nVol 3 Part F 3.4.2 establishing |mtu| for the connection to the peripheral\nwith |address|.",
+          "parameters": [
+            {
+              "name": "address",
+              "type": "string"
+            },
+            {
+              "name": "mtu",
+              "type": "integer"
+            }
+          ]
         }
       ],
       "events": [
@@ -3763,7 +3780,6 @@
             "smartCard",
             "speakerSelection",
             "storageAccess",
-            "topLevelStorageAccess",
             "videoCapture",
             "vr",
             "wakeLockScreen",
@@ -4258,16 +4274,6 @@
             {
               "name": "commandId",
               "$ref": "BrowserCommandId"
-            }
-          ]
-        },
-        {
-          "name": "addPrivacySandboxEnrollmentOverride",
-          "description": "Allows a site to use privacy sandbox features that require enrollment\nwithout the site actually being enrolled. Only supported on page targets.",
-          "parameters": [
-            {
-              "name": "url",
-              "type": "string"
             }
           ]
         },
@@ -7402,7 +7408,6 @@
             "select-listbox",
             "permission-icon",
             "overscroll-area-parent",
-            "overscroll-backdrop",
             "skeleton"
           ]
         },
@@ -15965,6 +15970,7 @@
             "CSPViolationReport",
             "Preflight",
             "FedCM",
+            "EmailVerification",
             "Other"
           ]
         },
@@ -16931,6 +16937,7 @@
                 "SignedExchange",
                 "preflight",
                 "FedCM",
+                "EmailVerification",
                 "other"
               ]
             },
@@ -18348,7 +18355,8 @@
             "PreProvisionedKeyNotFound",
             "AttestationCertificationError",
             "AttestationSigningError",
-            "FederatedRegistrationRedirected"
+            "FederatedRegistrationRedirected",
+            "CrossSiteRefreshSessionConfig"
           ]
         },
         {
@@ -22082,7 +22090,6 @@
             "autofill",
             "autoplay",
             "bluetooth",
-            "browsing-topics",
             "camera",
             "captured-surface-control",
             "ch-dpr",
@@ -22136,7 +22143,6 @@
             "hid",
             "identity-credentials-get",
             "idle-detection",
-            "interest-cohort",
             "keyboard-map",
             "language-detector",
             "language-model",
@@ -22160,6 +22166,7 @@
             "publickey-credentials-remote-client-data-json",
             "rewriter",
             "screen-wake-lock",
+            "semantic-embedder",
             "serial",
             "smart-card",
             "speaker-selection",
@@ -24419,6 +24426,13 @@
               "experimental": true,
               "optional": true,
               "$ref": "Network.LoaderId"
+            },
+            {
+              "name": "checkForRepost",
+              "description": "If true and the page has POST data, the browser shows the form\nresubmission dialog before the reload. The command returns after the\nuser responds to the dialog. If the user cancels the dialog, the\ncommand returns an error. The default value is false.",
+              "experimental": true,
+              "optional": true,
+              "type": "boolean"
             }
           ]
         },
@@ -24878,6 +24892,17 @@
               "description": "Maximum frame rate in frames per second.",
               "optional": true,
               "type": "integer"
+            },
+            {
+              "name": "captureArea",
+              "description": "The area to record. Defaults to `target`.",
+              "experimental": true,
+              "optional": true,
+              "type": "string",
+              "enum": [
+                "target",
+                "browserWindow"
+              ]
             }
           ],
           "returns": [
@@ -26133,7 +26158,9 @@
             "BrowsingDataRemoved",
             "PrerenderHostReused",
             "FormSubmitWhenPrerendering",
-            "CrossDocumentRestart"
+            "CrossDocumentRestart",
+            "PrefetchFailedCrossOriginSubframe",
+            "UnexpectedMainFrameNavigation"
           ]
         },
         {
@@ -28893,7 +28920,7 @@
             },
             {
               "name": "subtype",
-              "description": "Provides additional details for specific target types. For example, for\nthe type of \"page\", this may be set to \"prerender\".",
+              "description": "Provides additional details for specific target types. For example, for\nthe type of \"page\", this may be set to \"prerender\", and for \"tab\", this\nmay be set to \"unloaded\". An unloaded tab has a history entry, but no\ndocument for it: for example, after the tab was discarded, after\nsession restore without load, or after the renderer crashed. The tab\nstays unloaded until a new document commits. A new tab that has not\nnavigated is not unloaded. Target.targetInfoChanged reports changes of\nthis value for tabs.",
               "experimental": true,
               "optional": true,
               "type": "string"
@@ -30996,10 +31023,20 @@
           ]
         },
         {
+          "id": "ToolId",
+          "description": "Unique identifier of a registered tool. A new identifier is created every time a tool is registered, so a tool that\nis unregistered and then registered again under the same name gets a different identifier. Clients should treat it\nas an opaque string.",
+          "type": "string"
+        },
+        {
           "id": "Tool",
           "description": "Definition of a tool that can be invoked.",
           "type": "object",
           "properties": [
+            {
+              "name": "toolId",
+              "description": "Tool identifier.",
+              "$ref": "ToolId"
+            },
             {
               "name": "name",
               "description": "Tool name.",
@@ -31013,6 +31050,12 @@
             {
               "name": "inputSchema",
               "description": "Schema for the tool's input parameters.",
+              "optional": true,
+              "type": "object"
+            },
+            {
+              "name": "outputSchema",
+              "description": "Schema for the tool's output structure.",
               "optional": true,
               "type": "object"
             },
@@ -31047,6 +31090,11 @@
           "type": "object",
           "properties": [
             {
+              "name": "toolId",
+              "description": "Identifier of the removed tool.",
+              "$ref": "ToolId"
+            },
+            {
               "name": "name",
               "description": "Tool name.",
               "type": "string"
@@ -31070,7 +31118,7 @@
         },
         {
           "name": "invokeTool",
-          "description": "Invokes a registered tool.",
+          "description": "Invokes a registered tool. Exactly one of `toolId` and `toolName` must be specified; the command fails if both or\nneither are.",
           "parameters": [
             {
               "name": "frameId",
@@ -31078,8 +31126,16 @@
               "$ref": "Page.FrameId"
             },
             {
+              "name": "toolId",
+              "description": "Identifier of the tool to invoke, as reported in `Tool.toolId`. Invokes exactly that tool, and fails if it is no\nlonger registered, even if a different tool has since been registered under the same name.",
+              "optional": true,
+              "$ref": "ToolId"
+            },
+            {
               "name": "toolName",
-              "description": "Name of the tool to invoke.",
+              "description": "Name of the tool to invoke. Deprecated: invokes whichever tool is registered under this name when the command\nis handled, which may not be the tool the client observed if the page has since replaced it. Use `toolId`\ninstead.",
+              "deprecated": true,
+              "optional": true,
               "type": "string"
             },
             {
@@ -31142,11 +31198,6 @@
           "description": "Event fired when a tool invocation starts.",
           "parameters": [
             {
-              "name": "toolName",
-              "description": "Name of the tool to invoke.",
-              "type": "string"
-            },
-            {
               "name": "frameId",
               "description": "Frame id",
               "$ref": "Page.FrameId"
@@ -31160,6 +31211,18 @@
               "name": "input",
               "description": "The input parameters used for the invocation.",
               "type": "string"
+            },
+            {
+              "name": "toolName",
+              "description": "Name of the tool to invoke. Missing if the tool was invoked by its identifier, but could not be found (e.g.,\nit was already unregistered), so its name could not be recovered.",
+              "optional": true,
+              "type": "string"
+            },
+            {
+              "name": "toolId",
+              "description": "Identifier of the tool to invoke. Missing if the tool was invoked by name, but could not be found, so its\nidentifier could not be recovered.",
+              "optional": true,
+              "$ref": "ToolId"
             }
           ]
         },

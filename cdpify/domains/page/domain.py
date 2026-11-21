@@ -731,6 +731,7 @@ class Page:
         ignore_cache: bool | None = None,
         script_to_evaluate_on_load: str | None = None,
         loader_id: network.LoaderId | None = None,
+        check_for_repost: bool | None = None,
     ) -> None:
         """
         Reloads given page optionally ignoring the cache.
@@ -745,6 +746,11 @@ class Page:
                 loader id does not match the provided id. This prevents accidentally
                 reloading an unintended target in case there's a racing navigation.
                 Experimental: this API may change or be removed.
+            check_for_repost: If true and the page has POST data, the browser shows the
+                form resubmission dialog before the reload. The command returns after
+                the user responds to the dialog. If the user cancels the dialog, the
+                command returns an error. The default value is false. Experimental: this
+                API may change or be removed.
         """
         _params: dict[str, Any] = {}
         if ignore_cache is not None:
@@ -753,6 +759,8 @@ class Page:
             _params["scriptToEvaluateOnLoad"] = script_to_evaluate_on_load
         if loader_id is not None:
             _params["loaderId"] = _encode_value(loader_id)
+        if check_for_repost is not None:
+            _params["checkForRepost"] = check_for_repost
 
         await self._executor.execute(
             method=PageCommand.RELOAD,
@@ -1250,6 +1258,7 @@ class Page:
         max_width: int | None = None,
         max_height: int | None = None,
         frame_rate: int | None = None,
+        capture_area: Literal["target", "browserWindow"] | None = None,
     ) -> StartScreenRecordingResult:
         """
         Starts screencast video recording. Experimental: this API may change or be
@@ -1259,6 +1268,8 @@ class Page:
             max_width: Maximum frame width in pixels.
             max_height: Maximum frame height in pixels.
             frame_rate: Maximum frame rate in frames per second.
+            capture_area: The area to record. Defaults to `target`. Experimental: this
+                API may change or be removed.
         """
         _params: dict[str, Any] = {}
         if audio is not None:
@@ -1269,6 +1280,8 @@ class Page:
             _params["maxHeight"] = max_height
         if frame_rate is not None:
             _params["frameRate"] = frame_rate
+        if capture_area is not None:
+            _params["captureArea"] = capture_area
 
         result = await self._executor.execute(
             method=PageCommand.START_SCREEN_RECORDING,

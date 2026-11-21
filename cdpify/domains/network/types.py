@@ -34,6 +34,7 @@ class ResourceType(CDPStrEnum):
     CSP_VIOLATION_REPORT = "CSPViolationReport"
     PREFLIGHT = "Preflight"
     FED_CM = "FedCM"
+    EMAIL_VERIFICATION = "EmailVerification"
     OTHER = "Other"
 
 
@@ -927,7 +928,14 @@ class Initiator:
     """
 
     type: Literal[
-        "parser", "script", "preload", "SignedExchange", "preflight", "FedCM", "other"
+        "parser",
+        "script",
+        "preload",
+        "SignedExchange",
+        "preflight",
+        "FedCM",
+        "EmailVerification",
+        "other",
     ]
     """
     Type of this initiator.
@@ -2231,6 +2239,7 @@ class DeviceBoundSessionFetchResult(CDPStrEnum):
     ATTESTATION_CERTIFICATION_ERROR = "AttestationCertificationError"
     ATTESTATION_SIGNING_ERROR = "AttestationSigningError"
     FEDERATED_REGISTRATION_REDIRECTED = "FederatedRegistrationRedirected"
+    CROSS_SITE_REFRESH_SESSION_CONFIG = "CrossSiteRefreshSessionConfig"
 
 
 @dataclass(kw_only=True, slots=True)

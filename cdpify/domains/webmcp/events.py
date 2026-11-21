@@ -15,6 +15,7 @@ from .types import (
     InvocationStatus,
     RemovedTool,
     Tool,
+    ToolId,
 )
 
 
@@ -61,10 +62,6 @@ class ToolInvokedEvent:
 
     __cdp_event__: ClassVar[WebMCPEvent] = WebMCPEvent.TOOL_INVOKED
 
-    tool_name: str = field(metadata={"cdp_name": "toolName"})
-    """
-    Name of the tool to invoke.
-    """
     frame_id: page.FrameId = field(metadata={"cdp_name": "frameId"})
     """
     Frame id
@@ -76,6 +73,17 @@ class ToolInvokedEvent:
     input: str
     """
     The input parameters used for the invocation.
+    """
+    tool_name: str | None = field(default=None, metadata={"cdp_name": "toolName"})
+    """
+    Name of the tool to invoke. Missing if the tool was invoked by its identifier, but
+    could not be found (e.g., it was already unregistered), so its name could not be
+    recovered.
+    """
+    tool_id: ToolId | None = field(default=None, metadata={"cdp_name": "toolId"})
+    """
+    Identifier of the tool to invoke. Missing if the tool was invoked by name, but
+    could not be found, so its identifier could not be recovered.
     """
 
 

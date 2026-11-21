@@ -96,7 +96,6 @@ class PermissionsPolicyFeature(CDPStrEnum):
     AUTOFILL = "autofill"
     AUTOPLAY = "autoplay"
     BLUETOOTH = "bluetooth"
-    BROWSING_TOPICS = "browsing-topics"
     CAMERA = "camera"
     CAPTURED_SURFACE_CONTROL = "captured-surface-control"
     CH_DPR = "ch-dpr"
@@ -150,7 +149,6 @@ class PermissionsPolicyFeature(CDPStrEnum):
     HID = "hid"
     IDENTITY_CREDENTIALS_GET = "identity-credentials-get"
     IDLE_DETECTION = "idle-detection"
-    INTEREST_COHORT = "interest-cohort"
     KEYBOARD_MAP = "keyboard-map"
     LANGUAGE_DETECTOR = "language-detector"
     LANGUAGE_MODEL = "language-model"
@@ -176,6 +174,7 @@ class PermissionsPolicyFeature(CDPStrEnum):
     )
     REWRITER = "rewriter"
     SCREEN_WAKE_LOCK = "screen-wake-lock"
+    SEMANTIC_EMBEDDER = "semantic-embedder"
     SERIAL = "serial"
     SMART_CARD = "smart-card"
     SPEAKER_SELECTION = "speaker-selection"

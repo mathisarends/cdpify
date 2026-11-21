@@ -17,6 +17,7 @@ from .types import (
     CallFrameId,
     Location,
     LocationRange,
+    Scope,
     ScriptPosition,
     SearchMatch,
     WasmDisassemblyChunk,
@@ -29,6 +30,7 @@ class DebuggerCommand(StrEnum):
     ENABLE = "Debugger.enable"
     EVALUATE_ON_CALL_FRAME = "Debugger.evaluateOnCallFrame"
     GET_POSSIBLE_BREAKPOINTS = "Debugger.getPossibleBreakpoints"
+    GET_SCOPE_CHAIN = "Debugger.getScopeChain"
     GET_SCRIPT_SOURCE = "Debugger.getScriptSource"
     DISASSEMBLE_WASM_MODULE = "Debugger.disassembleWasmModule"
     NEXT_WASM_DISASSEMBLY_CHUNK = "Debugger.nextWasmDisassemblyChunk"
@@ -204,6 +206,29 @@ class GetPossibleBreakpointsResult:
     locations: list[BreakLocation]
     """
     List of the possible breakpoint locations.
+    """
+
+
+@dataclass(kw_only=True, slots=True)
+class GetScopeChainParams:
+    """
+    Returns the current scope chain of the given call frame. Unlike the scope chain
+    reported with the `paused` event, it reflects changes made to variables since then
+    (e.g. via `evaluateOnCallFrame` or `setVariableValue`). Experimental: this API may
+    change or be removed.
+    """
+
+    call_frame_id: CallFrameId = field(metadata={"cdp_name": "callFrameId"})
+    """
+    Call frame identifier to get the scope chain for.
+    """
+
+
+@dataclass(kw_only=True, slots=True)
+class GetScopeChainResult:
+    scope_chain: list[Scope] = field(metadata={"cdp_name": "scopeChain"})
+    """
+    Scope chain for the call frame.
     """
 
 

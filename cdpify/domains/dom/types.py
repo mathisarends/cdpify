@@ -91,7 +91,6 @@ class PseudoType(CDPStrEnum):
     SELECT_LISTBOX = "select-listbox"
     PERMISSION_ICON = "permission-icon"
     OVERSCROLL_AREA_PARENT = "overscroll-area-parent"
-    OVERSCROLL_BACKDROP = "overscroll-backdrop"
     SKELETON = "skeleton"
 
 

@@ -13,6 +13,9 @@ from .commands import (
     InvokeToolResult,
     WebMCPCommand,
 )
+from .types import (
+    ToolId,
+)
 
 if TYPE_CHECKING:
     from cdpify.domains import page
@@ -49,20 +52,31 @@ class WebMCP:
         self,
         *,
         frame_id: page.FrameId,
-        tool_name: str,
+        tool_id: ToolId | None = None,
+        tool_name: str | None = None,
         input: dict[str, Any],
     ) -> InvokeToolResult:
         """
-        Invokes a registered tool.
+        Invokes a registered tool. Exactly one of `toolId` and `toolName` must be
+        specified; the command fails if both or neither are.
 
         Args:
             frame_id: Frame in which to invoke the tool.
-            tool_name: Name of the tool to invoke.
+            tool_id: Identifier of the tool to invoke, as reported in `Tool.toolId`.
+                Invokes exactly that tool, and fails if it is no longer registered, even
+                if a different tool has since been registered under the same name.
+            tool_name: Name of the tool to invoke. Deprecated: invokes whichever tool is
+                registered under this name when the command is handled, which may not be
+                the tool the client observed if the page has since replaced it. Use
+                `toolId` instead. Deprecated in the Chrome DevTools Protocol.
             input: Input parameters for the tool, matching the tool's inputSchema.
         """
         _params: dict[str, Any] = {}
         _params["frameId"] = _encode_value(frame_id)
-        _params["toolName"] = tool_name
+        if tool_id is not None:
+            _params["toolId"] = _encode_value(tool_id)
+        if tool_name is not None:
+            _params["toolName"] = tool_name
         _params["input"] = _encode_value(input)
 
         result = await self._executor.execute(

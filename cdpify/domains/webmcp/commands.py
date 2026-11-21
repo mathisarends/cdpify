@@ -10,6 +10,10 @@ from typing import Any
 
 from cdpify.domains import page
 
+from .types import (
+    ToolId,
+)
+
 
 class WebMCPCommand(StrEnum):
     ENABLE = "WebMCP.enable"
@@ -21,16 +25,26 @@ class WebMCPCommand(StrEnum):
 @dataclass(kw_only=True, slots=True)
 class InvokeToolParams:
     """
-    Invokes a registered tool.
+    Invokes a registered tool. Exactly one of `toolId` and `toolName` must be
+    specified; the command fails if both or neither are.
     """
 
     frame_id: page.FrameId = field(metadata={"cdp_name": "frameId"})
     """
     Frame in which to invoke the tool.
     """
-    tool_name: str = field(metadata={"cdp_name": "toolName"})
+    tool_id: ToolId | None = field(default=None, metadata={"cdp_name": "toolId"})
     """
-    Name of the tool to invoke.
+    Identifier of the tool to invoke, as reported in `Tool.toolId`. Invokes exactly
+    that tool, and fails if it is no longer registered, even if a different tool has
+    since been registered under the same name.
+    """
+    tool_name: str | None = field(default=None, metadata={"cdp_name": "toolName"})
+    """
+    Name of the tool to invoke. Deprecated: invokes whichever tool is registered under
+    this name when the command is handled, which may not be the tool the client observed
+    if the page has since replaced it. Use `toolId` instead. Deprecated in the Chrome
+    DevTools Protocol.
     """
     input: dict[str, Any]
     """

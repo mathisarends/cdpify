@@ -42,9 +42,6 @@ class BrowserCommand(StrEnum):
     SET_CONTENTS_SIZE = "Browser.setContentsSize"
     SET_DOCK_TILE = "Browser.setDockTile"
     EXECUTE_BROWSER_COMMAND = "Browser.executeBrowserCommand"
-    ADD_PRIVACY_SANDBOX_ENROLLMENT_OVERRIDE = (
-        "Browser.addPrivacySandboxEnrollmentOverride"
-    )
     GET_GLOBAL_PRIVACY_CONTROL = "Browser.getGlobalPrivacyControl"
     SET_GLOBAL_PRIVACY_CONTROL = "Browser.setGlobalPrivacyControl"
 
@@ -387,16 +384,6 @@ class ExecuteBrowserCommandParams:
     """
 
     command_id: BrowserCommandId = field(metadata={"cdp_name": "commandId"})
-
-
-@dataclass(kw_only=True, slots=True)
-class AddPrivacySandboxEnrollmentOverrideParams:
-    """
-    Allows a site to use privacy sandbox features that require enrollment without the
-    site actually being enrolled. Only supported on page targets.
-    """
-
-    url: str
 
 
 @dataclass(kw_only=True, slots=True)

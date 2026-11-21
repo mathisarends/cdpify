@@ -26,6 +26,7 @@ if TYPE_CHECKING:
         SimulateCharacteristicOperationResponseParams,
         SimulateDescriptorOperationResponseParams,
         SimulateGATTDisconnectionParams,
+        SimulateGATTMtuChangeParams,
         SimulateGATTOperationResponseParams,
         SimulatePreconnectedPeripheralParams,
     )
@@ -79,6 +80,7 @@ __all__ = [
     "SimulateCharacteristicOperationResponseParams",
     "SimulateDescriptorOperationResponseParams",
     "SimulateGATTDisconnectionParams",
+    "SimulateGATTMtuChangeParams",
     "SimulateGATTOperationResponseParams",
     "SimulatePreconnectedPeripheralParams",
 ]
@@ -134,6 +136,7 @@ __getattr__, __dir__ = lazy_exports(
             ".commands",
             "SimulateGATTDisconnectionParams",
         ),
+        "SimulateGATTMtuChangeParams": (".commands", "SimulateGATTMtuChangeParams"),
         "SimulateGATTOperationResponseParams": (
             ".commands",
             "SimulateGATTOperationResponseParams",

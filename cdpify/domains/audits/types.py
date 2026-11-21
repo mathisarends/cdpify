@@ -913,12 +913,16 @@ class ElementAccessibilityIssueReason(CDPStrEnum):
     INTERACTIVE_CONTENT_OPTION_CHILD = "InteractiveContentOptionChild"
     INTERACTIVE_CONTENT_LEGEND_CHILD = "InteractiveContentLegendChild"
     INTERACTIVE_CONTENT_SUMMARY_DESCENDANT = "InteractiveContentSummaryDescendant"
+    ANCHOR_MENU_DESCENDANT = "AnchorMenuDescendant"
+    INTERACTIVE_CONTENT_MENU_DESCENDANT = "InteractiveContentMenuDescendant"
+    TEXT_MENU_DESCENDANT = "TextMenuDescendant"
 
 
 @dataclass(kw_only=True, slots=True)
 class ElementAccessibilityIssueDetails:
     """
-    This issue warns about errors in the select or summary element content model.
+    This issue warns about errors in the select, summary, or menu element content
+    model.
     """
 
     node_id: dom.BackendNodeId = field(metadata={"cdp_name": "nodeId"})

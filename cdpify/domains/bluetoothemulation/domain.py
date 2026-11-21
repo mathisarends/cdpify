@@ -322,3 +322,23 @@ class BluetoothEmulation:
             method=BluetoothEmulationCommand.SIMULATE_GATT_DISCONNECTION,
             params=_params,
         )
+
+    async def simulate_gatt_mtu_change(
+        self,
+        *,
+        address: str,
+        mtu: int,
+    ) -> None:
+        """
+        Simulates the ATT MTU exchange procedure from Bluetooth Core Specification Vol
+        3 Part F 3.4.2 establishing |mtu| for the connection to the peripheral with
+        |address|.
+        """
+        _params: dict[str, Any] = {}
+        _params["address"] = address
+        _params["mtu"] = mtu
+
+        await self._executor.execute(
+            method=BluetoothEmulationCommand.SIMULATE_GATT_MTU_CHANGE,
+            params=_params,
+        )

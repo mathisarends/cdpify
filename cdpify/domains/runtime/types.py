@@ -154,14 +154,15 @@ class RemoteObject:
     value: Any | UnsetType = UNSET
     """
     Remote object value in case of primitive values or JSON values (if it was
-    requested). Omit with UNSET; None encodes JSON null.
+    requested). Not set in `deep` serialization mode, see `deepSerializedValue`. Omit
+    with UNSET; None encodes JSON null.
     """
     unserializable_value: UnserializableValue | None = field(
         default=None, metadata={"cdp_name": "unserializableValue"}
     )
     """
     Primitive value which can not be JSON-stringified does not have `value`, but gets
-    this property.
+    this property. Not set in `deep` serialization mode, see `deepSerializedValue`.
     """
     description: str | None = None
     """

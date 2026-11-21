@@ -468,23 +468,6 @@ class Browser:
             params=_params,
         )
 
-    async def add_privacy_sandbox_enrollment_override(
-        self,
-        *,
-        url: str,
-    ) -> None:
-        """
-        Allows a site to use privacy sandbox features that require enrollment without
-        the site actually being enrolled. Only supported on page targets.
-        """
-        _params: dict[str, Any] = {}
-        _params["url"] = url
-
-        await self._executor.execute(
-            method=BrowserCommand.ADD_PRIVACY_SANDBOX_ENROLLMENT_OVERRIDE,
-            params=_params,
-        )
-
     async def get_global_privacy_control(
         self,
     ) -> GetGlobalPrivacyControlResult:

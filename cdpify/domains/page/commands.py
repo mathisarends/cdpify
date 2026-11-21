@@ -764,6 +764,15 @@ class ReloadParams:
     in case there's a racing navigation. Experimental: this API may change or be
     removed.
     """
+    check_for_repost: bool | None = field(
+        default=None, metadata={"cdp_name": "checkForRepost"}
+    )
+    """
+    If true and the page has POST data, the browser shows the form resubmission dialog
+    before the reload. The command returns after the user responds to the dialog. If the
+    user cancels the dialog, the command returns an error. The default value is false.
+    Experimental: this API may change or be removed.
+    """
 
 
 @dataclass(kw_only=True, slots=True)
@@ -1163,6 +1172,13 @@ class StartScreenRecordingParams:
     frame_rate: int | None = field(default=None, metadata={"cdp_name": "frameRate"})
     """
     Maximum frame rate in frames per second.
+    """
+    capture_area: Literal["target", "browserWindow"] | None = field(
+        default=None, metadata={"cdp_name": "captureArea"}
+    )
+    """
+    The area to record. Defaults to `target`. Experimental: this API may change or be
+    removed.
     """
 
 

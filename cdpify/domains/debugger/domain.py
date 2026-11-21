@@ -16,6 +16,7 @@ from .commands import (
     EnableResult,
     EvaluateOnCallFrameResult,
     GetPossibleBreakpointsResult,
+    GetScopeChainResult,
     GetScriptSourceResult,
     GetStackTraceResult,
     GetWasmBytecodeResult,
@@ -196,6 +197,29 @@ class Debugger:
             params=_params,
         )
         return decode_cdp(GetPossibleBreakpointsResult, result)
+
+    async def get_scope_chain(
+        self,
+        *,
+        call_frame_id: CallFrameId,
+    ) -> GetScopeChainResult:
+        """
+        Returns the current scope chain of the given call frame. Unlike the scope chain
+        reported with the `paused` event, it reflects changes made to variables since
+        then (e.g. via `evaluateOnCallFrame` or `setVariableValue`). Experimental: this
+        API may change or be removed.
+
+        Args:
+            call_frame_id: Call frame identifier to get the scope chain for.
+        """
+        _params: dict[str, Any] = {}
+        _params["callFrameId"] = _encode_value(call_frame_id)
+
+        result = await self._executor.execute(
+            method=DebuggerCommand.GET_SCOPE_CHAIN,
+            params=_params,
+        )
+        return decode_cdp(GetScopeChainResult, result)
 
     async def get_script_source(
         self,
